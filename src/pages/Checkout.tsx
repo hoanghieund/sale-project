@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { CreditCard, Lock, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
-import { useCart } from "../context/CartContext";
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, CreditCard, Lock } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
+import { useCart } from "../context/CartContext";
 
 interface CheckoutForm {
   email: string;
@@ -35,14 +35,19 @@ const Checkout = () => {
   const { cart, clearCart } = useCart();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
-  
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<CheckoutForm>({
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<CheckoutForm>({
     defaultValues: {
       paymentMethod: "card",
       sameAsBilling: true,
       saveInfo: false,
-      country: "United States"
-    }
+      country: "United States",
+    },
   });
 
   const paymentMethod = watch("paymentMethod");
@@ -54,10 +59,10 @@ const Checkout = () => {
 
   const onSubmit = async (data: CheckoutForm) => {
     setIsProcessing(true);
-    
+
     // Simulate payment processing
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     // Clear cart and redirect to success page
     clearCart();
     navigate("/order-success");
@@ -69,7 +74,11 @@ const Checkout = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/cart")}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/cart")}
+            >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <h1 className="text-3xl font-bold">Checkout</h1>
@@ -80,59 +89,79 @@ const Checkout = () => {
               {/* Checkout Form */}
               <div className="space-y-8">
                 {/* Contact Information */}
-                <div className="bg-card rounded-lg p-6 shadow-sm">
-                  <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
+                <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
+                  <h2 className="text-xl font-semibold mb-4">
+                    Contact Information
+                  </h2>
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="email">Email Address</Label>
                       <Input
                         id="email"
                         type="email"
-                        {...register("email", { required: "Email is required" })}
+                        {...register("email", {
+                          required: "Email is required",
+                        })}
                         className={errors.email ? "border-destructive" : ""}
                       />
                       {errors.email && (
-                        <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+                        <p className="text-sm text-destructive mt-1">
+                          {errors.email.message}
+                        </p>
                       )}
                     </div>
                   </div>
                 </div>
 
                 {/* Shipping Address */}
-                <div className="bg-card rounded-lg p-6 shadow-sm">
-                  <h2 className="text-xl font-semibold mb-4">Shipping Address</h2>
+                <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
+                  <h2 className="text-xl font-semibold mb-4">
+                    Shipping Address
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="firstName">First Name</Label>
                       <Input
                         id="firstName"
-                        {...register("firstName", { required: "First name is required" })}
+                        {...register("firstName", {
+                          required: "First name is required",
+                        })}
                         className={errors.firstName ? "border-destructive" : ""}
                       />
                       {errors.firstName && (
-                        <p className="text-sm text-destructive mt-1">{errors.firstName.message}</p>
+                        <p className="text-sm text-destructive mt-1">
+                          {errors.firstName.message}
+                        </p>
                       )}
                     </div>
                     <div>
                       <Label htmlFor="lastName">Last Name</Label>
                       <Input
                         id="lastName"
-                        {...register("lastName", { required: "Last name is required" })}
+                        {...register("lastName", {
+                          required: "Last name is required",
+                        })}
                         className={errors.lastName ? "border-destructive" : ""}
                       />
                       {errors.lastName && (
-                        <p className="text-sm text-destructive mt-1">{errors.lastName.message}</p>
+                        <p className="text-sm text-destructive mt-1">
+                          {errors.lastName.message}
+                        </p>
                       )}
                     </div>
                     <div className="md:col-span-2">
                       <Label htmlFor="address">Address</Label>
                       <Input
                         id="address"
-                        {...register("address", { required: "Address is required" })}
+                        {...register("address", {
+                          required: "Address is required",
+                        })}
                         className={errors.address ? "border-destructive" : ""}
                       />
                       {errors.address && (
-                        <p className="text-sm text-destructive mt-1">{errors.address.message}</p>
+                        <p className="text-sm text-destructive mt-1">
+                          {errors.address.message}
+                        </p>
                       )}
                     </div>
                     <div>
@@ -143,47 +172,56 @@ const Checkout = () => {
                         className={errors.city ? "border-destructive" : ""}
                       />
                       {errors.city && (
-                        <p className="text-sm text-destructive mt-1">{errors.city.message}</p>
+                        <p className="text-sm text-destructive mt-1">
+                          {errors.city.message}
+                        </p>
                       )}
                     </div>
                     <div>
                       <Label htmlFor="state">State</Label>
                       <Input
                         id="state"
-                        {...register("state", { required: "State is required" })}
+                        {...register("state", {
+                          required: "State is required",
+                        })}
                         className={errors.state ? "border-destructive" : ""}
                       />
                       {errors.state && (
-                        <p className="text-sm text-destructive mt-1">{errors.state.message}</p>
+                        <p className="text-sm text-destructive mt-1">
+                          {errors.state.message}
+                        </p>
                       )}
                     </div>
                     <div>
                       <Label htmlFor="zipCode">ZIP Code</Label>
                       <Input
                         id="zipCode"
-                        {...register("zipCode", { required: "ZIP code is required" })}
+                        {...register("zipCode", {
+                          required: "ZIP code is required",
+                        })}
                         className={errors.zipCode ? "border-destructive" : ""}
                       />
                       {errors.zipCode && (
-                        <p className="text-sm text-destructive mt-1">{errors.zipCode.message}</p>
+                        <p className="text-sm text-destructive mt-1">
+                          {errors.zipCode.message}
+                        </p>
                       )}
                     </div>
                     <div>
                       <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        {...register("phone")}
-                      />
+                      <Input id="phone" type="tel" {...register("phone")} />
                     </div>
                   </div>
                 </div>
 
                 {/* Payment Method */}
-                <div className="bg-card rounded-lg p-6 shadow-sm">
+                <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
                   <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
-                  
-                  <RadioGroup defaultValue="card" {...register("paymentMethod")}>
+
+                  <RadioGroup
+                    defaultValue="card"
+                    {...register("paymentMethod")}
+                  >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="card" id="card" />
                       <Label htmlFor="card" className="flex items-center gap-2">
@@ -204,11 +242,17 @@ const Checkout = () => {
                         <Input
                           id="cardNumber"
                           placeholder="1234 5678 9012 3456"
-                          {...register("cardNumber", { required: "Card number is required" })}
-                          className={errors.cardNumber ? "border-destructive" : ""}
+                          {...register("cardNumber", {
+                            required: "Card number is required",
+                          })}
+                          className={
+                            errors.cardNumber ? "border-destructive" : ""
+                          }
                         />
                         {errors.cardNumber && (
-                          <p className="text-sm text-destructive mt-1">{errors.cardNumber.message}</p>
+                          <p className="text-sm text-destructive mt-1">
+                            {errors.cardNumber.message}
+                          </p>
                         )}
                       </div>
                       <div className="grid grid-cols-2 gap-4">
@@ -217,11 +261,17 @@ const Checkout = () => {
                           <Input
                             id="expiryDate"
                             placeholder="MM/YY"
-                            {...register("expiryDate", { required: "Expiry date is required" })}
-                            className={errors.expiryDate ? "border-destructive" : ""}
+                            {...register("expiryDate", {
+                              required: "Expiry date is required",
+                            })}
+                            className={
+                              errors.expiryDate ? "border-destructive" : ""
+                            }
                           />
                           {errors.expiryDate && (
-                            <p className="text-sm text-destructive mt-1">{errors.expiryDate.message}</p>
+                            <p className="text-sm text-destructive mt-1">
+                              {errors.expiryDate.message}
+                            </p>
                           )}
                         </div>
                         <div>
@@ -229,11 +279,15 @@ const Checkout = () => {
                           <Input
                             id="cvv"
                             placeholder="123"
-                            {...register("cvv", { required: "CVV is required" })}
+                            {...register("cvv", {
+                              required: "CVV is required",
+                            })}
                             className={errors.cvv ? "border-destructive" : ""}
                           />
                           {errors.cvv && (
-                            <p className="text-sm text-destructive mt-1">{errors.cvv.message}</p>
+                            <p className="text-sm text-destructive mt-1">
+                              {errors.cvv.message}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -241,11 +295,17 @@ const Checkout = () => {
                         <Label htmlFor="nameOnCard">Name on Card</Label>
                         <Input
                           id="nameOnCard"
-                          {...register("nameOnCard", { required: "Name on card is required" })}
-                          className={errors.nameOnCard ? "border-destructive" : ""}
+                          {...register("nameOnCard", {
+                            required: "Name on card is required",
+                          })}
+                          className={
+                            errors.nameOnCard ? "border-destructive" : ""
+                          }
                         />
                         {errors.nameOnCard && (
-                          <p className="text-sm text-destructive mt-1">{errors.nameOnCard.message}</p>
+                          <p className="text-sm text-destructive mt-1">
+                            {errors.nameOnCard.message}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -261,12 +321,12 @@ const Checkout = () => {
               </div>
 
               {/* Order Summary */}
-              <div className="bg-card rounded-lg p-6 shadow-sm h-fit">
+              <div className="bg-card rounded-lg p-6 shadow-sm h-fit border border-border ">
                 <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-                
+
                 {/* Order Items */}
                 <div className="space-y-4 mb-4">
-                  {cart.items.map((item) => (
+                  {cart.items.map(item => (
                     <div key={item.id} className="flex gap-3">
                       <div className="w-16 h-16 flex-shrink-0">
                         <img
@@ -311,7 +371,11 @@ const Checkout = () => {
                   )}
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span>{cart.shipping === 0 ? "Free" : `$${cart.shipping.toFixed(2)}`}</span>
+                    <span>
+                      {cart.shipping === 0
+                        ? "Free"
+                        : `$${cart.shipping.toFixed(2)}`}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax</span>
@@ -324,9 +388,9 @@ const Checkout = () => {
                   </div>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full mt-6" 
+                <Button
+                  type="submit"
+                  className="w-full mt-6"
                   size="lg"
                   disabled={isProcessing}
                 >

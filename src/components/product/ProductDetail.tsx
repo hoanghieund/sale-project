@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Product, Size, Color } from "../../types";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
+import ProductImageGallery from "./ProductImageGallery";
 
 interface ProductDetailProps {
   product: Product;
@@ -19,7 +20,6 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     product.colors.find(color => color.available) || null
   );
   const [quantity, setQuantity] = useState(1);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -51,34 +51,11 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Product Images */}
-        <div className="space-y-4">
-          <div className="aspect-square overflow-hidden rounded-lg bg-muted">
-            <img
-              src={product.images[selectedImageIndex]}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          
-          {product.images.length > 1 && (
-            <div className="grid grid-cols-4 gap-2">
-              {product.images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImageIndex(index)}
-                  className={`aspect-square overflow-hidden rounded-lg border-2 ${
-                    selectedImageIndex === index ? 'border-primary' : 'border-transparent'
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`${product.name} ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
+        <div>
+          <ProductImageGallery 
+            images={product.images} 
+            productName={product.name} 
+          />
         </div>
 
         {/* Product Info */}

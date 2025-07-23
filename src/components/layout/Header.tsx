@@ -23,8 +23,9 @@ import {
   Search,
   ShoppingBag,
   User,
+  X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
@@ -33,9 +34,20 @@ import { NAVIGATION_MENU } from "../../data/constants";
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { getCartItemsCount } = useCart();
   const { getWishlistCount } = useWishlist();
+
+  // Handle scroll effect for header
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,22 +63,65 @@ const Header = () => {
   return (
     <>
       {/* Top Banner */}
-      <div className="bg-sport-dark text-white text-center py-2 text-sm">
-        SUMMER RUNNING TRACK! 5% OFF WITH COUPON "HELLODONEKICK"
+      <div className="bg-primary text-primary-foreground text-center py-1.5 text-sm font-medium tracking-wide">
+        PREMIUM COLLECTION! 10% OFF WITH COUPON "HELLOSHOP"
       </div>
 
       {/* Main Header */}
-      <header className="bg-white border-b border-border sticky top-0 z-50">
+      <header
+        className={`bg-background border-b border-border sticky top-0 z-50 transition-shadow duration-300 ${
+          scrolled ? "shadow-sm" : ""
+        }`}
+      >
         <div className="container mx-auto px-4">
           {/* Top Row */}
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-2.5">
+            {/* Mobile Search - Top Row */}
+            {isSearchOpen && (
+              <div className="md:hidden py-1.5 animate-in fade-in slide-in-from-top duration-300">
+                <form
+                  onSubmit={handleSearch}
+                  className="flex items-center gap-2"
+                >
+                  <div className="relative flex-1">
+                    <Input
+                      placeholder="Search for products..."
+                      className="pr-10 rounded-full border-muted focus-visible:ring-primary"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      autoFocus
+                    />
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-full rounded-full"
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full hover:bg-primary/10"
+                    onClick={() => {
+                      clearSearch();
+                      setIsSearchOpen(false);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </form>
+              </div>
+            )}
+
             {/* Search Bar - Desktop */}
             <div className="hidden md:flex items-center gap-4">
               <form onSubmit={handleSearch} className="flex items-center gap-2">
                 <div className="relative">
                   <Input
-                    placeholder="What are you looking for?"
-                    className="w-64 pr-10"
+                    placeholder="Search for products..."
+                    className="w-72 pr-10 rounded-full border-muted focus-visible:ring-primary"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                   />
@@ -74,13 +129,18 @@ const Header = () => {
                     type="submit"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 top-0 h-full"
+                    className="absolute right-0 top-0 h-full rounded-full hover:bg-primary/10"
                   >
                     <Search className="h-4 w-4" />
                   </Button>
                 </div>
                 {searchQuery && (
-                  <Button variant="ghost" size="sm" onClick={clearSearch}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSearch}
+                    className="rounded-full hover:bg-primary/10"
+                  >
                     Clear
                   </Button>
                 )}
@@ -88,16 +148,37 @@ const Header = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full hover:bg-primary/10"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full hover:bg-primary/10"
+                  >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-80">
-                  <SheetHeader>
+                  <SheetHeader className="flex justify-between items-center pr-4">
                     <SheetTitle>Menu</SheetTitle>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full hover:bg-primary/10"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </SheetHeader>
                   <MobileNavigation
                     onClose={() => setIsMobileMenuOpen(false)}
@@ -107,17 +188,20 @@ const Header = () => {
             </div>
 
             {/* Logo */}
-            <Link to="/" className="text-2xl font-bold text-center">
-              <span className="text-sport-dark">DONEKICK</span>
-              <div className="text-xs text-muted-foreground font-normal">
-                SPORTS
+            <Link to="/" className="flex items-center">
+              <div className="text-xl font-bold">
+                <span>SHOP</span>
               </div>
             </Link>
 
             {/* Icons */}
             <div className="flex items-center gap-4">
               <Link to="/account">
-                <Button variant="ghost" size="icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-primary/10"
+                >
                   <User className="h-5 w-5" />
                 </Button>
               </Link>
@@ -130,12 +214,16 @@ const Header = () => {
               </div>
 
               <Link to="/wishlist" className="relative">
-                <Button variant="ghost" size="icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative rounded-full hover:bg-primary/10"
+                >
                   <Heart className="h-5 w-5" />
                   {getWishlistCount() > 0 && (
                     <Badge
                       variant="destructive"
-                      className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                     >
                       {getWishlistCount()}
                     </Badge>
@@ -144,12 +232,16 @@ const Header = () => {
               </Link>
 
               <Link to="/cart" className="relative">
-                <Button variant="ghost" size="icon" data-testid="cart-icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative rounded-full hover:bg-primary/10"
+                >
                   <ShoppingBag className="h-5 w-5" />
                   {getCartItemsCount() > 0 && (
                     <Badge
                       variant="destructive"
-                      className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                     >
                       {getCartItemsCount()}
                     </Badge>
@@ -159,15 +251,15 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex justify-center py-4 border-t border-border">
+          {/* Bottom Row - Navigation */}
+          <nav className="hidden lg:flex py-2 justify-center border-t border-border">
             <NavigationMenu>
               <NavigationMenuList className="gap-8">
                 {NAVIGATION_MENU.map(item => (
                   <NavigationMenuItem key={item.id}>
                     {item.children ? (
                       <>
-                        <NavigationMenuTrigger className="bg-transparent hover:bg-gray-100">
+                        <NavigationMenuTrigger className="bg-transparent hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent/50 data-[active]:bg-accent/50 h-8 rounded-md px-2.5">
                           {item.label}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
@@ -237,34 +329,34 @@ const MobileNavigation = ({ onClose }: { onClose: () => void }) => {
             <div>
               <Button
                 variant="ghost"
-                className="w-full justify-between"
+                className="w-full justify-between hover:bg-primary/5 rounded-md"
                 onClick={() => toggleExpanded(item.id)}
               >
                 {item.label}
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform ${
+                  className={`h-4 w-4 transition-transform duration-200 ${
                     expandedItems.includes(item.id) ? "rotate-180" : ""
                   }`}
                 />
               </Button>
               {expandedItems.includes(item.id) && (
-                <div className="ml-4 mt-2 space-y-2">
+                <div className="ml-4 mt-2 space-y-2 border-l-2 border-border pl-3 animate-in slide-in-from-top duration-200">
                   {item.children.map(child => (
                     <div key={child.id}>
                       <Link
                         to={child.href}
-                        className="block py-2 text-sm text-muted-foreground hover:text-foreground"
+                        className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
                         onClick={onClose}
                       >
                         {child.label}
                       </Link>
                       {child.children && (
-                        <div className="ml-4 space-y-1">
+                        <div className="ml-4 space-y-1 border-l border-border/50 pl-2">
                           {child.children.map(subChild => (
                             <Link
                               key={subChild.id}
                               to={subChild.href}
-                              className="block py-1 text-xs text-muted-foreground hover:text-foreground"
+                              className="block py-1 text-xs text-muted-foreground hover:text-primary transition-colors"
                               onClick={onClose}
                             >
                               {subChild.label}
@@ -280,7 +372,7 @@ const MobileNavigation = ({ onClose }: { onClose: () => void }) => {
           ) : (
             <Link
               to={item.href}
-              className="block py-2 text-sm font-medium"
+              className="block py-2 text-sm font-medium hover:text-primary transition-colors"
               onClick={onClose}
             >
               {item.label}

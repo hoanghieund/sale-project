@@ -123,17 +123,17 @@ export const NAVIGATION_MENU: NavigationItem[] = [
   {
     id: 'women',
     label: 'Women',
-    href: '/women',
+    href: '/products/women',
   },
   {
     id: 'unisex',
     label: 'Unisex',
-    href: '/unisex',
+    href: '/products/unisex',
   },
   {
     id: 'kids',
     label: 'Kids',
-    href: '/kids',
+    href: '/products/kids',
   },
 ];
 
@@ -252,6 +252,7 @@ export const ICON_CATEGORIES = [
 // Footer Links
 export const FOOTER_LINKS = {
   shopping: [
+    // Giữ lại các danh mục sản phẩm chính vì chúng phù hợp với luồng "Duyệt sản phẩm"
     { label: 'AIR FORCE 1', href: '/products/air-force-1' },
     { label: 'AIR JORDAN 1', href: '/products/air-jordan-1' },
     { label: 'AIR MAX', href: '/products/air-max' },
@@ -259,20 +260,19 @@ export const FOOTER_LINKS = {
     { label: 'BEST SELLERS', href: '/products/best-sellers' },
   ],
   help: [
-    { label: 'About Us', href: '/about-us' },
+    // Giữ lại các trang chính có trong luồng nghiệp vụ
+    { label: 'About Us', href: '/about' },
     { label: 'Contact Us', href: '/contact' },
-    { label: 'FAQs', href: '/faqs' },
-    { label: 'Become A Vendor', href: '/become-vendor' },
-    { label: 'Vendors List', href: '/vendors' },
-    { label: 'Marketplace Guidelines', href: '/guidelines' },
+    { label: 'FAQs', href: '/faq' },
+    // Loại bỏ các trang không có trong luồng nghiệp vụ, chuyển hướng đến trang Contact
+    { label: 'Customer Support', href: '/contact' },
   ],
   policy: [
-    { label: 'Shipping Policy', href: '/shipping-policy' },
-    { label: 'Returns & Refunds Policy', href: '/returns-policy' },
-    { label: 'Order Tracking', href: '/order-tracking' },
-    { label: 'Pricing & Accessibility', href: '/pricing' },
-    { label: 'Authenticity Guarantee', href: '/authenticity' },
-    { label: 'Off-Platform Transactions', href: '/off-platform' },
+    // Đơn giản hóa các chính sách, chuyển hướng đến các trang có sẵn
+    { label: 'Shipping & Returns', href: '/about' },
+    { label: 'Order Tracking', href: '/account' },
+    { label: 'Privacy Policy', href: '/about' },
+    { label: 'Terms of Service', href: '/about' },
   ],
 };
 

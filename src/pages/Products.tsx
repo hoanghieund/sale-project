@@ -1,12 +1,16 @@
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
 import ProductListing from "../components/product/ProductListing";
 import { MOCK_PRODUCTS } from "../data/mockData";
 
 const Products = () => {
+  // Lấy tham số từ cả URL path và query string
+  const { category: categoryParam } = useParams<{ category?: string }>();
   const [searchParams] = useSearchParams();
-  const category = searchParams.get("category");
+  
+  // Ưu tiên category từ URL path, nếu không có thì lấy từ query string
+  const category = categoryParam || searchParams.get("category");
   const search = searchParams.get("q");
 
   let filteredProducts = MOCK_PRODUCTS;

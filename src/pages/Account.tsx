@@ -1,18 +1,24 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { User, Settings, Package, Heart, LogOut, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import Header from "../components/layout/Header";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Edit, Heart, LogOut, Package, Settings, User } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
+import ProductCard from "../components/product/ProductCard";
 import { useUser } from "../context/UserContext";
 import { useWishlist } from "../context/WishlistContext";
-import ProductCard from "../components/product/ProductCard";
 
 const Account = () => {
   const { user, logout, updateProfile, isAuthenticated } = useUser();
@@ -28,7 +34,6 @@ const Account = () => {
 
   if (!isAuthenticated) {
     navigate("/login");
-    return null;
   }
 
   const handleLogout = () => {
@@ -105,7 +110,10 @@ const Account = () => {
                       </CardDescription>
                     </div>
                     {!isEditing && (
-                      <Button variant="outline" onClick={() => setIsEditing(true)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsEditing(true)}
+                      >
                         <Edit className="h-4 w-4 mr-2" />
                         Edit
                       </Button>
@@ -119,7 +127,12 @@ const Account = () => {
                       <Input
                         id="firstName"
                         value={formData.firstName}
-                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                        onChange={e =>
+                          setFormData({
+                            ...formData,
+                            firstName: e.target.value,
+                          })
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -128,7 +141,9 @@ const Account = () => {
                       <Input
                         id="lastName"
                         value={formData.lastName}
-                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                        onChange={e =>
+                          setFormData({ ...formData, lastName: e.target.value })
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -138,7 +153,9 @@ const Account = () => {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        onChange={e =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -148,7 +165,9 @@ const Account = () => {
                         id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        onChange={e =>
+                          setFormData({ ...formData, phone: e.target.value })
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -176,7 +195,7 @@ const Account = () => {
                 <CardContent>
                   {user?.addresses && user.addresses.length > 0 ? (
                     <div className="space-y-4">
-                      {user.addresses.map((address) => (
+                      {user.addresses.map(address => (
                         <div key={address.id} className="p-4 border rounded-lg">
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-medium">
@@ -199,7 +218,9 @@ const Account = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <p className="text-muted-foreground mb-4">No addresses saved</p>
+                      <p className="text-muted-foreground mb-4">
+                        No addresses saved
+                      </p>
                       <Button>Add Address</Button>
                     </div>
                   )}
@@ -240,14 +261,16 @@ const Account = () => {
                 <CardContent>
                   {wishlist.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {wishlist.map((item) => (
+                      {wishlist.map(item => (
                         <ProductCard key={item.id} product={item.product} />
                       ))}
                     </div>
                   ) : (
                     <div className="text-center py-8">
                       <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground mb-4">Your wishlist is empty</p>
+                      <p className="text-muted-foreground mb-4">
+                        Your wishlist is empty
+                      </p>
                       <Link to="/products">
                         <Button>Browse Products</Button>
                       </Link>
@@ -274,7 +297,9 @@ const Account = () => {
                         Receive emails about your orders and account
                       </p>
                     </div>
-                    <Switch defaultChecked={user?.preferences?.emailNotifications} />
+                    <Switch
+                      defaultChecked={user?.preferences?.emailNotifications}
+                    />
                   </div>
 
                   <Separator />
@@ -286,7 +311,9 @@ const Account = () => {
                         Receive text messages about order updates
                       </p>
                     </div>
-                    <Switch defaultChecked={user?.preferences?.smsNotifications} />
+                    <Switch
+                      defaultChecked={user?.preferences?.smsNotifications}
+                    />
                   </div>
 
                   <Separator />
@@ -306,10 +333,26 @@ const Account = () => {
                   <div>
                     <h4 className="font-medium mb-4">Preferred Sizes</h4>
                     <div className="flex flex-wrap gap-2">
-                      {['7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12'].map((size) => (
+                      {[
+                        "7",
+                        "7.5",
+                        "8",
+                        "8.5",
+                        "9",
+                        "9.5",
+                        "10",
+                        "10.5",
+                        "11",
+                        "11.5",
+                        "12",
+                      ].map(size => (
                         <Button
                           key={size}
-                          variant={user?.preferences?.preferredSizes?.includes(size) ? "default" : "outline"}
+                          variant={
+                            user?.preferences?.preferredSizes?.includes(size)
+                              ? "default"
+                              : "outline"
+                          }
                           size="sm"
                         >
                           {size}

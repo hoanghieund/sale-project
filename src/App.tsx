@@ -3,10 +3,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Suspense, lazy, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { UserProvider } from "./context/UserContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import RecentlyViewedProvider from "./context/RecentlyViewedContext";
 import { initPerformanceOptimizations } from "./utils/performance";
 import { initSEO } from "./utils/seo";
 
@@ -28,6 +29,21 @@ const Wishlist = lazy(() => import("./pages/Wishlist"));
 
 const queryClient = new QueryClient();
 
+// Component để cuộn lên đầu trang khi chuyển trang
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Cuộn lên đầu trang khi pathname thay đổi
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Thêm hiệu ứng cuộn mượt
+    });
+  }, [pathname]);
+
+  return null;
+};
+
 const App = () => {
   useEffect(() => {
     initPerformanceOptimizations();
@@ -35,41 +51,54 @@ const App = () => {
   }, []);
 
   return (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <UserProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-                <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/product/:id" element={<ProductDetailPage />} />
-                <Route path="/products/:category" element={<Products />} />
-                <Route path="/search" element={<Products />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/faq" element={<FAQ />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
-          </UserProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <RecentlyViewedProvider>
+              <UserProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                {/* Thêm component ScrollToTop để cuộn lên đầu trang khi chuyển trang */}
+                <ScrollToTop />
+                <Suspense
+                  fallback={
+                    <div className="flex items-center justify-center min-h-screen">
+                      Loading...
+                    </div>
+                  }
+                >
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route
+                      path="/product/:id"
+                      element={<ProductDetailPage />}
+                    />
+                    <Route path="/products/:category" element={<Products />} />
+                    <Route path="/search" element={<Products />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/order-success" element={<OrderSuccess />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/account" element={<Account />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </UserProvider>
+            </RecentlyViewedProvider>
+          </WishlistProvider>
+        </CartProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 

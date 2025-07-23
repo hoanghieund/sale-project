@@ -1,15 +1,16 @@
-import { Link } from "react-router-dom";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
-import { useCart } from "../context/CartContext";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
+import { useCart } from "../context/CartContext";
 
 const Cart = () => {
-  const { cart, updateQuantity, removeFromCart, applyCoupon, removeCoupon } = useCart();
+  const { cart, updateQuantity, removeFromCart, applyCoupon, removeCoupon } =
+    useCart();
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
 
@@ -19,7 +20,9 @@ const Cart = () => {
       setCouponCode("");
       setCouponError("");
     } catch (error) {
-      setCouponError(error instanceof Error ? error.message : "Invalid coupon code");
+      setCouponError(
+        error instanceof Error ? error.message : "Invalid coupon code"
+      );
     }
   };
 
@@ -49,12 +52,15 @@ const Cart = () => {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {cart.items.map((item) => (
-              <div key={item.id} className="bg-card rounded-lg p-6 shadow-sm">
+            {cart.items.map(item => (
+              <div
+                key={item.id}
+                className="bg-card rounded-lg p-6 shadow-sm border border-border"
+              >
                 <div className="flex gap-4">
                   {/* Product Image */}
                   <div className="w-24 h-24 flex-shrink-0">
@@ -70,7 +76,7 @@ const Cart = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <h3 className="font-semibold line-clamp-2">
-                          <Link 
+                          <Link
                             to={`/product/${item.product.id}`}
                             className="hover:text-primary"
                           >
@@ -108,7 +114,9 @@ const Cart = () => {
                         <Button
                           variant="outline"
                           size="icon"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity - 1)
+                          }
                           disabled={item.quantity <= 1}
                           className="h-8 w-8"
                         >
@@ -120,7 +128,9 @@ const Cart = () => {
                         <Button
                           variant="outline"
                           size="icon"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity + 1)
+                          }
                           disabled={item.quantity >= 10}
                           className="h-8 w-8"
                         >
@@ -138,16 +148,16 @@ const Cart = () => {
           </div>
 
           {/* Order Summary */}
-          <div className="bg-card rounded-lg p-6 shadow-sm h-fit">
+          <div className="bg-card rounded-lg p-6 shadow-sm h-fit border border-border">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-            
+
             {/* Coupon Code */}
             <div className="mb-4">
               <div className="flex gap-2">
                 <Input
                   placeholder="Coupon code"
                   value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
+                  onChange={e => setCouponCode(e.target.value)}
                 />
                 <Button onClick={handleApplyCoupon} disabled={!couponCode}>
                   Apply
@@ -158,7 +168,9 @@ const Cart = () => {
               )}
               {cart.couponCode && (
                 <div className="flex items-center justify-between mt-2 text-sm">
-                  <span className="text-green-600">Coupon "{cart.couponCode}" applied</span>
+                  <span className="text-green-600">
+                    Coupon "{cart.couponCode}" applied
+                  </span>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -179,26 +191,30 @@ const Cart = () => {
                 <span>Subtotal</span>
                 <span>${cart.subtotal.toFixed(2)}</span>
               </div>
-              
+
               {cart.discount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount</span>
                   <span>-${cart.discount.toFixed(2)}</span>
                 </div>
               )}
-              
+
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>{cart.shipping === 0 ? "Free" : `$${cart.shipping.toFixed(2)}`}</span>
+                <span>
+                  {cart.shipping === 0
+                    ? "Free"
+                    : `$${cart.shipping.toFixed(2)}`}
+                </span>
               </div>
-              
+
               <div className="flex justify-between">
                 <span>Tax</span>
                 <span>${cart.tax.toFixed(2)}</span>
               </div>
-              
+
               <Separator className="my-2" />
-              
+
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
                 <span>${cart.total.toFixed(2)}</span>
@@ -212,9 +228,7 @@ const Cart = () => {
             )}
 
             <Button className="w-full mt-6" size="lg" asChild>
-              <Link to="/checkout">
-                Proceed to Checkout
-              </Link>
+              <Link to="/checkout">Proceed to Checkout</Link>
             </Button>
 
             <Link to="/products">

@@ -1,15 +1,13 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
-import { useUser } from "../context/UserContext";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 interface RegisterForm {
   firstName: string;
@@ -26,12 +24,17 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register: registerUser, isLoading, error } = useUser();
   const navigate = useNavigate();
-  
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<RegisterForm>({
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<RegisterForm>({
     defaultValues: {
       agreeToTerms: false,
-      newsletter: true
-    }
+      newsletter: true,
+    },
   });
 
   const password = watch("password");
@@ -42,7 +45,7 @@ const Register = () => {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        password: data.password
+        password: data.password,
       });
       navigate("/");
     } catch (error) {
@@ -51,9 +54,8 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-16">
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <main className="container mx-auto px-4">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Create Account</h1>
@@ -62,7 +64,7 @@ const Register = () => {
             </p>
           </div>
 
-          <div className="bg-card rounded-lg p-6 shadow-sm">
+          <div className="bg-card rounded-lg p-6 border border-muted">
             {error && (
               <Alert className="mb-6" variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
@@ -78,18 +80,22 @@ const Register = () => {
                     <Input
                       id="firstName"
                       placeholder="First name"
-                      className={`pl-10 ${errors.firstName ? "border-destructive" : ""}`}
+                      className={`pl-10 ${
+                        errors.firstName ? "border-destructive" : ""
+                      }`}
                       {...register("firstName", {
                         required: "First name is required",
                         minLength: {
                           value: 2,
-                          message: "First name must be at least 2 characters"
-                        }
+                          message: "First name must be at least 2 characters",
+                        },
                       })}
                     />
                   </div>
                   {errors.firstName && (
-                    <p className="text-sm text-destructive mt-1">{errors.firstName.message}</p>
+                    <p className="text-sm text-destructive mt-1">
+                      {errors.firstName.message}
+                    </p>
                   )}
                 </div>
 
@@ -100,18 +106,22 @@ const Register = () => {
                     <Input
                       id="lastName"
                       placeholder="Last name"
-                      className={`pl-10 ${errors.lastName ? "border-destructive" : ""}`}
+                      className={`pl-10 ${
+                        errors.lastName ? "border-destructive" : ""
+                      }`}
                       {...register("lastName", {
                         required: "Last name is required",
                         minLength: {
                           value: 2,
-                          message: "Last name must be at least 2 characters"
-                        }
+                          message: "Last name must be at least 2 characters",
+                        },
                       })}
                     />
                   </div>
                   {errors.lastName && (
-                    <p className="text-sm text-destructive mt-1">{errors.lastName.message}</p>
+                    <p className="text-sm text-destructive mt-1">
+                      {errors.lastName.message}
+                    </p>
                   )}
                 </div>
               </div>
@@ -124,18 +134,22 @@ const Register = () => {
                     id="email"
                     type="email"
                     placeholder="Enter your email"
-                    className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
+                    className={`pl-10 ${
+                      errors.email ? "border-destructive" : ""
+                    }`}
                     {...register("email", {
                       required: "Email is required",
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: "Invalid email address"
-                      }
+                        message: "Invalid email address",
+                      },
                     })}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+                  <p className="text-sm text-destructive mt-1">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -147,17 +161,20 @@ const Register = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Create a password"
-                    className={`pl-10 pr-10 ${errors.password ? "border-destructive" : ""}`}
+                    className={`pl-10 pr-10 ${
+                      errors.password ? "border-destructive" : ""
+                    }`}
                     {...register("password", {
                       required: "Password is required",
                       minLength: {
                         value: 8,
-                        message: "Password must be at least 8 characters"
+                        message: "Password must be at least 8 characters",
                       },
                       pattern: {
                         value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                        message: "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-                      }
+                        message:
+                          "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+                      },
                     })}
                   />
                   <Button
@@ -175,7 +192,9 @@ const Register = () => {
                   </Button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
+                  <p className="text-sm text-destructive mt-1">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
@@ -187,10 +206,13 @@ const Register = () => {
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
-                    className={`pl-10 pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
+                    className={`pl-10 pr-10 ${
+                      errors.confirmPassword ? "border-destructive" : ""
+                    }`}
                     {...register("confirmPassword", {
                       required: "Please confirm your password",
-                      validate: value => value === password || "Passwords do not match"
+                      validate: value =>
+                        value === password || "Passwords do not match",
                     })}
                   />
                   <Button
@@ -208,16 +230,18 @@ const Register = () => {
                   </Button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-sm text-destructive mt-1">{errors.confirmPassword.message}</p>
+                  <p className="text-sm text-destructive mt-1">
+                    {errors.confirmPassword.message}
+                  </p>
                 )}
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="agreeToTerms" 
+                  <Checkbox
+                    id="agreeToTerms"
                     {...register("agreeToTerms", {
-                      required: "You must agree to the terms and conditions"
+                      required: "You must agree to the terms and conditions",
                     })}
                   />
                   <Label htmlFor="agreeToTerms" className="text-sm">
@@ -226,13 +250,18 @@ const Register = () => {
                       Terms of Service
                     </Link>{" "}
                     and{" "}
-                    <Link to="/privacy" className="text-primary hover:underline">
+                    <Link
+                      to="/privacy"
+                      className="text-primary hover:underline"
+                    >
                       Privacy Policy
                     </Link>
                   </Label>
                 </div>
                 {errors.agreeToTerms && (
-                  <p className="text-sm text-destructive">{errors.agreeToTerms.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.agreeToTerms.message}
+                  </p>
                 )}
 
                 <div className="flex items-center space-x-2">
@@ -294,8 +323,12 @@ const Register = () => {
                 Google
               </Button>
               <Button variant="outline" disabled>
-                <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                <svg
+                  className="h-4 w-4 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
                 Facebook
               </Button>
@@ -303,7 +336,6 @@ const Register = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };
