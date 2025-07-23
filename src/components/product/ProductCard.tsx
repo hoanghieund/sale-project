@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Heart, ShoppingCart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Eye, Heart } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { Product } from "../../types";
@@ -54,7 +54,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   if (!product.inStock) badges.push("Out of Stock");
 
   return (
-    <Link to={`/product/${product.id}`} className="block">
+    <Link to={`/product/${product.id}`} className="block product-card">
       <div className="group relative bg-card rounded-lg overflow-hidden shadow-[var(--shadow-product)] hover:shadow-[var(--shadow-hover)] transition-all duration-300">
         {/* Image Container */}
         <div className="relative aspect-square overflow-hidden bg-muted">
@@ -99,11 +99,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {/* Quick Add Button */}
           <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
             {product.inStock && product.sizes.length > 0 && product.colors.length > 0 ? (
-              <Button 
-                className="w-full" 
+              <Button
+                className="w-full"
                 size="sm"
                 onClick={handleQuickAdd}
                 disabled={isAddingToCart}
+                data-testid="add-to-cart-button"
               >
                 {isAddingToCart ? "Adding..." : "Quick Add"}
               </Button>

@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
-import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
 import ProductListing from "../components/product/ProductListing";
 import { MOCK_PRODUCTS } from "../data/mockData";
 
@@ -12,6 +12,10 @@ const Products = () => {
   let filteredProducts = MOCK_PRODUCTS;
   let title = "All Products";
   let subtitle = "Discover our complete collection of premium footwear";
+
+  // Set document title dynamically based on the page content
+  // Đặt tiêu đề tài liệu động dựa trên nội dung trang
+  document.title = "Products - Sale Project";
 
   // Filter by category if specified
   if (category) {

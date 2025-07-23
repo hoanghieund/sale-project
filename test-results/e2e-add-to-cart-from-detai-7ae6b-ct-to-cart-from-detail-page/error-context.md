@@ -1,0 +1,305 @@
+# Page snapshot
+
+```yaml
+- region "Notifications (F8)":
+  - list
+- text: SUMMER RUNNING TRACK! 5% OFF WITH COUPON "HELLODONEKICK"
+- banner:
+  - textbox "What are you looking for?"
+  - button:
+    - img
+  - link "DONEKICK SPORTS":
+    - /url: /
+  - link:
+    - /url: /account
+    - button:
+      - img
+  - link:
+    - /url: /wishlist
+    - button:
+      - img
+  - link "1":
+    - /url: /cart
+    - button "1":
+      - img
+      - text: "1"
+  - navigation:
+    - navigation "Main":
+      - list:
+        - listitem:
+          - link "Home":
+            - /url: /
+        - listitem:
+          - button "Shopping"
+        - listitem:
+          - link "Women":
+            - /url: /women
+        - listitem:
+          - link "Unisex":
+            - /url: /unisex
+        - listitem:
+          - link "Kids":
+            - /url: /kids
+- main:
+  - heading "All Products" [level=1]
+  - paragraph: Discover our complete collection of premium footwear
+  - text: 8 products found
+  - combobox: Featured
+  - button:
+    - img
+  - button:
+    - img
+  - heading "Filters" [level=3]
+  - button "Clear All"
+  - heading "Categories" [level=4]
+  - checkbox "kids"
+  - text: kids
+  - checkbox "basketball"
+  - text: basketball
+  - checkbox "football"
+  - text: football
+  - checkbox "tennis"
+  - text: tennis
+  - checkbox "running"
+  - text: running
+  - checkbox "golf"
+  - text: golf
+  - checkbox "lifestyle"
+  - text: lifestyle
+  - checkbox "fitness"
+  - text: fitness
+  - heading "Brands" [level=4]
+  - checkbox "Nike"
+  - text: Nike
+  - checkbox "Adidas"
+  - text: Adidas
+  - checkbox "Jordan"
+  - text: Jordan
+  - checkbox "Puma"
+  - text: Puma
+  - checkbox "New Balance"
+  - text: New Balance
+  - checkbox "Converse"
+  - text: Converse
+  - checkbox "Vans"
+  - text: Vans
+  - checkbox "Reebok"
+  - text: Reebok
+  - checkbox "Under Armour"
+  - text: Under Armour
+  - checkbox "ASICS"
+  - text: ASICS
+  - heading "Price Range" [level=4]
+  - slider "Minimum"
+  - text: $0 $1000
+  - checkbox "In Stock Only"
+  - text: In Stock Only
+  - checkbox "On Sale"
+  - text: On Sale
+  - 'link "Nike Force 1 Little Kid''s Shoes – White (Size: 100) Featured Quick Add Nike Force 1 Little Kid''s Shoes – White (Size: 100) Vendor: Parviz Farmand $66.48 ★ ★ ★ ★ ★ (234)"':
+    - /url: /product/nike-force-1-kids
+    - 'img "Nike Force 1 Little Kid''s Shoes – White (Size: 100)"'
+    - text: Featured
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-force-1-kids
+      - button:
+        - img
+    - button "Quick Add"
+    - 'heading "Nike Force 1 Little Kid''s Shoes – White (Size: 100)" [level=3]'
+    - paragraph: "Vendor: Parviz Farmand"
+    - text: $66.48 ★ ★ ★ ★ ★ (234)
+  - 'link "Men''s Nike G.T. Cut 3 Basketball Shoes – Bicoastal Colorway Featured Sale Quick Add Men''s Nike G.T. Cut 3 Basketball Shoes – Bicoastal Colorway Vendor: Donekick $275.00 $235.00 ★ ★ ★ ★ ★ (89)"':
+    - /url: /product/nike-gt-cut-3
+    - img "Men's Nike G.T. Cut 3 Basketball Shoes – Bicoastal Colorway"
+    - text: Featured Sale
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-gt-cut-3
+      - button:
+        - img
+    - button "Quick Add"
+    - heading "Men's Nike G.T. Cut 3 Basketball Shoes – Bicoastal Colorway" [level=3]
+    - paragraph: "Vendor: Donekick"
+    - text: $275.00 $235.00 ★ ★ ★ ★ ★ (89)
+  - 'link "Men''s Nike Mercurial Superfly 9 Soccer Cleats – Bright Yellow Colorway Featured Sale Quick Add Men''s Nike Mercurial Superfly 9 Soccer Cleats – Bright Yellow Colorway Vendor: Donekick $135.00 $130.00 ★ ★ ★ ★ ★ (156)"':
+    - /url: /product/nike-mercurial-superfly-9
+    - img "Men's Nike Mercurial Superfly 9 Soccer Cleats – Bright Yellow Colorway"
+    - text: Featured Sale
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-mercurial-superfly-9
+      - button:
+        - img
+    - button "Quick Add"
+    - heading "Men's Nike Mercurial Superfly 9 Soccer Cleats – Bright Yellow Colorway" [level=3]
+    - paragraph: "Vendor: Donekick"
+    - text: $135.00 $130.00 ★ ★ ★ ★ ★ (156)
+  - 'link "Men''s Nike Court Zoom Vapor Cage 4 – Lime Glow Rafa Details Featured Sale Quick Add Men''s Nike Court Zoom Vapor Cage 4 – Lime Glow Rafa Details Vendor: Donekick $147.00 $140.00 ★ ★ ★ ★ ★ (128)"':
+    - /url: /product/nike-court-zoom-vapor-cage-4-rafa
+    - img "Men's Nike Court Zoom Vapor Cage 4 – Lime Glow Rafa Details"
+    - text: Featured Sale
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-court-zoom-vapor-cage-4-rafa
+      - button:
+        - img
+    - button "Quick Add"
+    - heading "Men's Nike Court Zoom Vapor Cage 4 – Lime Glow Rafa Details" [level=3]
+    - paragraph: "Vendor: Donekick"
+    - text: $147.00 $140.00 ★ ★ ★ ★ ★ (128)
+  - 'link "Men''s Nike Trail Running Shoes Pegasus Trail 4 with GORE-TEX (Bicolored) Featured Sale Quick Add Men''s Nike Trail Running Shoes Pegasus Trail 4 with GORE-TEX (Bicolored) Vendor: Donekick $210.00 $200.00 ★ ★ ★ ★ ★ (203)"':
+    - /url: /product/nike-pegasus-trail-4
+    - img "Men's Nike Trail Running Shoes Pegasus Trail 4 with GORE-TEX (Bicolored)"
+    - text: Featured Sale
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-pegasus-trail-4
+      - button:
+        - img
+    - button "Quick Add"
+    - heading "Men's Nike Trail Running Shoes Pegasus Trail 4 with GORE-TEX (Bicolored)" [level=3]
+    - paragraph: "Vendor: Donekick"
+    - text: $210.00 $200.00 ★ ★ ★ ★ ★ (203)
+  - 'link "Nike Air Zoom Infinity Tour Nike Infinity Shoes DC5221 103 Black Photo – Size 7.5 Featured Quick Add Nike Air Zoom Infinity Tour Nike Infinity Shoes DC5221 103 Black Photo – Size 7.5 Vendor: Sarah Chan $89.75 ★ ★ ★ ★ ★ (67)"':
+    - /url: /product/nike-air-zoom-infinity
+    - img "Nike Air Zoom Infinity Tour Nike Infinity Shoes DC5221 103 Black Photo – Size 7.5"
+    - text: Featured
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-air-zoom-infinity
+      - button:
+        - img
+    - button "Quick Add"
+    - heading "Nike Air Zoom Infinity Tour Nike Infinity Shoes DC5221 103 Black Photo – Size 7.5" [level=3]
+    - paragraph: "Vendor: Sarah Chan"
+    - text: $89.75 ★ ★ ★ ★ ★ (67)
+  - 'link "Nike Air Kukini Men''s Shoes – Obsidian – Size 10.5 Featured Quick Add Nike Air Kukini Men''s Shoes – Obsidian – Size 10.5 Vendor: Peter Metlenko $60.00 ★ ★ ★ ★ ★ (45)"':
+    - /url: /product/nike-air-kukini
+    - img "Nike Air Kukini Men's Shoes – Obsidian – Size 10.5"
+    - text: Featured
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-air-kukini
+      - button:
+        - img
+    - button "Quick Add"
+    - heading "Nike Air Kukini Men's Shoes – Obsidian – Size 10.5" [level=3]
+    - paragraph: "Vendor: Peter Metlenko"
+    - text: $60.00 ★ ★ ★ ★ ★ (45)
+  - 'link "Nike Men''s Training Gymnastics Shoe – White/Black/Desert Ochre/Gum Light Brown – Size 9.5 Featured Quick Add Nike Men''s Training Gymnastics Shoe – White/Black/Desert Ochre/Gum Light Brown – Size 9.5 Vendor: Steben Smith $83.90 ★ ★ ★ ★ ★ (92)"':
+    - /url: /product/nike-court-legacy
+    - img "Nike Men's Training Gymnastics Shoe – White/Black/Desert Ochre/Gum Light Brown – Size 9.5"
+    - text: Featured
+    - button:
+      - img
+    - link:
+      - /url: /product/nike-court-legacy
+      - button:
+        - img
+    - button "Quick Add"
+    - heading "Nike Men's Training Gymnastics Shoe – White/Black/Desert Ochre/Gum Light Brown – Size 9.5" [level=3]
+    - paragraph: "Vendor: Steben Smith"
+    - text: $83.90 ★ ★ ★ ★ ★ (92)
+- img
+- heading "Fast Delivery" [level=3]
+- paragraph: Fast delivery estimated 5-8 days.
+- img
+- heading "30 Days Returns" [level=3]
+- paragraph: Refund if the product is defective.
+- img
+- heading "Secure Payment" [level=3]
+- paragraph: with SSL 256-bit encryption.
+- img
+- heading "Local Support" [level=3]
+- paragraph: Quick support for your problem.
+- heading "SIGN UP TO OUR NEWSLETTER" [level=2]
+- paragraph: Subscribe to receive updates, access to exclusive deals, and more.
+- textbox "Email"
+- button "Submit"
+- link:
+  - /url: https://www.instagram.com/donekick/
+  - button:
+    - img
+- link:
+  - /url: https://www.facebook.com/donekickstore
+  - button:
+    - img
+- contentinfo:
+  - link "DONEKICK SPORTS":
+    - /url: /
+  - paragraph:
+    - strong: Donekick
+    - text: is an online marketplace footwear platform for buying and selling sought-after sneakers, new releases, or limited edition footwear. Our products are guaranteed to be 100% authentic or your money back.
+  - img
+  - text: "Email: support@donekick.com"
+  - heading "SHOPPING" [level=3]
+  - list:
+    - listitem:
+      - link "AIR FORCE 1":
+        - /url: /products/air-force-1
+    - listitem:
+      - link "AIR JORDAN 1":
+        - /url: /products/air-jordan-1
+    - listitem:
+      - link "AIR MAX":
+        - /url: /products/air-max
+    - listitem:
+      - link "SHOP ALL NEW ARRIVALS":
+        - /url: /products/new-arrivals
+    - listitem:
+      - link "BEST SELLERS":
+        - /url: /products/best-sellers
+  - heading "HELP" [level=3]
+  - list:
+    - listitem:
+      - link "About Us":
+        - /url: /about-us
+    - listitem:
+      - link "Contact Us":
+        - /url: /contact
+    - listitem:
+      - link "FAQs":
+        - /url: /faqs
+    - listitem:
+      - link "Become A Vendor":
+        - /url: /become-vendor
+    - listitem:
+      - link "Vendors List":
+        - /url: /vendors
+    - listitem:
+      - link "Marketplace Guidelines":
+        - /url: /guidelines
+  - heading "POLICY" [level=3]
+  - list:
+    - listitem:
+      - link "Shipping Policy":
+        - /url: /shipping-policy
+    - listitem:
+      - link "Returns & Refunds Policy":
+        - /url: /returns-policy
+    - listitem:
+      - link "Order Tracking":
+        - /url: /order-tracking
+    - listitem:
+      - link "Pricing & Accessibility":
+        - /url: /pricing
+    - listitem:
+      - link "Authenticity Guarantee":
+        - /url: /authenticity
+    - listitem:
+      - link "Off-Platform Transactions":
+        - /url: /off-platform
+  - paragraph: © 2025 Donekick.
+  - link "Privacy Policy":
+    - /url: /privacy-policy
+  - link "Terms Of Service":
+    - /url: /terms-of-service
+```

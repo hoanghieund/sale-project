@@ -144,7 +144,7 @@ const Header = () => {
               </Link>
 
               <Link to="/cart" className="relative">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" data-testid="cart-icon">
                   <ShoppingBag className="h-5 w-5" />
                   {getCartItemsCount() > 0 && (
                     <Badge
