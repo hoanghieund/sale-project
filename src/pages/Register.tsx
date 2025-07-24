@@ -7,7 +7,7 @@ import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "@/hooks/use-user";
 
 interface RegisterForm {
   firstName: string;
@@ -54,9 +54,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <main className="container mx-auto px-4">
-        <div className="max-w-md mx-auto">
+    <>
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Create Account</h1>
             <p className="text-muted-foreground">
@@ -334,9 +332,7 @@ const Register = () => {
               </Button>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+    </>
   );
 };
 

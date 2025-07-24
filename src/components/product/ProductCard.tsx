@@ -66,7 +66,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   // Đã di chuyển định nghĩa badges lên trên
 
   return (
-    <div className="product-card w-full">
+    <div className="w-full" data-testid="product-card">
       <Card
         className="group relative overflow-hidden transition-all duration-300  h-full flex flex-col hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
@@ -185,7 +185,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 </span>
               </CardDescription>
             </div>
-            <CardTitle className="line-clamp-2 text-base font-medium group-hover:text-primary transition-colors">
+            <CardTitle
+              className="line-clamp-2 text-base font-medium group-hover:text-primary transition-colors"
+              data-testid="product-name"
+            >
               {product.name}
             </CardTitle>
           </CardHeader>
