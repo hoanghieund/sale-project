@@ -171,42 +171,42 @@ export const SPORTS_CATEGORIES = [
   {
     id: 'football',
     name: 'Football',
-    image: '/src/assets/football.jpg',
+    image: '/assets/football.jpg',
   },
   {
     id: 'running',
     name: 'Running',
-    image: '/src/assets/hero-running.jpg',
+    image: '/assets/hero-running.jpg',
   },
   {
     id: 'basketball',
     name: 'Basketball',
-    image: '/src/assets/product-1.jpg',
+    image: '/assets/product-1.jpg',
   },
   {
     id: 'fitness',
     name: 'Fitness',
-    image: '/src/assets/product-2.jpg',
+    image: '/assets/product-2.jpg',
   },
   {
     id: 'golf',
     name: 'Golf',
-    image: '/src/assets/golf.jpg',
+    image: '/assets/golf.jpg',
   },
   {
     id: 'tennis',
     name: 'Tennis',
-    image: '/src/assets/product-3.jpg',
+    image: '/assets/product-3.jpg',
   },
   {
     id: 'dance',
     name: 'Dance',
-    image: '/src/assets/product-4.jpg',
+    image: '/assets/product-4.jpg',
   },
   {
     id: 'skateboarding',
     name: 'Skateboarding',
-    image: '/src/assets/skateboarding.jpg',
+    image: '/assets/skateboarding.jpg',
   },
 ];
 
@@ -215,37 +215,37 @@ export const ICON_CATEGORIES = [
   {
     id: 'air-force-1',
     name: 'Air Force 1',
-    image: '/src/assets/air-force-1.jpg',
+    image: '/assets/air-force-1.jpg',
   },
   {
     id: 'air-jordan-1',
     name: 'Air Jordan 1',
-    image: '/src/assets/air-jordan.jpg',
+    image: '/assets/air-jordan.jpg',
   },
   {
     id: 'air-max',
     name: 'Air Max',
-    image: '/src/assets/air-max.jpg',
+    image: '/assets/air-max.jpg',
   },
   {
     id: 'dunk',
     name: 'Dunk',
-    image: '/src/assets/product-5.jpg',
+    image: '/assets/product-5.jpg',
   },
   {
     id: 'blazer',
     name: 'Blazer',
-    image: '/src/assets/product-6.jpg',
+    image: '/assets/product-6.jpg',
   },
   {
     id: 'pegasus',
     name: 'Pegasus',
-    image: '/src/assets/product-7.jpg',
+    image: '/assets/product-7.jpg',
   },
   {
     id: 'mercurial',
     name: 'Mercurial',
-    image: '/src/assets/product-1.jpg',
+    image: '/assets/product-1.jpg',
   },
 ];
 
