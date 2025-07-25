@@ -1,5 +1,7 @@
 import Providers from "@/providers";
 import AppRouter from "@/router/AppRouter";
+import { ReactPlugin } from '@21st-extension/react';
+import { TwentyFirstToolbar } from '@21st-extension/toolbar-react';
 
 const App = () => {
   // useEffect(() => {
@@ -9,6 +11,7 @@ const App = () => {
 
   return (
     <Providers>
+      <TwentyFirstToolbar config={{ plugins: [ReactPlugin] }} />
       <AppRouter />
     </Providers>
   );

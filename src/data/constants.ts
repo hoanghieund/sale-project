@@ -1,139 +1,172 @@
 import { NavigationItem, SortOption } from '../types';
 
-// Navigation Menu Structure
+// Navigation Menu Structure - C2C Marketplace
 export const NAVIGATION_MENU: NavigationItem[] = [
   {
     id: 'home',
-    label: 'Home',
+    label: 'Trang chủ',
     href: '/',
   },
   {
-    id: 'shopping',
-    label: 'Shopping',
-    href: '/products',
+    id: 'fashion',
+    label: 'Thời trang',
+    href: '/category/thoi-trang',
     children: [
       {
-        id: 'featured-new',
-        label: 'Featured New Products',
-        href: '/products/featured',
+        id: 'men-clothing',
+        label: 'Thời trang nam',
+        href: '/subcategory/thoi-trang-nam',
         children: [
           {
-            id: 'new-arrivals',
-            label: 'Shop All New Arrivals',
-            href: '/products/new-arrivals',
+            id: 'men-shirts',
+            label: 'Áo sơ mi nam',
+            href: '/subcategory/ao-so-mi-nam',
           },
           {
-            id: 'best-sellers',
-            label: 'Best Sellers',
-            href: '/products/best-sellers',
+            id: 'men-tshirts',
+            label: 'Áo thun nam',
+            href: '/subcategory/ao-thun-nam',
+          },
+          {
+            id: 'men-pants',
+            label: 'Quần nam',
+            href: '/subcategory/quan-nam',
+          },
+          {
+            id: 'men-shoes',
+            label: 'Giày nam',
+            href: '/subcategory/giay-nam',
           },
         ],
       },
       {
-        id: 'shop-icons',
-        label: 'Shop Icons',
-        href: '/products/icons',
+        id: 'women-clothing',
+        label: 'Thời trang nữ',
+        href: '/subcategory/thoi-trang-nu',
         children: [
           {
-            id: 'air-force-1',
-            label: 'Air Force 1',
-            href: '/products/air-force-1',
+            id: 'women-dresses',
+            label: 'Váy nữ',
+            href: '/subcategory/vay-nu',
           },
           {
-            id: 'air-jordan-1',
-            label: 'Air Jordan 1',
-            href: '/products/air-jordan-1',
+            id: 'women-tops',
+            label: 'Áo nữ',
+            href: '/subcategory/ao-nu',
           },
           {
-            id: 'air-max',
-            label: 'Air Max',
-            href: '/products/air-max',
+            id: 'women-pants',
+            label: 'Quần nữ',
+            href: '/subcategory/quan-nu',
           },
           {
-            id: 'dunk',
-            label: 'Dunk',
-            href: '/products/dunk',
-          },
-          {
-            id: 'blazer',
-            label: 'Blazer',
-            href: '/products/blazer',
-          },
-          {
-            id: 'pegasus',
-            label: 'Pegasus',
-            href: '/products/pegasus',
-          },
-          {
-            id: 'mercurial',
-            label: 'Mercurial',
-            href: '/products/mercurial',
+            id: 'women-shoes',
+            label: 'Giày nữ',
+            href: '/subcategory/giay-nu',
           },
         ],
       },
       {
-        id: 'discover-sports',
-        label: 'Discover Sports',
-        href: '/products/sports',
+        id: 'accessories',
+        label: 'Phụ kiện',
+        href: '/subcategory/phu-kien',
         children: [
           {
-            id: 'football',
-            label: 'Football',
-            href: '/products/sports/football',
+            id: 'bags',
+            label: 'Túi xách',
+            href: '/subcategory/tui-xach',
           },
           {
-            id: 'running',
-            label: 'Running',
-            href: '/products/sports/running',
+            id: 'watches',
+            label: 'Đồng hồ',
+            href: '/subcategory/dong-ho',
           },
           {
-            id: 'basketball',
-            label: 'Basketball',
-            href: '/products/sports/basketball',
-          },
-          {
-            id: 'fitness',
-            label: 'Fitness',
-            href: '/products/sports/fitness',
-          },
-          {
-            id: 'golf',
-            label: 'Golf',
-            href: '/products/sports/golf',
-          },
-          {
-            id: 'tennis',
-            label: 'Tennis',
-            href: '/products/sports/tennis',
-          },
-          {
-            id: 'dance',
-            label: 'Dance',
-            href: '/products/sports/dance',
-          },
-          {
-            id: 'skateboarding',
-            label: 'Skateboarding',
-            href: '/products/sports/skateboarding',
+            id: 'jewelry',
+            label: 'Trang sức',
+            href: '/subcategory/trang-suc',
           },
         ],
       },
     ],
   },
   {
-    id: 'women',
-    label: 'Women',
-    href: '/products/women',
+    id: 'electronics',
+    label: 'Điện tử',
+    href: '/category/dien-tu',
+    children: [
+      {
+        id: 'phones',
+        label: 'Điện thoại',
+        href: '/subcategory/dien-thoai',
+      },
+      {
+        id: 'laptops',
+        label: 'Laptop',
+        href: '/subcategory/laptop',
+      },
+      {
+        id: 'accessories-tech',
+        label: 'Phụ kiện công nghệ',
+        href: '/subcategory/phu-kien-cong-nghe',
+      },
+    ],
   },
   {
-    id: 'unisex',
-    label: 'Unisex',
-    href: '/products/unisex',
+    id: 'home-living',
+    label: 'Nhà cửa & Đời sống',
+    href: '/category/nha-cua-doi-song',
+    children: [
+      {
+        id: 'furniture',
+        label: 'Nội thất',
+        href: '/subcategory/noi-that',
+      },
+      {
+        id: 'home-decor',
+        label: 'Trang trí nhà',
+        href: '/subcategory/trang-tri-nha',
+      },
+      {
+        id: 'kitchen',
+        label: 'Đồ dùng nhà bếp',
+        href: '/subcategory/do-dung-nha-bep',
+      },
+    ],
   },
   {
-    id: 'kids',
-    label: 'Kids',
-    href: '/products/kids',
+    id: 'sports',
+    label: 'Thể thao & Du lịch',
+    href: '/category/the-thao-du-lich',
+    children: [
+      {
+        id: 'sports-equipment',
+        label: 'Dụng cụ thể thao',
+        href: '/subcategory/dung-cu-the-thao',
+      },
+      {
+        id: 'travel-gear',
+        label: 'Đồ du lịch',
+        href: '/subcategory/do-du-lich',
+      },
+    ],
+  },
+  {
+    id: 'books',
+    label: 'Sách',
+    href: '/category/sach',
+    children: [
+      {
+        id: 'fiction',
+        label: 'Tiểu thuyết',
+        href: '/subcategory/tieu-thuyet',
+      },
+      {
+        id: 'education',
+        label: 'Sách giáo dục',
+        href: '/subcategory/sach-giao-duc',
+      },
+    ],
   },
 ];
 

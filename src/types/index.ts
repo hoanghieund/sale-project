@@ -2,22 +2,29 @@
 export interface Product {
   id: string;
   name: string;
+  slug: string; // URL-friendly identifier
   description: string;
   price: number;
   originalPrice?: number;
   images: string[];
-  category: string;
-  subcategory?: string;
-  brand: string;
-  sizes: Size[];
-  colors: Color[];
+  categoryId: string;
+  subcategoryId: string;
+  brand?: string;
+  sizes?: Size[];
+  colors?: Color[];
+  stock: number; // Số lượng tồn kho
+  sold: number; // Số lượng đã bán
   inStock: boolean;
-  featured: boolean;
-  sale: boolean;
-  vendor: Vendor;
+  isActive: boolean; // Trạng thái hoạt động
+  isFeatured: boolean; // Sản phẩm nổi bật
+  sale?: boolean;
+  shopId: string; // Liên kết với shop thay vì vendor
+  shop?: Shop; // Thông tin shop (optional khi populate)
   rating: number;
   reviewCount: number;
-  tags: string[];
+  tags?: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Size {
@@ -33,6 +40,51 @@ export interface Color {
   available: boolean;
 }
 
+// Shop Types - Thay thế Vendor cho mô hình C2C
+export interface Shop {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  logo?: string;
+  banner?: string;
+  ownerId: string; // ID của user sở hữu shop
+  owner?: User; // Thông tin owner (optional khi populate)
+  verified: boolean;
+  rating: number;
+  reviewCount: number;
+  totalProducts: number;
+  totalSales: number;
+  joinedAt: Date;
+  isActive: boolean;
+  address: ShopAddress;
+  socialLinks: ShopSocialLinks;
+  policies: ShopPolicies;
+}
+
+export interface ShopAddress {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  phone?: string;
+}
+
+export interface ShopSocialLinks {
+  website?: string;
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+}
+
+export interface ShopPolicies {
+  returnPolicy: string;
+  shippingPolicy: string;
+  privacyPolicy: string;
+}
+
+// Vendor interface giữ lại để tương thích ngược
 export interface Vendor {
   id: string;
   name: string;
@@ -45,16 +97,30 @@ export interface Category {
   id: string;
   name: string;
   slug: string;
+  description?: string;
   image: string;
-  subcategories: Subcategory[];
+  icon?: string; // Icon cho hiển thị trong navigation
+  subcategories?: Subcategory[]; // Optional khi populate
+  subcategoryIds: string[]; // Danh sách ID subcategories
   featured: boolean;
+  isActive: boolean;
+  sortOrder: number; // Thứ tự hiển thị
+  productCount: number; // Số lượng sản phẩm trong category
 }
 
 export interface Subcategory {
   id: string;
   name: string;
   slug: string;
+  description?: string;
   image?: string;
+  icon?: string;
+  categoryId: string; // Liên kết với category cha
+  category?: Category; // Thông tin category (optional khi populate)
+  featured: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  productCount: number; // Số lượng sản phẩm trong subcategory
 }
 
 // User Types
@@ -68,6 +134,27 @@ export interface User {
   dateOfBirth?: string;
   addresses: Address[];
   preferences: UserPreferences;
+  role: UserRole; // Thêm role cho user
+  shopId?: string; // ID shop nếu user là seller
+  shop?: Shop; // Thông tin shop (optional khi populate)
+  isActive: boolean;
+  emailVerified: boolean;
+  createdAt: Date;
+  lastLoginAt?: Date;
+}
+
+// User Role Types
+export type UserRole = 'customer' | 'seller' | 'admin';
+
+// Seller Dashboard Types
+export interface SellerDashboardStats {
+  totalProducts: number;
+  totalOrders: number;
+  totalRevenue: number;
+  pendingOrders: number;
+  monthlyRevenue: number[];
+  topProducts: Product[];
+  recentOrders: Order[];
 }
 
 export interface Address {
