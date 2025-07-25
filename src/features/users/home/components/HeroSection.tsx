@@ -6,26 +6,30 @@ import { Link } from "react-router-dom";
  */
 const HeroSection = () => {
   return (
-    <section className="relative bg-emerald-600 text-white py-20">
-      <div className="container mx-auto px-4 text-center">
+    <section
+      className="relative bg-cover bg-center text-white py-20"
+      style={{ backgroundImage: `url('/assets/hero-running.jpg')` }}
+    >
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="container relative z-10 mx-auto px-4 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Chào mừng đến với Marketplace
+          Welcome to the Marketplace
         </h1>
         <p className="text-xl md:text-2xl mb-8 opacity-90">
-          Nơi kết nối người mua và người bán trên toàn quốc
+          Connecting buyers and sellers worldwide
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/products"
-            className="bg-white text-emerald-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-lg"
+            className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-lg"
           >
-            Khám phá sản phẩm
+            Explore Products
           </Link>
           <Link
             to="/seller"
-            className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-emerald-600 transition-colors"
+            className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors"
           >
-            Bán hàng cùng chúng tôi
+            Sell with Us
           </Link>
         </div>
       </div>

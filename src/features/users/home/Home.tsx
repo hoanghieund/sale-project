@@ -14,7 +14,9 @@ import StatsSection from "./components/StatsSection";
 const Index = () => {
   const user = useUser();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [featuredSubcategories, setFeaturedSubcategories] = useState<Subcategory[]>([]);
+  const [featuredSubcategories, setFeaturedSubcategories] = useState<
+    Subcategory[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 1,
-        productCount: 1250
+        productCount: 1250,
       },
       {
         id: "2",
@@ -45,7 +47,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 2,
-        productCount: 890
+        productCount: 890,
       },
       {
         id: "3",
@@ -58,7 +60,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 3,
-        productCount: 650
+        productCount: 650,
       },
       {
         id: "4",
@@ -71,8 +73,8 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 4,
-        productCount: 420
-      }
+        productCount: 420,
+      },
     ];
 
     const mockSubcategories: Subcategory[] = [
@@ -86,7 +88,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 1,
-        productCount: 350
+        productCount: 350,
       },
       {
         id: "2",
@@ -98,7 +100,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 2,
-        productCount: 420
+        productCount: 420,
       },
       {
         id: "4",
@@ -110,7 +112,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 1,
-        productCount: 280
+        productCount: 280,
       },
       {
         id: "5",
@@ -122,7 +124,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 2,
-        productCount: 190
+        productCount: 190,
       },
       {
         id: "7",
@@ -134,7 +136,7 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 1,
-        productCount: 320
+        productCount: 320,
       },
       {
         id: "10",
@@ -146,8 +148,8 @@ const Index = () => {
         featured: true,
         isActive: true,
         sortOrder: 1,
-        productCount: 180
-      }
+        productCount: 180,
+      },
     ];
 
     setCategories(mockCategories);
@@ -164,7 +166,7 @@ const Index = () => {
   }
 
   return (
-    <div className="bg-background">
+    <>
       <HeroSection />
 
       <CategoriesSection categories={categories} />
@@ -174,7 +176,7 @@ const Index = () => {
       <CallToActionSection />
 
       <StatsSection />
-    </div>
+    </>
   );
 };
 

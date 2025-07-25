@@ -1,6 +1,6 @@
-import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Category, Subcategory, Product } from "@/types";
+import { Category, Product, Subcategory } from "@/types";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 /**
  * CategoryPage - Trang hiển thị danh mục chính
@@ -31,7 +31,7 @@ const CategoryPage = () => {
               featured: true,
               isActive: true,
               sortOrder: 1,
-              productCount: 1250
+              productCount: 1250,
             },
             subcategories: [
               {
@@ -44,7 +44,7 @@ const CategoryPage = () => {
                 featured: true,
                 isActive: true,
                 sortOrder: 1,
-                productCount: 350
+                productCount: 350,
               },
               {
                 id: "2",
@@ -56,7 +56,7 @@ const CategoryPage = () => {
                 featured: true,
                 isActive: true,
                 sortOrder: 2,
-                productCount: 420
+                productCount: 420,
               },
               {
                 id: "3",
@@ -68,7 +68,7 @@ const CategoryPage = () => {
                 featured: true,
                 isActive: true,
                 sortOrder: 3,
-                productCount: 280
+                productCount: 280,
               },
               {
                 id: "4",
@@ -80,9 +80,9 @@ const CategoryPage = () => {
                 featured: true,
                 isActive: true,
                 sortOrder: 4,
-                productCount: 200
-              }
-            ]
+                productCount: 200,
+              },
+            ],
           };
         case "dien-tu":
           return {
@@ -97,7 +97,7 @@ const CategoryPage = () => {
               featured: true,
               isActive: true,
               sortOrder: 2,
-              productCount: 890
+              productCount: 890,
             },
             subcategories: [
               {
@@ -110,7 +110,7 @@ const CategoryPage = () => {
                 featured: true,
                 isActive: true,
                 sortOrder: 1,
-                productCount: 280
+                productCount: 280,
               },
               {
                 id: "6",
@@ -122,7 +122,7 @@ const CategoryPage = () => {
                 featured: true,
                 isActive: true,
                 sortOrder: 2,
-                productCount: 190
+                productCount: 190,
               },
               {
                 id: "7",
@@ -134,9 +134,9 @@ const CategoryPage = () => {
                 featured: true,
                 isActive: true,
                 sortOrder: 3,
-                productCount: 420
-              }
-            ]
+                productCount: 420,
+              },
+            ],
           };
         default:
           return {
@@ -151,14 +151,15 @@ const CategoryPage = () => {
               featured: true,
               isActive: true,
               sortOrder: 1,
-              productCount: 150
+              productCount: 150,
             },
-            subcategories: []
+            subcategories: [],
           };
       }
     };
 
-    const { category: mockCategory, subcategories: mockSubcategories } = getCategoryData(categorySlug || "");
+    const { category: mockCategory, subcategories: mockSubcategories } =
+      getCategoryData(categorySlug || "");
 
     // Mock featured products
     const mockFeaturedProducts: Product[] = [
@@ -181,7 +182,7 @@ const CategoryPage = () => {
         isActive: true,
         isFeatured: true,
         createdAt: new Date("2024-01-01T00:00:00Z"),
-        updatedAt: new Date("2024-01-01T00:00:00Z")
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
       },
       {
         id: "2",
@@ -202,7 +203,7 @@ const CategoryPage = () => {
         isActive: true,
         isFeatured: true,
         createdAt: new Date("2024-01-01T00:00:00Z"),
-        updatedAt: new Date("2024-01-01T00:00:00Z")
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
       },
       {
         id: "3",
@@ -223,7 +224,7 @@ const CategoryPage = () => {
         isActive: true,
         isFeatured: true,
         createdAt: new Date("2024-01-01T00:00:00Z"),
-        updatedAt: new Date("2024-01-01T00:00:00Z")
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
       },
       {
         id: "4",
@@ -244,8 +245,8 @@ const CategoryPage = () => {
         isActive: true,
         isFeatured: true,
         createdAt: new Date("2024-01-01T00:00:00Z"),
-        updatedAt: new Date("2024-01-01T00:00:00Z")
-      }
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
+      },
     ];
 
     setCategory(mockCategory);
@@ -276,7 +277,9 @@ const CategoryPage = () => {
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-4">
           <nav className="flex items-center space-x-2 text-sm">
-            <Link to="/" className="text-emerald-600 hover:text-emerald-700">Trang chủ</Link>
+            <Link to="/" className="text-emerald-600 hover:text-emerald-700">
+              Trang chủ
+            </Link>
             <span className="text-gray-400">/</span>
             <span className="text-gray-600">{category.name}</span>
           </nav>
@@ -292,8 +295,12 @@ const CategoryPage = () => {
                 <span className="text-5xl">{category.icon}</span>
               </div>
               <div className="flex-1">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">{category.name}</h1>
-                <p className="text-gray-600 text-lg mb-3">{category.description}</p>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  {category.name}
+                </h1>
+                <p className="text-gray-600 text-lg mb-3">
+                  {category.description}
+                </p>
                 <div className="flex items-center gap-4">
                   <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium">
                     {category.productCount.toLocaleString()} sản phẩm
@@ -311,19 +318,29 @@ const CategoryPage = () => {
         <div className="mb-16">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Danh mục con</h2>
-            <Link 
-              to="/categories" 
+            <Link
+              to="/categories"
               className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-2"
             >
               Xem tất cả
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {subcategories.map((subcategory) => (
+            {subcategories.map(subcategory => (
               <Link
                 key={subcategory.id}
                 to={`/subcategory/${subcategory.slug}`}
@@ -331,13 +348,15 @@ const CategoryPage = () => {
               >
                 <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative overflow-hidden">
                   {subcategory.image ? (
-                    <img 
-                      src={subcategory.image} 
+                    <img
+                      src={subcategory.image}
                       alt={subcategory.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <span className="text-5xl text-gray-400 group-hover:scale-110 transition-transform duration-300">📦</span>
+                    <span className="text-5xl text-gray-400 group-hover:scale-110 transition-transform duration-300">
+                      📦
+                    </span>
                   )}
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
                 </div>
@@ -345,13 +364,25 @@ const CategoryPage = () => {
                   <h3 className="font-semibold text-lg mb-2 group-hover:text-emerald-600 transition-colors">
                     {subcategory.name}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{subcategory.description}</p>
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                    {subcategory.description}
+                  </p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-emerald-600 font-medium">
                       {subcategory.productCount.toLocaleString()} sản phẩm
                     </span>
-                    <svg className="w-5 h-5 text-gray-400 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-5 h-5 text-gray-400 group-hover:text-emerald-600 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -363,21 +394,33 @@ const CategoryPage = () => {
         {/* Featured Products */}
         <div>
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Sản phẩm nổi bật</h2>
-            <Link 
+            <h2 className="text-3xl font-bold text-gray-900">
+              Sản phẩm nổi bật
+            </h2>
+            <Link
               to={`/products?category=${category.slug}`}
               className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-2"
             >
               Xem tất cả
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {featuredProducts.length > 0 ? (
-              featuredProducts.map((product) => (
+              featuredProducts.map(product => (
                 <Link
                   key={product.id}
                   to={`/product/${product.slug}`}
@@ -385,8 +428,8 @@ const CategoryPage = () => {
                 >
                   <div className="aspect-square bg-gray-200 flex items-center justify-center relative overflow-hidden">
                     {product.images[0] ? (
-                      <img 
-                        src={product.images[0]} 
+                      <img
+                        src={product.images[0]}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -395,7 +438,11 @@ const CategoryPage = () => {
                     )}
                     {product.originalPrice > product.price && (
                       <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-medium">
-                        -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+                        -
+                        {Math.round(
+                          (1 - product.price / product.originalPrice) * 100
+                        )}
+                        %
                       </div>
                     )}
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
@@ -407,11 +454,17 @@ const CategoryPage = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <div className="flex items-center">
                         <span className="text-yellow-400 text-sm">★</span>
-                        <span className="text-sm text-gray-600 ml-1">{product.rating}</span>
-                        <span className="text-xs text-gray-400 ml-1">({product.reviewCount})</span>
+                        <span className="text-sm text-gray-600 ml-1">
+                          {product.rating}
+                        </span>
+                        <span className="text-xs text-gray-400 ml-1">
+                          ({product.reviewCount})
+                        </span>
                       </div>
                       <span className="text-xs text-gray-400">•</span>
-                      <span className="text-xs text-gray-500">Đã bán {product.sold}</span>
+                      <span className="text-xs text-gray-500">
+                        Đã bán {product.sold}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-bold text-emerald-600">
@@ -430,7 +483,9 @@ const CategoryPage = () => {
               <div className="text-center text-gray-500 col-span-full py-12">
                 <div className="text-6xl mb-4">🛍️</div>
                 <p className="text-lg">Chưa có sản phẩm nổi bật</p>
-                <p className="text-sm">Hãy quay lại sau để xem các sản phẩm mới nhất</p>
+                <p className="text-sm">
+                  Hãy quay lại sau để xem các sản phẩm mới nhất
+                </p>
               </div>
             )}
           </div>

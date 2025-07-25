@@ -17,10 +17,10 @@ const SubcategoryCard = ({ subcategory }: SubcategoryCardProps) => {
       to={`/subcategory/${subcategory.slug}`}
       className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
     >
-      <div className="aspect-video bg-gray-200 flex items-center justify-center">
+      <div className="aspect-video bg-card flex items-center justify-center">
         {subcategory.image ? (
-          <img 
-            src={subcategory.image} 
+          <img
+            src={subcategory.image}
             alt={subcategory.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
