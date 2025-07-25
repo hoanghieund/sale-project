@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useCart } from "@/context/CartContext";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 
 const Cart = () => {
   const { cart, updateQuantity, removeFromCart, applyCoupon, removeCoupon } =
@@ -74,7 +74,7 @@ const Cart = () => {
                         </Link>
                       </h3>
                       <p className="text-sm text-muted-foreground">
-                        by {item.product.vendor.name}
+                        by {item.product.shop.name}
                       </p>
                     </div>
                     <Button

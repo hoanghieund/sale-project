@@ -17,7 +17,7 @@ const OrderSuccess = lazy(() => import("@/features/cart-checkout/OrderSuccess"))
 const ProductDetailPage = lazy(() => import("@/features/product/ProductDetailPage"));
 const Products = lazy(() => import("@/features/product/Products"));
 const Register = lazy(() => import("@/features/auth/Register"));
-const Wishlist = lazy(() => import("@/features/general/Wishlist"));
+const Wishlist = lazy(() => import("@/features/product/Wishlist"));
 
 // C2C Marketplace pages
 const CategoryPage = lazy(() => import("@/features/product/CategoryPage"));

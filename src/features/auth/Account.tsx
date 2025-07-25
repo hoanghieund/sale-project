@@ -16,6 +16,7 @@ import { Edit, Heart, LogOut, Package, Settings, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import EmptyState from "@/components/common/EmptyState";
 import ProductCard from "@/components/product/ProductCard";
 import { useWishlist } from "@/context/WishlistContext";
 
@@ -210,12 +211,13 @@ const Account = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground mb-4">
-                    No addresses saved
-                  </p>
-                  <Button>Add Address</Button>
-                </div>
+                <EmptyState
+                  icon={<Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />}
+                  title="Không có địa chỉ nào được lưu"
+                  message="Bạn chưa lưu địa chỉ nào. Vui lòng thêm địa chỉ để thuận tiện hơn khi thanh toán."
+                  buttonText="Thêm địa chỉ"
+                  buttonLink="/account/addresses/new"
+                />
               )}
             </CardContent>
           </Card>
@@ -257,15 +259,13 @@ const Account = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground mb-4">
-                    Your wishlist is empty
-                  </p>
-                  <Link to="/products">
-                    <Button>Browse Products</Button>
-                  </Link>
-                </div>
+                <EmptyState
+                  icon={<Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />}
+                  title="Danh sách yêu thích của bạn trống"
+                  message="Bạn chưa thêm sản phẩm nào vào danh sách yêu thích."
+                  buttonText="Duyệt sản phẩm"
+                  buttonLink="/products"
+                />
               )}
             </CardContent>
           </Card>

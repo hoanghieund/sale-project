@@ -1,3 +1,4 @@
+import PolicyInfoCard from "@/components/common/PolicyInfoCard";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Mail, Package, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -50,29 +51,21 @@ const OrderSuccess = () => {
         <div className="bg-card rounded-lg p-6 shadow-sm mb-8">
           <h2 className="text-xl font-semibold mb-6">What's Next?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <Mail className="h-12 w-12 text-primary mx-auto mb-3" />
-              <h3 className="font-medium mb-2">Order Confirmation</h3>
-              <p className="text-sm text-muted-foreground">
-                You'll receive an email confirmation shortly with your order
-                details.
-              </p>
-            </div>
-            <div className="text-center">
-              <Package className="h-12 w-12 text-accent mx-auto mb-3" />
-              <h3 className="font-medium mb-2">Processing</h3>
-              <p className="text-sm text-muted-foreground">
-                We'll prepare your order for shipment within 1-2 business days.
-              </p>
-            </div>
-            <div className="text-center">
-              <Truck className="h-12 w-12 text-primary mx-auto mb-3" />
-              <h3 className="font-medium mb-2">Shipping</h3>
-              <p className="text-sm text-muted-foreground">
-                Your order will be shipped and you'll receive tracking
-                information.
-              </p>
-            </div>
+            <PolicyInfoCard
+              icon={<Mail className="h-12 w-12 text-primary mx-auto mb-3" />}
+              title="Xác nhận đơn hàng"
+              description="Bạn sẽ nhận được email xác nhận đơn hàng trong thời gian ngắn."
+            />
+            <PolicyInfoCard
+              icon={<Package className="h-12 w-12 text-accent mx-auto mb-3" />}
+              title="Đang xử lý"
+              description="Chúng tôi sẽ chuẩn bị đơn hàng của bạn để vận chuyển trong vòng 1-2 ngày làm việc."
+            />
+            <PolicyInfoCard
+              icon={<Truck className="h-12 w-12 text-primary mx-auto mb-3" />}
+              title="Vận chuyển"
+              description="Đơn hàng của bạn sẽ được vận chuyển và bạn sẽ nhận được thông tin theo dõi."
+            />
           </div>
         </div>
 

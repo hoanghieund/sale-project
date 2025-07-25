@@ -1,3 +1,7 @@
+import PolicyInfoCard from "@/components/common/PolicyInfoCard";
+import QuantitySelector from "@/components/common/QuantitySelector";
+import ProductBreadcrumb from "@/components/product/ProductBreadcrumb";
+import { Button } from "@/components/ui/button";
 import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
 import { Product, Shop } from "@/types";
 import { useEffect, useState } from "react";
@@ -115,20 +119,7 @@ const ProductDetailPage = () => {
 
   return (
     <div className="bg-background min-h-screen">
-      {/* Breadcrumb */}
-      <div className="bg-gray-50 py-4">
-        <div className="container mx-auto px-4">
-          <nav className="flex items-center space-x-2 text-sm">
-            <Link to="/" className="text-emerald-600 hover:text-emerald-700">Trang chủ</Link>
-            <span className="text-gray-400">/</span>
-            <Link to={`/category/thoi-trang`} className="text-emerald-600 hover:text-emerald-700">Thời trang</Link>
-            <span className="text-gray-400">/</span>
-            <Link to={`/subcategory/ao-nam`} className="text-emerald-600 hover:text-emerald-700">Áo nam</Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-600">{product.name}</span>
-          </nav>
-        </div>
-      </div>
+      <ProductBreadcrumb product={product} />
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
@@ -244,41 +235,27 @@ const ProductDetailPage = () => {
             </div>
 
             {/* Quantity and Actions */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <span className="text-gray-700 font-medium">Số lượng:</span>
-                <div className="flex items-center border border-gray-300 rounded-lg">
-                  <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-2 hover:bg-gray-50"
-                  >
-                    -
-                  </button>
-                  <span className="px-4 py-2 border-x border-gray-300">{quantity}</span>
-                  <button 
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                    className="px-3 py-2 hover:bg-gray-50"
-                  >
-                    +
-                  </button>
-                </div>
-                <span className="text-gray-500">Còn {product.stock} sản phẩm</span>
-              </div>
-
-              <div className="flex gap-4">
-                <button 
-                  onClick={handleAddToCart}
-                  className="flex-1 px-6 py-3 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
-                >
-                  Thêm vào giỏ hàng
-                </button>
-                <button 
-                  onClick={handleBuyNow}
-                  className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
-                >
-                  Mua ngay
-                </button>
-              </div>
+            <QuantitySelector
+              quantity={quantity}
+              onQuantityChange={setQuantity}
+              min={1}
+              max={product.stock}
+            />
+            <div className="flex gap-4">
+              <Button
+                onClick={handleAddToCart}
+                className="flex-1"
+                disabled={product.stock === 0}
+              >
+                Thêm vào giỏ hàng
+              </Button>
+              <Button
+                onClick={handleBuyNow}
+                className="flex-1"
+                disabled={product.stock === 0}
+              >
+                Mua ngay
+              </Button>
             </div>
 
             {/* Product Tags */}
@@ -312,21 +289,21 @@ const ProductDetailPage = () => {
         <div className="bg-white rounded-xl shadow-sm border p-8">
           <h2 className="text-2xl font-bold mb-6">Chính sách cửa hàng</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-3xl mb-2">🔄</div>
-              <h3 className="font-semibold mb-2">Chính sách đổi trả</h3>
-              <p className="text-gray-600 text-sm">{shop.policies.returnPolicy}</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl mb-2">🚚</div>
-              <h3 className="font-semibold mb-2">Chính sách vận chuyển</h3>
-              <p className="text-gray-600 text-sm">{shop.policies.shippingPolicy}</p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl mb-2">🛡️</div>
-              <h3 className="font-semibold mb-2">Chính sách bảo mật</h3>
-              <p className="text-gray-600 text-sm">{shop.policies.privacyPolicy}</p>
-            </div>
+            <PolicyInfoCard
+              icon="🔄"
+              title="Chính sách đổi trả"
+              description={shop.policies.returnPolicy}
+            />
+            <PolicyInfoCard
+              icon="🚚"
+              title="Chính sách vận chuyển"
+              description={shop.policies.shippingPolicy}
+            />
+            <PolicyInfoCard
+              icon="🛡️"
+              title="Chính sách bảo mật"
+              description={shop.policies.privacyPolicy}
+            />
           </div>
         </div>
       </div>

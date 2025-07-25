@@ -3,11 +3,6 @@ import { NavigationItem, SortOption } from '../types';
 // Navigation Menu Structure - C2C Marketplace
 export const NAVIGATION_MENU: NavigationItem[] = [
   {
-    id: 'home',
-    label: 'Trang chủ',
-    href: '/',
-  },
-  {
     id: 'fashion',
     label: 'Thời trang',
     href: '/category/thoi-trang',
