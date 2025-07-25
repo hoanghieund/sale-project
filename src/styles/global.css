@@ -8,51 +8,33 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 6%;
+    --background: 220 13% 95%; /* Light Gray */
+    --foreground: 200 10% 29%; /* Dark Slate Gray */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 6%;
+    --card: 220 13% 95%; /* Light Gray */
+    --card-foreground: 200 10% 29%; /* Dark Slate Gray */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 6%;
+    --popover: 220 13% 95%; /* Light Gray */
+    --popover-foreground: 200 10% 29%; /* Dark Slate Gray */
 
-    --primary: 0 0% 6%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 190 29% 33%; /* Teal */
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 6%;
+    --secondary: 220 13% 90%; /* Slightly darker Light Gray */
+    --secondary-foreground: 200 10% 29%; /* Dark Slate Gray */
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 220 13% 90%; /* Slightly darker Light Gray */
+    --muted-foreground: 200 10% 45%; /* Muted Dark Slate Gray */
 
-    --accent: 83 100% 50%;
-    --accent-foreground: 0 0% 6%;
+    --accent: 83 100% 50%; /* Lime Green */
+    --accent-foreground: 0 0% 0%; /* Black */
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%; /* Red */
+    --destructive-foreground: 0 0% 98%; /* Off-white */
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 83 100% 50%;
-
-    /* Athletic brand colors */
-    --sport-lime: 83 100% 50%;
-    --sport-orange: 18 100% 55%;
-    --sport-gray: 0 0% 25%;
-    --sport-dark: 0 0% 6%;
-
-    /* Gradients */
-    --gradient-hero: linear-gradient(
-      135deg,
-      hsl(var(--sport-dark)),
-      hsl(var(--sport-gray))
-    );
-    --gradient-accent: linear-gradient(
-      135deg,
-      hsl(var(--sport-lime)),
-      hsl(var(--sport-orange))
-    );
+    --border: 220 13% 90%; /* Light Gray */
+    --input: 220 13% 90%; /* Light Gray */
+    --ring: 83 100% 50%; /* Lime Green */
 
     /* Shadows */
     --shadow-product: 0 4px 20px hsl(0 0% 0% / 0.1);
@@ -60,59 +42,52 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 200 10% 29%; /* Dark Slate Gray */
+    --sidebar-foreground: 220 13% 95%; /* Light Gray */
+    --sidebar-primary: 190 29% 33%; /* Teal */
+    --sidebar-primary-foreground: 0 0% 100%; /* White */
+    --sidebar-accent: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
+    --sidebar-accent-foreground: 220 13% 95%; /* Light Gray */
+    --sidebar-border: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
+    --sidebar-ring: 83 100% 50%; /* Lime Green */
   }
 
   .dark {
-    --background: 0 0% 6%;
-    --foreground: 0 0% 98%;
+    --background: 200 10% 29%; /* Dark Slate Gray */
+    --foreground: 220 13% 95%; /* Light Gray */
 
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 98%;
+    --card: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
+    --card-foreground: 220 13% 95%; /* Light Gray */
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
+    --popover-foreground: 220 13% 95%; /* Light Gray */
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 6%;
+    --primary: 190 29% 33%; /* Teal */
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 200 10% 40%; /* Another shade of Dark Slate Gray */
+    --secondary-foreground: 220 13% 95%; /* Light Gray */
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 200 10% 40%; /* Another shade of Dark Slate Gray */
+    --muted-foreground: 220 13% 70%; /* Muted Light Gray */
 
-    --accent: 83 100% 50%;
-    --accent-foreground: 0 0% 6%;
+    --accent: 83 100% 50%; /* Lime Green */
+    --accent-foreground: 0 0% 0%; /* Black */
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 63% 31%; /* Darker Red */
+    --destructive-foreground: 0 0% 98%; /* Off-white */
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 83 100% 50%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 200 10% 40%; /* Another shade of Dark Slate Gray */
+    --input: 200 10% 40%; /* Another shade of Dark Slate Gray */
+    --ring: 83 100% 50%; /* Lime Green */
+    --sidebar-background: 200 10% 29%; /* Dark Slate Gray */
+    --sidebar-foreground: 220 13% 95%; /* Light Gray */
+    --sidebar-primary: 190 29% 33%; /* Teal */
+    --sidebar-primary-foreground: 0 0% 100%; /* White */
+    --sidebar-accent: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
+    --sidebar-accent-foreground: 220 13% 95%; /* Light Gray */
+    --sidebar-border: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
+    --sidebar-ring: 83 100% 50%; /* Lime Green */
   }
 }
 

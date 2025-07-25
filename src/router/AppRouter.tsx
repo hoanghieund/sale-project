@@ -4,25 +4,25 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // Lazy load pages for better performance
-const Index = lazy(() => import("@/features/general/Index"));
+const Home = lazy(() => import("@/features/users/home/Home"));
 const About = lazy(() => import("@/features/general/About"));
 const Account = lazy(() => import("@/features/auth/Account"));
-const Cart = lazy(() => import("@/features/cart-checkout/Cart"));
-const Checkout = lazy(() => import("@/features/cart-checkout/Checkout"));
+const Cart = lazy(() => import("@/features/users/Cart"));
+const Checkout = lazy(() => import("@/features/users/Checkout"));
 const Contact = lazy(() => import("@/features/general/Contact"));
 const FAQ = lazy(() => import("@/features/general/FAQ"));
 const Login = lazy(() => import("@/features/auth/Login"));
 const NotFound = lazy(() => import("@/features/general/NotFound"));
-const OrderSuccess = lazy(() => import("@/features/cart-checkout/OrderSuccess"));
-const ProductDetailPage = lazy(() => import("@/features/product/ProductDetailPage"));
-const Products = lazy(() => import("@/features/product/Products"));
+const OrderSuccess = lazy(() => import("@/features/users/OrderSuccess"));
+const ProductDetailPage = lazy(() => import("@/features/users/ProductDetailPage"));
+const Products = lazy(() => import("@/features/users/Products"));
 const Register = lazy(() => import("@/features/auth/Register"));
-const Wishlist = lazy(() => import("@/features/product/Wishlist"));
+const Wishlist = lazy(() => import("@/features/users/Wishlist"));
 
 // C2C Marketplace pages
-const CategoryPage = lazy(() => import("@/features/product/CategoryPage"));
-const SubcategoryPage = lazy(() => import("@/features/product/SubcategoryPage"));
-const ShopPage = lazy(() => import("@/features/product/ShopPage"));
+const CategoryPage = lazy(() => import("@/features/users/CategoryPage"));
+const SubcategoryPage = lazy(() => import("@/features/users/SubcategoryPage"));
+const ShopPage = lazy(() => import("@/features/users/ShopPage"));
 
 // Seller Dashboard pages
 const SellerDashboard = lazy(() => import("@/features/seller/SellerDashboard"));
@@ -44,7 +44,7 @@ const AppRouter = () => {
         <Routes>
           {/* Main Layout - Các trang có header và footer */}
           <Route element={<MainLayout />}>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Home />} />
             
             {/* Product routes */}
             <Route path="/products" element={<Products />} />
