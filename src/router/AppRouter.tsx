@@ -48,7 +48,7 @@ const AppRouter = () => {
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="*" element={<NotFound />} />
           </Route>
-          
+
           {/* Auth Layout - Các trang không có header và footer */}
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
