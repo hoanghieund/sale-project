@@ -11,8 +11,8 @@ const OrderSuccess = () => {
       <div className="max-w-2xl mx-auto text-center">
         {/* Success Icon */}
         <div className="mb-8">
-          <CheckCircle className="h-24 w-24 text-green-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-green-600 mb-2">
+          <CheckCircle className="h-24 w-24 text-primary mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-primary mb-2">
             Order Confirmed!
           </h1>
           <p className="text-muted-foreground">
@@ -51,7 +51,7 @@ const OrderSuccess = () => {
           <h2 className="text-xl font-semibold mb-6">What's Next?</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <Mail className="h-12 w-12 text-blue-500 mx-auto mb-3" />
+              <Mail className="h-12 w-12 text-primary mx-auto mb-3" />
               <h3 className="font-medium mb-2">Order Confirmation</h3>
               <p className="text-sm text-muted-foreground">
                 You'll receive an email confirmation shortly with your order
@@ -59,14 +59,14 @@ const OrderSuccess = () => {
               </p>
             </div>
             <div className="text-center">
-              <Package className="h-12 w-12 text-orange-500 mx-auto mb-3" />
+              <Package className="h-12 w-12 text-accent mx-auto mb-3" />
               <h3 className="font-medium mb-2">Processing</h3>
               <p className="text-sm text-muted-foreground">
                 We'll prepare your order for shipment within 1-2 business days.
               </p>
             </div>
             <div className="text-center">
-              <Truck className="h-12 w-12 text-green-500 mx-auto mb-3" />
+              <Truck className="h-12 w-12 text-primary mx-auto mb-3" />
               <h3 className="font-medium mb-2">Shipping</h3>
               <p className="text-sm text-muted-foreground">
                 Your order will be shipped and you'll receive tracking

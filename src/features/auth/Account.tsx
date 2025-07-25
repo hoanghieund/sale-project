@@ -16,8 +16,8 @@ import { Edit, Heart, LogOut, Package, Settings, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import ProductCard from "../components/product/ProductCard";
-import { useWishlist } from "../context/WishlistContext";
+import ProductCard from "@/components/product/ProductCard";
+import { useWishlist } from "@/context/WishlistContext";
 
 const Account = () => {
   const { user, logout, updateProfile, isAuthenticated } = useUser();

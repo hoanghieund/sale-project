@@ -1,6 +1,6 @@
-import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Shop, Product } from "@/types";
+import { Product, Shop } from "@/types";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 /**
  * ShopPage - Trang hiển thị thông tin cửa hàng

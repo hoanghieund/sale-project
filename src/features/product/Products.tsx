@@ -1,6 +1,6 @@
+import ProductListing from "@/components/product/ProductListing";
+import { MOCK_PRODUCTS } from "@/data/mockData";
 import { useParams, useSearchParams } from "react-router-dom";
-import ProductListing from "../components/product/ProductListing";
-import { MOCK_PRODUCTS } from "../data/mockData";
 
 const Products = () => {
   // Lấy tham số từ cả URL path và query string

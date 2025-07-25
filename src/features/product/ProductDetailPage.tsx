@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { Navigate, useParams, Link } from "react-router-dom";
+import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
 import { Product, Shop } from "@/types";
-import { useRecentlyViewed } from "../context/RecentlyViewedContext";
+import { useEffect, useState } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
 
 /**
  * ProductDetailPage - Trang chi tiết sản phẩm C2C Marketplace

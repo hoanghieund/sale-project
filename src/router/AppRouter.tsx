@@ -4,31 +4,31 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // Lazy load pages for better performance
-const Index = lazy(() => import("@/pages/Index"));
-const About = lazy(() => import("@/pages/About"));
-const Account = lazy(() => import("@/pages/Account"));
-const Cart = lazy(() => import("@/pages/Cart"));
-const Checkout = lazy(() => import("@/pages/Checkout"));
-const Contact = lazy(() => import("@/pages/Contact"));
-const FAQ = lazy(() => import("@/pages/FAQ"));
-const Login = lazy(() => import("@/pages/Login"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
-const OrderSuccess = lazy(() => import("@/pages/OrderSuccess"));
-const ProductDetailPage = lazy(() => import("@/pages/ProductDetailPage"));
-const Products = lazy(() => import("@/pages/Products"));
-const Register = lazy(() => import("@/pages/Register"));
-const Wishlist = lazy(() => import("@/pages/Wishlist"));
+const Index = lazy(() => import("@/features/general/Index"));
+const About = lazy(() => import("@/features/general/About"));
+const Account = lazy(() => import("@/features/auth/Account"));
+const Cart = lazy(() => import("@/features/cart-checkout/Cart"));
+const Checkout = lazy(() => import("@/features/cart-checkout/Checkout"));
+const Contact = lazy(() => import("@/features/general/Contact"));
+const FAQ = lazy(() => import("@/features/general/FAQ"));
+const Login = lazy(() => import("@/features/auth/Login"));
+const NotFound = lazy(() => import("@/features/general/NotFound"));
+const OrderSuccess = lazy(() => import("@/features/cart-checkout/OrderSuccess"));
+const ProductDetailPage = lazy(() => import("@/features/product/ProductDetailPage"));
+const Products = lazy(() => import("@/features/product/Products"));
+const Register = lazy(() => import("@/features/auth/Register"));
+const Wishlist = lazy(() => import("@/features/general/Wishlist"));
 
 // C2C Marketplace pages
-const CategoryPage = lazy(() => import("@/pages/CategoryPage"));
-const SubcategoryPage = lazy(() => import("@/pages/SubcategoryPage"));
-const ShopPage = lazy(() => import("@/pages/ShopPage"));
+const CategoryPage = lazy(() => import("@/features/product/CategoryPage"));
+const SubcategoryPage = lazy(() => import("@/features/product/SubcategoryPage"));
+const ShopPage = lazy(() => import("@/features/product/ShopPage"));
 
 // Seller Dashboard pages
-const SellerDashboard = lazy(() => import("@/pages/seller/SellerDashboard"));
-const SellerProducts = lazy(() => import("@/pages/seller/SellerProducts"));
-const SellerOrders = lazy(() => import("@/pages/seller/SellerOrders"));
-const SellerShop = lazy(() => import("@/pages/seller/SellerShop"));
+const SellerDashboard = lazy(() => import("@/features/seller/SellerDashboard"));
+const SellerProducts = lazy(() => import("@/features/seller/SellerProducts"));
+const SellerOrders = lazy(() => import("@/features/seller/SellerOrders"));
+const SellerShop = lazy(() => import("@/features/seller/SellerShop"));
 
 const AppRouter = () => {
   return (
