@@ -25,7 +25,9 @@ const Wishlist = lazy(() => import("@/features/users/Wishlist"));
 const CategoryPage = lazy(
   () => import("@/features/users/category/CategoryPage")
 );
-const SubcategoryPage = lazy(() => import("@/features/users/SubcategoryPage"));
+const SubcategoryPage = lazy(
+  () => import("@/features/users/sub-category/SubcategoryPage")
+);
 const ShopPage = lazy(() => import("@/features/users/ShopPage"));
 
 // Seller Dashboard pages

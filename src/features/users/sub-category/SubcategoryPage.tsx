@@ -1,6 +1,7 @@
-import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Subcategory, Product, Category } from "@/types";
+import ProductCardSimple from "@/components/common/ProductCardSimple";
+import { Product, Subcategory } from "@/types";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 /**
  * SubcategoryPage - Trang hiển thị danh mục con
@@ -38,12 +39,12 @@ const SubcategoryPage = () => {
               featured: true,
               isActive: true,
               sortOrder: 1,
-              productCount: 1250
+              productCount: 1250,
             },
             featured: true,
             isActive: true,
             sortOrder: 1,
-            productCount: 350
+            productCount: 350,
           };
         default:
           return {
@@ -65,12 +66,12 @@ const SubcategoryPage = () => {
               featured: true,
               isActive: true,
               sortOrder: 1,
-              productCount: 150
+              productCount: 150,
             },
             featured: true,
             isActive: true,
             sortOrder: 1,
-            productCount: 50
+            productCount: 50,
           };
       }
     };
@@ -98,7 +99,7 @@ const SubcategoryPage = () => {
         isActive: true,
         isFeatured: true,
         createdAt: new Date("2024-01-01T00:00:00Z"),
-        updatedAt: new Date("2024-01-01T00:00:00Z")
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
       },
       {
         id: "2",
@@ -119,7 +120,7 @@ const SubcategoryPage = () => {
         isActive: true,
         isFeatured: false,
         createdAt: new Date("2024-01-02T00:00:00Z"),
-        updatedAt: new Date("2024-01-02T00:00:00Z")
+        updatedAt: new Date("2024-01-02T00:00:00Z"),
       },
       {
         id: "3",
@@ -140,7 +141,7 @@ const SubcategoryPage = () => {
         isActive: true,
         isFeatured: true,
         createdAt: new Date("2024-01-03T00:00:00Z"),
-        updatedAt: new Date("2024-01-03T00:00:00Z")
+        updatedAt: new Date("2024-01-03T00:00:00Z"),
       },
       {
         id: "4",
@@ -160,7 +161,7 @@ const SubcategoryPage = () => {
         isActive: true,
         isFeatured: false,
         createdAt: new Date("2024-01-04T00:00:00Z"),
-        updatedAt: new Date("2024-01-04T00:00:00Z")
+        updatedAt: new Date("2024-01-04T00:00:00Z"),
       },
       {
         id: "5",
@@ -181,7 +182,7 @@ const SubcategoryPage = () => {
         isActive: true,
         isFeatured: true,
         createdAt: new Date("2024-01-05T00:00:00Z"),
-        updatedAt: new Date("2024-01-05T00:00:00Z")
+        updatedAt: new Date("2024-01-05T00:00:00Z"),
       },
       {
         id: "6",
@@ -201,8 +202,8 @@ const SubcategoryPage = () => {
         isActive: true,
         isFeatured: false,
         createdAt: new Date("2024-01-06T00:00:00Z"),
-        updatedAt: new Date("2024-01-06T00:00:00Z")
-      }
+        updatedAt: new Date("2024-01-06T00:00:00Z"),
+      },
     ];
 
     setSubcategory(mockSubcategory);
@@ -237,9 +238,11 @@ const SubcategoryPage = () => {
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-4">
           <nav className="flex items-center space-x-2 text-sm">
-            <Link to="/" className="text-emerald-600 hover:text-emerald-700">Trang chủ</Link>
+            <Link to="/" className="text-emerald-600 hover:text-emerald-700">
+              Trang chủ
+            </Link>
             <span className="text-gray-400">/</span>
-            <Link 
+            <Link
               to={`/category/${subcategory.category?.slug}`}
               className="text-emerald-600 hover:text-emerald-700"
             >
@@ -260,8 +263,12 @@ const SubcategoryPage = () => {
                 <span className="text-5xl">{subcategory.icon}</span>
               </div>
               <div className="flex-1">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">{subcategory.name}</h1>
-                <p className="text-gray-600 text-lg mb-3">{subcategory.description}</p>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  {subcategory.name}
+                </h1>
+                <p className="text-gray-600 text-lg mb-3">
+                  {subcategory.description}
+                </p>
                 <div className="flex items-center gap-4">
                   <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium">
                     {subcategory.productCount.toLocaleString()} sản phẩm
@@ -283,7 +290,7 @@ const SubcategoryPage = () => {
                 Hiển thị {products.length} / {subcategory.productCount} sản phẩm
               </span>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <label htmlFor="sort" className="text-gray-600 font-medium">
                 Sắp xếp theo:
@@ -291,7 +298,7 @@ const SubcategoryPage = () => {
               <select
                 id="sort"
                 value={sortBy}
-                onChange={(e) => handleSortChange(e.target.value)}
+                onChange={e => handleSortChange(e.target.value)}
                 className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               >
                 <option value="newest">Mới nhất</option>
@@ -307,77 +314,16 @@ const SubcategoryPage = () => {
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
           {products.length > 0 ? (
-            products.map((product) => (
-              <Link
-                key={product.id}
-                to={`/product/${product.slug}`}
-                className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-              >
-                <div className="aspect-square bg-gray-200 flex items-center justify-center relative overflow-hidden">
-                  {product.images[0] ? (
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <span className="text-4xl text-gray-400">📦</span>
-                  )}
-                  {product.originalPrice && product.originalPrice > product.price && (
-                    <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-medium">
-                      -{Math.round((1 - product.price / product.originalPrice) * 100)}%
-                    </div>
-                  )}
-                  {product.isFeatured && (
-                    <div className="absolute top-3 right-3 bg-emerald-500 text-white px-2 py-1 rounded-md text-xs font-medium">
-                      Nổi bật
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-emerald-600 transition-colors">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-                  
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center">
-                      <span className="text-yellow-400 text-sm">★</span>
-                      <span className="text-sm text-gray-600 ml-1">{product.rating}</span>
-                      <span className="text-xs text-gray-400 ml-1">({product.reviewCount})</span>
-                    </div>
-                    <span className="text-xs text-gray-400">•</span>
-                    <span className="text-xs text-gray-500">Đã bán {product.sold}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-bold text-emerald-600">
-                        {product.price.toLocaleString()}đ
-                      </span>
-                      {product.originalPrice && product.originalPrice > product.price && (
-                        <span className="text-sm text-gray-400 line-through">
-                          {product.originalPrice.toLocaleString()}đ
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      Còn {product.stock}
-                    </div>
-                  </div>
-                  
-                  <div className="mt-2 text-xs text-gray-500">
-                    Shop: {product.shopId}
-                  </div>
-                </div>
-              </Link>
+            products.map(product => (
+              <ProductCardSimple key={product.id} product={product} />
             ))
           ) : (
             <div className="text-center text-gray-500 col-span-full py-12">
               <div className="text-6xl mb-4">🛍️</div>
               <p className="text-lg">Chưa có sản phẩm</p>
-              <p className="text-sm">Hãy quay lại sau để xem các sản phẩm mới nhất</p>
+              <p className="text-sm">
+                Hãy quay lại sau để xem các sản phẩm mới nhất
+              </p>
             </div>
           )}
         </div>

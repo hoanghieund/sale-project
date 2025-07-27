@@ -1,3 +1,10 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Category, Product, Subcategory } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -276,13 +283,19 @@ const CategoryPage = () => {
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-4">
-          <nav className="flex items-center space-x-2 text-sm">
-            <Link to="/" className="text-emerald-600 hover:text-emerald-700">
-              Trang chủ
-            </Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-600">{category.name}</span>
-          </nav>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Trang chủ</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <span className="text-gray-600">{category.name}</span>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
       </div>
 

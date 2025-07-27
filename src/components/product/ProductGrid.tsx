@@ -1,5 +1,5 @@
 import { FEATURED_PRODUCTS } from "../../data/mockData";
-import ProductCard from "./ProductCard";
+import ProductCard from "@/components/common/ProductCardSimple";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef } from "react";

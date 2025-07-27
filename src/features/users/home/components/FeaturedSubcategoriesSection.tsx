@@ -1,5 +1,5 @@
+import SubcategoryCard from "@/components/common/SubcategoryCard";
 import { Subcategory } from "@/types";
-import SubcategoryCard from "../../../../components/common/SubcategoryCard";
 
 /**
  * FeaturedSubcategoriesSection Component
@@ -14,7 +14,7 @@ const FeaturedSubcategoriesSection = ({
   subcategories,
 }: FeaturedSubcategoriesSectionProps) => {
   return (
-    <section className="py-16 bg-gray-100">
+    <section className="py-16 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">Popular Subcategories</h2>

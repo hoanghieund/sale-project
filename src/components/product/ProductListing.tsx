@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
-import ProductCard from "./ProductCard";
+import ProductCard from "@/components/common/ProductCardSimple";
 import { Product, ProductFilters } from "../../types";
 import { SORT_OPTIONS, BRANDS, SHOE_SIZES, COLOR_OPTIONS, DEFAULT_FILTERS } from "../../data/constants";
 
@@ -30,9 +30,7 @@ const ProductListing = ({ products, title = "Products", subtitle }: ProductListi
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter(product => {
       // Category filter
-      if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
-        return false;
-      }
+      if (filters.categories.length > 0 && !filters.categories.includes(product.categoryId)) return false;
 
       // Brand filter
       if (filters.brands.length > 0 && !filters.brands.includes(product.brand)) {
@@ -50,9 +48,7 @@ const ProductListing = ({ products, title = "Products", subtitle }: ProductListi
       }
 
       // On sale filter
-      if (filters.onSale && !product.sale) {
-        return false;
-      }
+      if (filters.onSale && !product.sale) return false;
 
       // Rating filter
       if (filters.rating > 0 && product.rating < filters.rating) {
@@ -81,7 +77,7 @@ const ProductListing = ({ products, title = "Products", subtitle }: ProductListi
         filtered.sort((a, b) => b.reviewCount - a.reviewCount);
         break;
       default: // featured
-        filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        filtered.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
     }
 
     return filtered;
@@ -105,7 +101,7 @@ const ProductListing = ({ products, title = "Products", subtitle }: ProductListi
   };
 
   // Get unique categories from products
-  const availableCategories = Array.from(new Set(products.map(p => p.category)));
+  const availableCategories = Array.from(new Set(products.map(p => p.categoryId)));
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -264,31 +260,31 @@ const FilterSidebar = ({ filters, updateFilter, clearFilters, availableCategorie
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="font-semibold">Filters</h3>
+        <h3 className="font-semibold">Bộ lọc</h3>
         <Button variant="ghost" size="sm" onClick={clearFilters}>
-          Clear All
+          Xóa tất cả
         </Button>
       </div>
 
       {/* Categories */}
       <div>
-        <h4 className="font-medium mb-3">Categories</h4>
+        <h4 className="font-medium mb-3">Danh mục</h4>
         <div className="space-y-2">
-          {availableCategories.map(category => (
-            <div key={category} className="flex items-center space-x-2">
+          {availableCategories.map(categoryId => (
+            <div key={categoryId} className="flex items-center space-x-2">
               <Checkbox
-                id={category}
-                checked={filters.categories.includes(category)}
+                id={categoryId}
+                checked={filters.categories.includes(categoryId)}
                 onCheckedChange={(checked) => {
                   if (checked) {
-                    updateFilter("categories", [...filters.categories, category]);
+                    updateFilter("categories", [...filters.categories, categoryId]);
                   } else {
-                    updateFilter("categories", filters.categories.filter(c => c !== category));
+                    updateFilter("categories", filters.categories.filter(c => c !== categoryId));
                   }
                 }}
               />
-              <Label htmlFor={category} className="text-sm">
-                {category}
+              <Label htmlFor={categoryId} className="text-sm">
+                {categoryId}
               </Label>
             </div>
           ))}

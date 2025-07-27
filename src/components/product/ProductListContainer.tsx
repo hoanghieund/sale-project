@@ -1,4 +1,4 @@
-import ProductCard from '@/components/product/ProductCard'; // Default import for ProductCard
+import ProductCard from '@/components/common/ProductCardSimple'; // Sử dụng component ProductCardSimple đã được cập nhật
 import { Input } from '@/components/ui/input';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

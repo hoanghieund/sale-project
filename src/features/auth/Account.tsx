@@ -17,7 +17,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import EmptyState from "@/components/common/EmptyState";
-import ProductCard from "@/components/product/ProductCard";
+import ProductCard from "@/components/common/ProductCardSimple";
 import { useWishlist } from "@/context/WishlistContext";
 
 const Account = () => {
@@ -212,7 +212,9 @@ const Account = () => {
                 </div>
               ) : (
                 <EmptyState
-                  icon={<Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />}
+                  icon={
+                    <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  }
                   title="Không có địa chỉ nào được lưu"
                   message="Bạn chưa lưu địa chỉ nào. Vui lòng thêm địa chỉ để thuận tiện hơn khi thanh toán."
                   buttonText="Thêm địa chỉ"
@@ -260,7 +262,9 @@ const Account = () => {
                 </div>
               ) : (
                 <EmptyState
-                  icon={<Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />}
+                  icon={
+                    <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  }
                   title="Danh sách yêu thích của bạn trống"
                   message="Bạn chưa thêm sản phẩm nào vào danh sách yêu thích."
                   buttonText="Duyệt sản phẩm"

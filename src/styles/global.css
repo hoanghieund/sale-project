@@ -11,7 +11,7 @@ All colors MUST be HSL.
     --background: 0 0% 100%; /* White */
     --foreground: 200 10% 29%; /* Dark Slate Gray */
 
-    --card: 220 13% 98%; /* Light Gray, slightly darker for distinction */
+    --card: 220 13% 95%; /* Light Gray, slightly darker for distinction */
     --card-foreground: 200 10% 29%; /* Dark Slate Gray */
 
     --popover: 220 13% 95%; /* Light Gray */
@@ -20,10 +20,10 @@ All colors MUST be HSL.
     --primary: 190 29% 33%; /* Teal */
     --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 220 13% 98%; /* Slightly darker Light Gray */
+    --secondary: 220 13% 95%; /* Slightly darker Light Gray */
     --secondary-foreground: 200 10% 29%; /* Dark Slate Gray */
 
-    --muted: 220 13% 98%; /* Slightly darker Light Gray */
+    --muted: 220 13% 95%; /* Slightly darker Light Gray */
     --muted-foreground: 200 10% 45%; /* Muted Dark Slate Gray */
 
     --accent: 83 100% 35%; /* Lime Green */
@@ -32,8 +32,8 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%; /* Red */
     --destructive-foreground: 0 0% 98%; /* Off-white */
 
-    --border: 220 13% 98%; /* Light Gray */
-    --input: 220 13% 98%; /* Light Gray */
+    --border: 220 13% 95%; /* Light Gray */
+    --input: 220 13% 95%; /* Light Gray */
     --ring: 83 100% 35%; /* Lime Green */
 
     /* Shadows */

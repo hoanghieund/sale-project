@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Product } from "../../types";
 import { MOCK_PRODUCTS } from "../../data/mockData";
-import ProductCard from "./ProductCard";
+import ProductCard from "@/components/common/ProductCardSimple";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -25,12 +25,12 @@ const SimilarProducts = ({ currentProduct, title = "You May Also Like" }: Simila
       let score = 0;
       
       // Cùng danh mục
-      if (product.category === currentProduct.category) {
+      if (product.categoryId === currentProduct.categoryId) {
         score += 5;
       }
       
       // Cùng danh mục phụ
-      if (product.subcategory && product.subcategory === currentProduct.subcategory) {
+      if (product.subcategoryId && product.subcategoryId === currentProduct.subcategoryId) {
         score += 3;
       }
       
