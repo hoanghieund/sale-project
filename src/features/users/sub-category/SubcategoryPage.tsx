@@ -1,15 +1,40 @@
-import ProductCardSimple from "@/components/common/ProductCardSimple";
 import CategoryInfo from "@/components/common/CategoryInfo";
-import { Product, Category } from "@/types";
+import ProductCardSimple from "@/components/common/ProductCardSimple";
+import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 // Import các component Shadcn
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Badge } from "@/components/ui/badge";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 /**
  * SubcategoryPage - Trang hiển thị danh mục con
@@ -71,284 +96,79 @@ const SubcategoryPage = () => {
     // Mock products data
     const mockProducts: Product[] = [
       {
-        id: 1,
-        title: "Áo sơ mi nam cao cấp",
-        description: "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại",
-        content:
-          "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại, phù hợp cho nhiều dịp khác nhau",
-        brand: "Brand A",
-        material: "Cotton",
-        origin: "Việt Nam",
-        style: "Casual",
+        id: 101,
+        name: "Áo thun nam cổ tròn", // Thêm trường name bắt buộc
+        images: ["/assets/product-1.jpg"], // Thêm trường images bắt buộc
+        title: "Áo thun nam cổ tròn",
+        content: "Áo thun nam cổ tròn chất liệu cotton 100%",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
         star: 4.5,
         totalProductSold: 120,
-        status: true,
         isNew: true,
         isFlashSale: false,
         isTrending: true,
-        categoriesId: mockSubcategory.parentId,
+        discount: { id: 1, percent: 10, status: true, createDate: new Date() },
+        categoriesId: 5,
         shopId: 1,
-        discountId: 1,
-        discount: {
-          id: 1,
-          percent: 25,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-01T00:00:00Z"),
-        modifierDate: new Date("2024-01-01T00:00:00Z"),
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: 2,
-        title: "Áo thun nam basic",
-        description: "Áo thun nam basic, form rộng thoải mái",
-        content:
-          "Áo thun nam basic, form rộng thoải mái, chất liệu cotton thoáng mát",
-        brand: "Brand B",
-        material: "Cotton",
-        origin: "Việt Nam",
-        style: "Basic",
-        star: 4.3,
-        totalProductSold: 85,
+        id: 102,
+        name: "Quần jean nam slim fit", // Thêm trường name bắt buộc
+        images: ["/assets/product-2.jpg"], // Thêm trường images bắt buộc
+        title: "Quần jean nam slim fit",
+        content: "Quần jean nam slim fit màu xanh đậm",
         status: true,
-        isNew: false,
-        isFlashSale: false,
-        isTrending: false,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 2,
-        discountId: 2,
-        discount: {
-          id: 2,
-          percent: 20,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-02T00:00:00Z"),
-        modifierDate: new Date("2024-01-02T00:00:00Z"),
-      },
-      {
-        id: 3,
-        title: "Áo khoác nam bomber",
-        description: "Áo khoác bomber phong cách, chống nắng, chống gió",
-        content:
-          "Áo khoác bomber phong cách, chống nắng, chống gió, phù hợp cho mùa thu đông",
-        brand: "Brand C",
-        material: "Polyester",
-        origin: "Việt Nam",
-        style: "Casual",
-        star: 4.7,
-        totalProductSold: 62,
-        status: true,
-        isNew: true,
-        isFlashSale: true,
-        isTrending: true,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 1,
-        discountId: 3,
-        discount: {
-          id: 3,
-          percent: 23,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-03T00:00:00Z"),
-        modifierDate: new Date("2024-01-03T00:00:00Z"),
-      },
-      {
-        id: 4,
-        title: "Áo polo nam cổ bẻ",
-        description: "Áo polo nam cổ bẻ, chất liệu cao cấp",
-        content:
-          "Áo polo nam cổ bẻ, chất liệu cao cấp, thoáng mát, phù hợp cho mùa hè",
-        brand: "Brand D",
-        material: "Cotton",
-        origin: "Việt Nam",
-        style: "Smart Casual",
-        star: 4.4,
-        totalProductSold: 95,
-        status: true,
-        isNew: false,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 3,
-        discountId: 4,
-        discount: {
-          id: 4,
-          percent: 13,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-04T00:00:00Z"),
-        modifierDate: new Date("2024-01-04T00:00:00Z"),
-      },
-      {
-        id: 5,
-        title: "Áo len nam dày dặn",
-        description: "Áo len nam dày dặn, giữ ấm tốt mùa đông",
-        content:
-          "Áo len nam dày dặn, giữ ấm tốt mùa đông, chất liệu len cao cấp",
-        brand: "Brand E",
-        material: "Wool",
-        origin: "Việt Nam",
-        style: "Winter",
-        star: 4.6,
-        totalProductSold: 48,
-        status: true,
-        isNew: false,
-        isFlashSale: false,
-        isTrending: false,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 2,
-        discountId: 5,
-        discount: {
-          id: 5,
-          percent: 10,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-05T00:00:00Z"),
-        modifierDate: new Date("2024-01-05T00:00:00Z"),
-      },
-      {
-        id: 6,
-        title: "Áo sơ mi nam trắng công sở",
-        description: "Áo sơ mi nam trắng, chất liệu cotton pha polyester",
-        content:
-          "Áo sơ mi nam trắng, chất liệu cotton pha polyester, phù hợp cho công sở",
-        brand: "Brand F",
-        material: "Cotton Polyester",
-        origin: "Việt Nam",
-        style: "Formal",
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
         star: 4.8,
-        totalProductSold: 130,
-        status: true,
+        totalProductSold: 85,
         isNew: false,
-        isFlashSale: false,
-        isTrending: false,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 1,
-        discountId: 6,
-        discount: {
-          id: 6,
-          percent: 7,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-06T00:00:00Z"),
-        modifierDate: new Date("2024-01-06T00:00:00Z"),
+        isFlashSale: true,
+        isTrending: true,
+        discount: { id: 2, percent: 15, status: true, createDate: new Date() },
+        categoriesId: 5,
+        shopId: 2,
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: 7,
-        title: "Áo thun nam in hình",
-        description: "Áo thun nam in hình phong cách, trẻ trung",
-        content:
-          "Áo thun nam in hình phong cách, trẻ trung, chất liệu cotton thoáng mát",
-        brand: "Brand G",
-        material: "Cotton",
-        origin: "Việt Nam",
-        style: "Streetwear",
-        star: 4.2,
-        totalProductSold: 78,
+        id: 103,
+        name: "Áo sơ mi nữ công sở", // Thêm trường name bắt buộc
+        images: ["/assets/product-3.jpg"], // Thêm trường images bắt buộc
+        title: "Áo sơ mi nữ công sở",
+        content: "Áo sơ mi nữ công sở chất liệu lụa cao cấp",
         status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.6,
+        totalProductSold: 95,
+        isNew: true,
+        isFlashSale: false,
+        isTrending: true,
+        categoriesId: 6,
+        shopId: 3,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 104,
+        name: "Váy liền thân dự tiệc", // Thêm trường name bắt buộc
+        images: ["/assets/product-4.jpg"], // Thêm trường images bắt buộc
+        title: "Váy liền thân dự tiệc",
+        content: "Váy liền thân dự tiệc màu đen sang trọng",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.9,
+        totalProductSold: 65,
         isNew: true,
         isFlashSale: true,
-        isTrending: false,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 3,
-        discountId: 7,
-        discount: {
-          id: 7,
-          percent: 13,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-07T00:00:00Z"),
-        modifierDate: new Date("2024-01-07T00:00:00Z"),
-      },
-      {
-        id: 8,
-        title: "Áo sơ mi nam kẻ sọc",
-        description: "Áo sơ mi nam kẻ sọc, phong cách trẻ trung",
-        content:
-          "Áo sơ mi nam kẻ sọc, phong cách trẻ trung, chất liệu cotton cao cấp",
-        brand: "Brand H",
-        material: "Cotton",
-        origin: "Việt Nam",
-        style: "Casual",
-        star: 4.5,
-        totalProductSold: 65,
-        status: true,
-        isNew: false,
-        isFlashSale: false,
         isTrending: true,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 2,
-        discountId: 8,
-        discount: {
-          id: 8,
-          percent: 12,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-08T00:00:00Z"),
-        modifierDate: new Date("2024-01-08T00:00:00Z"),
-      },
-      {
-        id: 9,
-        title: "Áo thun nam oversize",
-        description: "Áo thun nam oversize, phong cách đường phố",
-        content:
-          "Áo thun nam oversize, phong cách đường phố, chất liệu cotton mềm mại",
-        brand: "Brand I",
-        material: "Cotton",
-        origin: "Việt Nam",
-        style: "Streetwear",
-        star: 4.4,
-        totalProductSold: 112,
-        status: true,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: mockSubcategory.parentId,
-        shopId: 3,
-        discountId: 9,
-        discount: {
-          id: 9,
-          percent: 14,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-09T00:00:00Z"),
-        modifierDate: new Date("2024-01-09T00:00:00Z"),
-      },
-      {
-        id: 10,
-        title: "Áo sơ mi nam dài tay",
-        description: "Áo sơ mi nam dài tay, chất liệu cao cấp",
-        content:
-          "Áo sơ mi nam dài tay, chất liệu cao cấp, phù hợp cho mùa thu đông",
-        brand: "Brand J",
-        material: "Cotton",
-        origin: "Việt Nam",
-        style: "Formal",
-        star: 4.6,
-        totalProductSold: 87,
-        status: true,
-        isNew: false,
-        isFlashSale: false,
-        isTrending: false,
-        categoriesId: mockSubcategory.parentId,
+        discount: { id: 3, percent: 20, status: true, createDate: new Date() },
+        categoriesId: 6,
         shopId: 1,
-        discountId: 10,
-        discount: {
-          id: 10,
-          percent: 8,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-10T00:00:00Z"),
-        modifierDate: new Date("2024-01-10T00:00:00Z"),
+        createBy: "system",
+        createDate: new Date(),
       },
     ];
 
@@ -451,10 +271,10 @@ const SubcategoryPage = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Sử dụng component CategoryInfo */}
-        <CategoryInfo 
-          category={subcategory} 
-          parentCategory={subcategory.parent} 
-          type="subcategory" 
+        <CategoryInfo
+          category={subcategory}
+          parentCategory={subcategory.parent}
+          type="subcategory"
         />
 
         {/* Filters and Sort */}

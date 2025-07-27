@@ -28,7 +28,7 @@ const CategoryPage = lazy(
 const SubcategoryPage = lazy(
   () => import("@/features/users/sub-category/SubcategoryPage")
 );
-const ShopPage = lazy(() => import("@/features/users/ShopPage"));
+const ShopPage = lazy(() => import("@/features/users/shop/ShopPage"));
 
 // Seller Dashboard pages
 const SellerDashboard = lazy(() => import("@/features/seller/SellerDashboard"));

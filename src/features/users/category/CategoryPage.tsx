@@ -1,7 +1,13 @@
 import CategoryCard from "@/components/common/CategoryCard";
 import CategoryInfo from "@/components/common/CategoryInfo";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -197,6 +203,8 @@ const CategoryPage = () => {
     const mockFeaturedProducts: Product[] = [
       {
         id: 1,
+        name: "Áo sơ mi nam cao cấp", // Thêm trường name bắt buộc
+        images: ["/assets/product-1.jpg"], // Thêm trường images bắt buộc
         title: "Áo sơ mi nam cao cấp",
         content: "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại",
         brand: "Brand A",
@@ -222,6 +230,8 @@ const CategoryPage = () => {
       },
       {
         id: 2,
+        name: "Áo thun nữ basic",
+        images: ["/assets/product-2.jpg"],
         title: "Áo thun nữ basic",
         content: "Áo thun nữ basic, form rộng thoải mái",
         brand: "Brand B",
@@ -247,6 +257,8 @@ const CategoryPage = () => {
       },
       {
         id: 3,
+        name: "Quần jean nam slim fit",
+        images: ["/assets/product-3.jpg"],
         title: "Quần jean nam slim fit",
         content: "Quần jean nam slim fit, chất liệu denim cao cấp",
         brand: "Brand C",
@@ -272,6 +284,8 @@ const CategoryPage = () => {
       },
       {
         id: 4,
+        name: "Váy nữ dáng A",
+        images: ["/assets/product-4.jpg"],
         title: "Váy nữ dáng A",
         content: "Váy nữ dáng A thanh lịch, phù hợp đi làm",
         brand: "Brand D",
@@ -342,10 +356,10 @@ const CategoryPage = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Sử dụng component CategoryInfo */}
-        <CategoryInfo 
-          category={category} 
-          subcategoriesCount={subcategories.length} 
-          type="category" 
+        <CategoryInfo
+          category={category}
+          subcategoriesCount={subcategories.length}
+          type="category"
         />
 
         {/* Subcategories Grid */}

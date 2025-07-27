@@ -5,8 +5,7 @@ import { User } from "../types";
 interface RegisterData {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  username: string;
 }
 
 type UserAction =
@@ -126,34 +125,23 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       // Mock authentication - in real app, this would be an API call
       if (email === "demo@donekick.com" && password === "password") {
         const user: User = {
-          id: "1",
-          email: email,
-          firstName: "Demo",
-          lastName: "User",
-          avatar: undefined,
-          phone: "+1 (555) 123-4567",
-          dateOfBirth: "1990-01-01",
-          addresses: [
-            {
-              id: "addr-1",
-              type: "shipping",
-              firstName: "Demo",
-              lastName: "User",
-              address1: "123 Main St",
-              city: "New York",
-              state: "NY",
-              zipCode: "10001",
-              country: "United States",
-              isDefault: true,
-            },
-          ],
-          preferences: {
-            newsletter: true,
-            smsNotifications: false,
-            emailNotifications: true,
-            preferredSizes: ["9", "9.5", "10"],
-            favoriteCategories: ["running", "basketball"],
-          },
+          id: 1, // bigint(20) trong SQL
+          username: "Demo", // username varchar(255)
+          email: email, // email varchar(255)
+          password: undefined, // password varchar(255) - chỉ dùng khi cần thiết
+          avatar: "/images/avatars/default.png", // avatar varchar(255)
+          phone: "+1 (555) 123-4567", // phone varchar(255)
+          address: "123 Main St, New York, NY 10001", // address varchar(255)
+          gender: true, // gender bit(1) - true: nam, false: nữ
+          dayOfBirth: 1, // day_of_birth int(11)
+          monthOfBirth: 1, // month_of_birth int(11)
+          yearOfBirth: 1990, // year_of_birth int(11)
+          active: 1, // active int(11) - trạng thái hoạt động
+          // Audit fields
+          createBy: "system", // create_by varchar(255)
+          createDate: new Date(), // create_date datetime
+          modifierBy: "system", // modifier_by varchar(255)
+          modifierDate: new Date(), // modifier_date datetime
         };
         dispatch({ type: "LOGIN_SUCCESS", payload: user });
       } else {
@@ -177,18 +165,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
       // Mock registration
       const user: User = {
-        id: Date.now().toString(),
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        addresses: [],
-        preferences: {
-          newsletter: false,
-          smsNotifications: false,
-          emailNotifications: true,
-          preferredSizes: [],
-          favoriteCategories: [],
-        },
+        id: 1, // bigint(20) trong SQL
+        username: userData.username, // username varchar(255)
+        email: userData.email, // email varchar(255)
+        password: undefined, // password varchar(255) - chỉ dùng khi cần thiết
+        avatar: "/images/avatars/default.png", // avatar varchar(255)
+        gender: true, // gender bit(1) - mặc định là nam
+        active: 1, // active int(11) - trạng thái hoạt động mặc định là active
+        // Audit fields
+        createBy: "system", // create_by varchar(255)
+        createDate: new Date(), // create_date datetime
+        modifierBy: "system", // modifier_by varchar(255)
+        modifierDate: new Date(), // modifier_date datetime
       };
 
       dispatch({ type: "REGISTER_SUCCESS", payload: user });

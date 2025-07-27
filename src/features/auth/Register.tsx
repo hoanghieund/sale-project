@@ -10,8 +10,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 interface RegisterForm {
-  firstName: string;
-  lastName: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -42,8 +41,7 @@ const Register = () => {
   const onSubmit = async (data: RegisterForm) => {
     try {
       await registerUser({
-        firstName: data.firstName,
-        lastName: data.lastName,
+        username: data.username,
         email: data.email,
         password: data.password,
       });
@@ -64,24 +62,14 @@ const Register = () => {
       socialLoginOptions="all"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <InputWithIcon
-            id="firstName"
-            icon={<User className="h-4 w-4" />}
-            placeholder="First name"
-            type="text"
-            register={register}
-            error={errors.firstName}
-          />
-          <InputWithIcon
-            id="lastName"
-            icon={<User className="h-4 w-4" />}
-            placeholder="Last name"
-            type="text"
-            register={register}
-            error={errors.lastName}
-          />
-        </div>
+        <InputWithIcon
+          id="username"
+          icon={<User className="h-4 w-4" />}
+          placeholder="Username"
+          type="text"
+          register={register}
+          error={errors.username}
+        />
 
         <InputWithIcon
           id="email"

@@ -15,8 +15,7 @@ export interface UserContextType {
 interface RegisterData {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  username: string;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(

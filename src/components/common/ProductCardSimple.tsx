@@ -106,12 +106,11 @@ const ProductCardSimple = ({
       <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-xl">
         <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
           <Link to={`/product/${product.id}`} className="block h-full">
-            {/* Product không còn trường images, cần sử dụng bảng Images */}
-            <div className="w-full h-full flex items-center justify-center bg-background">
-              <span className="text-4xl text-muted-foreground">
-                {product.title?.charAt(0) || "📦"}
-              </span>
-            </div>
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
           </Link>
 
           {/* Badges */}
@@ -167,7 +166,7 @@ const ProductCardSimple = ({
                     variant="outline"
                     size="icon"
                     className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-red-500 transition-colors"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
                       if (removeFromWishlist) {
@@ -227,7 +226,7 @@ const ProductCardSimple = ({
             <div className="flex items-center gap-1 mb-1">
               <Store className="h-3.5 w-3.5 text-muted-foreground" />
               <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
-                {product.shop?.name || product.shopId || "Shop"}
+                {product.shop?.name || "Shop"}
               </span>
             </div>
 

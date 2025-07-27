@@ -362,14 +362,17 @@ const Checkout = () => {
                         {item.product.name}
                       </h4>
                       <p className="text-xs text-muted-foreground">
-                        Size: {item.size.value} • Color: {item.color.name}
+                        Size: {item.size?.name} • Color: {item.color?.name}
                       </p>
                       <div className="flex justify-between items-center mt-1">
                         <span className="text-xs text-muted-foreground">
                           Qty: {item.quantity}
                         </span>
                         <span className="font-medium text-sm">
-                          ${(item.product.price * item.quantity).toFixed(2)}
+                          $
+                          {(
+                            (item.product as any).price * item.quantity
+                          ).toFixed(2)}
                         </span>
                       </div>
                     </div>

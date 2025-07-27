@@ -140,6 +140,8 @@ const Index = () => {
     const mockFeaturedProducts: Product[] = [
       {
         id: 101,
+        name: "Áo thun nam cổ tròn", // Thêm trường name bắt buộc
+        images: ["/assets/product-1.jpg"], // Thêm trường images bắt buộc
         title: "Áo thun nam cổ tròn",
         content: "Áo thun nam cổ tròn chất liệu cotton 100%",
         status: true,
@@ -157,6 +159,8 @@ const Index = () => {
       },
       {
         id: 102,
+        name: "Quần jean nam slim fit", // Thêm trường name bắt buộc
+        images: ["/assets/product-2.jpg"], // Thêm trường images bắt buộc
         title: "Quần jean nam slim fit",
         content: "Quần jean nam slim fit màu xanh đậm",
         status: true,
@@ -174,6 +178,8 @@ const Index = () => {
       },
       {
         id: 103,
+        name: "Áo sơ mi nữ công sở", // Thêm trường name bắt buộc
+        images: ["/assets/product-3.jpg"], // Thêm trường images bắt buộc
         title: "Áo sơ mi nữ công sở",
         content: "Áo sơ mi nữ công sở chất liệu lụa cao cấp",
         status: true,
@@ -190,6 +196,8 @@ const Index = () => {
       },
       {
         id: 104,
+        name: "Váy liền thân dự tiệc", // Thêm trường name bắt buộc
+        images: ["/assets/product-4.jpg"], // Thêm trường images bắt buộc
         title: "Váy liền thân dự tiệc",
         content: "Váy liền thân dự tiệc màu đen sang trọng",
         status: true,
@@ -202,73 +210,6 @@ const Index = () => {
         discount: { id: 3, percent: 20, status: true, createDate: new Date() },
         categoriesId: 6,
         shopId: 1,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 105,
-        title: "Điện thoại Samsung Galaxy S23",
-        content: "Điện thoại Samsung Galaxy S23 Ultra 256GB",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.7,
-        totalProductSold: 45,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        discount: { id: 4, percent: 5, status: true, createDate: new Date() },
-        categoriesId: 7,
-        shopId: 4,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 106,
-        title: "Laptop Dell XPS 13",
-        content: "Laptop Dell XPS 13 Intel Core i7 Gen 12",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.8,
-        totalProductSold: 30,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: 8,
-        shopId: 5,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 107,
-        title: "Ghế sofa phòng khách",
-        content: "Ghế sofa phòng khách chất liệu da cao cấp",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.5,
-        totalProductSold: 15,
-        isNew: false,
-        isFlashSale: true,
-        isTrending: true,
-        discount: { id: 1, percent: 10, status: true, createDate: new Date() },
-        categoriesId: 9,
-        shopId: 6,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 108,
-        title: "Bộ dụng cụ tập gym tại nhà",
-        content: "Bộ dụng cụ tập gym tại nhà đa năng",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.4,
-        totalProductSold: 50,
-        isNew: false,
-        isFlashSale: false,
-        isTrending: true,
-        discount: { id: 2, percent: 15, status: true, createDate: new Date() },
-        categoriesId: 10,
-        shopId: 7,
         createBy: "system",
         createDate: new Date(),
       },

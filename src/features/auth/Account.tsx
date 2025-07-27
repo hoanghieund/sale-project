@@ -26,8 +26,7 @@ const Account = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
+    username: user?.username || "",
     email: user?.email || "",
     phone: user?.phone || "",
   });
@@ -52,8 +51,7 @@ const Account = () => {
 
   const handleCancelEdit = () => {
     setFormData({
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
+      username: user?.username || "",
       email: user?.email || "",
       phone: user?.phone || "",
     });
@@ -66,7 +64,7 @@ const Account = () => {
         <div>
           <h1 className="text-3xl font-bold">My Account</h1>
           <p className="text-muted-foreground">
-            Welcome back, {user?.firstName}!
+            Welcome back, {user?.username}!
           </p>
         </div>
         <Button variant="outline" onClick={handleLogout}>
@@ -117,26 +115,27 @@ const Account = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="firstName">First Name</Label>
+                  <Label htmlFor="username">Username</Label>
                   <Input
-                    id="firstName"
-                    value={formData.firstName}
+                    id="username"
+                    value={formData.username}
                     onChange={e =>
                       setFormData({
                         ...formData,
-                        firstName: e.target.value,
+                        username: e.target.value,
                       })
                     }
                     disabled={!isEditing}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="lastName">Last Name</Label>
+                  <Label htmlFor="email">Email Address</Label>
                   <Input
-                    id="lastName"
-                    value={formData.lastName}
+                    id="email"
+                    type="email"
+                    value={formData.email}
                     onChange={e =>
-                      setFormData({ ...formData, lastName: e.target.value })
+                      setFormData({ ...formData, email: e.target.value })
                     }
                     disabled={!isEditing}
                   />
@@ -187,28 +186,19 @@ const Account = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {user?.addresses && user.addresses.length > 0 ? (
+              {user?.address ? (
                 <div className="space-y-4">
-                  {user.addresses.map(address => (
-                    <div key={address.id} className="p-4 border rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium">
-                          {address.firstName} {address.lastName}
-                        </h4>
-                        <span className="text-sm text-muted-foreground capitalize">
-                          {address.type}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {address.address1}
-                        {address.address2 && `, ${address.address2}`}
-                        <br />
-                        {address.city}, {address.state} {address.zipCode}
-                        <br />
-                        {address.country}
-                      </p>
+                  <div className="p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">{user.username}</h4>
+                      <span className="text-sm text-muted-foreground capitalize">
+                        Địa chỉ mặc định
+                      </span>
                     </div>
-                  ))}
+                    <p className="text-sm text-muted-foreground">
+                      {user.address}
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <></>
@@ -262,15 +252,16 @@ const Account = () => {
                   ))}
                 </div>
               ) : (
-                <EmptyState
-                  icon={
-                    <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  }
-                  title="Danh sách yêu thích của bạn trống"
-                  message="Bạn chưa thêm sản phẩm nào vào danh sách yêu thích."
-                  buttonText="Duyệt sản phẩm"
-                  buttonLink="/products"
-                />
+                // <EmptyState
+                //   icon={
+                //     <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                //   }
+                //   title="Danh sách yêu thích của bạn trống"
+                //   message="Bạn chưa thêm sản phẩm nào vào danh sách yêu thích."
+                //   buttonText="Duyệt sản phẩm"
+                //   buttonLink="/products"
+                // />
+                <></>
               )}
             </CardContent>
           </Card>
@@ -293,9 +284,7 @@ const Account = () => {
                     Receive emails about your orders and account
                   </p>
                 </div>
-                <Switch
-                  defaultChecked={user?.preferences?.emailNotifications}
-                />
+                <Switch defaultChecked={true} />
               </div>
 
               <Separator />
@@ -307,7 +296,7 @@ const Account = () => {
                     Receive text messages about order updates
                   </p>
                 </div>
-                <Switch defaultChecked={user?.preferences?.smsNotifications} />
+                <Switch defaultChecked={false} />
               </div>
 
               <Separator />
@@ -319,7 +308,7 @@ const Account = () => {
                     Get the latest news and exclusive offers
                   </p>
                 </div>
-                <Switch defaultChecked={user?.preferences?.newsletter} />
+                <Switch defaultChecked={true} />
               </div>
 
               <Separator />
@@ -342,11 +331,7 @@ const Account = () => {
                   ].map(size => (
                     <Button
                       key={size}
-                      variant={
-                        user?.preferences?.preferredSizes?.includes(size)
-                          ? "default"
-                          : "outline"
-                      }
+                      variant={true ? "default" : "outline"}
                       size="sm"
                     >
                       {size}
