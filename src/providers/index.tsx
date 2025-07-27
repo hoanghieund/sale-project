@@ -1,5 +1,3 @@
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
 import RecentlyViewedProvider from "@/context/RecentlyViewedContext";
@@ -32,11 +30,7 @@ const Providers: React.FC<ProvidersProps> = ({ children }) => {
           <UserProvider>
             <CartProvider>
               <WishlistProvider>
-                <RecentlyViewedProvider>
-                  <Toaster />
-                  <Sonner />
-                  {children}
-                </RecentlyViewedProvider>
+                <RecentlyViewedProvider>{children}</RecentlyViewedProvider>
               </WishlistProvider>
             </CartProvider>
           </UserProvider>

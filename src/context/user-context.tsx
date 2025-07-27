@@ -8,14 +8,30 @@ export interface UserContextType {
   register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => Promise<void>;
+  clearError: () => void; // Thêm phương thức để xóa thông báo lỗi
   isLoading: boolean;
   error: string | null;
 }
 
 interface RegisterData {
+  id?: number;
+  username: string;
   email: string;
   password: string;
-  username: string;
+  phone?: string;
+  avatar?: string;
+  file?: string;
+  address?: string;
+  roles?: { id: number; name: string }[];
+  roleId?: number[];
+  active?: number;
+  dayOfBirth?: number;
+  monthOfBirth?: number;
+  yearOfBirth?: number;
+  date?: string;
+  gender?: boolean;
+  shopName?: string;
+  newAccount?: boolean;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(

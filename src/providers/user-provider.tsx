@@ -1,11 +1,29 @@
 import { UserContext, UserContextType } from "@/context/user-context";
 import React, { useEffect, useReducer } from "react";
+// Sử dụng hook useToast từ hooks/use-toast
+import { useToast } from "@/hooks/use-toast";
+import { authService } from "../services/authService";
 import { User } from "../types";
 
 interface RegisterData {
+  id?: number;
+  username: string;
   email: string;
   password: string;
-  username: string;
+  phone?: string;
+  avatar?: string;
+  file?: string;
+  address?: string;
+  roles?: { id: number; name: string }[];
+  roleId?: number[];
+  active?: number;
+  dayOfBirth?: number;
+  monthOfBirth?: number;
+  yearOfBirth?: number;
+  date?: string;
+  gender?: boolean;
+  shopName?: string;
+  newAccount?: boolean;
 }
 
 type UserAction =
@@ -22,7 +40,7 @@ type UserAction =
   | { type: "CLEAR_ERROR" }
   | { type: "LOAD_USER"; payload: User };
 
-interface UserState {
+export interface UserState {
   user: User | null;
   isLoading: boolean;
   error: string | null;
@@ -91,129 +109,260 @@ function userReducer(state: UserState, action: UserAction): UserState {
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(userReducer, initialState);
+  // Sử dụng hook useToast để hiển thị thông báo
+  const { toast } = useToast();
 
-  // Load user from localStorage on mount
+  // Load user từ token và API khi component mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("donekick-user");
-    if (savedUser) {
-      try {
-        const parsedUser = JSON.parse(savedUser);
-        dispatch({ type: "LOAD_USER", payload: parsedUser });
-      } catch (error) {
-        console.error("Failed to load user from localStorage:", error);
-        localStorage.removeItem("donekick-user");
+    const loadUser = async () => {
+      const token = localStorage.getItem("token");
+
+      // Nếu có token, thử lấy thông tin user từ API
+      if (token) {
+        try {
+          dispatch({ type: "LOGIN_START" });
+          const userData = await authService.getCurrentUser();
+          dispatch({ type: "LOGIN_SUCCESS", payload: userData });
+        } catch (error) {
+          // Sử dụng toast thay vì console.error
+          toast({
+            title: "Lỗi xác thực",
+            description: "Lỗi khi lấy thông tin người dùng",
+            variant: "destructive",
+          });
+
+          // Nếu token hết hạn hoặc không hợp lệ, thử refresh token
+          const refreshToken = localStorage.getItem("refreshToken");
+          if (refreshToken) {
+            try {
+              const response = await authService.refreshToken(refreshToken);
+              localStorage.setItem("token", response.token);
+
+              // Thử lấy thông tin user lần nữa với token mới
+              const userData = await authService.getCurrentUser();
+              dispatch({ type: "LOGIN_SUCCESS", payload: userData });
+            } catch (refreshError) {
+              // Sử dụng toast thay vì console.error
+              toast({
+                title: "Lỗi xác thực",
+                description: "Không thể làm mới phiên đăng nhập",
+                variant: "destructive",
+              });
+              localStorage.removeItem("token");
+              localStorage.removeItem("refreshToken");
+              dispatch({ type: "LOGOUT" });
+            }
+          } else {
+            localStorage.removeItem("token");
+            dispatch({ type: "LOGOUT" });
+          }
+        }
       }
-    }
+    };
+
+    loadUser();
   }, []);
 
-  // Save user to localStorage whenever it changes
-  useEffect(() => {
-    if (state.user) {
-      localStorage.setItem("donekick-user", JSON.stringify(state.user));
-    } else {
-      localStorage.removeItem("donekick-user");
-    }
-  }, [state.user]);
+  // Không cần lưu user vào localStorage vì chúng ta sẽ sử dụng token để lấy thông tin user từ API
 
+  /**
+   * Đăng nhập người dùng với email/username và mật khẩu
+   * @param email - Email hoặc username
+   * @param password - Mật khẩu
+   */
   const login = async (email: string, password: string) => {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Gọi API đăng nhập thông qua authService
+      const response = await authService.login(email, password);
 
-      // Mock authentication - in real app, this would be an API call
-      if (email === "demo@donekick.com" && password === "password") {
-        const user: User = {
-          id: 1, // bigint(20) trong SQL
-          username: "Demo", // username varchar(255)
-          email: email, // email varchar(255)
-          password: undefined, // password varchar(255) - chỉ dùng khi cần thiết
-          avatar: "/images/avatars/default.png", // avatar varchar(255)
-          phone: "+1 (555) 123-4567", // phone varchar(255)
-          address: "123 Main St, New York, NY 10001", // address varchar(255)
-          gender: true, // gender bit(1) - true: nam, false: nữ
-          dayOfBirth: 1, // day_of_birth int(11)
-          monthOfBirth: 1, // month_of_birth int(11)
-          yearOfBirth: 1990, // year_of_birth int(11)
-          active: 1, // active int(11) - trạng thái hoạt động
-          // Audit fields
-          createBy: "system", // create_by varchar(255)
-          createDate: new Date(), // create_date datetime
-          modifierBy: "system", // modifier_by varchar(255)
-          modifierDate: new Date(), // modifier_date datetime
-        };
-        dispatch({ type: "LOGIN_SUCCESS", payload: user });
-      } else {
-        throw new Error("Invalid email or password");
+      // Lưu token vào localStorage
+      if (response.token) {
+        localStorage.setItem("token", response.token);
       }
+
+      if (response.refreshToken) {
+        localStorage.setItem("refreshToken", response.refreshToken);
+      }
+
+      // Lấy thông tin user từ response
+      const user = response;
+
+      // Cập nhật state với thông tin user
+      dispatch({ type: "LOGIN_SUCCESS", payload: user });
+
+      // Hiển thị thông báo thành công với useToast
+      toast({
+        title: "Đăng nhập thành công",
+        description: "Bạn đã đăng nhập vào hệ thống",
+        variant: "default",
+      });
+
+      return user;
     } catch (error) {
+      // Xử lý lỗi và cập nhật state
+      const errorMessage =
+        error.response?.data?.message || "Đăng nhập thất bại";
       dispatch({
         type: "LOGIN_FAILURE",
-        payload: error instanceof Error ? error.message : "Login failed",
+        payload: errorMessage,
+      });
+
+      // Hiển thị thông báo lỗi với useToast
+      toast({
+        title: "Đăng nhập thất bại",
+        description: errorMessage,
+        variant: "destructive",
       });
       throw error;
     }
   };
 
+  /**
+   * Đăng ký người dùng mới
+   * @param userData - Thông tin đăng ký
+   */
   const register = async (userData: RegisterData) => {
     dispatch({ type: "REGISTER_START" });
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Gọi API đăng ký thông qua authService
+      const response = await authService.register(userData);
 
-      // Mock registration
-      const user: User = {
-        id: 1, // bigint(20) trong SQL
-        username: userData.username, // username varchar(255)
-        email: userData.email, // email varchar(255)
-        password: undefined, // password varchar(255) - chỉ dùng khi cần thiết
-        avatar: "/images/avatars/default.png", // avatar varchar(255)
-        gender: true, // gender bit(1) - mặc định là nam
-        active: 1, // active int(11) - trạng thái hoạt động mặc định là active
-        // Audit fields
-        createBy: "system", // create_by varchar(255)
-        createDate: new Date(), // create_date datetime
-        modifierBy: "system", // modifier_by varchar(255)
-        modifierDate: new Date(), // modifier_date datetime
-      };
+      // Lưu token vào localStorage nếu API trả về token sau khi đăng ký
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+      }
 
+      if (response.refreshToken) {
+        localStorage.setItem("refreshToken", response.refreshToken);
+      }
+
+      // Lấy thông tin user từ response
+      const user = response.user;
+
+      // Cập nhật state với thông tin user
       dispatch({ type: "REGISTER_SUCCESS", payload: user });
+
+      // Hiển thị thông báo thành công với useToast
+      toast({
+        title: "Đăng ký thành công",
+        description: "Đăng ký tài khoản thành công!",
+        variant: "default",
+      });
+
+      return user;
     } catch (error) {
+      // Xử lý lỗi và cập nhật state
+      const errorMessage = error.response?.data?.message || "Đăng ký thất bại";
       dispatch({
         type: "REGISTER_FAILURE",
-        payload: error instanceof Error ? error.message : "Registration failed",
+        payload: errorMessage,
+      });
+
+      // Hiển thị thông báo lỗi với useToast
+      toast({
+        title: "Đăng ký thất bại",
+        description: errorMessage,
+        variant: "destructive",
       });
       throw error;
     }
   };
 
-  const logout = () => {
-    dispatch({ type: "LOGOUT" });
+  /**
+   * Đăng xuất người dùng
+   */
+  const logout = async () => {
+    try {
+      // Xóa token khỏi localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+
+      // Cập nhật state
+      dispatch({ type: "LOGOUT" });
+
+      // Hiển thị thông báo thành công với useToast
+      toast({
+        title: "Đăng xuất thành công",
+        description: "Bạn đã đăng xuất khỏi hệ thống",
+        variant: "default",
+      });
+    } catch (error) {
+      // Sử dụng toast thay vì console.error
+      toast({
+        title: "Lỗi đăng xuất",
+        description:
+          "Có lỗi xảy ra khi đăng xuất, nhưng phiên đăng nhập đã được xóa",
+        variant: "destructive",
+      });
+
+      // Xóa token khỏi localStorage ngay cả khi API thất bại
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+
+      // Cập nhật state
+      dispatch({ type: "LOGOUT" });
+    }
   };
 
+  /**
+   * Cập nhật thông tin người dùng
+   * @param userData - Thông tin cần cập nhật
+   */
   const updateProfile = async (userData: Partial<User>) => {
     if (!state.user) return;
 
     dispatch({ type: "UPDATE_PROFILE_START" });
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Gọi API cập nhật thông tin người dùng
+      const response = await authService.updateProfile(userData);
 
-      const updatedUser = { ...state.user, ...userData };
+      // Lấy thông tin user đã cập nhật từ response
+      const updatedUser = response;
+
+      // Cập nhật state với thông tin user mới
       dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: updatedUser });
+
+      // Hiển thị thông báo thành công với useToast
+      toast({
+        title: "Cập nhật thành công",
+        description: "Thông tin của bạn đã được cập nhật",
+        variant: "default",
+      });
+
+      return updatedUser;
     } catch (error) {
+      // Xử lý lỗi và cập nhật state
+      const errorMessage =
+        error.response?.data?.message || "Cập nhật thông tin thất bại";
       dispatch({
         type: "UPDATE_PROFILE_FAILURE",
-        payload:
-          error instanceof Error ? error.message : "Profile update failed",
+        payload: errorMessage,
+      });
+
+      // Hiển thị thông báo lỗi với useToast
+      toast({
+        title: "Cập nhật thất bại",
+        description: errorMessage,
+        variant: "destructive",
       });
       throw error;
     }
   };
 
+  /**
+   * Xóa thông báo lỗi
+   */
+  const clearError = () => {
+    dispatch({ type: "CLEAR_ERROR" });
+  };
+
+  /**
+   * Giá trị context được cung cấp cho các component con
+   */
   const value: UserContextType = {
     user: state.user,
     isAuthenticated: !!state.user,
@@ -221,6 +370,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     register,
     logout,
     updateProfile,
+    clearError,
     isLoading: state.isLoading,
     error: state.error,
   };
