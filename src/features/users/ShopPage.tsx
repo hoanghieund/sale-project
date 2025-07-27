@@ -21,7 +21,8 @@ const ShopPage = () => {
       id: "shop1",
       name: "Fashion Store VN",
       slug: shopSlug || "",
-      description: "Chuyên cung cấp thời trang nam nữ cao cấp, chính hãng với giá tốt nhất thị trường. Cam kết chất lượng và dịch vụ tận tâm cho khách hàng.",
+      description:
+        "Chuyên cung cấp thời trang nam nữ cao cấp, chính hãng với giá tốt nhất thị trường. Cam kết chất lượng và dịch vụ tận tâm cho khách hàng.",
       logo: "/images/shop-logo-1.jpg",
       banner: "/images/shop-banner-1.jpg",
       ownerId: "user1",
@@ -38,17 +39,17 @@ const ShopPage = () => {
         state: "Hồ Chí Minh",
         zipCode: "700000",
         country: "Việt Nam",
-        phone: "0901234567"
+        phone: "0901234567",
       },
       socialLinks: {
         facebook: "https://facebook.com/fashionstore",
-        instagram: "https://instagram.com/fashionstore"
+        instagram: "https://instagram.com/fashionstore",
       },
       policies: {
         returnPolicy: "Đổi trả trong 7 ngày",
         shippingPolicy: "Miễn phí ship đơn > 500k",
-        privacyPolicy: "Bảo mật thông tin khách hàng"
-      }
+        privacyPolicy: "Bảo mật thông tin khách hàng",
+      },
     };
 
     const mockProducts: Product[] = [
@@ -72,7 +73,7 @@ const ShopPage = () => {
         isFeatured: true,
         tags: ["áo sơ mi", "nam", "công sở"],
         createdAt: new Date("2024-01-01T00:00:00Z"),
-        updatedAt: new Date("2024-01-01T00:00:00Z")
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
       },
       {
         id: "2",
@@ -94,7 +95,7 @@ const ShopPage = () => {
         isFeatured: false,
         tags: ["quần jean", "nữ", "skinny"],
         createdAt: new Date("2024-01-02T00:00:00Z"),
-        updatedAt: new Date("2024-01-02T00:00:00Z")
+        updatedAt: new Date("2024-01-02T00:00:00Z"),
       },
       {
         id: "3",
@@ -115,7 +116,7 @@ const ShopPage = () => {
         isFeatured: true,
         tags: ["áo khoác", "bomber", "unisex"],
         createdAt: new Date("2024-01-03T00:00:00Z"),
-        updatedAt: new Date("2024-01-03T00:00:00Z")
+        updatedAt: new Date("2024-01-03T00:00:00Z"),
       },
       {
         id: "4",
@@ -137,7 +138,7 @@ const ShopPage = () => {
         isFeatured: false,
         tags: ["váy", "midi", "hoa nhí"],
         createdAt: new Date("2024-01-04T00:00:00Z"),
-        updatedAt: new Date("2024-01-04T00:00:00Z")
+        updatedAt: new Date("2024-01-04T00:00:00Z"),
       },
       {
         id: "5",
@@ -159,7 +160,7 @@ const ShopPage = () => {
         isFeatured: true,
         tags: ["giày", "sneaker", "nam"],
         createdAt: new Date("2024-01-05T00:00:00Z"),
-        updatedAt: new Date("2024-01-05T00:00:00Z")
+        updatedAt: new Date("2024-01-05T00:00:00Z"),
       },
       {
         id: "6",
@@ -180,8 +181,8 @@ const ShopPage = () => {
         isFeatured: true,
         tags: ["túi xách", "nữ", "da thật"],
         createdAt: new Date("2024-01-06T00:00:00Z"),
-        updatedAt: new Date("2024-01-06T00:00:00Z")
-      }
+        updatedAt: new Date("2024-01-06T00:00:00Z"),
+      },
     ];
 
     setShop(mockShop);
@@ -211,7 +212,9 @@ const ShopPage = () => {
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-4">
           <nav className="flex items-center space-x-2 text-sm">
-            <Link to="/" className="text-emerald-600 hover:text-emerald-700">Trang chủ</Link>
+            <Link to="/" className="text-emerald-600 hover:text-emerald-700">
+              Trang chủ
+            </Link>
             <span className="text-gray-400">/</span>
             <span className="text-gray-600">Cửa hàng</span>
             <span className="text-gray-400">/</span>
@@ -223,8 +226,8 @@ const ShopPage = () => {
       {/* Shop Banner */}
       <div className="relative h-64 bg-gradient-to-r from-emerald-500 to-teal-600">
         {shop.banner ? (
-          <img 
-            src={shop.banner} 
+          <img
+            src={shop.banner}
             alt={shop.name}
             className="w-full h-full object-cover"
           />
@@ -246,8 +249,8 @@ const ShopPage = () => {
             {/* Shop Logo */}
             <div className="w-32 h-32 bg-white rounded-full border-4 border-white shadow-lg overflow-hidden flex-shrink-0">
               {shop.logo ? (
-                <img 
-                  src={shop.logo} 
+                <img
+                  src={shop.logo}
                   alt={shop.name}
                   className="w-full h-full object-cover"
                 />
@@ -261,16 +264,20 @@ const ShopPage = () => {
             {/* Shop Details */}
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
-                <h1 className="text-3xl font-bold text-gray-900">{shop.name}</h1>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {shop.name}
+                </h1>
                 {shop.verified && (
                   <span className="bg-emerald-100 text-emerald-800 text-sm px-3 py-1 rounded-full flex items-center gap-1 w-fit">
                     ✓ Đã xác minh
                   </span>
                 )}
               </div>
-              
-              <p className="text-gray-600 mb-6 leading-relaxed">{shop.description}</p>
-              
+
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                {shop.description}
+              </p>
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
                   <span className="text-gray-500">Đánh giá:</span>
@@ -278,18 +285,26 @@ const ShopPage = () => {
                     <span className="text-yellow-400">★</span>
                     <span className="font-semibold">{shop.rating}</span>
                   </div>
-                  <div className="text-sm text-gray-600">Đánh giá trung bình</div>
+                  <div className="text-sm text-gray-600">
+                    Đánh giá trung bình
+                  </div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-emerald-600 mb-2">{shop.reviewCount.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-emerald-600 mb-2">
+                    {shop.reviewCount.toLocaleString()}
+                  </div>
                   <div className="text-sm text-gray-600">Lượt đánh giá</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-emerald-600 mb-2">{shop.totalProducts}</div>
+                  <div className="text-2xl font-bold text-emerald-600 mb-2">
+                    {shop.totalProducts}
+                  </div>
                   <div className="text-sm text-gray-600">Sản phẩm</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-emerald-600 mb-2">{shop.totalSales.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-emerald-600 mb-2">
+                    {shop.totalSales.toLocaleString()}
+                  </div>
                   <div className="text-sm text-gray-600">Đã bán</div>
                 </div>
               </div>
@@ -355,10 +370,12 @@ const ShopPage = () => {
               <div>
                 {/* Sort Controls */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                  <h2 className="text-xl font-semibold">Sản phẩm của cửa hàng</h2>
-                  <select 
-                    value={sortBy} 
-                    onChange={(e) => setSortBy(e.target.value)}
+                  <h2 className="text-xl font-semibold">
+                    Sản phẩm của cửa hàng
+                  </h2>
+                  <select
+                    value={sortBy}
+                    onChange={e => setSortBy(e.target.value)}
                     className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   >
                     <option value="newest">Mới nhất</option>
@@ -371,7 +388,7 @@ const ShopPage = () => {
 
                 {/* Products Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {products.map((product) => (
+                  {products.map(product => (
                     <Link
                       key={product.id}
                       to={`/product/${product.slug}`}
@@ -380,8 +397,8 @@ const ShopPage = () => {
                       {/* Product Image */}
                       <div className="aspect-square bg-gray-200 overflow-hidden relative">
                         {product.images[0] ? (
-                          <img 
-                            src={product.images[0]} 
+                          <img
+                            src={product.images[0]}
                             alt={product.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
@@ -390,7 +407,7 @@ const ShopPage = () => {
                             <span className="text-4xl text-gray-400">📦</span>
                           </div>
                         )}
-                        
+
                         {/* Badges */}
                         <div className="absolute top-2 left-2 flex flex-col gap-1">
                           {product.isFeatured && (
@@ -398,32 +415,39 @@ const ShopPage = () => {
                               Nổi bật
                             </span>
                           )}
-                          {product.originalPrice && product.originalPrice > product.price && (
-                            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-md font-medium">
-                              -{Math.round((1 - product.price / product.originalPrice) * 100)}%
-                            </span>
-                          )}
+                          {product.originalPrice &&
+                            product.originalPrice > product.price && (
+                              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-md font-medium">
+                                -
+                                {Math.round(
+                                  (1 - product.price / product.originalPrice) *
+                                    100
+                                )}
+                                %
+                              </span>
+                            )}
                         </div>
                       </div>
-                      
+
                       {/* Product Info */}
                       <div className="p-4">
                         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-emerald-600 transition-colors">
                           {product.name}
                         </h3>
-                        
+
                         {/* Price */}
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-lg font-bold text-emerald-600">
                             {product.price.toLocaleString()}đ
                           </span>
-                          {product.originalPrice && product.originalPrice > product.price && (
-                            <span className="text-sm text-gray-400 line-through">
-                              {product.originalPrice.toLocaleString()}đ
-                            </span>
-                          )}
+                          {product.originalPrice &&
+                            product.originalPrice > product.price && (
+                              <span className="text-sm text-gray-400 line-through">
+                                {product.originalPrice.toLocaleString()}đ
+                              </span>
+                            )}
                         </div>
-                        
+
                         {/* Rating and Sales */}
                         <div className="flex items-center justify-between text-sm text-gray-600">
                           <div className="flex items-center gap-1">
@@ -433,7 +457,7 @@ const ShopPage = () => {
                           </div>
                           <span>Đã bán {product.sold}</span>
                         </div>
-                        
+
                         {/* Stock Status */}
                         <div className="mt-2">
                           {product.inStock ? (
@@ -450,7 +474,7 @@ const ShopPage = () => {
                     </Link>
                   ))}
                 </div>
-                
+
                 {/* Show more products button */}
                 {products.length > 0 && (
                   <div className="text-center mt-8">
@@ -468,28 +492,42 @@ const ShopPage = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Địa chỉ</h3>
                   <p className="text-gray-600">
-                    {shop.address.street}, {shop.address.city}, {shop.address.state}, {shop.address.country}
+                    {shop.address.street}, {shop.address.city},{" "}
+                    {shop.address.state}, {shop.address.country}
                   </p>
                   {shop.address.phone && (
-                    <p className="text-gray-600">Điện thoại: {shop.address.phone}</p>
+                    <p className="text-gray-600">
+                      Điện thoại: {shop.address.phone}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">Liên kết mạng xã hội</h3>
+                  <h3 className="text-lg font-semibold mb-3">
+                    Liên kết mạng xã hội
+                  </h3>
                   <div className="flex gap-4">
                     {shop.socialLinks.website && (
-                      <a href={shop.socialLinks.website} className="text-blue-600 hover:underline">
+                      <a
+                        href={shop.socialLinks.website}
+                        className="text-blue-600 hover:underline"
+                      >
                         Website
                       </a>
                     )}
                     {shop.socialLinks.facebook && (
-                      <a href={shop.socialLinks.facebook} className="text-blue-600 hover:underline">
+                      <a
+                        href={shop.socialLinks.facebook}
+                        className="text-blue-600 hover:underline"
+                      >
                         Facebook
                       </a>
                     )}
                     {shop.socialLinks.instagram && (
-                      <a href={shop.socialLinks.instagram} className="text-blue-600 hover:underline">
+                      <a
+                        href={shop.socialLinks.instagram}
+                        className="text-blue-600 hover:underline"
+                      >
                         Instagram
                       </a>
                     )}
@@ -499,9 +537,16 @@ const ShopPage = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Chính sách</h3>
                   <div className="space-y-2">
-                    <p><strong>Đổi trả:</strong> {shop.policies.returnPolicy}</p>
-                    <p><strong>Vận chuyển:</strong> {shop.policies.shippingPolicy}</p>
-                    <p><strong>Bảo mật:</strong> {shop.policies.privacyPolicy}</p>
+                    <p>
+                      <strong>Đổi trả:</strong> {shop.policies.returnPolicy}
+                    </p>
+                    <p>
+                      <strong>Vận chuyển:</strong>{" "}
+                      {shop.policies.shippingPolicy}
+                    </p>
+                    <p>
+                      <strong>Bảo mật:</strong> {shop.policies.privacyPolicy}
+                    </p>
                   </div>
                 </div>
               </div>

@@ -1,18 +1,24 @@
-import { Link } from "react-router-dom";
-import { Product } from "@/types";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
-import { Eye, Heart, ShoppingCart, Star, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Product } from "@/types";
+import { Eye, Heart, ShoppingCart, Star, Store, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 /**
  * ProductCard - Component hiển thị card sản phẩm với đầy đủ tính năng
  * Được sử dụng trong trang danh mục, trang chi tiết danh mục con và các trang khác
  */
-interface ProductCardProps {
+interface ProductCardSimpleProps {
   product: Product;
   className?: string;
   /**
@@ -26,6 +32,12 @@ interface ProductCardProps {
    */
   showWishlist?: boolean;
   /**
+   * Hiển thị nút xóa khỏi danh sách yêu thích
+   * Thường được sử dụng trong trang Wishlist
+   * @default false
+   */
+  showRemoveFromWishlist?: boolean;
+  /**
    * Hiển thị nút xem nhanh
    * @default true
    */
@@ -37,19 +49,21 @@ interface ProductCardProps {
   simple?: boolean;
 }
 
-const ProductCard = ({
+const ProductCardSimple = ({
   product,
   className = "",
   showQuickAdd = true,
   showWishlist = true,
+  showRemoveFromWishlist = false,
   showQuickView = true,
-  simple = false
-}: ProductCardProps) => {
+  simple = false,
+}: ProductCardSimpleProps) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCart } = useCart();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  // isInWishlist đã được cập nhật để hỗ trợ cả kiểu string và number
   const isWishlisted = isInWishlist?.(product.id) || false;
 
   // Xử lý thêm vào danh sách yêu thích
@@ -58,6 +72,7 @@ const ProductCard = ({
     e.stopPropagation();
 
     if (isWishlisted && removeFromWishlist) {
+      // removeFromWishlist đã được cập nhật để hỗ trợ cả kiểu string và number
       removeFromWishlist(product.id);
     } else if (addToWishlist) {
       addToWishlist(product);
@@ -69,131 +84,121 @@ const ProductCard = ({
     e.preventDefault();
     e.stopPropagation();
 
-    // Kiểm tra xem sizes và colors có tồn tại không trước khi truy cập length
-    if (!product.sizes?.length || !product.colors?.length || !addToCart) return;
+    // Không còn trường sizes và colors trong Product mới
+    // Sử dụng ProductSku và VariantValue thay thế
+    if (!addToCart) return;
 
     setIsAddingToCart(true);
 
-    // Add with first available size and color
-    const firstAvailableSize = product.sizes.find(size => size.available);
-    const firstAvailableColor = product.colors.find(color => color.available);
-
-    if (firstAvailableSize && firstAvailableColor) {
-      addToCart(product, firstAvailableSize, firstAvailableColor, 1);
-    }
+    // Thêm sản phẩm vào giỏ hàng với các thông tin cơ bản
+    // Truyền null cho size và color vì giờ đây chúng được quản lý qua ProductSku
+    addToCart(product, null, null, 1);
 
     setTimeout(() => setIsAddingToCart(false), 1000);
   };
   return (
-    <div 
-      className={`w-full ${className}`}
+    <div
+      className={cn("w-full", className)}
       data-testid="product-card"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div 
-        className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col"
-      >
-        <div className="aspect-square bg-gray-200 flex items-center justify-center relative overflow-hidden">
-          <Link to={`/product/${product.slug}`} className="block h-full">
-            {product.images?.[0] ? (
-              <img 
-                src={product.images[0]} 
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            ) : (
-              <span className="text-4xl text-gray-400">📦</span>
-            )}
+      <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-xl">
+        <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
+          <Link to={`/product/${product.id}`} className="block h-full">
+            {/* Product không còn trường images, cần sử dụng bảng Images */}
+            <div className="w-full h-full flex items-center justify-center bg-background">
+              <span className="text-4xl text-muted-foreground">
+                {product.title?.charAt(0) || "📦"}
+              </span>
+            </div>
           </Link>
-          
+
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            {product.originalPrice && product.originalPrice > product.price && (
+            {product.discount?.percent && (
               <Badge
                 variant="destructive"
                 className="px-2 py-1 text-xs font-medium"
               >
-                -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+                -{product.discount?.percent}%
               </Badge>
             )}
-            {product.isFeatured && (
-              <Badge className="bg-emerald-500 text-white px-2 py-1 text-xs font-medium">
-                Nổi bật
+            {product.isNew && (
+              <Badge className="bg-primary text-primary-foreground px-2 py-1 text-xs font-medium">
+                Mới
               </Badge>
             )}
-            {product.sale && (
-              <Badge
-                variant="destructive"
-                className="px-2 py-1 text-xs font-medium"
-              >
-                Sale
+            {product.isTrending && (
+              <Badge className="bg-secondary text-secondary-foreground px-2 py-1 text-xs font-medium">
+                Xu hướng
               </Badge>
             )}
-            {product.inStock === false && (
-              <Badge
-                variant="outline"
-                className="bg-background/80 backdrop-blur-sm px-2 py-1 text-xs font-medium"
-              >
-                Hết hàng
+            {product.isFlashSale && (
+              <Badge className="bg-destructive text-destructive-foreground px-2 py-1 text-xs font-medium">
+                Flash Sale
               </Badge>
             )}
           </div>
-          
+
           {/* Action Buttons - Chỉ hiển thị khi không ở chế độ đơn giản */}
           {!simple && (
             <>
-              <div
-                className={cn(
-                  "absolute top-3 right-3 flex flex-col gap-2 transition-all duration-300",
-                  isHovered
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0 translate-x-5"
-                )}
-              >
-                {showWishlist && (
+              {/* Wishlist, Remove from Wishlist, and Quick View buttons */}
+              <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {showWishlist && !showRemoveFromWishlist && (
                   <Button
+                    variant="outline"
                     size="icon"
-                    variant="secondary"
-                    className={cn(
-                      "h-9 w-9 rounded-full bg-background/80 backdrop-blur-sm shadow-sm",
-                      isWishlisted && "text-red-500"
-                    )}
+                    className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-red-500 transition-colors"
                     onClick={handleWishlistToggle}
                     data-testid="wishlist-button"
                   >
-                    <Heart className={cn("h-4 w-4", isWishlisted && "fill-current")} />
+                    <Heart
+                      className={cn(
+                        "h-4 w-4",
+                        isWishlisted ? "fill-red-500 text-red-500" : ""
+                      )}
+                    />
                   </Button>
                 )}
-                
+                {showRemoveFromWishlist && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-red-500 transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (removeFromWishlist) {
+                        removeFromWishlist(product.id);
+                      }
+                    }}
+                    data-testid="remove-wishlist-button"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
                 {showQuickView && (
-                  <Link to={`/product/${product.slug}`} onClick={(e) => e.stopPropagation()}>
-                    <Button
-                      size="icon"
-                      variant="secondary"
-                      className="h-9 w-9 rounded-full bg-background/80 backdrop-blur-sm shadow-sm"
-                    >
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-primary transition-colors"
+                    asChild
+                  >
+                    <Link to={`/product/${product.id}`}>
                       <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 )}
               </div>
 
               {/* Quick Add Button */}
-              {showQuickAdd && (
-                <div
-                  className={cn(
-                    "absolute bottom-3 left-3 right-3 transition-all duration-300",
-                    isHovered
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-5"
-                  )}
-                >
-                  {product.inStock !== false &&
-                  product.sizes?.length > 0 &&
-                  product.colors?.length > 0 ? (
+              {showQuickAdd && isHovered && (
+                <div className="absolute bottom-3 left-3 right-3 transition-all duration-300">
+                  {product.status ? (
                     <Button
-                      className="w-full bg-emerald-600/90 hover:bg-emerald-600 text-white backdrop-blur-sm shadow-sm"
+                      className="w-full bg-primary/90 hover:bg-primary text-primary-foreground backdrop-blur-sm shadow-sm"
                       size="sm"
                       onClick={handleQuickAdd}
                       disabled={isAddingToCart}
@@ -204,84 +209,102 @@ const ProductCard = ({
                     </Button>
                   ) : (
                     <Button
-                      className="w-full bg-gray-200/90 text-gray-500 backdrop-blur-sm"
+                      className="w-full bg-muted text-muted-foreground backdrop-blur-sm"
                       size="sm"
                       disabled
                     >
-                      {product.inStock === false ? "Hết hàng" : "Xem chi tiết"}
+                      {product.status === false ? "Hết hàng" : "Xem chi tiết"}
                     </Button>
                   )}
                 </div>
               )}
             </>
           )}
-          
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
         </div>
-        <Link to={`/product/${product.slug}`} className="p-4 flex-1 flex flex-col">
-          {/* Shop name */}
-          <div className="flex items-center gap-1 mb-1">
-            <Store className="h-3.5 w-3.5 text-gray-500" />
-            <span className="text-xs text-gray-500 hover:text-emerald-600 transition-colors">
-              {product.shop?.name || product.shopId || "Shop"}
-            </span>
-          </div>
-          
-          {/* Product name */}
-          <h3 className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-emerald-600 transition-colors" data-testid="product-name">
-            {product.name}
-          </h3>
-          
-          {/* Description */}
-          <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
-          
-          {/* Rating */}
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center">
-              {simple ? (
-                <>
-                  <span className="text-yellow-400 text-sm">★</span>
-                  <span className="text-sm text-gray-600 ml-1">{product.rating}</span>
-                </>
-              ) : (
-                [...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={cn(
-                      "h-3.5 w-3.5",
-                      i < Math.floor(product.rating || 0)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "fill-none text-gray-300"
-                    )}
-                  />
-                ))
-              )}
-              <span className="text-xs text-gray-400 ml-1">({product.reviewCount || 0})</span>
-            </div>
-            <span className="text-xs text-gray-400">•</span>
-            <span className="text-xs text-gray-500">Đã bán {product.sold || 0}</span>
-          </div>
-          
-          {/* Price */}
-          <div className="flex items-center justify-between mt-auto">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-emerald-600">
-                {product.price.toLocaleString("vi-VN")}đ
+        <CardHeader className="p-4 pb-0">
+          <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
+            {/* Shop name */}
+            <div className="flex items-center gap-1 mb-1">
+              <Store className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                {product.shop?.name || product.shopId || "Shop"}
               </span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-sm text-gray-400 line-through">
-                  {product.originalPrice.toLocaleString("vi-VN")}đ
-                </span>
-              )}
             </div>
-            <div className="text-xs text-gray-500">
-              Còn {product.stock || 0}
+
+            {/* Product name */}
+            <h3
+              className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors"
+              data-testid="product-name"
+            >
+              {product.title}
+            </h3>
+
+            {/* Description */}
+            <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+              {product.content}
+            </p>
+          </Link>
+        </CardHeader>
+        <CardContent className="p-4 pt-0">
+          <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
+            {/* Rating */}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center">
+                {simple ? (
+                  <>
+                    <span className="text-yellow-400 text-sm">★</span>
+                    <span className="text-sm text-muted-foreground ml-1">
+                      {product.star || 0}
+                    </span>
+                  </>
+                ) : (
+                  [...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={cn(
+                        "h-3.5 w-3.5",
+                        i < Math.floor(product.star || 0)
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "fill-none text-muted"
+                      )}
+                    />
+                  ))
+                )}
+                {/* Số lượng đánh giá sẽ được tính từ bảng Feedback */}
+                <span className="text-xs text-muted-foreground ml-1">(0)</span>
+              </div>
+              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-xs text-muted-foreground">
+                Đã bán {product.totalProductSold || 0}
+              </span>
+            </div>
+          </Link>
+        </CardContent>
+        <CardFooter className="p-4 pt-0">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-primary">
+                {/* Product không còn trường price, cần sử dụng ProductSku */}
+                {product.discount ? (
+                  <span className="flex items-center">
+                    <span>Liên hệ</span>
+                    <span className="text-xs ml-2 bg-destructive/10 text-destructive px-1 py-0.5 rounded">
+                      -{product.discount.percent}%
+                    </span>
+                  </span>
+                ) : (
+                  "Liên hệ"
+                )}
+              </span>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {product.status ? "Còn hàng" : "Hết hàng"}
             </div>
           </div>
-        </Link>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
 
-export default ProductCard;
+export default ProductCardSimple;

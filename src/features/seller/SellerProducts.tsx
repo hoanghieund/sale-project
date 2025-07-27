@@ -23,17 +23,17 @@ const SellerProducts = () => {
     console.log("Add new product");
   };
 
-  const handleEditProduct = (productId: string) => {
+  const handleEditProduct = (productId: number) => {
     // TODO: Navigate to edit product page or open modal
     console.log("Edit product:", productId);
   };
 
-  const handleDeleteProduct = (productId: string) => {
+  const handleDeleteProduct = (productId: number) => {
     // TODO: Confirm and delete product
     console.log("Delete product:", productId);
   };
 
-  const handleToggleStatus = (productId: string) => {
+  const handleToggleStatus = (productId: number) => {
     // TODO: Toggle product active/inactive status
     console.log("Toggle status:", productId);
   };
@@ -156,13 +156,13 @@ const SellerProducts = () => {
                             )}
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                            <div className="text-sm font-medium text-gray-900">{product.title}</div>
                             <div className="text-sm text-gray-500">ID: {product.id}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.categoryId}
+                        {product.categoriesId}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {new Intl.NumberFormat('vi-VN', {
@@ -171,15 +171,15 @@ const SellerProducts = () => {
                         }).format(product.price)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.inStock ? "Còn hàng" : "Hết hàng"}
+                        {product.status ? "Còn hàng" : "Hết hàng"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          product.inStock 
+                          product.status 
                             ? "bg-green-100 text-green-800" 
                             : "bg-red-100 text-red-800"
                         }`}>
-                          {product.inStock ? "Đang bán" : "Hết hàng"}
+                          {product.status ? "Đang bán" : "Hết hàng"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -194,7 +194,7 @@ const SellerProducts = () => {
                             onClick={() => handleToggleStatus(product.id)}
                             className="text-yellow-600 hover:text-yellow-900"
                           >
-                            {product.inStock ? "Tạm ngưng" : "Kích hoạt"}
+                            {product.status ? "Tạm ngưng" : "Kích hoạt"}
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product.id)}

@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-import { Product } from "../../types";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,6 +6,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Link } from "react-router-dom";
+import { Product } from "../../../../types";
 
 interface ProductBreadcrumbProps {
   product: Product;
@@ -28,19 +28,23 @@ const ProductBreadcrumb = ({ product }: ProductBreadcrumbProps) => {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          
+
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link to={`/category/${product.category}`}>{product.category}</Link>
+              <Link to={`/category/${product.category}`}>
+                {product.category}
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          
+
           {product.subcategory && (
             <>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={`/category/${product.category}/${product.subcategory}`}>
+                  <Link
+                    to={`/category/${product.category}/${product.subcategory}`}
+                  >
                     {product.subcategory}
                   </Link>
                 </BreadcrumbLink>
@@ -48,7 +52,7 @@ const ProductBreadcrumb = ({ product }: ProductBreadcrumbProps) => {
               <BreadcrumbSeparator />
             </>
           )}
-          
+
           <BreadcrumbItem>
             <BreadcrumbPage>{product.name}</BreadcrumbPage>
           </BreadcrumbItem>

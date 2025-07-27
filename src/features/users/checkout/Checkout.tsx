@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/context/CartContext";
-import { ArrowLeft, CreditCard, Lock } from "lucide-react";
+import { OrderStatus } from "@/types";
+import { ArrowLeft, Lock } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import PaymentMethodSelector from "./components/PaymentMethodSelector";
 
 interface CheckoutForm {
   email: string;
@@ -20,7 +21,8 @@ interface CheckoutForm {
   zipCode: string;
   country: string;
   phone: string;
-  paymentMethod: "card" | "paypal";
+  paymentMethodId: number; // ID của phương thức thanh toán từ database
+  paymentMethodType: "card" | "paypal"; // Loại phương thức thanh toán cho UI
   cardNumber: string;
   expiryDate: string;
   cvv: string;
@@ -38,17 +40,26 @@ const Checkout = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutForm>({
     defaultValues: {
-      paymentMethod: "card",
+      paymentMethodType: "card",
+      paymentMethodId: 1, // Giả sử ID 1 là phương thức thanh toán thẻ mặc định
       sameAsBilling: true,
       saveInfo: false,
       country: "United States",
     },
   });
 
-  const paymentMethod = watch("paymentMethod");
+  const paymentMethodType = watch("paymentMethodType");
+  const paymentMethodId = watch("paymentMethodId");
+
+  // Handler khi thay đổi phương thức thanh toán
+  const handlePaymentMethodChange = (id: number, type: string) => {
+    setValue("paymentMethodId", id);
+    setValue("paymentMethodType", type as "card" | "paypal");
+  };
 
   if (cart.items.length === 0) {
     navigate("/cart");
@@ -58,12 +69,39 @@ const Checkout = () => {
   const onSubmit = async (data: CheckoutForm) => {
     setIsProcessing(true);
 
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Tạo đối tượng order với paymentMethod
+    const orderData = {
+      ...data,
+      items: cart.items,
+      totalPrice: cart.total,
+      status: OrderStatus.PENDING, // Sử dụng enum OrderStatus
+      timeOrder: new Date(),
+    };
 
-    // Clear cart and redirect to success page
-    clearCart();
-    navigate("/order-success");
+    try {
+      // Simulate payment processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      console.log("Order data:", orderData);
+
+      // Trong thực tế, gọi API để lưu đơn hàng
+      // const response = await fetch('/api/orders', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(orderData)
+      // });
+      // const result = await response.json();
+      // if (!result.success) throw new Error(result.message);
+
+      // Clear cart and redirect to success page
+      clearCart();
+      navigate("/order-success");
+    } catch (error) {
+      console.error("Lỗi khi xử lý thanh toán:", error);
+      // Hiển thị thông báo lỗi cho người dùng
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -208,21 +246,14 @@ const Checkout = () => {
               <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
                 <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
 
-                <RadioGroup defaultValue="card" {...register("paymentMethod")}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="card" id="card" />
-                    <Label htmlFor="card" className="flex items-center gap-2">
-                      <CreditCard className="h-4 w-4" />
-                      Credit Card
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="paypal" id="paypal" />
-                    <Label htmlFor="paypal">PayPal</Label>
-                  </div>
-                </RadioGroup>
+                {/* Sử dụng component PaymentMethodSelector mới */}
+                <PaymentMethodSelector
+                  value={paymentMethodId}
+                  onChange={handlePaymentMethodChange}
+                  register={register}
+                />
 
-                {paymentMethod === "card" && (
+                {paymentMethodType === "card" && (
                   <div className="mt-4 space-y-4">
                     <div>
                       <Label htmlFor="cardNumber">Card Number</Label>
@@ -317,8 +348,12 @@ const Checkout = () => {
                   <div key={item.id} className="flex gap-3">
                     <div className="w-16 h-16 flex-shrink-0">
                       <img
-                        src={item.product.images[0]}
-                        alt={item.product.name}
+                        src={
+                          item.product.images && item.product.images.length > 0
+                            ? item.product.images[0]
+                            : "/placeholder-image.jpg"
+                        }
+                        alt={item.product.title || "Sản phẩm"}
                         className="w-full h-full object-cover rounded"
                       />
                     </div>

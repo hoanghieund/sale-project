@@ -1,13 +1,13 @@
-import SubcategoryCard from "@/components/common/SubcategoryCard";
-import { Subcategory } from "@/types";
+import CategoryCard from "@/components/common/CategoryCard";
+import { Category } from "@/types";
 
 /**
  * FeaturedSubcategoriesSection Component
  * Hiển thị danh sách các danh mục con nổi bật.
- * @param {Subcategory[]} subcategories - Mảng các đối tượng danh mục con.
+ * @param {Category[]} subcategories - Mảng các đối tượng danh mục con (Category với parentId).
  */
 interface FeaturedSubcategoriesSectionProps {
-  subcategories: Subcategory[];
+  subcategories: Category[]; // Sử dụng Category thay vì Subcategory
 }
 
 const FeaturedSubcategoriesSection = ({
@@ -23,7 +23,11 @@ const FeaturedSubcategoriesSection = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {subcategories.map(subcategory => (
-            <SubcategoryCard key={subcategory.id} subcategory={subcategory} />
+            <CategoryCard 
+              key={subcategory.id} 
+              category={subcategory} 
+              linkTo={`/subcategory/${subcategory.id}`}
+            />
           ))}
         </div>
       </div>

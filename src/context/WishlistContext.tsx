@@ -4,8 +4,8 @@ import { Product, WishlistItem } from '../types';
 export interface WishlistContextType {
   wishlist: WishlistItem[];
   addToWishlist: (product: Product) => void;
-  removeFromWishlist: (productId: string) => void;
-  isInWishlist: (productId: string) => boolean;
+  removeFromWishlist: (productId: string | number) => void;
+  isInWishlist: (productId: string | number) => boolean;
   clearWishlist: () => void;
   getWishlistCount: () => number;
 }
@@ -14,7 +14,7 @@ export const WishlistContext = createContext<WishlistContextType | undefined>(un
 
 type WishlistAction =
   | { type: 'ADD_ITEM'; payload: Product }
-  | { type: 'REMOVE_ITEM'; payload: string }
+  | { type: 'REMOVE_ITEM'; payload: string | number }
   | { type: 'CLEAR_WISHLIST' }
   | { type: 'LOAD_WISHLIST'; payload: WishlistItem[] };
 
@@ -39,7 +39,8 @@ function wishlistReducer(state: WishlistItem[], action: WishlistAction): Wishlis
 
     case 'REMOVE_ITEM': {
       const productId = action.payload;
-      return state.filter(item => item.product.id !== productId);
+      // Chuyển đổi cả hai giá trị sang string để so sánh
+      return state.filter(item => String(item.product.id) !== String(productId));
     }
 
     case 'CLEAR_WISHLIST':
@@ -78,12 +79,13 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'ADD_ITEM', payload: product });
   };
 
-  const removeFromWishlist = (productId: string) => {
+  const removeFromWishlist = (productId: string | number) => {
     dispatch({ type: 'REMOVE_ITEM', payload: productId });
   };
 
-  const isInWishlist = (productId: string) => {
-    return wishlist.some(item => item.product.id === productId);
+  const isInWishlist = (productId: string | number) => {
+    // Chuyển đổi cả hai giá trị sang string để so sánh
+    return wishlist.some(item => String(item.product.id) === String(productId));
   };
 
   const clearWishlist = () => {

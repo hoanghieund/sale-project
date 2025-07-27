@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@/components/ui/card';
-import React from 'react';
+import { Card, CardContent } from "@/components/ui/card";
+import React from "react";
 
 interface ContactInfoCardProps {
   icon: React.ReactNode;
@@ -17,7 +17,12 @@ interface ContactInfoCardProps {
  * @param {string} [props.description] - Mô tả thêm về thông tin liên hệ.
  * @returns {JSX.Element} Component ContactInfoCard.
  */
-const ContactInfoCard: React.FC<ContactInfoCardProps> = ({ icon, title, value, description }) => {
+const ContactInfoCard: React.FC<ContactInfoCardProps> = ({
+  icon,
+  title,
+  value,
+  description,
+}) => {
   return (
     <Card className="flex items-start p-4 shadow-sm">
       <div className="mr-4 text-2xl text-blue-600">{icon}</div>

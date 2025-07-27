@@ -7,19 +7,19 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 const Home = lazy(() => import("@/features/users/home/Home"));
 const About = lazy(() => import("@/features/general/About"));
 const Account = lazy(() => import("@/features/auth/Account"));
-const Cart = lazy(() => import("@/features/users/Cart"));
-const Checkout = lazy(() => import("@/features/users/Checkout"));
+const Cart = lazy(() => import("@/features/users/cart/Cart"));
+const Checkout = lazy(() => import("@/features/users/checkout/Checkout"));
 const Contact = lazy(() => import("@/features/general/Contact"));
 const FAQ = lazy(() => import("@/features/general/FAQ"));
 const Login = lazy(() => import("@/features/auth/Login"));
 const NotFound = lazy(() => import("@/features/general/NotFound"));
 const OrderSuccess = lazy(() => import("@/features/users/OrderSuccess"));
 const ProductDetailPage = lazy(
-  () => import("@/features/users/ProductDetailPage")
+  () => import("@/features/users/product-detail/ProductDetailPage")
 );
-const Products = lazy(() => import("@/features/users/Products"));
+// const Products = lazy(() => import("@/features/users/Products"));
 const Register = lazy(() => import("@/features/auth/Register"));
-const Wishlist = lazy(() => import("@/features/users/Wishlist"));
+const Wishlist = lazy(() => import("@/features/users/wish-list/Wishlist"));
 
 // C2C Marketplace pages
 const CategoryPage = lazy(
@@ -53,9 +53,9 @@ const AppRouter = () => {
             <Route path="/" element={<Home />} />
 
             {/* Product routes */}
-            <Route path="/products" element={<Products />} />
+            {/* <Route path="/products" element={<Products />} /> */}
             <Route path="/product/:id" element={<ProductDetailPage />} />
-            <Route path="/search" element={<Products />} />
+            {/* <Route path="/search" element={<Products />} /> */}
 
             {/* C2C Marketplace routes */}
             <Route path="/category/:categorySlug" element={<CategoryPage />} />

@@ -1,8 +1,9 @@
 import { useUser } from "@/hooks/use-user";
-import { Category, Subcategory } from "@/types";
+import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import CallToActionSection from "./components/CallToActionSection";
 import CategoriesSection from "./components/CategoriesSection";
+import FeaturedProductsSection from "./components/FeaturedProductsSection";
 import FeaturedSubcategoriesSection from "./components/FeaturedSubcategoriesSection";
 import HeroSection from "./components/HeroSection";
 import StatsSection from "./components/StatsSection";
@@ -15,8 +16,9 @@ const Index = () => {
   const user = useUser();
   const [categories, setCategories] = useState<Category[]>([]);
   const [featuredSubcategories, setFeaturedSubcategories] = useState<
-    Subcategory[]
+    Category[]
   >([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,136 +26,257 @@ const Index = () => {
     // Tạm thời sử dụng mock data
     const mockCategories: Category[] = [
       {
-        id: "1",
+        id: 1,
         name: "Thời trang",
-        slug: "thoi-trang",
-        description: "Thời trang nam nữ đa dạng",
-        image: "/images/category-fashion.jpg",
         icon: "👕",
-        subcategoryIds: ["1", "2", "3"],
-        featured: true,
-        isActive: true,
-        sortOrder: 1,
-        productCount: 1250,
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 1250,
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "2",
+        id: 2,
         name: "Điện tử",
-        slug: "dien-tu",
-        description: "Thiết bị điện tử, công nghệ",
-        image: "/images/category-electronics.jpg",
         icon: "📱",
-        subcategoryIds: ["4", "5", "6"],
-        featured: true,
-        isActive: true,
-        sortOrder: 2,
-        productCount: 890,
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 890,
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "3",
+        id: 3,
         name: "Nhà cửa & Đời sống",
-        slug: "nha-cua-doi-song",
-        description: "Nội thất, trang trí nhà",
-        image: "/images/category-home.jpg",
         icon: "🏠",
-        subcategoryIds: ["7", "8", "9"],
-        featured: true,
-        isActive: true,
-        sortOrder: 3,
-        productCount: 650,
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 650,
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "4",
+        id: 4,
         name: "Thể thao & Du lịch",
-        slug: "the-thao-du-lich",
-        description: "Dụng cụ thể thao, đồ du lịch",
-        image: "/images/category-sports.jpg",
         icon: "⚽",
-        subcategoryIds: ["10", "11"],
-        featured: true,
-        isActive: true,
-        sortOrder: 4,
-        productCount: 420,
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 420,
+        createBy: "system",
+        createDate: new Date(),
       },
     ];
 
-    const mockSubcategories: Subcategory[] = [
+    const mockSubcategories: Category[] = [
       {
-        id: "1",
+        id: 5,
         name: "Áo nam",
-        slug: "ao-nam",
-        description: "Áo sơ mi, áo thun nam",
-        image: "/assets/product-1.jpg",
-        categoryId: "1",
-        featured: true,
-        isActive: true,
-        sortOrder: 1,
-        productCount: 350,
+        icon: "👕",
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 350,
+        parentId: 1, // Danh mục cha là "Thời trang"
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "2",
+        id: 6,
         name: "Áo nữ",
-        slug: "ao-nu",
-        description: "Áo sơ mi, áo thun nữ",
-        image: "/assets/product-2.jpg",
-        categoryId: "1",
-        featured: true,
-        isActive: true,
-        sortOrder: 2,
-        productCount: 420,
+        icon: "👗",
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 420,
+        parentId: 1, // Danh mục cha là "Thời trang"
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "4",
+        id: 7,
         name: "Điện thoại",
-        slug: "dien-thoai",
-        description: "Smartphone, điện thoại di động",
-        image: "/assets/product-3.jpg",
-        categoryId: "2",
-        featured: true,
-        isActive: true,
-        sortOrder: 1,
-        productCount: 280,
+        icon: "📱",
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 280,
+        parentId: 2, // Danh mục cha là "Điện tử"
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "5",
+        id: 8,
         name: "Laptop",
-        slug: "laptop",
-        description: "Laptop, máy tính xách tay",
-        image: "/assets/product-4.jpg",
-        categoryId: "2",
-        featured: true,
-        isActive: true,
-        sortOrder: 2,
-        productCount: 190,
+        icon: "💻",
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 190,
+        parentId: 2, // Danh mục cha là "Điện tử"
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "7",
+        id: 9,
         name: "Nội thất",
-        slug: "noi-that",
-        description: "Bàn, ghế, tủ, giường",
-        image: "/assets/product-5.jpg",
-        categoryId: "3",
-        featured: true,
-        isActive: true,
-        sortOrder: 1,
-        productCount: 320,
+        icon: "🛋",
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 320,
+        parentId: 3, // Danh mục cha là "Nhà cửa & Đời sống"
+        createBy: "system",
+        createDate: new Date(),
       },
       {
-        id: "10",
+        id: 10,
         name: "Dụng cụ thể thao",
-        slug: "dung-cu-the-thao",
-        description: "Bóng đá, bóng rổ, tennis",
-        image: "/assets/product-6.jpg",
-        categoryId: "4",
-        featured: true,
-        isActive: true,
-        sortOrder: 1,
-        productCount: 180,
+        icon: "⚽",
+        active: true,
+        isShowSuggests: true,
+        totalProduct: 180,
+        parentId: 4, // Danh mục cha là "Thể thao & Du lịch"
+        createBy: "system",
+        createDate: new Date(),
+      },
+    ];
+
+    // Mock data cho sản phẩm nổi bật
+    const mockFeaturedProducts: Product[] = [
+      {
+        id: 101,
+        title: "Áo thun nam cổ tròn",
+        content: "Áo thun nam cổ tròn chất liệu cotton 100%",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.5,
+        totalProductSold: 120,
+        isNew: true,
+        isFlashSale: false,
+        isTrending: true,
+        discount: { id: 1, percent: 10, status: true, createDate: new Date() },
+        categoriesId: 5,
+        shopId: 1,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 102,
+        title: "Quần jean nam slim fit",
+        content: "Quần jean nam slim fit màu xanh đậm",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.8,
+        totalProductSold: 85,
+        isNew: false,
+        isFlashSale: true,
+        isTrending: true,
+        discount: { id: 2, percent: 15, status: true, createDate: new Date() },
+        categoriesId: 5,
+        shopId: 2,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 103,
+        title: "Áo sơ mi nữ công sở",
+        content: "Áo sơ mi nữ công sở chất liệu lụa cao cấp",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.6,
+        totalProductSold: 95,
+        isNew: true,
+        isFlashSale: false,
+        isTrending: true,
+        categoriesId: 6,
+        shopId: 3,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 104,
+        title: "Váy liền thân dự tiệc",
+        content: "Váy liền thân dự tiệc màu đen sang trọng",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.9,
+        totalProductSold: 65,
+        isNew: true,
+        isFlashSale: true,
+        isTrending: true,
+        discount: { id: 3, percent: 20, status: true, createDate: new Date() },
+        categoriesId: 6,
+        shopId: 1,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 105,
+        title: "Điện thoại Samsung Galaxy S23",
+        content: "Điện thoại Samsung Galaxy S23 Ultra 256GB",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.7,
+        totalProductSold: 45,
+        isNew: true,
+        isFlashSale: false,
+        isTrending: true,
+        discount: { id: 4, percent: 5, status: true, createDate: new Date() },
+        categoriesId: 7,
+        shopId: 4,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 106,
+        title: "Laptop Dell XPS 13",
+        content: "Laptop Dell XPS 13 Intel Core i7 Gen 12",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.8,
+        totalProductSold: 30,
+        isNew: true,
+        isFlashSale: false,
+        isTrending: true,
+        categoriesId: 8,
+        shopId: 5,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 107,
+        title: "Ghế sofa phòng khách",
+        content: "Ghế sofa phòng khách chất liệu da cao cấp",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.5,
+        totalProductSold: 15,
+        isNew: false,
+        isFlashSale: true,
+        isTrending: true,
+        discount: { id: 1, percent: 10, status: true, createDate: new Date() },
+        categoriesId: 9,
+        shopId: 6,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 108,
+        title: "Bộ dụng cụ tập gym tại nhà",
+        content: "Bộ dụng cụ tập gym tại nhà đa năng",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.4,
+        totalProductSold: 50,
+        isNew: false,
+        isFlashSale: false,
+        isTrending: true,
+        discount: { id: 2, percent: 15, status: true, createDate: new Date() },
+        categoriesId: 10,
+        shopId: 7,
+        createBy: "system",
+        createDate: new Date(),
       },
     ];
 
     setCategories(mockCategories);
     setFeaturedSubcategories(mockSubcategories);
+    setFeaturedProducts(mockFeaturedProducts);
     setLoading(false);
   }, []);
 
@@ -172,6 +295,8 @@ const Index = () => {
       <CategoriesSection categories={categories} />
 
       <FeaturedSubcategoriesSection subcategories={featuredSubcategories} />
+
+      <FeaturedProductsSection products={featuredProducts} />
 
       <CallToActionSection />
 

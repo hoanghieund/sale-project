@@ -1,8 +1,8 @@
-import PolicyInfoCard from "@/components/common/PolicyInfoCard";
-import QuantitySelector from "@/components/common/QuantitySelector";
-import ProductBreadcrumb from "@/components/product/ProductBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
+import PolicyInfoCard from "@/features/users/product-detail/components/PolicyInfoCard";
+import ProductBreadcrumb from "@/features/users/product-detail/components/ProductBreadcrumb";
+import QuantitySelector from "@/features/users/product-detail/components/QuantitySelector";
 import { Product, Shop } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -11,10 +11,23 @@ import { Link, Navigate, useParams } from "react-router-dom";
  * ProductDetailPage - Trang chi tiết sản phẩm C2C Marketplace
  * Hiển thị thông tin sản phẩm, shop bán hàng và các sản phẩm liên quan
  */
+
+// Mở rộng kiểu Product để thêm các trường cần thiết cho UI
+interface ExtendedProduct extends Product {
+  images: string[];
+  price: number;
+  originalPrice: number;
+  stock: number;
+  reviewCount: number;
+  tags: string[];
+  slug: string;
+}
+
 const ProductDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { addToRecentlyViewed } = useRecentlyViewed();
-  const [product, setProduct] = useState<Product | null>(null);
+
+  const [product, setProduct] = useState<ExtendedProduct | null>(null);
   const [shop, setShop] = useState<Shop | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -23,39 +36,56 @@ const ProductDetailPage = () => {
   useEffect(() => {
     // TODO: Fetch product data from API based on slug
     // Tạm thời sử dụng mock data
-    const mockProduct: Product = {
-      id: "1",
-      name: "Áo sơ mi nam cao cấp",
-      slug: slug || "",
-      description: "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại, phù hợp cho công sở và dự tiệc. Chất liệu thoáng mát, form dáng chuẩn, dễ dàng phối đồ.",
-      price: 299000,
-      originalPrice: 399000,
+    const mockProduct: ExtendedProduct = {
+      id: 1,
+      title: "Áo sơ mi nam cao cấp",
+      description: "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại",
+      content:
+        "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại, phù hợp cho công sở và dự tiệc. Chất liệu thoáng mát, form dáng chuẩn, dễ dàng phối đồ.",
+      brand: "Brand A",
+      material: "Cotton",
+      origin: "Việt Nam",
+      style: "Modern",
+      star: 4.5,
+      totalProductSold: 120,
+      status: true,
+      isNew: true,
+      isFlashSale: false,
+      isTrending: true,
+      categoriesId: 1,
+      shopId: 1,
+      discountId: 1,
+      // Các trường mở rộng cho UI
       images: [
         "/images/product-1-1.jpg",
         "/images/product-1-2.jpg",
         "/images/product-1-3.jpg",
-        "/images/product-1-4.jpg"
+        "/images/product-1-4.jpg",
       ],
-      categoryId: "1",
-      subcategoryId: "1",
-      shopId: "shop1",
+      price: 299000,
+      originalPrice: 399000,
       stock: 50,
-      sold: 120,
-      rating: 4.5,
       reviewCount: 45,
-      inStock: true,
-      isActive: true,
-      isFeatured: true,
       tags: ["áo sơ mi", "nam", "công sở", "cao cấp"],
-      createdAt: new Date("2024-01-01T00:00:00Z"),
-      updatedAt: new Date("2024-01-01T00:00:00Z")
+      slug: slug || "",
+      // Thông tin discount
+      discount: {
+        id: 1,
+        name: "Giảm giá mùa hè",
+        percent: 25,
+        status: true,
+        createDate: new Date("2024-01-01"),
+      },
+      createDate: new Date("2024-01-01T00:00:00Z"),
+      modifierDate: new Date("2024-01-01T00:00:00Z"),
     };
 
     const mockShop: Shop = {
-      id: "shop1",
+      id: 1,
       name: "Fashion Store VN",
       slug: "fashion-store-vn",
-      description: "Chuyên cung cấp thời trang nam nữ cao cấp, chính hãng với giá tốt nhất thị trường.",
+      description:
+        "Chuyên cung cấp thời trang nam nữ cao cấp, chính hãng với giá tốt nhất thị trường.",
       logo: "/images/shop-logo-1.jpg",
       banner: "/images/shop-banner-1.jpg",
       ownerId: "user1",
@@ -65,7 +95,7 @@ const ProductDetailPage = () => {
         state: "Hồ Chí Minh",
         zipCode: "700000",
         country: "Việt Nam",
-        phone: "0901234567"
+        phone: "0901234567",
       },
       verified: true,
       rating: 4.8,
@@ -75,14 +105,14 @@ const ProductDetailPage = () => {
       isActive: true,
       socialLinks: {
         facebook: "https://facebook.com/fashionstore",
-        instagram: "https://instagram.com/fashionstore"
+        instagram: "https://instagram.com/fashionstore",
       },
       policies: {
         returnPolicy: "Đổi trả trong 7 ngày",
         shippingPolicy: "Miễn phí ship đơn > 500k",
-        privacyPolicy: "Bảo mật thông tin khách hàng"
+        privacyPolicy: "Bảo mật thông tin khách hàng",
       },
-      joinedAt: new Date("2023-01-01T00:00:00Z")
+      joinedAt: new Date("2023-01-01T00:00:00Z"),
     };
 
     setProduct(mockProduct);
@@ -127,9 +157,9 @@ const ProductDetailPage = () => {
           <div className="space-y-4">
             <div className="aspect-square bg-gray-200 rounded-xl overflow-hidden">
               {product.images[selectedImage] ? (
-                <img 
-                  src={product.images[selectedImage]} 
-                  alt={product.name}
+                <img
+                  src={product.images[selectedImage]}
+                  alt={product.title}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -138,7 +168,7 @@ const ProductDetailPage = () => {
                 </div>
               )}
             </div>
-            
+
             {/* Image Thumbnails */}
             <div className="grid grid-cols-4 gap-2">
               {product.images.map((image, index) => (
@@ -146,11 +176,17 @@ const ProductDetailPage = () => {
                   key={index}
                   onClick={() => setSelectedImage(index)}
                   className={`aspect-square bg-gray-200 rounded-lg overflow-hidden border-2 transition-colors ${
-                    selectedImage === index ? 'border-emerald-500' : 'border-transparent hover:border-gray-300'
+                    selectedImage === index
+                      ? "border-emerald-500"
+                      : "border-transparent hover:border-gray-300"
                   }`}
                 >
                   {image ? (
-                    <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
+                    <img
+                      src={image}
+                      alt={`${product.title} ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <span className="text-2xl text-gray-400">📦</span>
@@ -164,32 +200,45 @@ const ProductDetailPage = () => {
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
-              
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                {product.title}
+              </h1>
+
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center">
                   <span className="text-yellow-400 text-lg">★</span>
-                  <span className="text-lg font-medium ml-1">{product.rating}</span>
-                  <span className="text-gray-500 ml-1">({product.reviewCount} đánh giá)</span>
+                  <span className="text-lg font-medium ml-1">
+                    {product.star}
+                  </span>
+                  <span className="text-gray-500 ml-1">
+                    ({product.reviewCount} đánh giá)
+                  </span>
                 </div>
                 <span className="text-gray-400">•</span>
-                <span className="text-gray-600">Đã bán {product.sold}</span>
+                <span className="text-gray-600">
+                  Đã bán {product.totalProductSold}
+                </span>
               </div>
 
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-emerald-600">
                   {product.price.toLocaleString()}đ
                 </span>
-                {product.originalPrice && product.originalPrice > product.price && (
-                  <>
-                    <span className="text-xl text-gray-400 line-through">
-                      {product.originalPrice.toLocaleString()}đ
-                    </span>
-                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md text-sm font-medium">
-                      -{Math.round((1 - product.price / product.originalPrice) * 100)}%
-                    </span>
-                  </>
-                )}
+                {product.originalPrice &&
+                  product.originalPrice > product.price && (
+                    <>
+                      <span className="text-xl text-gray-400 line-through">
+                        {product.originalPrice.toLocaleString()}đ
+                      </span>
+                      <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md text-sm font-medium">
+                        -
+                        {Math.round(
+                          (1 - product.price / product.originalPrice) * 100
+                        )}
+                        %
+                      </span>
+                    </>
+                  )}
               </div>
             </div>
 
@@ -199,7 +248,11 @@ const ProductDetailPage = () => {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden">
                   {shop.logo ? (
-                    <img src={shop.logo} alt={shop.name} className="w-full h-full object-cover" />
+                    <img
+                      src={shop.logo}
+                      alt={shop.name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <span className="text-2xl">🏪</span>
@@ -207,14 +260,16 @@ const ProductDetailPage = () => {
                   )}
                 </div>
                 <div className="flex-1">
-                  <Link 
+                  <Link
                     to={`/shop/${shop.slug}`}
                     className="text-lg font-semibold text-emerald-600 hover:text-emerald-700"
                   >
                     {shop.name}
                   </Link>
                   <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                    <span>★ {shop.rating} ({shop.reviewCount} đánh giá)</span>
+                    <span>
+                      ★ {shop.rating} ({shop.reviewCount} đánh giá)
+                    </span>
                     <span>•</span>
                     <span>{shop.totalProducts} sản phẩm</span>
                     {shop.verified && (
@@ -225,7 +280,7 @@ const ProductDetailPage = () => {
                     )}
                   </div>
                 </div>
-                <Link 
+                <Link
                   to={`/shop/${shop.slug}`}
                   className="px-4 py-2 border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors"
                 >
@@ -261,10 +316,12 @@ const ProductDetailPage = () => {
             {/* Product Tags */}
             {product.tags && product.tags.length > 0 && (
               <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Tags:</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  Tags:
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {product.tags.map((tag, index) => (
-                    <span 
+                    <span
                       key={index}
                       className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm"
                     >
@@ -281,7 +338,7 @@ const ProductDetailPage = () => {
         <div className="bg-white rounded-xl shadow-sm border p-8 mb-8">
           <h2 className="text-2xl font-bold mb-6">Mô tả sản phẩm</h2>
           <div className="prose max-w-none">
-            <p className="text-gray-700 leading-relaxed">{product.description}</p>
+            <p className="text-gray-700 leading-relaxed">{product.content}</p>
           </div>
         </div>
 

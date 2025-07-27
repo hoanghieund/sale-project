@@ -1,5 +1,7 @@
 // Product Types - Dựa trên tbl_product
 export interface Product {
+  name: string;
+  images: any;
   id: number; // bigint(20) trong SQL
   title: string; // title trong SQL
   description?: string; // description text trong SQL
@@ -267,7 +269,7 @@ export interface Image {
   modifierDate?: Date; // modifier_date datetime
 }
 
-// Cart Types - Dựa trên tbl_cart
+//   Types - Dựa trên tbl_cart
 export interface Cart {
   id: number; // bigint(20) trong SQL
   quantity: number; // quantity int(11)
@@ -455,4 +457,11 @@ export interface ProductFilters {
 export interface SortOption {
   value: string;
   label: string;
+}
+
+// WishlistItem Types - Sử dụng trong WishlistContext
+export interface WishlistItem {
+  id: string;
+  product: Product;
+  addedAt: Date;
 }

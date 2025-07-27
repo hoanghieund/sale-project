@@ -1,5 +1,5 @@
-import PolicyInfoCard from "@/components/common/PolicyInfoCard";
 import { Button } from "@/components/ui/button";
+import PolicyInfoCard from "@/features/users/product-detail/components/PolicyInfoCard";
 import { CheckCircle, Mail, Package, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 

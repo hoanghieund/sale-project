@@ -23,7 +23,11 @@ const CategoriesSection = ({ categories }: CategoriesSectionProps) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {categories.map(category => (
-            <CategoryCard key={category.id} category={category} />
+            <CategoryCard 
+              key={category.id} 
+              category={category} 
+              linkTo={`/category/${category.id}`}
+            />
           ))}
         </div>
       </div>

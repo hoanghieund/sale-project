@@ -1,7 +1,15 @@
 import ProductCardSimple from "@/components/common/ProductCardSimple";
-import { Product, Subcategory } from "@/types";
+import CategoryInfo from "@/components/common/CategoryInfo";
+import { Product, Category } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+
+// Import các component Shadcn
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Badge } from "@/components/ui/badge";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 /**
  * SubcategoryPage - Trang hiển thị danh mục con
@@ -9,69 +17,51 @@ import { Link, useParams } from "react-router-dom";
  */
 const SubcategoryPage = () => {
   const { subcategorySlug } = useParams<{ subcategorySlug: string }>();
-  const [subcategory, setSubcategory] = useState<Subcategory | null>(null);
+  const [subcategory, setSubcategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
     // TODO: Fetch subcategory data from API
-    // Tạm thời sử dụng mock data dựa trên subcategorySlug
+    // Tạm thởi sử dụng mock data dựa trên subcategorySlug
     const getSubcategoryData = (slug: string) => {
       switch (slug) {
         case "ao-nam":
           return {
-            id: "1",
+            id: 101,
             name: "Áo nam",
-            slug: "ao-nam",
-            description: "Áo sơ mi, áo thun, áo khoác nam chất lượng cao",
-            image: "/images/subcategory-men-shirts.jpg",
             icon: "👔",
-            categoryId: "1",
-            category: {
-              id: "1",
+            active: true,
+            isShowSuggests: true,
+            totalProduct: 350,
+            parentId: 1,
+            parent: {
+              id: 1,
               name: "Thời trang",
-              slug: "thoi-trang",
-              description: "Thời trang nam nữ đa dạng",
-              image: "/images/category-fashion.jpg",
               icon: "👕",
-              subcategoryIds: ["1", "2", "3", "4"],
-              featured: true,
-              isActive: true,
-              sortOrder: 1,
-              productCount: 1250,
+              active: true,
+              isShowSuggests: true,
+              totalProduct: 1250,
             },
-            featured: true,
-            isActive: true,
-            sortOrder: 1,
-            productCount: 350,
           };
         default:
           return {
-            id: "1",
+            id: 101,
             name: "Áo nam",
-            slug: "ao-nam",
-            description: "Áo sơ mi, áo thun nam",
-            image: "/images/subcategory-men-shirts.jpg",
             icon: "👔",
-            categoryId: "1",
-            category: {
-              id: "1",
+            active: true,
+            isShowSuggests: true,
+            totalProduct: 50,
+            parentId: 1,
+            parent: {
+              id: 1,
               name: "Thời trang",
-              slug: "thoi-trang",
-              description: "Thời trang nam nữ",
-              image: "/images/category-fashion.jpg",
               icon: "👕",
-              subcategoryIds: ["1", "2"],
-              featured: true,
-              isActive: true,
-              sortOrder: 1,
-              productCount: 150,
+              active: true,
+              isShowSuggests: true,
+              totalProduct: 150,
             },
-            featured: true,
-            isActive: true,
-            sortOrder: 1,
-            productCount: 50,
           };
       }
     };
@@ -81,128 +71,284 @@ const SubcategoryPage = () => {
     // Mock products data
     const mockProducts: Product[] = [
       {
-        id: "1",
-        name: "Áo sơ mi nam cao cấp",
-        slug: "ao-so-mi-nam-cao-cap",
+        id: 1,
+        title: "Áo sơ mi nam cao cấp",
         description: "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại",
-        price: 299000,
-        originalPrice: 399000,
-        images: ["/images/product-1.jpg"],
-        categoryId: mockSubcategory.categoryId,
-        subcategoryId: mockSubcategory.id,
-        shopId: "shop1",
-        stock: 50,
-        sold: 120,
-        rating: 4.5,
-        reviewCount: 45,
-        inStock: true,
-        isActive: true,
-        isFeatured: true,
-        createdAt: new Date("2024-01-01T00:00:00Z"),
-        updatedAt: new Date("2024-01-01T00:00:00Z"),
+        content:
+          "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại, phù hợp cho nhiều dịp khác nhau",
+        brand: "Brand A",
+        material: "Cotton",
+        origin: "Việt Nam",
+        style: "Casual",
+        star: 4.5,
+        totalProductSold: 120,
+        status: true,
+        isNew: true,
+        isFlashSale: false,
+        isTrending: true,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 1,
+        discountId: 1,
+        discount: {
+          id: 1,
+          percent: 25,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-01T00:00:00Z"),
+        modifierDate: new Date("2024-01-01T00:00:00Z"),
       },
       {
-        id: "2",
-        name: "Áo thun nam basic",
-        slug: "ao-thun-nam-basic",
+        id: 2,
+        title: "Áo thun nam basic",
         description: "Áo thun nam basic, form rộng thoải mái",
-        price: 159000,
-        originalPrice: 199000,
-        images: ["/images/product-2.jpg"],
-        categoryId: mockSubcategory.categoryId,
-        subcategoryId: mockSubcategory.id,
-        shopId: "shop2",
-        stock: 30,
-        sold: 85,
-        rating: 4.3,
-        reviewCount: 32,
-        inStock: true,
-        isActive: true,
-        isFeatured: false,
-        createdAt: new Date("2024-01-02T00:00:00Z"),
-        updatedAt: new Date("2024-01-02T00:00:00Z"),
+        content:
+          "Áo thun nam basic, form rộng thoải mái, chất liệu cotton thoáng mát",
+        brand: "Brand B",
+        material: "Cotton",
+        origin: "Việt Nam",
+        style: "Basic",
+        star: 4.3,
+        totalProductSold: 85,
+        status: true,
+        isNew: false,
+        isFlashSale: false,
+        isTrending: false,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 2,
+        discountId: 2,
+        discount: {
+          id: 2,
+          percent: 20,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-02T00:00:00Z"),
+        modifierDate: new Date("2024-01-02T00:00:00Z"),
       },
       {
-        id: "3",
-        name: "Áo khoác nam da thời trang",
-        slug: "ao-khoac-nam-da-thoi-trang",
-        description: "Áo khoác nam chất liệu da thật, phong cách thời trang",
-        price: 899000,
-        originalPrice: 1200000,
-        images: ["/images/product-3.jpg"],
-        categoryId: mockSubcategory.categoryId,
-        subcategoryId: mockSubcategory.id,
-        shopId: "shop3",
-        stock: 15,
-        sold: 45,
-        rating: 4.8,
-        reviewCount: 28,
-        inStock: true,
-        isActive: true,
-        isFeatured: true,
-        createdAt: new Date("2024-01-03T00:00:00Z"),
-        updatedAt: new Date("2024-01-03T00:00:00Z"),
+        id: 3,
+        title: "Áo khoác nam bomber",
+        description: "Áo khoác bomber phong cách, chống nắng, chống gió",
+        content:
+          "Áo khoác bomber phong cách, chống nắng, chống gió, phù hợp cho mùa thu đông",
+        brand: "Brand C",
+        material: "Polyester",
+        origin: "Việt Nam",
+        style: "Casual",
+        star: 4.7,
+        totalProductSold: 62,
+        status: true,
+        isNew: true,
+        isFlashSale: true,
+        isTrending: true,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 1,
+        discountId: 3,
+        discount: {
+          id: 3,
+          percent: 23,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-03T00:00:00Z"),
+        modifierDate: new Date("2024-01-03T00:00:00Z"),
       },
       {
-        id: "4",
-        name: "Áo polo nam cao cấp",
-        slug: "ao-polo-nam-cao-cap",
-        description: "Áo polo nam chất liệu cotton, thoáng mát",
-        price: 249000,
-        images: ["/images/product-4.jpg"],
-        categoryId: mockSubcategory.categoryId,
-        subcategoryId: mockSubcategory.id,
-        shopId: "shop4",
-        stock: 35,
-        sold: 67,
-        rating: 4.4,
-        reviewCount: 41,
-        inStock: true,
-        isActive: true,
-        isFeatured: false,
-        createdAt: new Date("2024-01-04T00:00:00Z"),
-        updatedAt: new Date("2024-01-04T00:00:00Z"),
+        id: 4,
+        title: "Áo polo nam cổ bẻ",
+        description: "Áo polo nam cổ bẻ, chất liệu cao cấp",
+        content:
+          "Áo polo nam cổ bẻ, chất liệu cao cấp, thoáng mát, phù hợp cho mùa hè",
+        brand: "Brand D",
+        material: "Cotton",
+        origin: "Việt Nam",
+        style: "Smart Casual",
+        star: 4.4,
+        totalProductSold: 95,
+        status: true,
+        isNew: false,
+        isFlashSale: false,
+        isTrending: true,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 3,
+        discountId: 4,
+        discount: {
+          id: 4,
+          percent: 13,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-04T00:00:00Z"),
+        modifierDate: new Date("2024-01-04T00:00:00Z"),
       },
       {
-        id: "5",
-        name: "Áo hoodie nam unisex",
-        slug: "ao-hoodie-nam-unisex",
-        description: "Áo hoodie nam unisex, chất liệu nỉ mềm mại",
-        price: 329000,
-        originalPrice: 429000,
-        images: ["/images/product-5.jpg"],
-        categoryId: mockSubcategory.categoryId,
-        subcategoryId: mockSubcategory.id,
-        shopId: "shop5",
-        stock: 25,
-        sold: 93,
-        rating: 4.6,
-        reviewCount: 55,
-        inStock: true,
-        isActive: true,
-        isFeatured: true,
-        createdAt: new Date("2024-01-05T00:00:00Z"),
-        updatedAt: new Date("2024-01-05T00:00:00Z"),
+        id: 5,
+        title: "Áo len nam dày dặn",
+        description: "Áo len nam dày dặn, giữ ấm tốt mùa đông",
+        content:
+          "Áo len nam dày dặn, giữ ấm tốt mùa đông, chất liệu len cao cấp",
+        brand: "Brand E",
+        material: "Wool",
+        origin: "Việt Nam",
+        style: "Winter",
+        star: 4.6,
+        totalProductSold: 48,
+        status: true,
+        isNew: false,
+        isFlashSale: false,
+        isTrending: false,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 2,
+        discountId: 5,
+        discount: {
+          id: 5,
+          percent: 10,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-05T00:00:00Z"),
+        modifierDate: new Date("2024-01-05T00:00:00Z"),
       },
       {
-        id: "6",
-        name: "Áo sơ mi nam công sở",
-        slug: "ao-so-mi-nam-cong-so",
-        description: "Áo sơ mi nam công sở, phù hợp đi làm",
-        price: 379000,
-        images: ["/images/product-6.jpg"],
-        categoryId: mockSubcategory.categoryId,
-        subcategoryId: mockSubcategory.id,
-        shopId: "shop6",
-        stock: 40,
-        sold: 78,
-        rating: 4.2,
-        reviewCount: 36,
-        inStock: true,
-        isActive: true,
-        isFeatured: false,
-        createdAt: new Date("2024-01-06T00:00:00Z"),
-        updatedAt: new Date("2024-01-06T00:00:00Z"),
+        id: 6,
+        title: "Áo sơ mi nam trắng công sở",
+        description: "Áo sơ mi nam trắng, chất liệu cotton pha polyester",
+        content:
+          "Áo sơ mi nam trắng, chất liệu cotton pha polyester, phù hợp cho công sở",
+        brand: "Brand F",
+        material: "Cotton Polyester",
+        origin: "Việt Nam",
+        style: "Formal",
+        star: 4.8,
+        totalProductSold: 130,
+        status: true,
+        isNew: false,
+        isFlashSale: false,
+        isTrending: false,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 1,
+        discountId: 6,
+        discount: {
+          id: 6,
+          percent: 7,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-06T00:00:00Z"),
+        modifierDate: new Date("2024-01-06T00:00:00Z"),
+      },
+      {
+        id: 7,
+        title: "Áo thun nam in hình",
+        description: "Áo thun nam in hình phong cách, trẻ trung",
+        content:
+          "Áo thun nam in hình phong cách, trẻ trung, chất liệu cotton thoáng mát",
+        brand: "Brand G",
+        material: "Cotton",
+        origin: "Việt Nam",
+        style: "Streetwear",
+        star: 4.2,
+        totalProductSold: 78,
+        status: true,
+        isNew: true,
+        isFlashSale: true,
+        isTrending: false,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 3,
+        discountId: 7,
+        discount: {
+          id: 7,
+          percent: 13,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-07T00:00:00Z"),
+        modifierDate: new Date("2024-01-07T00:00:00Z"),
+      },
+      {
+        id: 8,
+        title: "Áo sơ mi nam kẻ sọc",
+        description: "Áo sơ mi nam kẻ sọc, phong cách trẻ trung",
+        content:
+          "Áo sơ mi nam kẻ sọc, phong cách trẻ trung, chất liệu cotton cao cấp",
+        brand: "Brand H",
+        material: "Cotton",
+        origin: "Việt Nam",
+        style: "Casual",
+        star: 4.5,
+        totalProductSold: 65,
+        status: true,
+        isNew: false,
+        isFlashSale: false,
+        isTrending: true,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 2,
+        discountId: 8,
+        discount: {
+          id: 8,
+          percent: 12,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-08T00:00:00Z"),
+        modifierDate: new Date("2024-01-08T00:00:00Z"),
+      },
+      {
+        id: 9,
+        title: "Áo thun nam oversize",
+        description: "Áo thun nam oversize, phong cách đường phố",
+        content:
+          "Áo thun nam oversize, phong cách đường phố, chất liệu cotton mềm mại",
+        brand: "Brand I",
+        material: "Cotton",
+        origin: "Việt Nam",
+        style: "Streetwear",
+        star: 4.4,
+        totalProductSold: 112,
+        status: true,
+        isNew: true,
+        isFlashSale: false,
+        isTrending: true,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 3,
+        discountId: 9,
+        discount: {
+          id: 9,
+          percent: 14,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-09T00:00:00Z"),
+        modifierDate: new Date("2024-01-09T00:00:00Z"),
+      },
+      {
+        id: 10,
+        title: "Áo sơ mi nam dài tay",
+        description: "Áo sơ mi nam dài tay, chất liệu cao cấp",
+        content:
+          "Áo sơ mi nam dài tay, chất liệu cao cấp, phù hợp cho mùa thu đông",
+        brand: "Brand J",
+        material: "Cotton",
+        origin: "Việt Nam",
+        style: "Formal",
+        star: 4.6,
+        totalProductSold: 87,
+        status: true,
+        isNew: false,
+        isFlashSale: false,
+        isTrending: false,
+        categoriesId: mockSubcategory.parentId,
+        shopId: 1,
+        discountId: 10,
+        discount: {
+          id: 10,
+          percent: 8,
+          status: true,
+          createDate: new Date("2024-01-01"),
+        },
+        createDate: new Date("2024-01-10T00:00:00Z"),
+        modifierDate: new Date("2024-01-10T00:00:00Z"),
       },
     ];
 
@@ -213,7 +359,43 @@ const SubcategoryPage = () => {
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
-    // TODO: Implement sorting logic
+    console.log(`Đã chọn sắp xếp theo: ${value}`);
+
+    // Logic sắp xếp sản phẩm
+    let sortedProducts = [...products];
+
+    switch (value) {
+      case "price-low":
+        // Giả định rằng product có trường price
+        // Khi có API thực tế, có thể gọi API với tham số sắp xếp
+        sortedProducts.sort((a, b) => {
+          // Tạm thời dùng id để demo, thay bằng price khi có dữ liệu thực
+          return a.id - b.id;
+        });
+        break;
+      case "price-high":
+        sortedProducts.sort((a, b) => {
+          // Tạm thời dùng id để demo, thay bằng price khi có dữ liệu thực
+          return b.id - a.id;
+        });
+        break;
+      case "popular":
+        sortedProducts.sort((a, b) => b.totalProductSold - a.totalProductSold);
+        break;
+      case "rating":
+        sortedProducts.sort((a, b) => b.star - a.star);
+        break;
+      case "newest":
+      default:
+        sortedProducts.sort(
+          (a, b) =>
+            new Date(b.createDate).getTime() - new Date(a.createDate).getTime()
+        );
+        break;
+    }
+
+    // Cập nhật danh sách sản phẩm đã sắp xếp
+    setProducts(sortedProducts);
   };
 
   if (loading) {
@@ -227,7 +409,7 @@ const SubcategoryPage = () => {
   if (!subcategory) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Không tìm thấy danh mục con</div>
+        <div className="text-lg">Không tìm thấy danh mục</div>
       </div>
     );
   }
@@ -237,79 +419,73 @@ const SubcategoryPage = () => {
       {/* Breadcrumb */}
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-4">
-          <nav className="flex items-center space-x-2 text-sm">
-            <Link to="/" className="text-emerald-600 hover:text-emerald-700">
-              Trang chủ
-            </Link>
-            <span className="text-gray-400">/</span>
-            <Link
-              to={`/category/${subcategory.category?.slug}`}
-              className="text-emerald-600 hover:text-emerald-700"
-            >
-              {subcategory.category?.name}
-            </Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-600">{subcategory.name}</span>
-          </nav>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/">Trang chủ</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to="/categories">Danh mục</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link to={`/category/${subcategory.parent?.id}`}>
+                    {subcategory.parent?.name}
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{subcategory.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Subcategory Header */}
-        <div className="mb-12">
-          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-8">
-            <div className="flex items-center gap-6">
-              <div className="bg-white rounded-full p-4 shadow-lg">
-                <span className="text-5xl">{subcategory.icon}</span>
-              </div>
-              <div className="flex-1">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                  {subcategory.name}
-                </h1>
-                <p className="text-gray-600 text-lg mb-3">
-                  {subcategory.description}
-                </p>
-                <div className="flex items-center gap-4">
-                  <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium">
-                    {subcategory.productCount.toLocaleString()} sản phẩm
-                  </span>
-                  <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-                    Danh mục: {subcategory.category?.name}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Sử dụng component CategoryInfo */}
+        <CategoryInfo 
+          category={subcategory} 
+          parentCategory={subcategory.parent} 
+          type="subcategory" 
+        />
 
         {/* Filters and Sort */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <span className="text-gray-600 font-medium">
-                Hiển thị {products.length} / {subcategory.productCount} sản phẩm
-              </span>
-            </div>
+        <Card className="mb-8">
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-gray-600 font-medium">
+                  Hiển thị {products.length} / {subcategory.totalProduct} sản
+                  phẩm
+                </span>
+              </div>
 
-            <div className="flex items-center gap-4">
-              <label htmlFor="sort" className="text-gray-600 font-medium">
-                Sắp xếp theo:
-              </label>
-              <select
-                id="sort"
-                value={sortBy}
-                onChange={e => handleSortChange(e.target.value)}
-                className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              >
-                <option value="newest">Mới nhất</option>
-                <option value="price-low">Giá thấp đến cao</option>
-                <option value="price-high">Giá cao đến thấp</option>
-                <option value="popular">Phổ biến nhất</option>
-                <option value="rating">Đánh giá cao nhất</option>
-              </select>
+              <div className="flex items-center gap-4">
+                <span className="text-gray-600 font-medium">Sắp xếp theo:</span>
+                <Select value={sortBy} onValueChange={handleSortChange}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sắp xếp theo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Mới nhất</SelectItem>
+                    <SelectItem value="price-low">Giá thấp đến cao</SelectItem>
+                    <SelectItem value="price-high">Giá cao đến thấp</SelectItem>
+                    <SelectItem value="popular">Phổ biến nhất</SelectItem>
+                    <SelectItem value="rating">Đánh giá cao nhất</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
@@ -318,35 +494,44 @@ const SubcategoryPage = () => {
               <ProductCardSimple key={product.id} product={product} />
             ))
           ) : (
-            <div className="text-center text-gray-500 col-span-full py-12">
-              <div className="text-6xl mb-4">🛍️</div>
-              <p className="text-lg">Chưa có sản phẩm</p>
-              <p className="text-sm">
-                Hãy quay lại sau để xem các sản phẩm mới nhất
-              </p>
-            </div>
+            <Card className="text-center text-gray-500 col-span-full py-12">
+              <CardContent>
+                <div className="text-6xl mb-4">🛍️</div>
+                <CardTitle className="text-lg mb-2">Chưa có sản phẩm</CardTitle>
+                <CardDescription>
+                  Hãy quay lại sau để xem các sản phẩm mới nhất
+                </CardDescription>
+              </CardContent>
+            </Card>
           )}
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center">
-          <nav className="flex items-center gap-2">
-            <button className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              Trước
-            </button>
-            <button className="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg">
-              1
-            </button>
-            <button className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              2
-            </button>
-            <button className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              3
-            </button>
-            <button className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              Sau
-            </button>
-          </nav>
+        <div className="flex justify-center mt-8">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#" isActive>
+                  1
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">2</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink href="#">3</PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       </div>
     </div>

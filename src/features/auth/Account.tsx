@@ -16,7 +16,7 @@ import { Edit, Heart, LogOut, Package, Settings, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import EmptyState from "@/components/common/EmptyState";
+// import EmptyState from "@/components/common/EmptyState";
 import ProductCard from "@/components/common/ProductCardSimple";
 import { useWishlist } from "@/context/WishlistContext";
 
@@ -211,15 +211,16 @@ const Account = () => {
                   ))}
                 </div>
               ) : (
-                <EmptyState
-                  icon={
-                    <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  }
-                  title="Không có địa chỉ nào được lưu"
-                  message="Bạn chưa lưu địa chỉ nào. Vui lòng thêm địa chỉ để thuận tiện hơn khi thanh toán."
-                  buttonText="Thêm địa chỉ"
-                  buttonLink="/account/addresses/new"
-                />
+                <></>
+                // <EmptyState
+                //   icon={
+                //     <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                //   }
+                //   title="Không có địa chỉ nào được lưu"
+                //   message="Bạn chưa lưu địa chỉ nào. Vui lòng thêm địa chỉ để thuận tiện hơn khi thanh toán."
+                //   buttonText="Thêm địa chỉ"
+                //   buttonLink="/account/addresses/new"
+                // />
               )}
             </CardContent>
           </Card>
