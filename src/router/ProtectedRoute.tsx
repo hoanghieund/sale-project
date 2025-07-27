@@ -1,7 +1,7 @@
-import { useEffect } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
+import { useEffect } from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 /**
  * Component bảo vệ các route cần xác thực
@@ -23,15 +23,6 @@ const ProtectedRoute = () => {
       });
     }
   }, [isAuthenticated, isLoading, toast]);
-
-  // Nếu đang tải, có thể hiển thị loading spinner
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        Đang tải...
-      </div>
-    );
-  }
 
   // Nếu không xác thực, chuyển hướng đến trang đăng nhập với returnUrl
   if (!isAuthenticated) {

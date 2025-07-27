@@ -71,7 +71,21 @@ export const authService = {
    * @param email - Email đăng ký
    * @returns Promise xác nhận yêu cầu đặt lại mật khẩu thành công
    */
+  /**
+   * Yêu cầu đặt lại mật khẩu
+   * @param email - Email đăng ký
+   * @returns Promise xác nhận yêu cầu đặt lại mật khẩu thành công
+   */
   requestPasswordReset: (email: string) => {
+    return Axios.post("/api/auth/forgot-password", { email });
+  },
+
+  /**
+   * Gửi yêu cầu khôi phục mật khẩu
+   * @param email - Email của người dùng
+   * @returns Promise xác nhận yêu cầu đã được gửi
+   */
+  forgotPassword: (email: string) => {
     return Axios.post("/api/auth/forgot-password", { email });
   },
 
