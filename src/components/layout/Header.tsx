@@ -14,15 +14,17 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
+  SheetTrigger
 } from "@/components/ui/sheet";
 import {
   ChevronDown,
   Heart,
+  LogIn,
   Menu,
   Search,
   ShoppingBag,
-  User,
+  User, // Import LogIn icon
+  UserPlus,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -30,6 +32,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { NAVIGATION_MENU } from "../../data/constants";
+import { useUser } from "../../hooks/use-user"; // Import useUser hook
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,6 +42,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { getCartItemsCount } = useCart();
   const { getWishlistCount } = useWishlist();
+  const { user, isAuthenticated } = useUser(); // Use useUser hook
 
   // Handle scroll effect for header
   useEffect(() => {
@@ -78,7 +82,7 @@ const Header = () => {
           <div className="flex items-center justify-between py-2.5">
             {/* Mobile Search - Top Row */}
             {isSearchOpen && (
-              <div className="md:hidden py-1.5 animate-in fade-in slide-in-from-top duration-300">
+              <div className="md:hidden absolute top-0 left-0 right-0 z-50 bg-background py-3 px-4 animate-in fade-in slide-in-from-top duration-300">
                 <form
                   onSubmit={handleSearch}
                   className="flex items-center gap-2"
@@ -171,14 +175,6 @@ const Header = () => {
                 <SheetContent side="left" className="w-80">
                   <SheetHeader className="flex justify-between items-center pr-4">
                     <SheetTitle>Menu</SheetTitle>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full hover:bg-primary/10"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
                   </SheetHeader>
                   <MobileNavigation
                     onClose={() => setIsMobileMenuOpen(false)}
@@ -196,63 +192,81 @@ const Header = () => {
 
             {/* Icons */}
             <div className="flex items-center gap-4">
-              <Link to="/account">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full hover:bg-primary/10"
-                >
-                  <User className="h-5 w-5" />
-                </Button>
-              </Link>
-
-              {/* Mobile Search */}
-              <div className="md:hidden">
-                <Button variant="ghost" size="icon">
-                  <Search className="h-5 w-5" />
-                </Button>
-              </div>
-
-              <Link to="/wishlist" className="relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-full hover:bg-primary/10"
-                >
-                  <Heart className="h-5 w-5" />
-                  {getWishlistCount() > 0 && (
-                    <Badge
-                      variant="destructive"
-                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+              {isAuthenticated ? (
+                <>
+                  <Link to="/account">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full hover:bg-primary/10"
                     >
-                      {getWishlistCount()}
-                    </Badge>
-                  )}
-                </Button>
-              </Link>
+                      <User className="h-5 w-5" />
+                    </Button>
+                  </Link>
 
-              <Link to="/cart" className="relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-full hover:bg-primary/10"
-                >
-                  <ShoppingBag className="h-5 w-5" />
-                  {getCartItemsCount() > 0 && (
-                    <Badge
-                      variant="destructive"
-                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  <Link to="/wishlist" className="relative">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative rounded-full hover:bg-primary/10"
                     >
-                      {getCartItemsCount()}
-                    </Badge>
-                  )}
-                </Button>
-              </Link>
+                      <Heart className="h-5 w-5" />
+                      {getWishlistCount() > 0 && (
+                        <Badge
+                          variant="destructive"
+                          className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                        >
+                          {getWishlistCount()}
+                        </Badge>
+                      )}
+                    </Button>
+                  </Link>
+
+                  <Link to="/cart" className="relative">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative rounded-full hover:bg-primary/10"
+                    >
+                      <ShoppingBag className="h-5 w-5" />
+                      {getCartItemsCount() > 0 && (
+                        <Badge
+                          variant="destructive"
+                          className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                        >
+                          {getCartItemsCount()}
+                        </Badge>
+                      )}
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link to="/login">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full hover:bg-primary/10"
+                    >
+                      <LogIn className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full hover:bg-primary/10"
+                    >
+                      <UserPlus className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Bottom Row - Navigation */}
-          <nav className="hidden lg:flex py-2 justify-center border-t border-border">
+          <nav className="hidden md:flex py-2 justify-center border-t border-border">
             <NavigationMenu>
               <NavigationMenuList className="gap-8">
                 {NAVIGATION_MENU.map(item => (
@@ -263,10 +277,10 @@ const Header = () => {
                           {item.label}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                          <div className="grid gap-3 p-6 w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                          <div className="grid gap-3 p-6 w-[750px] grid-cols-3">
                             {item.children.map(child => (
                               <div key={child.id}>
-                                <NavigationMenuLink asChild>
+                                <NavigationMenuLink className="bg-card" asChild>
                                   <Link
                                     to={child.href}
                                     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
