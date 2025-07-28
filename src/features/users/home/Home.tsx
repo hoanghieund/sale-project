@@ -1,11 +1,10 @@
 import { productService } from "@/features/users/home/services/productService";
-import { categoryService } from "@/services/categoryService";
-import { Category, Product } from "@/types";
+import { Product } from "@/types";
 import { useEffect, useState } from "react";
+import { AllProductsSection } from "./components/AllProductsSection"; // Import AllProductsSection
 import CallToActionSection from "./components/CallToActionSection";
-import CategoriesSection from "./components/CategoriesSection";
+import DiscountedProductsSection from "./components/DiscountedProductsSection"; // Import DiscountedProductsSection
 import FeaturedProductsSection from "./components/FeaturedProductsSection";
-import FeaturedSubcategoriesSection from "./components/FeaturedSubcategoriesSection";
 import HeroSection from "./components/HeroSection";
 import StatsSection from "./components/StatsSection";
 
@@ -14,28 +13,34 @@ import StatsSection from "./components/StatsSection";
  * Hiển thị hero section, categories và subcategories nổi bật
  */
 const Index = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [featuredSubcategories, setFeaturedSubcategories] = useState<
-    Category[]
-  >([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [discountedProducts, setDiscountedProducts] = useState<Product[]>([]); // Thêm state cho sản phẩm giảm giá
+  const [allProducts, setAllProducts] = useState<Product[]>([]); // State cho tất cả sản phẩm
+  const [currentPage, setCurrentPage] = useState<number>(1); // State cho trang hiện tại
+  const [totalPages, setTotalPages] = useState<number>(1); // State cho tổng số trang
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoriesResponse, featuredSubcategoriesResponse, featuredProductsResponse] = await Promise.allSettled([
-          categoryService.getCategories(0, 10),
-          categoryService.getCategoryTree(0, 10),
+        const [
+          featuredProductsResponse,
+          discountedProductsResponse,
+          allProductsResponse,
+        ] = await Promise.allSettled([
           productService.getFeaturedProducts(),
+          productService.getDiscountedProducts(), // Gọi service để lấy sản phẩm giảm giá
+          productService.getAllProductsWithPagination(currentPage - 1, 40), // Lấy tất cả sản phẩm với phân trang
         ]);
-        if (categoriesResponse.status === "fulfilled") {
-          setCategories(categoriesResponse.value.content);
-        }
-        if (featuredSubcategoriesResponse.status === "fulfilled") {
-          setFeaturedSubcategories(featuredSubcategoriesResponse.value);
-        }
         if (featuredProductsResponse.status === "fulfilled") {
           setFeaturedProducts(featuredProductsResponse.value);
+        }
+        if (discountedProductsResponse.status === "fulfilled") {
+          // Cập nhật state discountedProducts
+          setDiscountedProducts(discountedProductsResponse.value);
+        }
+        if (allProductsResponse.status === "fulfilled") {
+          setAllProducts(allProductsResponse.value.content);
+          setTotalPages(allProductsResponse.value.totalPages); // Tính toán tổng số trang
         }
       } catch (error) {
         console.error("Lỗi khi fetch dữ liệu:", error);
@@ -43,18 +48,27 @@ const Index = () => {
     };
 
     fetchData();
-  }, []);
+  }, [currentPage]); // Thêm currentPage vào dependency array để gọi lại khi trang thay đổi
 
+  // Hàm xử lý thay đổi trang
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
       <HeroSection />
 
-      <CategoriesSection categories={categories} />
-
-      <FeaturedSubcategoriesSection subcategories={featuredSubcategories} />
-
       <FeaturedProductsSection products={featuredProducts} />
+
+      <DiscountedProductsSection products={discountedProducts} />
+
+      <AllProductsSection
+        products={allProducts}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       <CallToActionSection />
 

@@ -6,8 +6,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { useCart } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
 import { cn } from "@/lib/utils";
 import { Product } from "@/types";
 import { Eye, Heart, ShoppingCart, Star, Store, Trash2 } from "lucide-react";
@@ -58,44 +56,44 @@ const ProductCardSimple = ({
   showQuickView = true,
   simple = false,
 }: ProductCardSimpleProps) => {
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { addToCart } = useCart();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  // isInWishlist đã được cập nhật để hỗ trợ cả kiểu string và number
-  const isWishlisted = isInWishlist?.(product.id) || false;
-
-  // Xử lý thêm vào danh sách yêu thích
+  /**
+   * Xử lý thêm vào danh sách yêu thích hoặc xóa khỏi danh sách yêu thích.
+   * @param e Sự kiện chuột.
+   */
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (isWishlisted && removeFromWishlist) {
-      // removeFromWishlist đã được cập nhật để hỗ trợ cả kiểu string và number
-      removeFromWishlist(product.id);
-    } else if (addToWishlist) {
-      addToWishlist(product);
-    }
+    // Logic thêm/xóa vào danh sách yêu thích sẽ được triển khai tại đây
   };
 
-  // Xử lý thêm vào giỏ hàng nhanh
+  /**
+   * Xử lý thêm sản phẩm vào giỏ hàng nhanh.
+   * @param e Sự kiện chuột.
+   */
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Không còn trường sizes và colors trong Product mới
-    // Sử dụng ProductSku và VariantValue thay thế
-    if (!addToCart) return;
-
     setIsAddingToCart(true);
-
-    // Thêm sản phẩm vào giỏ hàng với các thông tin cơ bản
-    // Truyền null cho size và color vì giờ đây chúng được quản lý qua ProductSku
-    addToCart(product, null, null, 1);
-
+    // Logic thêm vào giỏ hàng sẽ được triển khai tại đây
     setTimeout(() => setIsAddingToCart(false), 1000);
   };
+
+  /**
+   * Lấy giá thấp nhất từ danh sách SKU của sản phẩm.
+   * @returns Giá thấp nhất hoặc 0 nếu không có SKU.
+   */
+  const getMinPrice = () => {
+    if (!product.productSkuDTOList || product.productSkuDTOList.length === 0) {
+      return 0;
+    }
+    return Math.min(...product.productSkuDTOList.map(sku => sku.price));
+  };
+
+  const minPrice = getMinPrice();
   return (
     <div
       className={cn("w-full", className)}
@@ -108,8 +106,8 @@ const ProductCardSimple = ({
           <Link to={`/product/${product.id}`} className="block h-full w-full">
             <img
               src={product.imagesDTOList[0].path}
-              alt={product.name}
-              className="w-full h-full object-cover"
+              alt={product.title}
+              className="w-full h-full object-cover bg-white"
             />
           </Link>
 
@@ -156,7 +154,7 @@ const ProductCardSimple = ({
                     <Heart
                       className={cn(
                         "h-4 w-4",
-                        isWishlisted ? "fill-red-500 text-red-500" : ""
+                        product.isLike ? "fill-red-500 text-red-500" : ""
                       )}
                     />
                   </Button>
@@ -169,9 +167,9 @@ const ProductCardSimple = ({
                     onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
-                      if (removeFromWishlist) {
-                        removeFromWishlist(product.id);
-                      }
+                      // if (removeFromWishlist) {
+                      //   removeFromWishlist(product.id);
+                      // }
                     }}
                     data-testid="remove-wishlist-button"
                   >
@@ -195,26 +193,16 @@ const ProductCardSimple = ({
               {/* Quick Add Button */}
               {showQuickAdd && isHovered && (
                 <div className="absolute bottom-3 left-3 right-3 transition-all duration-300">
-                  {product.status ? (
                     <Button
                       className="w-full bg-primary/90 hover:bg-primary text-primary-foreground backdrop-blur-sm shadow-sm"
                       size="sm"
                       onClick={handleQuickAdd}
-                      disabled={isAddingToCart}
+                      disabled={isAddingToCart || product.totalProduct === 0}
                       data-testid="add-to-cart-button"
                     >
                       <ShoppingCart className="h-4 w-4 mr-2" />
-                      {isAddingToCart ? "Đang thêm..." : "Thêm vào giỏ"}
+                      {isAddingToCart ? "Đang thêm..." : product.totalProduct > 0 ? "Thêm vào giỏ" : "Hết hàng"}
                     </Button>
-                  ) : (
-                    <Button
-                      className="w-full bg-muted text-muted-foreground backdrop-blur-sm"
-                      size="sm"
-                      disabled
-                    >
-                      {product.status === false ? "Hết hàng" : "Xem chi tiết"}
-                    </Button>
-                  )}
                 </div>
               )}
             </>
@@ -240,7 +228,7 @@ const ProductCardSimple = ({
 
             {/* Description */}
             <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-              {product.content}
+              {product.description}
             </p>
           </Link>
         </CardHeader>
@@ -249,28 +237,19 @@ const ProductCardSimple = ({
             {/* Rating */}
             <div className="flex items-center gap-2 mb-3">
               <div className="flex items-center">
-                {simple ? (
-                  <>
-                    <span className="text-yellow-400 text-sm">★</span>
-                    <span className="text-sm text-muted-foreground ml-1">
-                      {product.star || 0}
-                    </span>
-                  </>
-                ) : (
-                  [...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={cn(
-                        "h-3.5 w-3.5",
-                        i < Math.floor(product.star || 0)
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "fill-none text-muted"
-                      )}
-                    />
-                  ))
-                )}
-                {/* Số lượng đánh giá sẽ được tính từ bảng Feedback */}
-                <span className="text-xs text-muted-foreground ml-1">(0)</span>
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={cn(
+                      "h-3.5 w-3.5",
+                      i < Math.floor(product.star || 0)
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "fill-gray-400 text-gray-400"
+                    )}
+                  />
+                ))}
+                {/* Số lượng đánh giá */}
+                <span className="text-xs text-muted-foreground ml-1">({product.totalReview || 0})</span>
               </div>
               <span className="text-xs text-muted-foreground">•</span>
               <span className="text-xs text-muted-foreground">
@@ -283,21 +262,19 @@ const ProductCardSimple = ({
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
               <span className="text-lg font-bold text-primary">
-                {/* Product không còn trường price, cần sử dụng ProductSku */}
-                {product.discount ? (
-                  <span className="flex items-center">
-                    <span>Liên hệ</span>
-                    <span className="text-xs ml-2 bg-destructive/10 text-destructive px-1 py-0.5 rounded">
-                      -{product.discount.percent}%
-                    </span>
-                  </span>
-                ) : (
-                  "Liên hệ"
-                )}
+                {/* Hiển thị giá thấp nhất từ ProductSku */}
+                {minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
               </span>
+              {product.discount?.percent && (
+                <span className="flex items-center">
+                  <span className="text-xs ml-2 bg-destructive/10 text-destructive px-1 py-0.5 rounded">
+                    -{product.discount.percent}%
+                  </span>
+                </span>
+              )}
             </div>
             <div className="text-xs text-muted-foreground">
-              {product.status ? "Còn hàng" : "Hết hàng"}
+              {product.totalProduct > 0 ? "Còn hàng" : "Hết hàng"}
             </div>
           </div>
         </CardFooter>

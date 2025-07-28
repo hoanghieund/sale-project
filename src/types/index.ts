@@ -1,7 +1,11 @@
 // Product Types - Dựa trên tbl_product
 export interface Product {
-  name: string;
-  imagesDTOList: any;
+  imagesDTOList: Image[]; // Thay đổi 'any' thành 'Image[]'
+  isLike?: boolean;
+  totalProduct?: number;
+  amount?: number;
+  totalReview?: number;
+  totalLike?: number;
   id: number; // bigint(20) trong SQL
   title: string; // title trong SQL
   description?: string; // description text trong SQL
@@ -28,6 +32,7 @@ export interface Product {
   shop?: Shop; // Thông tin shop (optional khi populate)
   category?: Category; // Thông tin category (optional khi populate)
   discount?: Discount; // Thông tin discount (optional khi populate)
+  productSkuDTOList?: ProductSku[]; // Thêm thuộc tính này
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime

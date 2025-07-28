@@ -52,7 +52,7 @@ const Header = () => {
   useEffect(() => {
     const fetchFeaturedCategories = async () => {
       try {
-        const response = await categoryService.getSuggestCategory();
+        const response = await categoryService.getSuggestCategory(0 , 5);
         // Ánh xạ dữ liệu API sang định dạng Category[]
         setFeaturedCategories(response);
       } catch (error) {
@@ -189,12 +189,12 @@ const Header = () => {
                     size="sm"
                     className="rounded-full hover:bg-primary/10"
                   >
-                   <Menu className="h-5 w-5" /> Category
+                   <Menu className="h-5 w-5" /> Categories
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-80">
                   <SheetHeader className="flex justify-between items-center pr-4">
-                    <SheetTitle>Category</SheetTitle>
+                    <SheetTitle>Categories</SheetTitle>
                   </SheetHeader>
                   <MobileNavigation
                     onClose={() => setIsCategoryMenuOpen(false)}
@@ -335,7 +335,7 @@ const Header = () => {
                           </Link>
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
-                          <div className="grid gap-3 p-6 w-[750px] grid-cols-3">
+                          <div className="grid gap-3 p-6 w-[700px] grid-cols-3">
                             {/* Các link cho danh mục con */}
                             {item.child.map(child => (
                               <div key={child.id}>
