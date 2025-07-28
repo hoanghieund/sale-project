@@ -112,6 +112,17 @@ export const authService = {
   },
 
   /**
+   * Gửi lại email kích hoạt
+   * @returns Promise xác nhận gửi lại email thành công
+   */
+  resendActivationEmail: () => {
+    const token = localStorage.getItem("token");
+    return Axios.get("/api/auth/signup-user/active", {
+     token,
+    });
+  },
+
+  /**
    * Làm mới token xác thực
    * @param refreshToken - Token làm mới
    * @returns Promise với token mới

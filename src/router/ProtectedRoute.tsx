@@ -1,6 +1,4 @@
-import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
-import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 /**
@@ -9,25 +7,17 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
  * và lưu đường dẫn hiện tại để quay lại sau khi đăng nhập
  */
 const ProtectedRoute = () => {
-  const { isAuthenticated, isLoading } = useUser();
+  const { isAuthenticated, user } = useUser();
   const location = useLocation();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    // Hiển thị thông báo khi người dùng bị chuyển hướng vì chưa đăng nhập
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Yêu cầu đăng nhập",
-        description: "Vui lòng đăng nhập để truy cập trang này",
-        variant: "destructive",
-      });
-    }
-  }, [isAuthenticated, isLoading, toast]);
 
   // Nếu không xác thực, chuyển hướng đến trang đăng nhập với returnUrl
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ returnUrl: location.pathname }} />;
   }
+  // Nếu tài khoản chưa kích hoạt, chuyển hướng đến trang kích hoạt tài khoản
+  // if (user && !user?.active) {
+  //   return <Navigate to="/activate-account" replace />;
+  // }
 
   // Nếu đã xác thực, hiển thị các route con
   return <Outlet />;

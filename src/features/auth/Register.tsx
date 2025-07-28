@@ -17,20 +17,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Home, Lock, Mail, Phone, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -81,21 +72,11 @@ const Register = () => {
     };
   }, [clearError]);
 
-  // Tạo mảng ngày, tháng, năm cho select
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-  const months = Array.from({ length: 12 }, (_, i) => i + 1);
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
-
   // Định nghĩa form với react-hook-form và zod validation
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
       agreeToTerms: false,
-      gender: true, // Nam mặc định
-      dayOfBirth: 1,
-      monthOfBirth: 1,
-      yearOfBirth: 2000,
     },
   });
 
@@ -106,18 +87,6 @@ const Register = () => {
         username: data.username,
         email: data.email,
         password: data.password,
-        phone: data.phone,
-        address: data.address,
-        gender: data.gender,
-        dayOfBirth: data.dayOfBirth,
-        monthOfBirth: data.monthOfBirth,
-        yearOfBirth: data.yearOfBirth,
-        date: `${data.yearOfBirth}-${String(data.monthOfBirth).padStart(
-          2,
-          "0"
-        )}-${String(data.dayOfBirth).padStart(2, "0")}`,
-        active: 0, // Mặc định chưa kích hoạt
-        newAccount: true,
       };
 
       await registerUser(registerData as any);
@@ -276,175 +245,6 @@ const Register = () => {
                 </FormItem>
               )}
             />
-
-            {/* Phone */}
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                        <Phone className="h-4 w-4" />
-                      </span>
-                      <Input
-                        placeholder="Phone number"
-                        className="pl-10"
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Address */}
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                        <Home className="h-4 w-4" />
-                      </span>
-                      <Input
-                        placeholder="Address"
-                        className="pl-10"
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Gender */}
-            <FormField
-              control={form.control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem className="space-y-1">
-                  <FormLabel>Gender</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={value => field.onChange(value === "true")}
-                      value={field.value ? "true" : "false"}
-                      className="flex space-x-4"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="true" id="male" />
-                        <Label htmlFor="male">Male</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="false" id="female" />
-                        <Label htmlFor="female">Female</Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Date of Birth */}
-            <div className="space-y-1">
-              <Label>Date of Birth</Label>
-              <div className="grid grid-cols-3 gap-2">
-                {/* Day */}
-                <FormField
-                  control={form.control}
-                  name="dayOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <Select
-                        onValueChange={value => field.onChange(parseInt(value))}
-                        value={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Day" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="max-h-[200px] overflow-y-auto">
-                          {days.map(day => (
-                            <SelectItem key={day} value={day.toString()}>
-                              {day}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Month */}
-                <FormField
-                  control={form.control}
-                  name="monthOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <Select
-                        onValueChange={value => field.onChange(parseInt(value))}
-                        value={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Month" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="max-h-[200px] overflow-y-auto">
-                          {months.map(month => (
-                            <SelectItem key={month} value={month.toString()}>
-                              {month}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Year */}
-                <FormField
-                  control={form.control}
-                  name="yearOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <Select
-                        onValueChange={value => field.onChange(parseInt(value))}
-                        value={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Year" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="max-h-[200px] overflow-y-auto">
-                          {years.map(year => (
-                            <SelectItem key={year} value={year.toString()}>
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
             <Separator />
 
             {/* Terms and Conditions */}

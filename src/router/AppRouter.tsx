@@ -2,6 +2,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { AuthLayout, MainLayout } from "@/layouts";
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ActiveAccountRoute from "./ActiveAccountRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import RedirectRoute from "./RedirectRoute";
 
@@ -9,6 +10,9 @@ import RedirectRoute from "./RedirectRoute";
 const Home = lazy(() => import("@/features/users/home/Home"));
 const About = lazy(() => import("@/features/general/About"));
 const Account = lazy(() => import("@/features/auth/Account"));
+const AccountActivationPage = lazy(
+  () => import("@/features/auth/AccountActivationPage")
+);
 const Cart = lazy(() => import("@/features/users/cart/Cart"));
 const Checkout = lazy(() => import("@/features/users/checkout/Checkout"));
 const Contact = lazy(() => import("@/features/general/Contact"));
@@ -53,37 +57,41 @@ const AppRouter = () => {
         <Routes>
           {/* Main Layout - Các trang có header và footer */}
           <Route element={<MainLayout />}>
-            {/* Các trang công khai - không cần đăng nhập */}
-            <Route path="/" element={<Home />} />
-            <Route path="/product/:id" element={<ProductDetailPage />} />
-            <Route path="/category/:categorySlug" element={<CategoryPage />} />
-            <Route
-              path="/subcategory/:subcategorySlug"
-              element={<SubcategoryPage />}
-            />
-            <Route path="/shop/:shopSlug" element={<ShopPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="*" element={<NotFound />} />
-
+            <Route element={<ActiveAccountRoute />}>
+              {/* Các trang công khai - không cần đăng nhập */}
+              <Route path="/" element={<Home />} />
+              <Route path="/product/:id" element={<ProductDetailPage />} />
+              <Route
+                path="/category/:categorySlug"
+                element={<CategoryPage />}
+              />
+              <Route
+                path="/subcategory/:subcategorySlug"
+                element={<SubcategoryPage />}
+              />
+              <Route path="/shop/:shopSlug" element={<ShopPage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
             {/* Các trang yêu cầu đăng nhập */}
             <Route element={<ProtectedRoute />}>
+              {/* Các trang yêu cầu tài khoản đã kích hoạt */}
               {/* Shopping cart và checkout */}
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-success" element={<OrderSuccess />} />
-
               {/* User account */}
               <Route path="/account" element={<Account />} />
               <Route path="/wishlist" element={<Wishlist />} />
-
               {/* Seller Dashboard */}
               <Route path="/seller" element={<SellerDashboard />} />
               <Route path="/seller/products" element={<SellerProducts />} />
               <Route path="/seller/orders" element={<SellerOrders />} />
               <Route path="/seller/shop" element={<SellerShop />} />
-            </Route>
+            </Route>{" "}
+            {/* Đóng ActiveAccountRoute */}
           </Route>
 
           {/* Auth Layout - Các trang không có header và footer */}
@@ -94,6 +102,12 @@ const AppRouter = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
             </Route>
+            {/* <Route element={<ActiveRoute />}>
+              <Route
+                path="/activate-account"
+                element={<AccountActivationPage />}
+              />
+            </Route> */}
           </Route>
         </Routes>
       </Suspense>
