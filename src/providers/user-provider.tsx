@@ -187,7 +187,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Lấy thông tin user từ response
-      const user = response;
+      const user = response.userDTO;
 
       // Cập nhật state với thông tin user
       dispatch({ type: "LOGIN_SUCCESS", payload: user });
@@ -240,7 +240,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Lấy thông tin user từ response
-      const user = response.user;
+      const user = response.userDTO;
 
       // Cập nhật state với thông tin user
       dispatch({ type: "REGISTER_SUCCESS", payload: user });

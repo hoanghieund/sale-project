@@ -41,7 +41,7 @@ export const authService = {
    * @returns Promise với dữ liệu người dùng
    */
   getCurrentUser: () => {
-    return Axios.get("/api/users/me");
+    return Axios.get("/api/user/me");
   },
 
   /**
