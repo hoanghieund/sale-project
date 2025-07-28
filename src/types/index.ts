@@ -120,7 +120,7 @@ export interface Category {
   totalProduct?: number; // total_product int(11)
   parentId?: number; // parent_id bigint(20) - cho subcategory
   parent?: Category; // Thông tin category cha (optional khi populate)
-  subcategories?: Category[]; // Danh sách subcategories (optional khi populate)
+  child?: Category[]; // Danh sách subcategories (optional khi populate)
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime

@@ -14,7 +14,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   ChevronDown,
@@ -31,8 +31,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
-import { NAVIGATION_MENU } from "../../data/constants";
 import { useUser } from "../../hooks/use-user"; // Import useUser hook
+import { categoryService } from "../../services/categoryService"; // Import categoryService
+import { Category } from "../../types"; // Import Category type
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,6 +44,48 @@ const Header = () => {
   const { getCartItemsCount } = useCart();
   const { getWishlistCount } = useWishlist();
   const { user, isAuthenticated } = useUser(); // Use useUser hook
+  const [categories, setCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục
+
+  // Lấy dữ liệu danh mục từ API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await categoryService.getCategoryTree(0, 5);
+        // Ánh xạ dữ liệu API sang định dạng Category[]
+        const mappedCategories: Category[] = response.map((category: Category) => ({
+          // Chuyển đổi id từ kiểu số sang kiểu chuỗi
+          id: category.id.toString(),
+          name: category.name,
+          icon: category.icon,
+          active: category.active,
+          isShowSuggests: category.isShowSuggests,
+          totalProduct: category.totalProduct,
+          // Chuyển đổi parentId sang chuỗi nếu có
+          parentId: category.parentId
+            ? category.parentId.toString()
+            : undefined,
+          // Ánh xạ mảng 'child' thành 'child'
+          child: category.child
+            ? category.child.map((sub: Category) => ({
+                // Chuyển đổi id của danh mục con sang chuỗi
+                id: sub.id.toString(),
+                name: sub.name,
+                icon: sub.icon,
+                active: sub.active,
+                isShowSuggests: sub.isShowSuggests,
+                totalProduct: sub.totalProduct,
+                // Chuyển đổi parentId của danh mục con sang chuỗi nếu có
+                parentId: sub.parentId ? sub.parentId.toString() : undefined,
+              }))
+            : [],
+        }));
+        setCategories(mappedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Handle scroll effect for header
   useEffect(() => {
@@ -178,6 +221,7 @@ const Header = () => {
                   </SheetHeader>
                   <MobileNavigation
                     onClose={() => setIsMobileMenuOpen(false)}
+                    categories={categories} // Truyền categories xuống MobileNavigation
                   />
                 </SheetContent>
               </Sheet>
@@ -269,32 +313,30 @@ const Header = () => {
           <nav className="hidden md:flex py-2 justify-center border-t border-border">
             <NavigationMenu>
               <NavigationMenuList className="gap-8">
-                {NAVIGATION_MENU.map(item => (
+                {categories.map(item => (
                   <NavigationMenuItem key={item.id}>
-                    {item.children ? (
+                    {item.child && item.child.length > 0 ? (
                       <>
                         <NavigationMenuTrigger className="bg-transparent hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent/50 data-[active]:bg-accent/50 h-8 rounded-md px-2.5">
-                          {item.label}
+                          <Link
+                            to={`/category/${item.id}`} // Điều hướng đến trang category cha
+                          >
+                            {item.name}
+                          </Link>
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                           <div className="grid gap-3 p-6 w-[750px] grid-cols-3">
-                            {item.children.map(child => (
+                            {/* Các link cho danh mục con */}
+                            {item.child.map(child => (
                               <div key={child.id}>
                                 <NavigationMenuLink className="bg-card" asChild>
                                   <Link
-                                    to={child.href}
+                                    to={`/subcategory/${child.id}`} // Điều hướng đến trang category của danh mục con
                                     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                   >
                                     <div className="text-sm font-medium leading-none">
-                                      {child.label}
+                                      {child.name}
                                     </div>
-                                    {child.children && (
-                                      <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                        {child.children
-                                          .map(subChild => subChild.label)
-                                          .join(", ")}
-                                      </div>
-                                    )}
                                   </Link>
                                 </NavigationMenuLink>
                               </div>
@@ -305,10 +347,10 @@ const Header = () => {
                     ) : (
                       <NavigationMenuLink asChild>
                         <Link
-                          to={item.href}
+                          to={`/category/${item.id}`} // Sử dụng id để tạo đường dẫn
                           className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
                         >
-                          {item.label}
+                          {item.name}
                         </Link>
                       </NavigationMenuLink>
                     )}
@@ -324,7 +366,13 @@ const Header = () => {
 };
 
 // Mobile Navigation Component
-const MobileNavigation = ({ onClose }: { onClose: () => void }) => {
+const MobileNavigation = ({
+  onClose,
+  categories,
+}: {
+  onClose: () => void;
+  categories: Category[];
+}) => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
   const toggleExpanded = (itemId: string) => {
@@ -337,47 +385,40 @@ const MobileNavigation = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div className="mt-6 space-y-4">
-      {NAVIGATION_MENU.map(item => (
+      {categories.map(item => (
         <div key={item.id}>
-          {item.children ? (
+          {item.child && item.child.length > 0 ? (
             <div>
               <Button
                 variant="ghost"
                 className="w-full justify-between hover:bg-primary/5 rounded-md"
-                onClick={() => toggleExpanded(item.id)}
+                onClick={() => toggleExpanded(item.id.toString())} // Convert id to string
               >
-                {item.label}
+                <Link
+                  to={`/category/${item.id}`} // Điều hướng đến trang category cha
+                  onClick={onClose}
+                >
+                  {item.name} (Tất cả)
+                </Link>
                 <ChevronDown
                   className={`h-4 w-4 transition-transform duration-200 ${
-                    expandedItems.includes(item.id) ? "rotate-180" : ""
+                    expandedItems.includes(item.id.toString())
+                      ? "rotate-180"
+                      : ""
                   }`}
                 />
               </Button>
-              {expandedItems.includes(item.id) && (
+              {expandedItems.includes(item.id.toString()) && (
                 <div className="ml-4 mt-2 space-y-2 border-l-2 border-border pl-3 animate-in slide-in-from-top duration-200">
-                  {item.children.map(child => (
+                  {item.child.map(child => (
                     <div key={child.id}>
                       <Link
-                        to={child.href}
+                        to={`/subcategory/${child.id}`} // Sử dụng id để tạo đường dẫn
                         className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
                         onClick={onClose}
                       >
-                        {child.label}
+                        {child.name}
                       </Link>
-                      {child.children && (
-                        <div className="ml-4 space-y-1 border-l border-border/50 pl-2">
-                          {child.children.map(subChild => (
-                            <Link
-                              key={subChild.id}
-                              to={subChild.href}
-                              className="block py-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-                              onClick={onClose}
-                            >
-                              {subChild.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
@@ -385,11 +426,11 @@ const MobileNavigation = ({ onClose }: { onClose: () => void }) => {
             </div>
           ) : (
             <Link
-              to={item.href}
+              to={`/category/${item.id}`} // Sử dụng id để tạo đường dẫn
               className="block py-2 text-sm font-medium hover:text-primary transition-colors"
               onClick={onClose}
             >
-              {item.label}
+              {item.name}
             </Link>
           )}
         </div>

@@ -85,8 +85,17 @@ export const authService = {
    * @param email - Email của người dùng
    * @returns Promise xác nhận yêu cầu đã được gửi
    */
-  forgotPassword: (email: string) => {
-    return Axios.post("/api/auth/forgot-password", { email });
+  /**
+   * Gửi yêu cầu khôi phục mật khẩu
+   * @param data - FormData chứa email của người dùng
+   * @returns Promise xác nhận yêu cầu đã được gửi
+   */
+  forgotPassword: (data: FormData) => {
+    return Axios.post("/api/auth/forgot-password", data , {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 
   /**

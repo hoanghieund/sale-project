@@ -12,7 +12,7 @@ import { useToast } from "@/components/ui/use-toast"; // Import useToast hook
 import { authService } from "@/services/authService"; // Import authService
 import React, { useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
  * @function ForgotPassword
@@ -24,6 +24,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast(); // Khởi tạo hook useToast
+  const navigate = useNavigate(); // Khởi tạo hook useNavigate
 
   /**
    * @function handleSubmit
@@ -35,7 +36,12 @@ const ForgotPassword = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await authService.forgotPassword(email);
+      // Tạo đối tượng FormData để gửi dữ liệu
+      const formData = new FormData();
+      // Thêm trường 'email' vào FormData với giá trị từ state
+      formData.append("email", email);
+      // Gọi dịch vụ xác thực để khôi phục mật khẩu, truyền đối tượng FormData
+      await authService.forgotPassword(formData);
       // Hiển thị thông báo thành công
       toast({
         title: "Thành công!",
@@ -43,6 +49,8 @@ const ForgotPassword = () => {
           "Yêu cầu khôi phục mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.",
         variant: "default",
       });
+      // Điều hướng người dùng đến trang nhập mật khẩu mới
+      navigate("/reset-password");
     } catch (error) {
       console.error("Lỗi khi gửi yêu cầu khôi phục mật khẩu:", error);
       // Hiển thị thông báo lỗi
