@@ -47,12 +47,12 @@ const Header = () => {
   const { user, isAuthenticated } = useUser(); // Use useUser hook
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục nổi bật
   const [allCategories, setAllCategories] = useState<Category[]>([]); // State để lưu trữ tất cả dữ liệu danh mục
- 
+
   // Lấy dữ liệu danh mục nổi bật từ API
   useEffect(() => {
     const fetchFeaturedCategories = async () => {
       try {
-        const response = await categoryService.getSuggestCategory(0 , 5);
+        const response = await categoryService.getSuggestCategory(0, 5);
         // Ánh xạ dữ liệu API sang định dạng Category[]
         setFeaturedCategories(response);
       } catch (error) {
@@ -111,6 +111,51 @@ const Header = () => {
         <div className="container mx-auto px-4">
           {/* Top Row */}
           <div className="flex items-center justify-between py-2.5">
+            {/* Logo */}
+            <div className="flex items-center gap-4">
+              <Link to="/" className="flex items-center">
+                <div className="text-xl font-bold">
+                  <span>SHOP</span>
+                </div>
+              </Link>
+              {/* All Categories Button - Desktop */}
+              <Sheet
+                open={isCategoryMenuOpen}
+                onOpenChange={setIsCategoryMenuOpen}
+              >
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full hover:bg-primary/10"
+                  >
+                    <Menu className="h-5 w-5" />{" "}
+                    <span className="hidden md:inline">Categories</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80">
+                  <SheetHeader className="flex justify-between items-center pr-4">
+                    <SheetTitle>Categories</SheetTitle>
+                  </SheetHeader>
+                  <MobileNavigation
+                    onClose={() => setIsCategoryMenuOpen(false)}
+                    categories={allCategories} // Truyền tất cả danh mục
+                  />
+                </SheetContent>
+              </Sheet>
+              {/* Mobile Menu Button */}
+              <div className="md:hidden flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-primary/10"
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                >
+                  <Search className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+
             {/* Mobile Search - Top Row */}
             {isSearchOpen && (
               <div className="md:hidden absolute top-0 left-0 right-0 z-50 bg-background py-3 px-4 animate-in fade-in slide-in-from-top duration-300">
@@ -180,69 +225,7 @@ const Header = () => {
                   </Button>
                 )}
               </form>
-
-              {/* All Categories Button - Desktop */}
-              <Sheet open={isCategoryMenuOpen} onOpenChange={setIsCategoryMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="rounded-full hover:bg-primary/10"
-                  >
-                   <Menu className="h-5 w-5" /> Categories
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-80">
-                  <SheetHeader className="flex justify-between items-center pr-4">
-                    <SheetTitle>Categories</SheetTitle>
-                  </SheetHeader>
-                  <MobileNavigation
-                    onClose={() => setIsCategoryMenuOpen(false)}
-                    categories={allCategories} // Truyền tất cả danh mục
-                  />
-                </SheetContent>
-              </Sheet>
             </div>
-
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full hover:bg-primary/10"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-
-              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full hover:bg-primary/10"
-                  >
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-80">
-                  <SheetHeader className="flex justify-between items-center pr-4">
-                    <SheetTitle>Menu</SheetTitle>
-                  </SheetHeader>
-                  <MobileNavigation
-                    onClose={() => setIsMobileMenuOpen(false)}
-                    categories={allCategories} // Truyền categories nổi bật xuống MobileNavigation
-                  />
-                </SheetContent>
-              </Sheet>
-            </div>
-
-            {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <div className="text-xl font-bold">
-                <span>SHOP</span>
-              </div>
-            </Link>
 
             {/* Icons */}
             <div className="flex items-center gap-4">
