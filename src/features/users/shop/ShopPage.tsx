@@ -53,8 +53,8 @@ const ShopPage = () => {
       slug: shopSlug || "",
       description:
         "Chuyên cung cấp thời trang nam nữ cao cấp, chính hãng với giá tốt nhất thị trường. Cam kết chất lượng và dịch vụ tận tâm cho khách hàng.",
-      logo: "/images/shop-logo-1.jpg",
-      banner: "/images/shop-banner-1.jpg",
+      logo: "/assets/skateboarding.jpg",
+      banner: "/assets/football.jpg",
       userId: 1, // Thay đổi từ ownerId sang userId và từ string sang number
       verified: true,
       rating: 4.8,
@@ -89,112 +89,79 @@ const ShopPage = () => {
 
     const mockProducts: Product[] = [
       {
-        id: 1, // Thay đổi từ string sang number
-        name: "Áo sơ mi nam cao cấp",
-        title: "Áo sơ mi nam cao cấp", // Thêm title theo interface mới
-        description: "Áo sơ mi nam chất liệu cotton cao cấp",
-        images: ["/images/product-1-1.jpg", "/images/product-1-2.jpg"],
-        categoriesId: 1, // Thay đổi từ categoryId sang categoriesId và từ string sang number
-        shopId: 1, // Thay đổi từ string sang number
-        star: 4.5, // Thay đổi từ rating sang star
-        totalProductSold: 120, // Thay đổi từ sold sang totalProductSold
-        status: true, // Thay đổi từ isActive sang status
-        isFlashSale: false,
-        isTrending: true, // Thay đổi từ isFeatured sang isTrending
-        createDate: new Date("2024-01-01T00:00:00Z"), // Thay đổi từ createdAt sang createDate
-        modifierDate: new Date("2024-01-01T00:00:00Z"), // Thay đổi từ updatedAt sang modifierDate
-        createBy: "system",
-        modifierBy: "system",
-      },
-      {
-        id: 2,
-        name: "Quần jean nữ skinny",
-        title: "Quần jean nữ skinny",
-        description: "Quần jean nữ form skinny thời trang",
-        images: ["/images/product-2-1.jpg", "/images/product-2-2.jpg"],
-        categoriesId: 1,
-        shopId: 1,
-        star: 4.7,
-        totalProductSold: 85,
+        id: 101,
+        name: "Áo thun nam cổ tròn", // Thêm trường name bắt buộc
+        images: ["/assets/product-1.jpg"], // Thêm trường images bắt buộc
+        title: "Áo thun nam cổ tròn",
+        content: "Áo thun nam cổ tròn chất liệu cotton 100%",
         status: true,
-        isFlashSale: false,
-        isTrending: false,
-        createDate: new Date("2024-01-02T00:00:00Z"),
-        modifierDate: new Date("2024-01-02T00:00:00Z"),
-        createBy: "system",
-        modifierBy: "system",
-      },
-      {
-        id: 3,
-        name: "Áo khoác bomber unisex",
-        title: "Áo khoác bomber unisex",
-        description: "Áo khoác bomber phong cách street style",
-        images: ["/images/product-3-1.jpg"],
-        categoriesId: 1,
-        shopId: 1,
-        star: 4.3,
-        totalProductSold: 60,
-        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.5,
+        totalProductSold: 120,
+        isNew: true,
         isFlashSale: false,
         isTrending: true,
-        createDate: new Date("2024-01-03T00:00:00Z"),
-        modifierDate: new Date("2024-01-03T00:00:00Z"),
+        discount: { id: 1, percent: 10, status: true, createDate: new Date() },
+        categoriesId: 5,
+        shopId: 1,
         createBy: "system",
-        modifierBy: "system",
+        createDate: new Date(),
       },
       {
-        id: 4,
-        name: "Váy midi hoa nhí",
-        title: "Váy midi hoa nhí",
-        description: "Váy midi họa tiết hoa nhí dễ thương",
-        images: ["/images/product-4-1.jpg"],
-        categoriesId: 1,
-        shopId: 1,
+        id: 102,
+        name: "Quần jean nam slim fit", // Thêm trường name bắt buộc
+        images: ["/assets/product-2.jpg"], // Thêm trường images bắt buộc
+        title: "Quần jean nam slim fit",
+        content: "Quần jean nam slim fit màu xanh đậm",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.8,
+        totalProductSold: 85,
+        isNew: false,
+        isFlashSale: true,
+        isTrending: true,
+        discount: { id: 2, percent: 15, status: true, createDate: new Date() },
+        categoriesId: 5,
+        shopId: 2,
+        createBy: "system",
+        createDate: new Date(),
+      },
+      {
+        id: 103,
+        name: "Áo sơ mi nữ công sở", // Thêm trường name bắt buộc
+        images: ["/assets/product-3.jpg"], // Thêm trường images bắt buộc
+        title: "Áo sơ mi nữ công sở",
+        content: "Áo sơ mi nữ công sở chất liệu lụa cao cấp",
+        status: true,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
         star: 4.6,
         totalProductSold: 95,
-        status: true,
-        isFlashSale: false,
-        isTrending: false,
-        createDate: new Date("2024-01-04T00:00:00Z"),
-        modifierDate: new Date("2024-01-04T00:00:00Z"),
-        createBy: "system",
-        modifierBy: "system",
-      },
-      {
-        id: 5,
-        name: "Giày sneaker nam",
-        title: "Giày sneaker nam",
-        description: "Giày sneaker nam thể thao năng động",
-        images: ["/images/product-5-1.jpg"],
-        categoriesId: 2,
-        shopId: 1,
-        star: 4.4,
-        totalProductSold: 75,
-        status: true,
+        isNew: true,
         isFlashSale: false,
         isTrending: true,
-        createDate: new Date("2024-01-05T00:00:00Z"),
-        modifierDate: new Date("2024-01-05T00:00:00Z"),
+        categoriesId: 6,
+        shopId: 3,
         createBy: "system",
-        modifierBy: "system",
+        createDate: new Date(),
       },
       {
-        id: 6,
-        name: "Túi xách nữ da thật",
-        title: "Túi xách nữ da thật",
-        description: "Túi xách nữ chất liệu da thật cao cấp",
-        images: ["/images/product-6-1.jpg"],
-        categoriesId: 3,
-        shopId: 1,
-        star: 4.8,
-        totalProductSold: 45,
+        id: 104,
+        name: "Váy liền thân dự tiệc", // Thêm trường name bắt buộc
+        images: ["/assets/product-4.jpg"], // Thêm trường images bắt buộc
+        title: "Váy liền thân dự tiệc",
+        content: "Váy liền thân dự tiệc màu đen sang trọng",
         status: true,
-        isFlashSale: false,
+        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
+        star: 4.9,
+        totalProductSold: 65,
+        isNew: true,
+        isFlashSale: true,
         isTrending: true,
-        createDate: new Date("2024-01-06T00:00:00Z"),
-        modifierDate: new Date("2024-01-06T00:00:00Z"),
+        discount: { id: 3, percent: 20, status: true, createDate: new Date() },
+        categoriesId: 6,
+        shopId: 1,
         createBy: "system",
-        modifierBy: "system",
+        createDate: new Date(),
       },
     ];
 
@@ -237,7 +204,7 @@ const ShopPage = () => {
       </div>
 
       {/* Shop Banner */}
-      <div className="relative h-64 bg-gradient-to-r from-primary to-primary-foreground/30">
+      <div className="relative h-96 bg-gradient-to-r from-primary to-primary-foreground/30">
         {shop.banner ? (
           <img
             src={shop.banner}
