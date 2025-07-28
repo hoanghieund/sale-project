@@ -1,7 +1,7 @@
 // Product Types - Dựa trên tbl_product
 export interface Product {
   name: string;
-  images: any;
+  imagesDTOList: any;
   id: number; // bigint(20) trong SQL
   title: string; // title trong SQL
   description?: string; // description text trong SQL

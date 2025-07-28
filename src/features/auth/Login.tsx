@@ -75,7 +75,7 @@ const Login = () => {
   return (
     <>
       <Card>
-        <CardHeader className="text-center mb-8">
+        <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold mb-2">
             Welcome Back
           </CardTitle>

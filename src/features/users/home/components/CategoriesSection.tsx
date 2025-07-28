@@ -1,5 +1,5 @@
+import CategoryCard from "@/components/common/CategoryCard";
 import { Category } from "@/types";
-import CategoryCard from "../../../../components/common/CategoryCard";
 
 /**
  * CategoriesSection Component

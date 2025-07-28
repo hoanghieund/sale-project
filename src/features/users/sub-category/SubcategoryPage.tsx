@@ -1,9 +1,10 @@
 import CategoryInfo from "@/components/common/CategoryInfo";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
+import { productService } from "@/features/users/sub-category/services/productServices";
+import { subcategoryService } from "@/features/users/sub-category/services/subcategoryServices";
 import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getRandomImage } from "../../../utils/random-image";
 
 // Import các component Shadcn
 import {
@@ -49,134 +50,42 @@ const SubcategoryPage = () => {
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
-    // TODO: Fetch subcategory data from API
-    // Tạm thởi sử dụng mock data dựa trên subcategorySlug
-    const getSubcategoryData = (slug: string) => {
-      switch (slug) {
-        case "ao-nam":
-          return {
-            id: 101,
-            name: "Áo nam",
-            icon: "👔",
-            active: true,
-            isShowSuggests: true,
-            totalProduct: 350,
-            parentId: 1,
-            parent: {
-              id: 1,
-              name: "Thời trang",
-              icon: "👕",
-              active: true,
-              isShowSuggests: true,
-              totalProduct: 1250,
-            },
-          };
-        default:
-          return {
-            id: 101,
-            name: "Áo nam",
-            icon: "👔",
-            active: true,
-            isShowSuggests: true,
-            totalProduct: 50,
-            parentId: 1,
-            parent: {
-              id: 1,
-              name: "Thời trang",
-              icon: "👕",
-              active: true,
-              isShowSuggests: true,
-              totalProduct: 150,
-            },
-          };
+    /**
+     * @function fetchSubcategoryAndProducts
+     * @description Hàm bất đồng bộ để lấy dữ liệu danh mục con và sản phẩm liên quan từ API.
+     * Sử dụng `subcategorySlug` từ `useParams` để gọi API.
+     * Cập nhật trạng thái `subcategory`, `products` và `loading`.
+     * @param {string} slug - Slug của danh mục con.
+     * @returns {void}
+     */
+    const fetchSubcategoryAndProducts = async (slug: string) => {
+      setLoading(true); // Bắt đầu tải dữ liệu, đặt trạng thái loading là true
+      try {
+        // Lấy thông tin danh mục con từ API
+        const subcategoryData = await subcategoryService.getSubcategoryBySlug(
+          slug,
+        );
+        setSubcategory(subcategoryData); // Cập nhật trạng thái danh mục con
+
+        // Lấy danh sách sản phẩm theo ID danh mục con
+        const productsData = await productService.getProductsBySubCategoryId(
+          subcategoryData.id,
+        );
+        setProducts(productsData.data.data); // Cập nhật trạng thái sản phẩm
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu danh mục con hoặc sản phẩm:", error);
+        setSubcategory(null); // Đặt danh mục con về null nếu có lỗi
+        setProducts([]); // Đặt sản phẩm về mảng rỗng nếu có lỗi
+      } finally {
+        setLoading(false); // Hoàn tất tải dữ liệu, đặt trạng thái loading là false
       }
     };
 
-    const mockSubcategory = getSubcategoryData(subcategorySlug || "");
-
-    // Mock products data
-    const mockProducts: Product[] = [
-      {
-        id: 101,
-        name: "Áo thun nam cổ tròn", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Áo thun nam cổ tròn",
-        content: "Áo thun nam cổ tròn chất liệu cotton 100%",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.5,
-        totalProductSold: 120,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        discount: { id: 1, percent: 10, status: true, createDate: new Date() },
-        categoriesId: 5,
-        shopId: 1,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 102,
-        name: "Quần jean nam slim fit", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Quần jean nam slim fit",
-        content: "Quần jean nam slim fit màu xanh đậm",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.8,
-        totalProductSold: 85,
-        isNew: false,
-        isFlashSale: true,
-        isTrending: true,
-        discount: { id: 2, percent: 15, status: true, createDate: new Date() },
-        categoriesId: 5,
-        shopId: 2,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 103,
-        name: "Áo sơ mi nữ công sở", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Áo sơ mi nữ công sở",
-        content: "Áo sơ mi nữ công sở chất liệu lụa cao cấp",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.6,
-        totalProductSold: 95,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: 6,
-        shopId: 3,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 104,
-        name: "Váy liền thân dự tiệc", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Váy liền thân dự tiệc",
-        content: "Váy liền thân dự tiệc màu đen sang trọng",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.9,
-        totalProductSold: 65,
-        isNew: true,
-        isFlashSale: true,
-        isTrending: true,
-        discount: { id: 3, percent: 20, status: true, createDate: new Date() },
-        categoriesId: 6,
-        shopId: 1,
-        createBy: "system",
-        createDate: new Date(),
-      },
-    ];
-
-    setSubcategory(mockSubcategory);
-    setProducts(mockProducts);
-    setLoading(false);
-  }, [subcategorySlug]);
+    // Gọi hàm fetchSubcategoryAndProducts khi subcategorySlug thay đổi
+    if (subcategorySlug) {
+      fetchSubcategoryAndProducts(subcategorySlug);
+    }
+  }, [subcategorySlug]); // Dependency array đảm bảo useEffect chạy lại khi subcategorySlug thay đổi
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
@@ -187,36 +96,34 @@ const SubcategoryPage = () => {
 
     switch (value) {
       case "price-low":
-        // Giả định rằng product có trường price
-        // Khi có API thực tế, có thể gọi API với tham số sắp xếp
-        sortedProducts.sort((a, b) => {
-          // Tạm thời dùng id để demo, thay bằng price khi có dữ liệu thực
-          return a.id - b.id;
-        });
+        // Sắp xếp sản phẩm theo giá từ thấp đến cao (cần ProductSku.price khi có dữ liệu thực)
+        // Hiện tại dùng ID làm placeholder
+        sortedProducts.sort((a, b) => a.id - b.id);
         break;
       case "price-high":
-        sortedProducts.sort((a, b) => {
-          // Tạm thời dùng id để demo, thay bằng price khi có dữ liệu thực
-          return b.id - a.id;
-        });
+        // Sắp xếp sản phẩm theo giá từ cao đến thấp (cần ProductSku.price khi có dữ liệu thực)
+        // Hiện tại dùng ID làm placeholder
+        sortedProducts.sort((a, b) => b.id - a.id);
         break;
       case "popular":
+        // Sắp xếp sản phẩm theo số lượng bán chạy nhất
         sortedProducts.sort((a, b) => b.totalProductSold - a.totalProductSold);
         break;
       case "rating":
+        // Sắp xếp sản phẩm theo đánh giá cao nhất
         sortedProducts.sort((a, b) => b.star - a.star);
         break;
       case "newest":
       default:
+        // Sắp xếp sản phẩm theo ngày tạo mới nhất
         sortedProducts.sort(
           (a, b) =>
-            new Date(b.createDate).getTime() - new Date(a.createDate).getTime()
+            new Date(b.createDate).getTime() - new Date(a.createDate).getTime(),
         );
         break;
     }
 
-    // Cập nhật danh sách sản phẩm đã sắp xếp
-    setProducts(sortedProducts);
+    setProducts(sortedProducts); // Cập nhật danh sách sản phẩm đã sắp xếp
   };
 
   if (loading) {

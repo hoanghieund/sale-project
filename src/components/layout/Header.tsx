@@ -38,53 +38,41 @@ import { Category } from "../../types"; // Import Category type
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { getCartItemsCount } = useCart();
   const { getWishlistCount } = useWishlist();
   const { user, isAuthenticated } = useUser(); // Use useUser hook
-  const [categories, setCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục
-
-  // Lấy dữ liệu danh mục từ API
+  const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục nổi bật
+  const [allCategories, setAllCategories] = useState<Category[]>([]); // State để lưu trữ tất cả dữ liệu danh mục
+ 
+  // Lấy dữ liệu danh mục nổi bật từ API
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchFeaturedCategories = async () => {
       try {
-        const response = await categoryService.getCategoryTree(0, 5);
+        const response = await categoryService.getSuggestCategory();
         // Ánh xạ dữ liệu API sang định dạng Category[]
-        const mappedCategories: Category[] = response.map((category: Category) => ({
-          // Chuyển đổi id từ kiểu số sang kiểu chuỗi
-          id: category.id.toString(),
-          name: category.name,
-          icon: category.icon,
-          active: category.active,
-          isShowSuggests: category.isShowSuggests,
-          totalProduct: category.totalProduct,
-          // Chuyển đổi parentId sang chuỗi nếu có
-          parentId: category.parentId
-            ? category.parentId.toString()
-            : undefined,
-          // Ánh xạ mảng 'child' thành 'child'
-          child: category.child
-            ? category.child.map((sub: Category) => ({
-                // Chuyển đổi id của danh mục con sang chuỗi
-                id: sub.id.toString(),
-                name: sub.name,
-                icon: sub.icon,
-                active: sub.active,
-                isShowSuggests: sub.isShowSuggests,
-                totalProduct: sub.totalProduct,
-                // Chuyển đổi parentId của danh mục con sang chuỗi nếu có
-                parentId: sub.parentId ? sub.parentId.toString() : undefined,
-              }))
-            : [],
-        }));
-        setCategories(mappedCategories);
+        setFeaturedCategories(response);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Error fetching featured categories:", error);
       }
     };
-    fetchCategories();
+    fetchFeaturedCategories();
+  }, []);
+
+  // Lấy tất cả dữ liệu danh mục từ API
+  useEffect(() => {
+    const fetchAllCategories = async () => {
+      try {
+        const response = await categoryService.getCategoryTree(0, 10000);
+        setAllCategories(response);
+      } catch (error) {
+        console.error("Error fetching all categories:", error);
+      }
+    };
+    fetchAllCategories();
   }, []);
 
   // Handle scroll effect for header
@@ -192,6 +180,28 @@ const Header = () => {
                   </Button>
                 )}
               </form>
+
+              {/* All Categories Button - Desktop */}
+              <Sheet open={isCategoryMenuOpen} onOpenChange={setIsCategoryMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full hover:bg-primary/10"
+                  >
+                   <Menu className="h-5 w-5" /> Category
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80">
+                  <SheetHeader className="flex justify-between items-center pr-4">
+                    <SheetTitle>Category</SheetTitle>
+                  </SheetHeader>
+                  <MobileNavigation
+                    onClose={() => setIsCategoryMenuOpen(false)}
+                    categories={allCategories} // Truyền tất cả danh mục
+                  />
+                </SheetContent>
+              </Sheet>
             </div>
 
             {/* Mobile Menu Button */}
@@ -221,7 +231,7 @@ const Header = () => {
                   </SheetHeader>
                   <MobileNavigation
                     onClose={() => setIsMobileMenuOpen(false)}
-                    categories={categories} // Truyền categories xuống MobileNavigation
+                    categories={allCategories} // Truyền categories nổi bật xuống MobileNavigation
                   />
                 </SheetContent>
               </Sheet>
@@ -313,7 +323,7 @@ const Header = () => {
           <nav className="hidden md:flex py-2 justify-center border-t border-border">
             <NavigationMenu>
               <NavigationMenuList className="gap-8">
-                {categories.map(item => (
+                {featuredCategories.map(item => (
                   <NavigationMenuItem key={item.id}>
                     {item.child && item.child.length > 0 ? (
                       <>
@@ -371,6 +381,7 @@ const MobileNavigation = ({
   categories,
 }: {
   onClose: () => void;
+  // `categories` có thể là danh mục nổi bật hoặc tất cả danh mục
   categories: Category[];
 }) => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -398,7 +409,7 @@ const MobileNavigation = ({
                   to={`/category/${item.id}`} // Điều hướng đến trang category cha
                   onClick={onClose}
                 >
-                  {item.name} (Tất cả)
+                  {item.name}
                 </Link>
                 <ChevronDown
                   className={`h-4 w-4 transition-transform duration-200 ${

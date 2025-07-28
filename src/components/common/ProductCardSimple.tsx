@@ -105,9 +105,9 @@ const ProductCardSimple = ({
     >
       <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-xl">
         <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
-          <Link to={`/product/${product.id}`} className="block h-full">
+          <Link to={`/product/${product.id}`} className="block h-full w-full">
             <img
-              src={product.images[0]}
+              src={product.imagesDTOList[0].path}
               alt={product.name}
               className="w-full h-full object-cover"
             />

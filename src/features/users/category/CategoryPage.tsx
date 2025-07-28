@@ -8,8 +8,10 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { categoryService } from "@/features/users/category/services/categoryServices";
+import { productService } from "@/features/users/category/services/productServices";
 import { Category, Product } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getRandomImage } from "../../../utils/random-image";
 
@@ -24,299 +26,48 @@ const CategoryPage = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // TODO: Fetch category data from API
-    // Tạm thời sử dụng mock data dựa trên categorySlug
-    const getCategoryData = (slug: string) => {
-      switch (slug) {
-        case "thoi-trang":
-          return {
-            category: {
-              id: 1,
-              name: "Thời trang",
-              icon: "👕",
-              active: true,
-              isShowSuggests: true,
-              totalProduct: 1250,
-            },
-            subcategories: [
-              {
-                id: 1,
-                name: "Áo nam",
-                icon: "👔",
-                active: true,
-                isShowSuggests: true,
-                totalProduct: 350,
-                parentId: 1,
-              },
-              {
-                id: 2,
-                name: "Áo nữ",
-                icon: "👚",
-                active: true,
-                isShowSuggests: true,
-                totalProduct: 420,
-                parentId: 1,
-              },
-              {
-                id: 3,
-                name: "Quần nam",
-                icon: "👖",
-                active: true,
-                isShowSuggests: true,
-                totalProduct: 280,
-                parentId: 1,
-              },
-              {
-                id: 4,
-                name: "Quần nữ",
-                icon: "👗",
-                active: true,
-                isShowSuggests: true,
-                totalProduct: 200,
-                parentId: 1,
-              },
-            ],
-          };
-        case "dien-tu":
-          return {
-            category: {
-              id: 2,
-              name: "Điện tử",
-              icon: "📱",
-              active: true,
-              isShowSuggests: true,
-              totalProduct: 890,
-            },
-            subcategories: [
-              {
-                id: 5,
-                name: "Điện thoại",
-                icon: "📱",
-                active: true,
-                isShowSuggests: true,
-                totalProduct: 280,
-                parentId: 2,
-              },
-              {
-                id: 6,
-                name: "Laptop",
-                icon: "💻",
-                active: true,
-                isShowSuggests: true,
-                totalProduct: 190,
-                parentId: 2,
-              },
-              {
-                id: 7,
-                name: "Phụ kiện",
-                icon: "🎧",
-                active: true,
-                isShowSuggests: true,
-                totalProduct: 420,
-                parentId: 2,
-              },
-            ],
-          };
-        default:
-          return {
-            category: {
-              id: 1,
-              name: "Thời trang",
-              icon: "👕",
-              active: true,
-              isShowSuggests: true,
-              totalProduct: 150,
-            },
-            subcategories: [],
-          };
+  /**
+   * Fetches category data and featured products from the API.
+   * @param slug - The slug of the category to fetch.
+   */
+  const fetchData = useCallback(async (slug: string) => {
+    setLoading(true);
+    try {
+      // Fetch category and subcategories
+      const categoryResponse = await categoryService.getCategoryBySlug(slug);
+      setCategory(categoryResponse.data.category);
+      setSubcategories(categoryResponse.data.subcategories || []);
+
+      // Fetch featured products based on category ID
+      if (categoryResponse.data.category?.id) {
+        const productsResponse = await productService.getProductsByCategoryId(
+          categoryResponse.data.category.id
+        );
+        // Map products to include an image and ensure the structure matches Product interface
+        const mappedProducts: Product[] = productsResponse.data.map(
+          (product: Product) => ({
+            ...product,
+            images: product.images && product.images.length > 0 ? product.images : [getRandomImage()],
+            name: product.name || product.title, // Ensure name exists
+          })
+        );
+        setFeaturedProducts(mappedProducts);
       }
-    };
-
-    const { category: mockCategory, subcategories: mockSubcategories } =
-      getCategoryData(categorySlug || "");
-
-    // Thêm dữ liệu mẫu cho các danh mục con nếu chưa có
-    if (mockSubcategories.length === 0 && mockCategory) {
-      // Tạo danh sách danh mục con mẫu nếu không có
-      const subcategoriesMock = [
-        {
-          id: mockCategory.id * 100 + 1,
-          name: "Áo thun",
-          icon: "👕",
-          active: true,
-          isShowSuggests: true,
-          totalProduct: 120,
-          parentId: mockCategory.id,
-        },
-        {
-          id: mockCategory.id * 100 + 2,
-          name: "Áo sơ mi",
-          icon: "👔",
-          active: true,
-          isShowSuggests: true,
-          totalProduct: 85,
-          parentId: mockCategory.id,
-        },
-        {
-          id: mockCategory.id * 100 + 3,
-          name: "Quần jeans",
-          icon: "👖",
-          active: true,
-          isShowSuggests: true,
-          totalProduct: 95,
-          parentId: mockCategory.id,
-        },
-        {
-          id: mockCategory.id * 100 + 4,
-          name: "Váy đầm",
-          icon: "👗",
-          active: true,
-          isShowSuggests: true,
-          totalProduct: 110,
-          parentId: mockCategory.id,
-        },
-        {
-          id: mockCategory.id * 100 + 5,
-          name: "Giày dép",
-          icon: "👟",
-          active: true,
-          isShowSuggests: true,
-          totalProduct: 75,
-          parentId: mockCategory.id,
-        },
-        {
-          id: mockCategory.id * 100 + 6,
-          name: "Phụ kiện",
-          icon: "👜",
-          active: true,
-          isShowSuggests: true,
-          totalProduct: 60,
-          parentId: mockCategory.id,
-        },
-      ];
-
-      // Thêm vào mảng mockSubcategories
-      mockSubcategories.push(...subcategoriesMock);
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+      setCategory(null); // Reset category on error
+      setSubcategories([]);
+      setFeaturedProducts([]);
+    } finally {
+      setLoading(false);
     }
+  }, []);
 
-    // Mock featured products với cấu trúc mới theo interface Product
-    const mockFeaturedProducts: Product[] = [
-      {
-        id: 1,
-        name: "Áo sơ mi nam cao cấp", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Áo sơ mi nam cao cấp",
-        content: "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại",
-        brand: "Brand A",
-        material: "Cotton",
-        origin: "Vietnam",
-        style: "Modern",
-        star: 4.5,
-        totalProductSold: 120,
-        status: true,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: 1,
-        shopId: 1,
-        discount: {
-          id: 1,
-          percent: 25,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-01T00:00:00Z"),
-        modifierDate: new Date("2024-01-01T00:00:00Z"),
-      },
-      {
-        id: 2,
-        name: "Áo thun nữ basic",
-        images: [getRandomImage()],
-        title: "Áo thun nữ basic",
-        content: "Áo thun nữ basic, form rộng thoải mái",
-        brand: "Brand B",
-        material: "Cotton",
-        origin: "Vietnam",
-        style: "Casual",
-        star: 4.3,
-        totalProductSold: 85,
-        status: true,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: 1,
-        shopId: 2,
-        discount: {
-          id: 2,
-          percent: 20,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-01T00:00:00Z"),
-        modifierDate: new Date("2024-01-01T00:00:00Z"),
-      },
-      {
-        id: 3,
-        name: "Quần jean nam slim fit",
-        images: [getRandomImage()],
-        title: "Quần jean nam slim fit",
-        content: "Quần jean nam slim fit, chất liệu denim cao cấp",
-        brand: "Brand C",
-        material: "Denim",
-        origin: "Vietnam",
-        style: "Slim Fit",
-        star: 4.7,
-        totalProductSold: 67,
-        status: true,
-        isNew: false,
-        isFlashSale: true,
-        isTrending: true,
-        categoriesId: 1,
-        shopId: 3,
-        discount: {
-          id: 3,
-          percent: 23,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-01T00:00:00Z"),
-        modifierDate: new Date("2024-01-01T00:00:00Z"),
-      },
-      {
-        id: 4,
-        name: "Váy nữ dáng A",
-        images: [getRandomImage()],
-        title: "Váy nữ dáng A",
-        content: "Váy nữ dáng A thanh lịch, phù hợp đi làm",
-        brand: "Brand D",
-        material: "Cotton",
-        origin: "Vietnam",
-        style: "A-line",
-        star: 4.6,
-        totalProductSold: 93,
-        status: true,
-        isNew: false,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: 1,
-        shopId: 4,
-        discount: {
-          id: 4,
-          percent: 23,
-          status: true,
-          createDate: new Date("2024-01-01"),
-        },
-        createDate: new Date("2024-01-01T00:00:00Z"),
-        modifierDate: new Date("2024-01-01T00:00:00Z"),
-      },
-    ];
-
-    setCategory(mockCategory);
-    setSubcategories(mockSubcategories);
-    setFeaturedProducts(mockFeaturedProducts);
-    setLoading(false);
-  }, [categorySlug]);
+  useEffect(() => {
+    if (categorySlug) {
+      fetchData(categorySlug);
+    }
+  }, [categorySlug, fetchData]);
 
   if (loading) {
     return (

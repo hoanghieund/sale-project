@@ -2,7 +2,6 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { AuthLayout, MainLayout } from "@/layouts";
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ActiveAccountRoute from "./ActiveAccountRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import RedirectRoute from "./RedirectRoute";
 
@@ -58,7 +57,7 @@ const AppRouter = () => {
         <Routes>
           {/* Main Layout - Các trang có header và footer */}
           <Route element={<MainLayout />}>
-            <Route element={<ActiveAccountRoute />}>
+            {/* <Route element={<ActiveAccountRoute />}> */}
               {/* Các trang công khai - không cần đăng nhập */}
               <Route path="/" element={<Home />} />
               <Route path="/product/:id" element={<ProductDetailPage />} />
@@ -75,7 +74,7 @@ const AppRouter = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="*" element={<NotFound />} />
-            </Route>
+            {/* </Route> */}
             {/* Các trang yêu cầu đăng nhập */}
             <Route element={<ProtectedRoute />}>
               {/* Các trang yêu cầu tài khoản đã kích hoạt */}
