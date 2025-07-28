@@ -9,6 +9,7 @@ import { ArrowLeft, Lock } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { getRandomImage } from "../../../utils/random-image";
 import PaymentMethodSelector from "./components/PaymentMethodSelector";
 
 interface CheckoutForm {
@@ -351,7 +352,7 @@ const Checkout = () => {
                         src={
                           item.product.images && item.product.images.length > 0
                             ? item.product.images[0]
-                            : "/placeholder-image.jpg"
+                            : getRandomImage()
                         }
                         alt={item.product.title || "Sản phẩm"}
                         className="w-full h-full object-cover rounded"

@@ -1,5 +1,6 @@
 import { useUser } from "@/hooks/use-user";
 import { Category, Product } from "@/types";
+import { getRandomImage } from "@/utils/random-image";
 import { useEffect, useState } from "react";
 import CallToActionSection from "./components/CallToActionSection";
 import CategoriesSection from "./components/CategoriesSection";
@@ -141,7 +142,7 @@ const Index = () => {
       {
         id: 101,
         name: "Áo thun nam cổ tròn", // Thêm trường name bắt buộc
-        images: ["/assets/product-1.jpg"], // Thêm trường images bắt buộc
+        images: [getRandomImage()], // Thêm trường images bắt buộc
         title: "Áo thun nam cổ tròn",
         content: "Áo thun nam cổ tròn chất liệu cotton 100%",
         status: true,
@@ -160,7 +161,7 @@ const Index = () => {
       {
         id: 102,
         name: "Quần jean nam slim fit", // Thêm trường name bắt buộc
-        images: ["/assets/product-2.jpg"], // Thêm trường images bắt buộc
+        images: [getRandomImage()], // Thêm trường images bắt buộc
         title: "Quần jean nam slim fit",
         content: "Quần jean nam slim fit màu xanh đậm",
         status: true,
@@ -179,7 +180,7 @@ const Index = () => {
       {
         id: 103,
         name: "Áo sơ mi nữ công sở", // Thêm trường name bắt buộc
-        images: ["/assets/product-3.jpg"], // Thêm trường images bắt buộc
+        images: [getRandomImage()], // Thêm trường images bắt buộc
         title: "Áo sơ mi nữ công sở",
         content: "Áo sơ mi nữ công sở chất liệu lụa cao cấp",
         status: true,
@@ -197,7 +198,7 @@ const Index = () => {
       {
         id: 104,
         name: "Váy liền thân dự tiệc", // Thêm trường name bắt buộc
-        images: ["/assets/product-4.jpg"], // Thêm trường images bắt buộc
+        images: [getRandomImage()], // Thêm trường images bắt buộc
         title: "Váy liền thân dự tiệc",
         content: "Váy liền thân dự tiệc màu đen sang trọng",
         status: true,

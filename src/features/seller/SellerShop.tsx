@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
 import { Shop } from "@/types";
+import { useEffect, useState } from "react";
+import { getRandomImage } from "../../utils/random-image";
 
 /**
  * SellerShop - Trang cài đặt cửa hàng cho seller
@@ -19,8 +20,8 @@ const SellerShop = () => {
       name: "Shop Thời Trang ABC",
       slug: "shop-thoi-trang-abc",
       description: "Chuyên cung cấp thời trang nam nữ chất lượng cao với giá cả hợp lý. Cam kết hàng chính hãng 100%.",
-      logo: "/images/shop-logo.jpg",
-      banner: "/images/shop-banner.jpg",
+      logo: getRandomImage(),
+      banner: getRandomImage(),
       ownerId: "user1",
       verified: true,
       rating: 4.8,

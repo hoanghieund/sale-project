@@ -1,3 +1,4 @@
+import { getRandomImage } from "@/utils/random-image";
 import { Link } from "react-router-dom";
 
 /**
@@ -8,7 +9,7 @@ const HeroSection = () => {
   return (
     <section
       className="relative bg-cover bg-center text-white py-20"
-      style={{ backgroundImage: `url('/assets/hero-running.jpg')` }}
+      style={{ backgroundImage: `url('${getRandomImage()}')` }}
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="container relative z-10 mx-auto px-4 text-center">

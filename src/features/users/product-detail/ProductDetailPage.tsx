@@ -5,6 +5,7 @@ import QuantitySelector from "@/features/users/product-detail/components/Quantit
 import { Product, Shop } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { getRandomImage } from "../../../utils/random-image";
 
 /**
  * ProductDetailPage - Trang chi tiết sản phẩm C2C Marketplace
@@ -30,10 +31,10 @@ const ProductDetailPage = () => {
     const mockProduct: Product = {
       name: "Áo sơ mi nam cao cấp", // Trường bắt buộc
       images: [
-        "/assets/product-1.jpg",
-        "/assets/product-2.jpg",
-        "/assets/product-3.jpg",
-        "/assets/product-4.jpg",
+        getRandomImage(),
+        getRandomImage(),
+        getRandomImage(),
+        getRandomImage(),
       ],
       id: 1,
       title: "Áo sơ mi nam cao cấp",
@@ -80,7 +81,7 @@ const ProductDetailPage = () => {
     const mockShop: Shop = {
       id: 1,
       name: "Fashion Store VN",
-      avatar: "/assets/shop-logo-1.jpg",
+      avatar: getRandomImage(),
       status: true,
       userId: 1,
       createDate: new Date("2023-01-01T00:00:00Z"),
@@ -93,8 +94,8 @@ const ProductDetailPage = () => {
       slug: "fashion-store-vn",
       description:
         "Chuyên cung cấp thời trang nam nữ cao cấp, chính hãng với giá tốt nhất thị trường.",
-      logo: "/assets/product-1.jpg",
-      banner: "/assets/product-2.jpg",
+      logo: getRandomImage(),
+      banner: getRandomImage(),
       ownerId: "user1",
       address: {
         street: "123 Nguyễn Huệ",

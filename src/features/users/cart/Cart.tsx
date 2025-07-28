@@ -5,6 +5,7 @@ import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../../context/CartContext";
+import { getRandomImage } from "../../../utils/random-image";
 
 const Cart = () => {
   const { cart, updateQuantity, removeFromCart, applyCoupon, removeCoupon } =
@@ -59,7 +60,7 @@ const Cart = () => {
                     <img
                       src={
                         (item.product as any).images?.[0] ||
-                        "/placeholder-product.jpg"
+                        getRandomImage()
                       }
                       alt={item.product.title || "Product"}
                       className="w-full h-full object-cover rounded-md"

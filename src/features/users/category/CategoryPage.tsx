@@ -11,6 +11,7 @@ import {
 import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { getRandomImage } from "../../../utils/random-image";
 
 /**
  * CategoryPage - Trang hiển thị danh mục chính
@@ -204,7 +205,7 @@ const CategoryPage = () => {
       {
         id: 1,
         name: "Áo sơ mi nam cao cấp", // Thêm trường name bắt buộc
-        images: ["/assets/product-1.jpg"], // Thêm trường images bắt buộc
+        images: [getRandomImage()], // Thêm trường images bắt buộc
         title: "Áo sơ mi nam cao cấp",
         content: "Áo sơ mi nam chất liệu cotton cao cấp, thiết kế hiện đại",
         brand: "Brand A",
@@ -231,7 +232,7 @@ const CategoryPage = () => {
       {
         id: 2,
         name: "Áo thun nữ basic",
-        images: ["/assets/product-2.jpg"],
+        images: [getRandomImage()],
         title: "Áo thun nữ basic",
         content: "Áo thun nữ basic, form rộng thoải mái",
         brand: "Brand B",
@@ -258,7 +259,7 @@ const CategoryPage = () => {
       {
         id: 3,
         name: "Quần jean nam slim fit",
-        images: ["/assets/product-3.jpg"],
+        images: [getRandomImage()],
         title: "Quần jean nam slim fit",
         content: "Quần jean nam slim fit, chất liệu denim cao cấp",
         brand: "Brand C",
@@ -285,7 +286,7 @@ const CategoryPage = () => {
       {
         id: 4,
         name: "Váy nữ dáng A",
-        images: ["/assets/product-4.jpg"],
+        images: [getRandomImage()],
         title: "Váy nữ dáng A",
         content: "Váy nữ dáng A thanh lịch, phù hợp đi làm",
         brand: "Brand D",
