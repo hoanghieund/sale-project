@@ -1,15 +1,7 @@
 // src/features/users/home/components/AllProductsSection.tsx
 
 import ProductCardSimple from '@/components/common/ProductCardSimple';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
+import CustomPagination from '@/components/common/CustomPagination';
 import { Product } from '@/types';
 import React from 'react';
 
@@ -36,110 +28,7 @@ const AllProductsSection: React.FC<AllProductsSectionProps> = ({
   totalPages,
   onPageChange,
 }) => {
-  // Hàm tạo các mục phân trang dựa trên tổng số trang và trang hiện tại
-  const renderPaginationItems = () => {
-    const items = [];
-    // Thêm nút Previous
-    items.push(
-      <PaginationItem key="previous">
-        <PaginationPrevious
-          onClick={() => onPageChange(currentPage - 1)}
-          aria-disabled={currentPage === 1}
-          tabIndex={currentPage === 1 ? -1 : undefined}
-          className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-        />
-      </PaginationItem>
-    );
-
-    // Logic hiển thị các nút số trang
-    if (totalPages <= 7) {
-      // Hiển thị tất cả các trang nếu tổng số trang nhỏ hơn hoặc bằng 7
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(
-          <PaginationItem key={`page-${i}`}>
-            <PaginationLink
-              onClick={() => onPageChange(i)}
-              isActive={currentPage === i}
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-    } else {
-      // Logic hiển thị các trang với dấu ba chấm nếu tổng số trang lớn hơn 7
-      // Luôn hiển thị trang 1
-      items.push(
-        <PaginationItem key="page-1">
-          <PaginationLink
-            onClick={() => onPageChange(1)}
-            isActive={currentPage === 1}
-          >
-            1
-          </PaginationLink>
-        </PaginationItem>
-      );
-
-      // Hiển thị dấu ba chấm nếu trang hiện tại lớn hơn 3
-      if (currentPage > 3) {
-        items.push(<PaginationEllipsis key="ellipsis-start" />);
-      }
-
-      // Hiển thị 2 trang xung quanh trang hiện tại
-      let startPage = Math.max(2, currentPage - 1);
-      let endPage = Math.min(totalPages - 1, currentPage + 1);
-
-      if (currentPage <= 3) {
-        endPage = 3;
-      } else if (currentPage >= totalPages - 2) {
-        startPage = totalPages - 2;
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        items.push(
-          <PaginationItem key={`page-${i}`}>
-            <PaginationLink
-              onClick={() => onPageChange(i)}
-              isActive={currentPage === i}
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-
-      // Hiển thị dấu ba chấm nếu trang hiện tại nhỏ hơn totalPages - 2
-      if (currentPage < totalPages - 2) {
-        items.push(<PaginationEllipsis key="ellipsis-end" />);
-      }
-
-      // Luôn hiển thị trang cuối cùng
-      items.push(
-        <PaginationItem key={`page-${totalPages}`}>
-          <PaginationLink
-            onClick={() => onPageChange(totalPages)}
-            isActive={currentPage === totalPages}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
-      );
-    }
-
-    // Thêm nút Next
-    items.push(
-      <PaginationItem key="next">
-        <PaginationNext
-          onClick={() => onPageChange(currentPage + 1)}
-          aria-disabled={currentPage === totalPages}
-          tabIndex={currentPage === totalPages ? -1 : undefined}
-          className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-        />
-      </PaginationItem>
-    );
-
-    return items;
-  };
+  // Component phân trang đã được tách thành CustomPagination
 
   return (
     <section className="py-12">
@@ -153,13 +42,12 @@ const AllProductsSection: React.FC<AllProductsSectionProps> = ({
         </div>
 
         {/* Khu vực phân trang */}
-        {totalPages > 1 && (
-          <div className="mt-12 flex justify-center">
-            <Pagination>
-              <PaginationContent>{renderPaginationItems()}</PaginationContent>
-            </Pagination>
-          </div>
-        )}
+        <CustomPagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          className="mt-12"
+        />
       </div>
     </section>
   );

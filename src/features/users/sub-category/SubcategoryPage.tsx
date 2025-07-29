@@ -1,13 +1,10 @@
-import CategoryInfo from "@/components/common/CategoryInfo";
-import ProductCardSimple from "@/components/common/ProductCardSimple";
-import { productService } from "@/features/users/sub-category/services/productServices";
-import { subcategoryService } from "@/features/users/sub-category/services/subcategoryServices";
-import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-// Import các component Shadcn
+import CategoryInfo from "@/components/common/CategoryInfo";
+import CustomPagination from "@/components/common/CustomPagination";
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
+import ProductCardSimple from "@/components/common/ProductCardSimple";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -22,22 +19,9 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { productService } from "@/features/users/sub-category/services/productServices";
+import { subcategoryService } from "@/features/users/sub-category/services/subcategoryServices";
+import { Category, Product } from "@/types";
 
 /**
  * SubcategoryPage - Trang hiển thị danh mục con
@@ -47,7 +31,8 @@ const SubcategoryPage = () => {
   const { subcategoryId } = useParams<{ subcategoryId: string }>();
   const [subcategory, setSubcategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const [sortBy, setSortBy] = useState("newest");
+  const [currentPage, setCurrentPage] = useState(1); // State cho trang hiện tại, mặc định là 1
+  const [totalPages, setTotalPages] = useState(1); // State cho tổng số trang, mặc định là 1
 
   useEffect(() => {
     /**
@@ -58,7 +43,7 @@ const SubcategoryPage = () => {
      * @param {string} id - Id của danh mục con.
      * @returns {void}
      */
-    const fetchSubcategoryAndProducts = async (id: string) => {
+    const fetchSubcategoryAndProducts = async (id: string , page : number = 1) => {
       try {
         // Lấy thông tin danh mục con từ API
         const subcategoryData = await subcategoryService.getSubcategoryById(
@@ -66,14 +51,15 @@ const SubcategoryPage = () => {
         );
         setSubcategory(subcategoryData); // Cập nhật trạng thái danh mục con
 
-        // Lấy danh sách sản phẩm theo ID danh mục con
+        // Lấy danh sách sản phẩm theo ID danh mục con và trang hiện tại
         const productsData = await productService.getProductsBySubCategoryId(
-          1,
-          3,
-          0,
-          10
+          subcategoryData.parent?.id, 
+          Number(subcategoryData.id),
+          page - 1,
+          12
         );
         setProducts(productsData.content); // Cập nhật trạng thái sản phẩm
+        setTotalPages(productsData.totalPages); // Cập nhật tổng số trang
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu danh mục con hoặc sản phẩm:", error);
         setSubcategory(null); // Đặt danh mục con về null nếu có lỗi
@@ -83,53 +69,23 @@ const SubcategoryPage = () => {
 
     // Gọi hàm fetchSubcategoryAndProducts khi subcategoryId thay đổi
     if (subcategoryId) {
-      fetchSubcategoryAndProducts(subcategoryId);
+      fetchSubcategoryAndProducts(subcategoryId , currentPage);
     }
-  }, [subcategoryId]); // Dependency array đảm bảo useEffect chạy lại khi subcategoryId thay đổi
+  }, [subcategoryId, currentPage]); // Dependency array đảm bảo useEffect chạy lại khi subcategoryId hoặc currentPage thay đổi
 
-  const handleSortChange = (value: string) => {
-    setSortBy(value);
-    console.log(`Đã chọn sắp xếp theo: ${value}`);
-
-    // Logic sắp xếp sản phẩm
-    let sortedProducts = [...products];
-
-    switch (value) {
-      case "price-low":
-        // Sắp xếp sản phẩm theo giá từ thấp đến cao (cần ProductSku.price khi có dữ liệu thực)
-        // Hiện tại dùng ID làm placeholder
-        sortedProducts.sort((a, b) => a.id - b.id);
-        break;
-      case "price-high":
-        // Sắp xếp sản phẩm theo giá từ cao đến thấp (cần ProductSku.price khi có dữ liệu thực)
-        // Hiện tại dùng ID làm placeholder
-        sortedProducts.sort((a, b) => b.id - a.id);
-        break;
-      case "popular":
-        // Sắp xếp sản phẩm theo số lượng bán chạy nhất
-        sortedProducts.sort((a, b) => b.totalProductSold - a.totalProductSold);
-        break;
-      case "rating":
-        // Sắp xếp sản phẩm theo đánh giá cao nhất
-        sortedProducts.sort((a, b) => b.star - a.star);
-        break;
-      case "newest":
-      default:
-        // Sắp xếp sản phẩm theo ngày tạo mới nhất
-        sortedProducts.sort(
-          (a, b) =>
-            new Date(b.createDate).getTime() - new Date(a.createDate).getTime(),
-        );
-        break;
-    }
-
-    setProducts(sortedProducts); // Cập nhật danh sách sản phẩm đã sắp xếp
+  /**
+   * @function handlePageChange
+   * @description Cập nhật trạng thái `currentPage` khi người dùng chuyển trang.
+   * Đồng thời gọi lại `fetchSubcategoryAndProducts` để tải dữ liệu cho trang mới.
+   * @param {number} page - Số trang mới.
+   * @returns {void}
+   */
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   if (!subcategory) {
-    return (
-      <EmptyStateDisplay />
-    );
+    return <EmptyStateDisplay />;
   }
 
   return (
@@ -185,22 +141,6 @@ const SubcategoryPage = () => {
                   phẩm
                 </span>
               </div>
-
-              <div className="flex items-center gap-4">
-                <span className="text-gray-600 font-medium">Sắp xếp theo:</span>
-                <Select value={sortBy} onValueChange={handleSortChange}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Sắp xếp theo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">Mới nhất</SelectItem>
-                    <SelectItem value="price-low">Giá thấp đến cao</SelectItem>
-                    <SelectItem value="price-high">Giá cao đến thấp</SelectItem>
-                    <SelectItem value="popular">Phổ biến nhất</SelectItem>
-                    <SelectItem value="rating">Đánh giá cao nhất</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -226,30 +166,11 @@ const SubcategoryPage = () => {
 
         {/* Pagination */}
         <div className="flex justify-center mt-8">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <CustomPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       </div>
     </div>

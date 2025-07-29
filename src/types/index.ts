@@ -1,15 +1,15 @@
 // Product Types - Dựa trên tbl_product
 export interface Product {
-  imagesDTOList: Image[]; // Thay đổi 'any' thành 'Image[]'
-  isLike?: boolean;
-  totalProduct?: number;
-  amount?: number;
-  totalReview?: number;
-  totalLike?: number;
+  // Thông tin cơ bản
   id: number; // bigint(20) trong SQL
   title: string; // title trong SQL
   description?: string; // description text trong SQL
   content?: string; // content text trong SQL
+  status: boolean; // status tinyint(1)
+  totalProduct?: number; // Tổng số lượng sản phẩm
+  amount?: number; // Số lượng còn lại
+
+  // Thông tin chi tiết sản phẩm
   brand?: string; // brand varchar(255)
   material?: string; // material varchar(255)
   origin?: string; // origin varchar(255)
@@ -18,21 +18,48 @@ export interface Product {
   width?: number; // width float
   length?: number; // length float
   weight?: number; // weight float
+
+  // Thông tin đánh giá và tương tác
   star?: number; // star double - rating
-  totalProductSold: number; // total_product_sold int(11)
-  status: boolean; // status tinyint(1)
-  isNew?: boolean; // is_new tinyint(1)
-  isFlashSale: boolean; // is_flash_sale tinyint(1)
-  isTrending: boolean; // is_trending tinyint(1)
-  timeFlashSale?: Date; // time_flash_sale date
+  totalReview?: number; // Tổng số đánh giá
+  totalLike?: number; // Tổng số lượt thích
+  isLike?: boolean; // Người dùng hiện tại đã thích chưa
+  totalProductSold?: number; // total_product_sold int(11)
   ordered?: boolean; // ordered tinyint(1)
+
+  // Flags đặc biệt
+  isNew?: boolean; // is_new tinyint(1)
+  isFlashSale?: boolean; // is_flash_sale tinyint(1)
+  isTrending?: boolean; // is_trending tinyint(1)
+  timeFlashSale?: string; // time_flash_sale date
+  timeCreate?: string; // Ngày tạo sản phẩm dạng string
+
+  // Thông tin đánh giá chi tiết
+  star1?: number; // Số lượng đánh giá 1 sao
+  star2?: number; // Số lượng đánh giá 2 sao
+  star3?: number; // Số lượng đánh giá 3 sao
+  star4?: number; // Số lượng đánh giá 4 sao
+  star5?: number; // Số lượng đánh giá 5 sao
+
+  // Thông tin liên kết
   categoriesId?: number; // categories_id bigint(20)
   discountId?: number; // discount_id bigint(20)
   shopId?: number; // shop_id bigint(20)
+
+  // Các đối tượng liên kết
   shop?: Shop; // Thông tin shop (optional khi populate)
-  category?: Category; // Thông tin category (optional khi populate)
+  categoryDto?: Category; // Thông tin category (optional khi populate)
   discount?: Discount; // Thông tin discount (optional khi populate)
-  productSkuDTOList?: ProductSku[]; // Thêm thuộc tính này
+
+  // Danh sách biến thể và hình ảnh
+  variantsDTOList?: Variant[]; // Danh sách biến thể
+  imagesDTOList?: Image[]; // Danh sách hình ảnh
+  productSkusDTOList?: ProductSku[]; // Danh sách SKU
+  variantOutOfStock?: any; // Thông tin về biến thể hết hàng
+
+  // Thông tin tính toán
+  sumPriceByOrders?: number; // Tổng doanh thu từ sản phẩm
+
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime
@@ -50,10 +77,13 @@ export interface Shop {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
   avatar?: string; // avatar varchar(255) - logo của shop
+  description?: string; // description text
   status?: boolean; // status tinyint(1)
-  timeRequest?: Date; // time_request datetime
+  timeRequest?: Date | string; // time_request datetime
   userId?: number; // user_id bigint(20) - ID của user sở hữu shop
   user?: User; // Thông tin owner (optional khi populate)
+  totalQuantity?: number; // Tổng số sản phẩm
+  totalPrice?: number; // Tổng doanh thu
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime
@@ -65,7 +95,10 @@ export interface Shop {
 export interface Discount {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
-  percent?: number; // percent double
+  description?: string; // Mô tả về khuyến mãi
+  discount_percent?: number; // Phần trăm giảm giá
+  active?: boolean; // Trạng thái hoạt động
+  // Các trường bổ sung
   startDate?: Date; // start_date datetime
   endDate?: Date; // end_date datetime
   status?: boolean; // status tinyint(1)
@@ -79,7 +112,7 @@ export interface Discount {
 // Role Types - Dựa trên tbl_role
 export interface Role {
   id: number; // int(11) trong SQL
-  name?: string; // name varchar(255)
+  name?: string; // name varchar(255), ví dụ: ROLE_USER, ROLE_ADMIN, ROLE_SHOP_MANAGER
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime
@@ -120,12 +153,13 @@ export interface Category {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
   icon?: string; // icon varchar(255)
+  iconFile?: any; // File icon nếu có
   active?: boolean; // active tinyint(1)
-  isShowSuggests: boolean; // is_show_suggets bit(1)
+  isShowSuggest?: boolean; // is_show_suggests tinyint(1)
   totalProduct?: number; // total_product int(11)
-  parentId?: number; // parent_id bigint(20) - cho subcategory
-  parent?: Category; // Thông tin category cha (optional khi populate)
-  child?: Category[]; // Danh sách subcategories (optional khi populate)
+  parentId?: number; // parent_id bigint(20)
+  parent?: Category; // Thông tin parent category (optional khi populate)
+  child?: Category[]; // Thông tin child categories (optional khi populate)
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime
@@ -141,17 +175,22 @@ export interface User {
   id: number; // bigint(20) trong SQL
   username?: string; // username varchar(255)
   email?: string; // email varchar(255)
-  password?: string; // password varchar(255) - chỉ dùng khi cần thiết
+  password?: string; // password varchar(255)
   avatar?: string; // avatar varchar(255)
+  file?: any; // File avatar nếu có
   phone?: string; // phone varchar(255)
   address?: string; // address varchar(255)
-  gender?: boolean; // gender bit(1)
-  dayOfBirth?: number; // day_of_birth int(11)
-  monthOfBirth?: number; // month_of_birth int(11)
-  yearOfBirth?: number; // year_of_birth int(11)
-  active?: number; // active int(11) - trạng thái hoạt động
+  gender?: string | null; // gender bit(1)
+  dayOfBirth?: number | null; // day_of_birth int(11)
+  monthOfBirth?: number | null; // month_of_birth int(11)
+  yearOfBirth?: number | null; // year_of_birth int(11)
+  date?: string | null; // Ngày sinh dạng string
+  active?: number; // active tinyint(4)
+  roleId?: number | null; // ID của role chính
+  shopName?: string | null; // Tên shop nếu là người bán
+  newAccount?: boolean; // Đánh dấu tài khoản mới
   shop?: Shop; // Thông tin shop (optional khi populate)
-  roles?: Role[]; // Danh sách roles từ bảng user_roles
+  roles?: Role[]; // Thông tin roles (optional khi populate)
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime
@@ -216,16 +255,23 @@ export interface Ship {
   modifierDate?: Date; // modifier_date datetime
 }
 
-// Product SKU Types - Dựa trên tbl_product_sku
+// Product SKU Types - Dựa trên tbl_product_skus
 export interface ProductSku {
   id: number; // bigint(20) trong SQL
-  price?: number; // price double
-  quantity?: number; // quantity int(11)
+  name?: string; // name varchar(255)
+  price: number; // price double
+  quantity: number; // quantity int(11)
   status?: boolean; // status tinyint(1)
   productId?: number; // product_id bigint(20)
-  variantValueId?: number; // variant_value_id bigint(20)
+  variantValueId1?: number; // variant_value_id_1 bigint(20)
+  variantValueId2?: number; // variant_value_id_2 bigint(20)
+  color?: any; // Thông tin màu sắc
+  size?: any; // Thông tin kích thước
+  totalProductSold?: number; // Số lượng đã bán
+  sumPriceByOrders?: number; // Tổng doanh thu
   product?: Product; // Thông tin product (optional khi populate)
-  variantValue?: VariantValue; // Thông tin variant value (optional khi populate)
+  variantValue1?: VariantValue; // Thông tin variant value 1 (optional khi populate)
+  variantValue2?: VariantValue; // Thông tin variant value 2 (optional khi populate)
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime
@@ -237,9 +283,7 @@ export interface ProductSku {
 export interface Variant {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
-  productId?: number; // product_id bigint(20)
-  product?: Product; // Thông tin product (optional khi populate)
-  variantValues?: VariantValue[]; // Danh sách variant values (optional khi populate)
+  variantValueDTOList?: VariantValue[]; // Thông tin variant values (optional khi populate)
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime
@@ -251,7 +295,7 @@ export interface Variant {
 export interface VariantValue {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
-  variantsId?: number; // variants_id bigint(20)
+  variantId?: number; // variant_id bigint(20)
   variant?: Variant; // Thông tin variant (optional khi populate)
   // Audit fields
   createBy?: string; // create_by varchar(255)
@@ -260,11 +304,11 @@ export interface VariantValue {
   modifierDate?: Date; // modifier_date datetime
 }
 
-// Images Types - Dựa trên tbl_images
+// Image Types - Dựa trên tbl_image
 export interface Image {
   id: number; // bigint(20) trong SQL
-  name?: string; // name varchar(255)
   path?: string; // path varchar(255)
+  type?: number; // type int(11) - 0: thumbnail, 1: detail
   productId?: number; // product_id bigint(20)
   product?: Product; // Thông tin product (optional khi populate)
   // Audit fields
