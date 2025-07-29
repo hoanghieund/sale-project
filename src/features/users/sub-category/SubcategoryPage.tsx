@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 // Import các component Shadcn
+import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -43,49 +44,48 @@ import {
  * Hiển thị tất cả sản phẩm thuộc subcategory
  */
 const SubcategoryPage = () => {
-  const { subcategorySlug } = useParams<{ subcategorySlug: string }>();
+  const { subcategoryId } = useParams<{ subcategoryId: string }>();
   const [subcategory, setSubcategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
     /**
      * @function fetchSubcategoryAndProducts
      * @description Hàm bất đồng bộ để lấy dữ liệu danh mục con và sản phẩm liên quan từ API.
-     * Sử dụng `subcategorySlug` từ `useParams` để gọi API.
+     * Sử dụng `subcategoryId` từ `useParams` để gọi API.
      * Cập nhật trạng thái `subcategory`, `products` và `loading`.
-     * @param {string} slug - Slug của danh mục con.
+     * @param {string} id - Id của danh mục con.
      * @returns {void}
      */
-    const fetchSubcategoryAndProducts = async (slug: string) => {
-      setLoading(true); // Bắt đầu tải dữ liệu, đặt trạng thái loading là true
+    const fetchSubcategoryAndProducts = async (id: string) => {
       try {
         // Lấy thông tin danh mục con từ API
-        const subcategoryData = await subcategoryService.getSubcategoryBySlug(
-          slug,
+        const subcategoryData = await subcategoryService.getSubcategoryById(
+          parseInt(id)
         );
         setSubcategory(subcategoryData); // Cập nhật trạng thái danh mục con
 
         // Lấy danh sách sản phẩm theo ID danh mục con
         const productsData = await productService.getProductsBySubCategoryId(
-          subcategoryData.id,
+          1,
+          3,
+          0,
+          10
         );
-        setProducts(productsData.data.data); // Cập nhật trạng thái sản phẩm
+        setProducts(productsData.content); // Cập nhật trạng thái sản phẩm
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu danh mục con hoặc sản phẩm:", error);
         setSubcategory(null); // Đặt danh mục con về null nếu có lỗi
         setProducts([]); // Đặt sản phẩm về mảng rỗng nếu có lỗi
-      } finally {
-        setLoading(false); // Hoàn tất tải dữ liệu, đặt trạng thái loading là false
       }
     };
 
-    // Gọi hàm fetchSubcategoryAndProducts khi subcategorySlug thay đổi
-    if (subcategorySlug) {
-      fetchSubcategoryAndProducts(subcategorySlug);
+    // Gọi hàm fetchSubcategoryAndProducts khi subcategoryId thay đổi
+    if (subcategoryId) {
+      fetchSubcategoryAndProducts(subcategoryId);
     }
-  }, [subcategorySlug]); // Dependency array đảm bảo useEffect chạy lại khi subcategorySlug thay đổi
+  }, [subcategoryId]); // Dependency array đảm bảo useEffect chạy lại khi subcategoryId thay đổi
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
@@ -126,19 +126,9 @@ const SubcategoryPage = () => {
     setProducts(sortedProducts); // Cập nhật danh sách sản phẩm đã sắp xếp
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
-      </div>
-    );
-  }
-
   if (!subcategory) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Không tìm thấy danh mục</div>
-      </div>
+      <EmptyStateDisplay />
     );
   }
 

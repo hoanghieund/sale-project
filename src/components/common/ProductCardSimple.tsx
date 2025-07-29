@@ -197,7 +197,7 @@ const ProductCardSimple = ({
                       className="w-full bg-primary/90 hover:bg-primary text-primary-foreground backdrop-blur-sm shadow-sm"
                       size="sm"
                       onClick={handleQuickAdd}
-                      disabled={isAddingToCart || product.totalProduct === 0}
+                      disabled={isAddingToCart || !product.totalProduct}
                       data-testid="add-to-cart-button"
                     >
                       <ShoppingCart className="h-4 w-4 mr-2" />

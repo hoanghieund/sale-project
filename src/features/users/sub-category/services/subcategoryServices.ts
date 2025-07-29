@@ -1,13 +1,11 @@
 import { Axios } from "@/api/Axios";
-import { Category } from "@/types";
 
 export const subcategoryService = {
   /**
-   * Lấy thông tin danh mục con theo slug
-   * @param slug - Slug của danh mục con
-   * @returns Promise với thông tin danh mục con
+   * Lấy danh sách sản phẩm theo categoryId
+   * @returns Promise với danh sách sản phẩm
    */
-  getSubcategoryBySlug: async (slug: string): Promise<Category> => {
-    return await Axios.get(`/categories/slug/${slug}`);
-  },
+  getSubcategoryById: async (id: number) => {
+    return Axios.get(`/api/public/category/findById/${id}`);
+  }
 };

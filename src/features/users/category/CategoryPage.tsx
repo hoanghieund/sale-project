@@ -1,5 +1,6 @@
 import CategoryCard from "@/components/common/CategoryCard";
 import CategoryInfo from "@/components/common/CategoryInfo";
+import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
 import {
@@ -38,10 +39,12 @@ const CategoryPage = () => {
 
       // Fetch featured products based on category ID
       if (categoryResponse.id) {
-        const productsResponse : Product[] = await productService.getProductsByCategoryId(
-          categoryResponse.id
+        const productsResponse= await productService.getProductsByCategoryId(
+          categoryResponse.id,
+          0,
+          10
         );
-        setFeaturedProducts(productsResponse);
+        setFeaturedProducts(productsResponse.content);
       }
     } catch (error) {
       console.error("Error fetching category data:", error);
@@ -59,9 +62,7 @@ const CategoryPage = () => {
 
   if (!category) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Không tìm thấy danh mục</div>
-      </div>
+      <EmptyStateDisplay />
     );
   }
 
