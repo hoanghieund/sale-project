@@ -38,15 +38,6 @@ const registerFormSchema = z
       .string()
       .min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
     confirmPassword: z.string(),
-    phone: z
-      .string()
-      .min(10, { message: "Số điện thoại không hợp lệ" })
-      .optional(),
-    address: z.string().min(5, { message: "Địa chỉ không hợp lệ" }).optional(),
-    gender: z.boolean().default(true),
-    dayOfBirth: z.number().int().min(1).max(31),
-    monthOfBirth: z.number().int().min(1).max(12),
-    yearOfBirth: z.number().int(),
     agreeToTerms: z.boolean().refine(val => val === true, {
       message: "Bạn phải đồng ý với điều khoản và điều kiện",
     }),
@@ -90,7 +81,7 @@ const Register = () => {
       };
 
       await registerUser(registerData as any);
-      navigate("/");
+      navigate(`/verify-email?email=${data.email}`);
     } catch (error) {
       toast({
         title: "Đăng ký thất bại",
@@ -263,14 +254,14 @@ const Register = () => {
                     <FormLabel>
                       I agree to the{" "}
                       <Link
-                        to="/terms"
+                        to="/terms-of-service"
                         className="text-primary hover:underline"
                       >
                         Terms of Service
                       </Link>{" "}
                       and{" "}
                       <Link
-                        to="/privacy"
+                        to="/privacy-policy"
                         className="text-primary hover:underline"
                       >
                         Privacy Policy

@@ -17,7 +17,9 @@ function getInstance() {
   //hook interceptor cài ở đây
   axiosInstance.interceptors.request.use(
     config => {
-      const token = localStorage.getItem("token");
+      const userData = localStorage.getItem("userData");
+      const token = userData ? JSON.parse(userData).token : null;
+
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

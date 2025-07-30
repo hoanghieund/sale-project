@@ -2,7 +2,7 @@ import ProductCardSimple from "@/components/common/ProductCardSimple";
 import { Product, Shop } from "@/types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getRandomImage } from "../../../utils/random-image";
+import { getProductsByShopId, getShopBySlug } from "./services/shopServices";
 
 /**
  * ShopPage - Trang hiển thị thông tin cửa hàng
@@ -17,158 +17,28 @@ const ShopPage = () => {
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
-    // TODO: Fetch shop data from API
-    // Tạm thời sử dụng mock data
-    const mockShop: Shop & {
-      slug: string;
-      description: string;
-      logo: string;
-      banner: string;
-      verified: boolean;
-      rating: number;
-      reviewCount: number;
-      totalProducts: number;
-      totalSales: number;
-      joinedAt: Date;
-      address: {
-        street: string;
-        city: string;
-        state: string;
-        zipCode: string;
-        country: string;
-        phone: string;
-      };
-      socialLinks: {
-        website?: string;
-        facebook?: string;
-        instagram?: string;
-      };
-      policies: {
-        returnPolicy: string;
-        shippingPolicy: string;
-        privacyPolicy: string;
-      };
-    } = {
-      id: 1, // Thay đổi từ string sang number theo interface mới
-      name: "Fashion Store VN",
-      slug: shopSlug || "",
-      description:
-        "Chuyên cung cấp thời trang nam nữ cao cấp, chính hãng với giá tốt nhất thị trường. Cam kết chất lượng và dịch vụ tận tâm cho khách hàng.",
-      logo: getRandomImage(),
-      banner: getRandomImage(),
-      userId: 1, // Thay đổi từ ownerId sang userId và từ string sang number
-      verified: true,
-      rating: 4.8,
-      reviewCount: 1250,
-      totalProducts: 450,
-      totalSales: 15000,
-      joinedAt: new Date("2023-01-15"),
-      status: true, // Thay đổi từ isActive sang status theo interface mới
-      address: {
-        street: "123 Nguyễn Huệ",
-        city: "TP. Hồ Chí Minh",
-        state: "Hồ Chí Minh",
-        zipCode: "700000",
-        country: "Việt Nam",
-        phone: "0901234567",
-      },
-      socialLinks: {
-        facebook: "https://facebook.com/fashionstore",
-        instagram: "https://instagram.com/fashionstore",
-      },
-      policies: {
-        returnPolicy: "Đổi trả trong 7 ngày",
-        shippingPolicy: "Miễn phí ship đơn > 500k",
-        privacyPolicy: "Bảo mật thông tin khách hàng",
-      },
-      // Thêm các trường audit theo interface mới
-      createDate: new Date(),
-      createBy: "system",
-      modifierDate: new Date(),
-      modifierBy: "system",
+    const fetchShopData = async () => {
+      setLoading(true);
+      try {
+        if (shopSlug) {
+          const fetchedShop = await getShopBySlug(shopSlug);
+          setShop(fetchedShop);
+
+          if (fetchedShop && fetchedShop.id) {
+            const fetchedProducts = await getProductsByShopId(fetchedShop.id);
+            setProducts(fetchedProducts);
+          }
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu cửa hàng:", error);
+        setShop(null); // Đặt shop về null để hiển thị thông báo lỗi
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const mockProducts: Product[] = [
-      {
-        id: 101,
-        name: "Áo thun nam cổ tròn", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Áo thun nam cổ tròn",
-        content: "Áo thun nam cổ tròn chất liệu cotton 100%",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.5,
-        totalProductSold: 120,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        discount: { id: 1, percent: 10, status: true, createDate: new Date() },
-        categoriesId: 5,
-        shopId: 1,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 102,
-        name: "Quần jean nam slim fit", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Quần jean nam slim fit",
-        content: "Quần jean nam slim fit màu xanh đậm",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.8,
-        totalProductSold: 85,
-        isNew: false,
-        isFlashSale: true,
-        isTrending: true,
-        discount: { id: 2, percent: 15, status: true, createDate: new Date() },
-        categoriesId: 5,
-        shopId: 2,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 103,
-        name: "Áo sơ mi nữ công sở", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Áo sơ mi nữ công sở",
-        content: "Áo sơ mi nữ công sở chất liệu lụa cao cấp",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.6,
-        totalProductSold: 95,
-        isNew: true,
-        isFlashSale: false,
-        isTrending: true,
-        categoriesId: 6,
-        shopId: 3,
-        createBy: "system",
-        createDate: new Date(),
-      },
-      {
-        id: 104,
-        name: "Váy liền thân dự tiệc", // Thêm trường name bắt buộc
-        images: [getRandomImage()], // Thêm trường images bắt buộc
-        title: "Váy liền thân dự tiệc",
-        content: "Váy liền thân dự tiệc màu đen sang trọng",
-        status: true,
-        // price không còn trong Product interface, sẽ được xử lý qua ProductSku
-        star: 4.9,
-        totalProductSold: 65,
-        isNew: true,
-        isFlashSale: true,
-        isTrending: true,
-        discount: { id: 3, percent: 20, status: true, createDate: new Date() },
-        categoriesId: 6,
-        shopId: 1,
-        createBy: "system",
-        createDate: new Date(),
-      },
-    ];
-
-    setShop(mockShop);
-    setProducts(mockProducts);
-    setLoading(false);
+    fetchShopData();
   }, [shopSlug]);
 
   if (loading) {
@@ -206,20 +76,13 @@ const ShopPage = () => {
 
       {/* Shop Banner */}
       <div className="relative h-96 bg-gradient-to-r from-primary to-primary-foreground/30">
-        {shop.banner ? (
-          <img
-            src={shop.banner}
-            alt={shop.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="text-center text-primary-foreground">
-              <div className="text-6xl mb-4">🏪</div>
-              <h2 className="text-2xl font-bold">Banner cửa hàng</h2>
-            </div>
+        {/* Banner hiện không tồn tại trong kiểu Shop mới, sử dụng ảnh mặc định hoặc ẩn đi */}
+        <div className="w-full h-full flex items-center justify-center">
+          <div className="text-center text-primary-foreground">
+            <div className="text-6xl mb-4">🏪</div>
+            <h2 className="text-2xl font-bold">Banner cửa hàng</h2>
           </div>
-        )}
+        </div>
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
       </div>
 
@@ -229,9 +92,9 @@ const ShopPage = () => {
           <div className="flex flex-col lg:flex-row items-start gap-6">
             {/* Shop Logo */}
             <div className="w-32 h-32 bg-card rounded-full border-4 border-card shadow-lg overflow-hidden flex-shrink-0">
-              {shop.logo ? (
+              {shop.avatar ? (
                 <img
-                  src={shop.logo}
+                  src={shop.avatar}
                   alt={shop.name}
                   className="w-full h-full object-cover"
                 />
@@ -248,11 +111,6 @@ const ShopPage = () => {
                 <h1 className="text-3xl font-bold text-card-foreground">
                   {shop.name}
                 </h1>
-                {shop.verified && (
-                  <span className="bg-primary/20 text-primary text-sm px-3 py-1 rounded-full flex items-center gap-1 w-fit">
-                    ✓ Đã xác minh
-                  </span>
-                )}
               </div>
 
               <p className="text-muted-foreground mb-6 leading-relaxed">
@@ -264,7 +122,7 @@ const ShopPage = () => {
                   <span className="text-muted-foreground">Đánh giá:</span>
                   <div className="flex items-center gap-1">
                     <span className="text-sport-orange">★</span>
-                    <span className="font-semibold">{shop.rating}</span>
+                    <span className="font-semibold">N/A</span>
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Đánh giá trung bình
@@ -272,7 +130,7 @@ const ShopPage = () => {
                 </div>
                 <div className="bg-muted rounded-lg p-4">
                   <div className="text-2xl font-bold text-primary mb-2">
-                    {shop.reviewCount.toLocaleString()}
+                    0
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Lượt đánh giá
@@ -280,13 +138,13 @@ const ShopPage = () => {
                 </div>
                 <div className="bg-muted rounded-lg p-4">
                   <div className="text-2xl font-bold text-primary mb-2">
-                    {shop.totalProducts}
+                    {shop.totalQuantity}
                   </div>
                   <div className="text-sm text-muted-foreground">Sản phẩm</div>
                 </div>
                 <div className="bg-muted rounded-lg p-4">
                   <div className="text-2xl font-bold text-primary mb-2">
-                    {shop.totalSales.toLocaleString()}
+                    {shop.totalPrice?.toLocaleString()}
                   </div>
                   <div className="text-sm text-muted-foreground">Đã bán</div>
                 </div>
@@ -323,7 +181,7 @@ const ShopPage = () => {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Sản phẩm ({shop.totalProducts})
+              Sản phẩm ({shop.totalQuantity})
             </button>
             <button
               onClick={() => setActiveTab("info")}
@@ -343,7 +201,7 @@ const ShopPage = () => {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Đánh giá ({shop.reviewCount})
+              Đánh giá (0)
             </button>
           </div>
 
@@ -458,12 +316,12 @@ const ShopPage = () => {
               <div>
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                   <h2 className="text-xl font-semibold text-foreground">
-                    Đánh giá ({shop.reviewCount || 0})
+                    Đánh giá (0)
                   </h2>
                   <div className="flex items-center gap-2">
                     <span className="text-sport-orange text-lg">★</span>
                     <span className="font-semibold text-foreground">
-                      {shop.rating || 0}
+                      N/A
                     </span>
                     <span className="text-muted-foreground">trung bình</span>
                   </div>

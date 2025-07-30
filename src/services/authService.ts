@@ -1,5 +1,4 @@
 import { Axios } from "../api/Axios";
-import { User } from "../types";
 
 /**
  * Service xử lý các chức năng liên quan đến xác thực và quản lý người dùng
@@ -20,78 +19,21 @@ export const authService = {
    * @param userData - Thông tin đăng ký
    * @returns Promise với dữ liệu người dùng đã đăng ký
    */
-  register: (userData: {
-    username: string;
-    email: string;
-    password: string;
-  }) => {
-    return Axios.post("/api/auth/signup", userData);
-  },
-
-  /**
-   * Đăng xuất người dùng
-   * @returns Promise xác nhận đăng xuất thành công
-   */
-  logout: () => {
-    return Axios.post("/api/auth/signout");
-  },
-
-  /**
-   * Lấy thông tin người dùng hiện tại
-   * @returns Promise với dữ liệu người dùng
-   */
-  getCurrentUser: () => {
-    return Axios.get("/api/user/me");
-  },
-
-  /**
-   * Cập nhật thông tin người dùng
-   * @param userData - Thông tin cần cập nhật
-   * @returns Promise với dữ liệu người dùng đã cập nhật
-   */
-  updateProfile: (userData: Partial<User>) => {
-    return Axios.put("/api/users/profile", userData);
-  },
-
-  /**
-   * Thay đổi mật khẩu người dùng
-   * @param currentPassword - Mật khẩu hiện tại
-   * @param newPassword - Mật khẩu mới
-   * @returns Promise xác nhận thay đổi mật khẩu thành công
-   */
-  changePassword: (currentPassword: string, newPassword: string) => {
-    return Axios.put("/api/users/change-password", {
-      currentPassword,
-      newPassword,
+  register: (userData: FormData) => {
+    return Axios.post("/api/auth/signup", userData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
   },
 
   /**
-   * Yêu cầu đặt lại mật khẩu
-   * @param email - Email đăng ký
-   * @returns Promise xác nhận yêu cầu đặt lại mật khẩu thành công
-   */
-  /**
-   * Yêu cầu đặt lại mật khẩu
-   * @param email - Email đăng ký
-   * @returns Promise xác nhận yêu cầu đặt lại mật khẩu thành công
-   */
-  requestPasswordReset: (email: string) => {
-    return Axios.post("/api/auth/forgot-password", { email });
-  },
-
-  /**
    * Gửi yêu cầu khôi phục mật khẩu
-   * @param email - Email của người dùng
-   * @returns Promise xác nhận yêu cầu đã được gửi
-   */
-  /**
-   * Gửi yêu cầu khôi phục mật khẩu
-   * @param data - FormData chứa email của người dùng
-   * @returns Promise xác nhận yêu cầu đã được gửi
+   * @param email - Email
+   * @returns Promise xác nhận gửi yêu cầu thành công
    */
   forgotPassword: (data: FormData) => {
-    return Axios.post("/api/auth/forgot-password", data , {
+    return Axios.post("/api/auth/forgot-password", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -104,31 +46,20 @@ export const authService = {
    * @param newPassword - Mật khẩu mới
    * @returns Promise xác nhận đặt lại mật khẩu thành công
    */
-  resetPassword: (token: string, newPassword: string) => {
+  resetPassword: (newPassword: string, token: string) => {
     return Axios.post("/api/auth/reset-password", {
-      token,
       newPassword,
+      token,
     });
   },
 
   /**
-   * Xác thực email người dùng
+   * Xác thực tài khoản của người dùng
    * @param token - Token xác thực email
    * @returns Promise xác nhận xác thực email thành công
    */
-  verifyEmail: (token: string) => {
-    return Axios.post("/api/auth/verify-email", { token });
-  },
-
-  /**
-   * Gửi lại email kích hoạt
-   * @returns Promise xác nhận gửi lại email thành công
-   */
-  resendActivationEmail: () => {
-    const token = localStorage.getItem("token");
-    return Axios.get("/api/auth/signup-user/active", {
-     token,
-    });
+  verifyAccount: (token: string) => {
+    return Axios.get("/api/auth/signup-user/active", { token });
   },
 
   /**

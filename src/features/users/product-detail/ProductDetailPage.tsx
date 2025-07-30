@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import ProductBreadcrumb from "@/features/users/product-detail/components/ProductBreadcrumb";
+import ProductReviews from "@/features/users/product-detail/components/ProductReviews";
 import QuantitySelector from "@/features/users/product-detail/components/QuantitySelector";
 import { productDetailService } from "@/features/users/product-detail/services/productDetailService";
 import { Product, Shop } from "@/types";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -549,6 +552,61 @@ const ProductDetailPage = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Product Reviews */}
+        <div className="bg-white rounded-xl shadow-sm border p-8 mb-8">
+          <ProductReviews 
+            averageRating={product.star || 0}
+            totalReviews={product.totalReview || 0}
+            reviews={[
+              // Mock data - Thay thế bằng dữ liệu thực từ API
+              {
+                id: 1,
+                user: {
+                  name: "Nguyễn Văn A",
+                  avatar: "https://i.pravatar.cc/150?img=1"
+                },
+                rating: 5,
+                comment: "Sản phẩm rất tốt, đóng gói cẩn thận, giao hàng nhanh. Tôi rất hài lòng với sản phẩm này. Chất lượng vượt ngoài mong đợi!",
+                date: format(new Date(2025, 6, 15), "dd/MM/yyyy", { locale: vi }),
+                images: [
+                  "https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                  "https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                ]
+              },
+              {
+                id: 2,
+                user: {
+                  name: "Trần Thị B",
+                  avatar: "https://i.pravatar.cc/150?img=2"
+                },
+                rating: 4,
+                comment: "Sản phẩm đẹp, giá cả hợp lý. Nhưng màu sắc hơi khác so với hình ảnh một chút.",
+                date: format(new Date(2025, 6, 10), "dd/MM/yyyy", { locale: vi }),
+                images: []
+              },
+              {
+                id: 3,
+                user: {
+                  name: "Lê Văn C",
+                  avatar: "https://i.pravatar.cc/150?img=3"
+                },
+                rating: 5,
+                comment: "Tuyệt vời! Tôi sẽ mua thêm sản phẩm khác của cửa hàng.",
+                date: format(new Date(2025, 5, 28), "dd/MM/yyyy", { locale: vi }),
+                images: [
+                  "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                ]
+              }
+            ]}
+            onAddReview={(rating, comment) => {
+              // Xử lý khi người dùng gửi đánh giá
+              console.log("Đánh giá mới:", { rating, comment });
+              // TODO: Gọi API để lưu đánh giá
+              alert(`Cảm ơn bạn đã đánh giá ${rating} sao!`);
+            }}
+          />
         </div>
       </div>
     </div>

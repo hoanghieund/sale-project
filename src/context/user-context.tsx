@@ -8,7 +8,7 @@ export interface UserContextType {
   register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => Promise<void>;
-  clearError: () => void; // Thêm phương thức để xóa thông báo lỗi
+  clearError: () => void;
   isLoading: boolean;
   error: string | null;
 }

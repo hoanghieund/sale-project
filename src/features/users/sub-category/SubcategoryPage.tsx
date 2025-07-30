@@ -103,12 +103,6 @@ const SubcategoryPage = () => {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/categories">Danh mục</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
                   <Link to={`/category/${subcategory.parent?.id}`}>
                     {subcategory.parent?.name}
                   </Link>

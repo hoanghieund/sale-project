@@ -87,10 +87,13 @@ const ProductCardSimple = ({
    * @returns Giá thấp nhất hoặc 0 nếu không có SKU.
    */
   const getMinPrice = () => {
-    if (!product.productSkuDTOList || product.productSkuDTOList.length === 0) {
+    if (
+      !product.productSkusDTOList ||
+      product.productSkusDTOList.length === 0
+    ) {
       return 0;
     }
-    return Math.min(...product.productSkuDTOList.map(sku => sku.price));
+    return Math.min(...product.productSkusDTOList.map(sku => sku.price));
   };
 
   const minPrice = getMinPrice();
@@ -113,12 +116,12 @@ const ProductCardSimple = ({
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            {product.discount?.percent && (
+            {product.discount?.discount_percent && (
               <Badge
                 variant="destructive"
                 className="px-2 py-1 text-xs font-medium"
               >
-                -{product.discount?.percent}%
+                -{product.discount?.discount_percent}%
               </Badge>
             )}
             {product.isNew && (
@@ -193,16 +196,20 @@ const ProductCardSimple = ({
               {/* Quick Add Button */}
               {showQuickAdd && isHovered && (
                 <div className="absolute bottom-3 left-3 right-3 transition-all duration-300">
-                    <Button
-                      className="w-full bg-primary/90 hover:bg-primary text-primary-foreground backdrop-blur-sm shadow-sm"
-                      size="sm"
-                      onClick={handleQuickAdd}
-                      disabled={isAddingToCart || !product.totalProduct}
-                      data-testid="add-to-cart-button"
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      {isAddingToCart ? "Đang thêm..." : product.totalProduct > 0 ? "Thêm vào giỏ" : "Hết hàng"}
-                    </Button>
+                  <Button
+                    className="w-full bg-primary/90 hover:bg-primary text-primary-foreground backdrop-blur-sm shadow-sm"
+                    size="sm"
+                    onClick={handleQuickAdd}
+                    disabled={isAddingToCart || !product.amount}
+                    data-testid="add-to-cart-button"
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" />
+                    {isAddingToCart
+                      ? "Đang thêm..."
+                      : product.amount > 0
+                      ? "Thêm vào giỏ"
+                      : "Hết hàng"}
+                  </Button>
                 </div>
               )}
             </>
@@ -249,11 +256,13 @@ const ProductCardSimple = ({
                   />
                 ))}
                 {/* Số lượng đánh giá */}
-                <span className="text-xs text-muted-foreground ml-1">({product.totalReview || 0})</span>
+                <span className="text-xs text-muted-foreground ml-1">
+                  ({product.totalReview || 0})
+                </span>
               </div>
               <span className="text-xs text-muted-foreground">•</span>
               <span className="text-xs text-muted-foreground">
-                Đã bán {product.totalProductSold || 0}
+                Đã bán {product.amountSold || 0}
               </span>
             </div>
           </Link>
@@ -263,18 +272,21 @@ const ProductCardSimple = ({
             <div className="flex items-center gap-2">
               <span className="text-lg font-bold text-primary">
                 {/* Hiển thị giá thấp nhất từ ProductSku */}
-                {minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                {minPrice.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </span>
-              {product.discount?.percent && (
+              {product.discount?.discount_percent && (
                 <span className="flex items-center">
                   <span className="text-xs ml-2 bg-destructive/10 text-destructive px-1 py-0.5 rounded">
-                    -{product.discount.percent}%
+                    -{product.discount.discount_percent}%
                   </span>
                 </span>
               )}
             </div>
             <div className="text-xs text-muted-foreground">
-              {product.totalProduct > 0 ? "Còn hàng" : "Hết hàng"}
+              {product.amount > 0 ? "Còn hàng" : "Hết hàng"}
             </div>
           </div>
         </CardFooter>

@@ -9,9 +9,6 @@ import RedirectRoute from "./RedirectRoute";
 const Home = lazy(() => import("@/features/users/home/Home"));
 const About = lazy(() => import("@/features/general/About"));
 const Account = lazy(() => import("@/features/auth/Account"));
-const AccountActivationPage = lazy(
-  () => import("@/features/auth/AccountActivationPage")
-);
 const Cart = lazy(() => import("@/features/users/cart/Cart"));
 const Checkout = lazy(() => import("@/features/users/checkout/Checkout"));
 const Contact = lazy(() => import("@/features/general/Contact"));
@@ -27,6 +24,14 @@ const ProductDetailPage = lazy(
 // const Products = lazy(() => import("@/features/users/Products"));
 const Register = lazy(() => import("@/features/auth/Register"));
 const Wishlist = lazy(() => import("@/features/users/wish-list/Wishlist"));
+const PrivacyPolicy = lazy(
+  () => import("@/features/general/PrivacyPolicy")
+);
+const TermsOfService = lazy(
+  () => import("@/features/general/TermsOfService")
+);
+const VerifyEmail = lazy(() => import("@/features/auth/VerifyEmail"));
+const VerifyAccount = lazy(() => import("@/features/auth/VerifyAccount"));
 
 // C2C Marketplace pages
 const CategoryPage = lazy(
@@ -73,6 +78,8 @@ const AppRouter = () => {
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="*" element={<NotFound />} />
             {/* </Route> */}
             {/* Các trang yêu cầu đăng nhập */}
@@ -102,13 +109,9 @@ const AppRouter = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/verify-account" element={<VerifyAccount />} />
             </Route>
-            {/* <Route element={<ActiveRoute />}>
-              <Route
-                path="/activate-account"
-                element={<AccountActivationPage />}
-              />
-            </Route> */}
           </Route>
         </Routes>
       </Suspense>

@@ -37,14 +37,13 @@ import { Category } from "../../types"; // Import Category type
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { getCartItemsCount } = useCart();
   const { getWishlistCount } = useWishlist();
-  const { user, isAuthenticated } = useUser(); // Use useUser hook
+  const { isAuthenticated } = useUser(); // Use useUser hook
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục nổi bật
   const [allCategories, setAllCategories] = useState<Category[]>([]); // State để lưu trữ tất cả dữ liệu danh mục
 
@@ -52,7 +51,7 @@ const Header = () => {
   useEffect(() => {
     const fetchFeaturedCategories = async () => {
       try {
-        const response = await categoryService.getSuggestCategory(0, 5);
+        const response = await categoryService.getSuggestCategory();
         // Ánh xạ dữ liệu API sang định dạng Category[]
         setFeaturedCategories(response);
       } catch (error) {
@@ -66,8 +65,8 @@ const Header = () => {
   useEffect(() => {
     const fetchAllCategories = async () => {
       try {
-        const response = await categoryService.getCategoryTree(0, 10000);
-        setAllCategories(response);
+        const response = await categoryService.getAllCategory(0, 10000);
+        setAllCategories(response.content);
       } catch (error) {
         console.error("Error fetching all categories:", error);
       }
