@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Product } from "@/types";
+import { useEffect, useState } from "react";
 
 /**
  * SellerProducts - Trang quản lý sản phẩm cho seller
@@ -57,7 +57,7 @@ const SellerProducts = () => {
           </div>
           <button
             onClick={handleAddProduct}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            className="bgnewtext-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             <span>+</span>
             Thêm sản phẩm
@@ -130,7 +130,7 @@ const SellerProducts = () => {
                         <p className="text-gray-400 mb-4">Bắt đầu bằng cách thêm sản phẩm đầu tiên của bạn</p>
                         <button
                           onClick={handleAddProduct}
-                          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                          className="bgnewtext-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                         >
                           Thêm sản phẩm đầu tiên
                         </button>
@@ -186,7 +186,7 @@ const SellerProducts = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleEditProduct(product.id)}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="textnewhover:text-blue-900"
                           >
                             Sửa
                           </button>
@@ -219,7 +219,7 @@ const SellerProducts = () => {
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                 Trước
               </button>
-              <button className="px-3 py-2 text-sm bg-blue-600 text-white rounded-md">
+              <button className="px-3 py-2 text-sm bgnewtext-white rounded-md">
                 1
               </button>
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">

@@ -49,7 +49,7 @@ export default function VerifyEmail() {
         </p>
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
-        <Link to="/login" className="text-sm text-blue-600 hover:underline">
+        <Link to="/login" className="text-sm text-new hover:underline">
           Quay lại đăng nhập
         </Link>
       </CardFooter>

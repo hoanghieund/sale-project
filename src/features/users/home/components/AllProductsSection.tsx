@@ -1,9 +1,9 @@
 // src/features/users/home/components/AllProductsSection.tsx
 
-import ProductCardSimple from '@/components/common/ProductCardSimple';
-import CustomPagination from '@/components/common/CustomPagination';
-import { Product } from '@/types';
-import React from 'react';
+import CustomPagination from "@/components/common/CustomPagination";
+import ProductCardSimple from "@/components/common/ProductCardSimple";
+import { Product } from "@/types";
+import React from "react";
 
 /**
  * @interface AllProductsSectionProps
@@ -31,18 +31,18 @@ const AllProductsSection: React.FC<AllProductsSectionProps> = ({
   // Component phân trang đã được tách thành CustomPagination
 
   return (
-    <section className="py-12">
+    <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Tất Cả Sản Phẩm</h2>
         {/* Lưới hiển thị sản phẩm */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {products.map(product => (
             <ProductCardSimple key={product.id} product={product} />
           ))}
         </div>
 
         {/* Khu vực phân trang */}
-        <CustomPagination 
+        <CustomPagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={onPageChange}

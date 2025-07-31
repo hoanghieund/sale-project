@@ -99,7 +99,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadUser = async () => {
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-      const token = userData ? JSON.parse(userData) : null;
+      const token = userData ? userData.token : null;
       // Nếu có token, thử lấy thông tin user từ API
       if (token) {
         dispatch({ type: "LOGIN_SUCCESS", payload: userData });

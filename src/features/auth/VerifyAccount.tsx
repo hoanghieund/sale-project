@@ -99,7 +99,7 @@ export default function VerifyAccount() {
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
         {!isLoading && (isVerified || error) && (
-          <Link to="/login" className="text-sm text-blue-600 hover:underline">
+          <Link to="/login" className="text-sm text-new hover:underline">
             Quay lại đăng nhập
           </Link>
         )}

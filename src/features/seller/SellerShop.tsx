@@ -136,7 +136,7 @@ const SellerShop = () => {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="bgnewtext-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             {saving ? "Đang lưu..." : "Lưu thay đổi"}
           </button>

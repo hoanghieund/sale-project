@@ -29,7 +29,7 @@ const Index = () => {
         ] = await Promise.allSettled([
           productService.getFeaturedProducts(),
           productService.getDiscountedProducts(), // Gọi service để lấy sản phẩm giảm giá
-          productService.getAllProductsWithPagination(currentPage - 1, 40), // Lấy tất cả sản phẩm với phân trang
+          productService.getAllProductsWithPagination(currentPage - 1, 24), // Lấy tất cả sản phẩm với phân trang
         ]);
         if (featuredProductsResponse.status === "fulfilled") {
           setFeaturedProducts(featuredProductsResponse.value);
@@ -56,7 +56,7 @@ const Index = () => {
   };
 
   return (
-    <>
+    <div>
       <HeroSection />
 
       <FeaturedProductsSection products={featuredProducts} />
@@ -73,7 +73,7 @@ const Index = () => {
       <CallToActionSection />
 
       <StatsSection />
-    </>
+    </div>
   );
 };
 

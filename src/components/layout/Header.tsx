@@ -51,7 +51,7 @@ const Header = () => {
   useEffect(() => {
     const fetchFeaturedCategories = async () => {
       try {
-        const response = await categoryService.getSuggestCategory();
+        const response = await categoryService.getSuggestCategory(0, 5);
         // Ánh xạ dữ liệu API sang định dạng Category[]
         setFeaturedCategories(response);
       } catch (error) {
@@ -66,7 +66,7 @@ const Header = () => {
     const fetchAllCategories = async () => {
       try {
         const response = await categoryService.getAllCategory(0, 10000);
-        setAllCategories(response.content);
+        setAllCategories(response);
       } catch (error) {
         console.error("Error fetching all categories:", error);
       }

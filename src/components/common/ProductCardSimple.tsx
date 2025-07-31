@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Product } from "@/types";
-import { Eye, Heart, ShoppingCart, Star, Store, Trash2 } from "lucide-react";
+import { formatCurrencyUSD } from "@/utils/formatters";
+import { Eye, Heart, Star, Store, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -108,7 +109,7 @@ const ProductCardSimple = ({
         <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
           <Link to={`/product/${product.id}`} className="block h-full w-full">
             <img
-              src={product.imagesDTOList[0].path}
+              src={product.imagesDTOList?.[0]?.path || ""}
               alt={product.title}
               className="w-full h-full object-cover bg-white"
             />
@@ -116,14 +117,14 @@ const ProductCardSimple = ({
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            {product.discount?.discount_percent && (
+            {/* {product.discount?.discount_percent && (
               <Badge
                 variant="destructive"
                 className="px-2 py-1 text-xs font-medium"
               >
                 -{product.discount?.discount_percent}%
               </Badge>
-            )}
+            )} */}
             {product.isNew && (
               <Badge className="bg-primary text-primary-foreground px-2 py-1 text-xs font-medium">
                 Mới
@@ -145,7 +146,7 @@ const ProductCardSimple = ({
           {!simple && (
             <>
               {/* Wishlist, Remove from Wishlist, and Quick View buttons */}
-              <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute top-3 right-3 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {showWishlist && !showRemoveFromWishlist && (
                   <Button
                     variant="outline"
@@ -194,7 +195,7 @@ const ProductCardSimple = ({
               </div>
 
               {/* Quick Add Button */}
-              {showQuickAdd && isHovered && (
+              {/* {showQuickAdd && isHovered && (
                 <div className="absolute bottom-3 left-3 right-3 transition-all duration-300">
                   <Button
                     className="w-full bg-primary/90 hover:bg-primary text-primary-foreground backdrop-blur-sm shadow-sm"
@@ -211,11 +212,11 @@ const ProductCardSimple = ({
                       : "Hết hàng"}
                   </Button>
                 </div>
-              )}
+              )} */}
             </>
           )}
         </div>
-        <CardHeader className="p-4 pb-0">
+        <CardHeader className="px-4 pt-2 pb-0">
           <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
             {/* Shop name */}
             <div className="flex items-center gap-1 mb-1">
@@ -227,22 +228,22 @@ const ProductCardSimple = ({
 
             {/* Product name */}
             <h3
-              className="font-semibold text-base mb-2 line-clamp-2 group-hover:text-primary transition-colors"
+              className="font-semibold text-base mb-1 line-clamp-1 group-hover:text-primary transition-colors"
               data-testid="product-name"
             >
               {product.title}
             </h3>
 
             {/* Description */}
-            <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+            <p className="text-muted-foreground text-sm mb-2 line-clamp-2">
               {product.description}
             </p>
           </Link>
         </CardHeader>
-        <CardContent className="p-4 pt-0">
+        <CardContent className="px-4 pb-2 pt-0">
           <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
             {/* Rating */}
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-1">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -250,7 +251,7 @@ const ProductCardSimple = ({
                     className={cn(
                       "h-3.5 w-3.5",
                       i < Math.floor(product.star || 0)
-                        ? "fill-yellow-400 text-yellow-400"
+                        ? "fill-star text-star"
                         : "fill-gray-400 text-gray-400"
                     )}
                   />
@@ -262,20 +263,17 @@ const ProductCardSimple = ({
               </div>
               <span className="text-xs text-muted-foreground">•</span>
               <span className="text-xs text-muted-foreground">
-                Đã bán {product.amountSold || 0}
+                Đã bán {product.totalProductSold || 0}
               </span>
             </div>
           </Link>
         </CardContent>
-        <CardFooter className="p-4 pt-0">
+        <CardFooter className="px-4 pb-2 pt-0">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
               <span className="text-lg font-bold text-primary">
                 {/* Hiển thị giá thấp nhất từ ProductSku */}
-                {minPrice.toLocaleString("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                })}
+                {formatCurrencyUSD(minPrice - (minPrice * (product.discount?.discount_percent || 0)) / 100)}
               </span>
               {product.discount?.discount_percent && (
                 <span className="flex items-center">
@@ -285,9 +283,9 @@ const ProductCardSimple = ({
                 </span>
               )}
             </div>
-            <div className="text-xs text-muted-foreground">
+            {/* <div className="text-xs text-muted-foreground">
               {product.amount > 0 ? "Còn hàng" : "Hết hàng"}
-            </div>
+            </div> */}
           </div>
         </CardFooter>
       </Card>

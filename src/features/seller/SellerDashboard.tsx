@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { SellerDashboardStats } from "@/types";
+import { useEffect, useState } from "react";
 
 /**
  * SellerDashboard - Trang dashboard chính cho seller
@@ -60,7 +60,7 @@ const SellerDashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <button className="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition-colors">
+          <button className="bg-new text-white p-4 rounded-lg hover:bg-blue-700 transition-colors">
             <div className="text-center">
               <div className="text-2xl mb-2">📦</div>
               <div className="font-semibold">Thêm sản phẩm</div>
@@ -173,7 +173,7 @@ const SellerDashboard = () => {
                 </div>
               ))}
             </div>
-            <button className="w-full mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium">
+            <button className="w-full mt-4 text-new hover:text-blue-800 text-sm font-medium">
               Xem tất cả đơn hàng →
             </button>
           </div>

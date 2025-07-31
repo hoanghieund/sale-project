@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Order } from "@/types";
+import { useEffect, useState } from "react";
 
 /**
  * SellerOrders - Trang quản lý đơn hàng cho seller
@@ -227,7 +227,7 @@ const SellerOrders = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleViewOrderDetail(order.id)}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-new hover:text-blue-900"
                           >
                             Xem
                           </button>
@@ -272,7 +272,7 @@ const SellerOrders = () => {
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
                 Trước
               </button>
-              <button className="px-3 py-2 text-sm bg-blue-600 text-white rounded-md">
+              <button className="px-3 py-2 text-sm bgnewtext-white rounded-md">
                 1
               </button>
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">

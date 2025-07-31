@@ -14,7 +14,7 @@ const DiscountedProductsSection = ({
   products,
 }: DiscountedProductsSectionProps) => {
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-12 bg-muted/30">
       <div className="container mx-auto px-4">
         {/* Tiêu đề và mô tả cho phần sản phẩm giảm giá */}
         <div className="text-center mb-12">
@@ -25,7 +25,7 @@ const DiscountedProductsSection = ({
         </div>
 
         {/* Hiển thị danh sách sản phẩm giảm giá */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {products.map(product => (
             <ProductCard
               key={product.id}

@@ -21,12 +21,12 @@ const Footer = () => {
   return (
     <>
       {/* Newsletter Section */}
-      <section className="bg-gradient-to-r from-primary/90 to-primary text-white py-10">
+      <section className="bg-gradient-to-r from-primary/90 to-primary text-white py-8">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-3 tracking-wide">
+          <h2 className="text-2xl font-bold tracking-wide">
             SIGN UP TO OUR NEWSLETTER
           </h2>
-          <p className="text-white/90 mb-5 max-w-lg mx-auto">
+          <p className="text-white/90 mb-2 max-w-lg mx-auto">
             Subscribe to receive updates, access to exclusive deals, and more.
           </p>
           <form
@@ -49,7 +49,7 @@ const Footer = () => {
               Subscribe
             </Button>
           </form>
-          <div className="flex justify-center gap-4 mt-6">
+          <div className="flex justify-center gap-4 mt-2">
             <Link
               to="https://www.instagram.com/shopofficial/"
               target="_blank"
@@ -94,9 +94,9 @@ const Footer = () => {
       </section>
 
       {/* Main Footer */}
-      <footer className="bg-black text-white py-10">
+      <footer className="bg-black text-white py-8">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Brand */}
             <div>
               <Link to="/" className="inline-block mb-4">
@@ -117,23 +117,6 @@ const Footer = () => {
                 <Mail className="h-4 w-4" />
                 <span>Email: support@shop.com</span>
               </div>
-            </div>
-
-            {/* Shopping Links */}
-            <div>
-              <h3 className="font-semibold mb-3 text-white">SHOPPING</h3>
-              <ul className="space-y-1.5 text-white/80">
-                {FOOTER_LINKS.shopping.map((link, index) => (
-                  <li key={index}>
-                    <Link
-                      to={link.href}
-                      className="hover:text-accent transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             {/* Help Links */}
@@ -172,7 +155,7 @@ const Footer = () => {
           </div>
 
           {/* Bottom Bar */}
-          <div className="border-t border-white/20 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center text-muted-foreground">
+          <div className="border-t border-white/20 mt-4 pt-4 flex flex-col md:flex-row justify-between items-center text-muted-foreground">
             <p>&copy; 2025 Shop.</p>
             <div className="flex gap-6 mt-4 md:mt-0">
               <Link

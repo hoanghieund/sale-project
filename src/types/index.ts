@@ -77,18 +77,10 @@ export interface Shop {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
   avatar?: string; // avatar varchar(255) - logo của shop
-  description?: string; // description text
   status?: boolean; // status tinyint(1)
   timeRequest?: Date | string; // time_request datetime
-  userId?: number; // user_id bigint(20) - ID của user sở hữu shop
-  user?: User; // Thông tin owner (optional khi populate)
   totalQuantity?: number; // Tổng số sản phẩm
   totalPrice?: number; // Tổng doanh thu
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
 }
 
 // Discount Types - Dựa trên tbl_discount

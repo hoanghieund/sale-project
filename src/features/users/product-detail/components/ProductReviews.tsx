@@ -1,90 +1,264 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@/hooks/use-user";
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { productDetailService } from "../services/productDetailService";
 
 interface Review {
   id: number;
-  user: {
-    name: string;
-    avatar?: string;
+  content: string;
+  file: string | null;
+  image: string | null;
+  userDTO: {
+    id: number;
+    username: string;
+    email: string;
+    password?: string;
+    phone: string | null;
+    avatar: string | null;
+    file: string | null;
+    address: string | null;
+    roles: { id: number; name: string }[];
+    roleId: number | null;
+    active: number;
+    dayOfBirth: string | null;
+    monthOfBirth: string | null;
+    yearOfBirth: string | null;
+    date: string | null;
+    gender: string | null;
+    shopName: string | null;
+    newAccount: boolean;
   };
-  rating: number;
-  comment: string;
-  date: string;
-  images?: string[];
+  productDTO?: any; // Có thể cần định nghĩa interface chi tiết hơn cho ProductDTO nếu được sử dụng nhiều
+  parent: any; // Có thể cần định nghĩa interface chi tiết hơn cho Parent nếu có
+  idParent: number | null;
+  timeComment: string;
+  totalLike: number | null;
+  child: Review[] | null; // Child review có cùng cấu trúc với Review
+  active: number | null;
+  star: number;
 }
 
+/**
+ * Component để hiển thị một đánh giá và các đánh giá con của nó một cách đệ quy.
+ * @param {Object} props - Props của component.
+ * @param {Review} props.review - Đối tượng đánh giá cần hiển thị.
+ */
+const ReviewItem = ({ review }: { review: Review }) => {
+  return (
+    <Card key={review.id} className="shadow-sm bg-white">
+      <CardContent className="p-3">
+        <div className="flex gap-2 items-start">
+          <Avatar className="h-7 w-7 flex-shrink-0">
+            <AvatarImage
+              src={review.userDTO.avatar || undefined}
+              alt={review.userDTO.username}
+            />
+            <AvatarFallback>
+              {review.userDTO.username
+                .split(" ")
+                .map(n => n[0])
+                .join("")}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <div className="flex items-center justify-between flex-wrap gap-y-1">
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                  {review.userDTO.username}
+                </h4>
+                <div className="flex items-center gap-0.5 mt-0.5">
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <Star
+                      key={star}
+                      className={`w-3 h-3 ${
+                        star <= review.star
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300 dark:text-gray-600"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <span className="text-xs text-muted-foreground ml-auto">
+                {review.timeComment}
+              </span>
+            </div>
+            <p className="mt-1 text-gray-700 dark:text-gray-300 text-xs leading-relaxed">
+              {review.content}
+            </p>
+            {review.image && (
+              <div className="flex gap-1.5 mt-2 overflow-x-auto pb-1">
+                <img
+                  src={review.image}
+                  alt={`Hình ảnh đánh giá`}
+                  className="h-12 w-12 rounded-sm object-cover"
+                />
+              </div>
+            )}
+            {review.child && review.child.length > 0 && (
+              <div className="ml-8 mt-4 space-y-3">
+                {review.child.map(childReview => (
+                  <ReviewItem key={childReview.id} review={childReview} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 interface ProductReviewsProps {
-  reviews: Review[];
   averageRating: number;
   totalReviews: number;
-  onAddReview?: (rating: number, comment: string) => void;
+  productId: number;
 }
 
 export const ProductReviews = ({
-  reviews = [],
   averageRating = 0,
   totalReviews = 0,
-  onAddReview,
+  productId,
 }: ProductReviewsProps) => {
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  const { isAuthenticated } = useUser(); // Use useUser hook
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (rating === 0 || !comment.trim()) return;
-
-    setIsSubmitting(true);
-    onAddReview?.(rating, comment.trim());
-    // Reset form
-    setRating(0);
-    setComment("");
-    setIsSubmitting(false);
+  /**
+   * Fetches product reviews from the API.
+   * @async
+   * @function fetchReviews
+   * @returns {Promise<void>}
+   */
+  const fetchReviews = async () => {
+    if (!productId) return;
+    try {
+      const response = await productDetailService.getReviewsByProductId(
+        productId
+      );
+      setReviews(response.content);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể tải đánh giá sản phẩm.",
+        variant: "destructive",
+      });
+    }
   };
 
+  useEffect(() => {
+    fetchReviews();
+  }, [productId]);
+
+  /**
+   * Handles the submission of a new review.
+   * @async
+   * @function handleSubmit
+   * @param {React.FormEvent} e - The form event.
+   * @returns {Promise<void>}
+   */
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (rating === 0 || !comment.trim() || !productId) {
+  //     toast({
+  //       title: "Lỗi",
+  //       description: "Vui lòng chọn số sao và nhập nội dung đánh giá.",
+  //       variant: "destructive",
+  //     });
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+  //   try {
+  //     await productDetailService.submitReview(productId, {
+  //       star: rating,
+  //       content: comment.trim(),
+  //     });
+  //     toast({
+  //       title: "Thành công",
+  //       description: "Đánh giá của bạn đã được gửi thành công!",
+  //     });
+  //     setRating(0);
+  //     setComment("");
+  //     fetchReviews(); // Tải lại danh sách đánh giá sau khi gửi thành công
+  //   } catch (error) {
+  //     console.error("Error submitting review:", error);
+  //     toast({
+  //       title: "Lỗi",
+  //       description: "Không thể gửi đánh giá. Vui lòng thử lại.",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h2 className="text-2xl font-bold">Đánh giá sản phẩm</h2>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="flex items-center">
-              <span className="text-2xl font-bold">
-                {averageRating.toFixed(1)}
+    <div className="space-y-4">
+      <div className="flex flex-col justify-between items-start gap-3">
+        <div className="flex-shrink-0 flex items-start gap-4">
+          <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200">
+            Đánh giá sản phẩm
+          </h2>
+          <div className="flex items-center gap-1">
+            <div className="flex items-baseline">
+              <span className="text-base font-bold text-gray-900 dark:text-gray-100">
+                {averageRating}
               </span>
-              <span className="text-muted-foreground">/5</span>
+              <span className="text-xs text-muted-foreground">/5</span>
             </div>
-            <div className="flex">
+            <div className="flex text-yellow-400">
               {[1, 2, 3, 4, 5].map(star => (
                 <Star
                   key={star}
-                  className={`w-5 h-5 ${
+                  className={`w-3 h-3 ${
                     star <= Math.round(averageRating)
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
+                      ? "fill-current text-yellow-400"
+                      : "text-gray-300 dark:text-gray-600"
                   }`}
                 />
               ))}
             </div>
-            <span className="text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               ({totalReviews} đánh giá)
             </span>
           </div>
         </div>
+      </div>
 
-        <div className="w-full md:w-auto">
-          <Card className="w-full">
-            <CardHeader>
-              <CardTitle className="text-lg">Đánh giá của bạn</CardTitle>
+      {reviews.length > 0 ? (
+        <div className="space-y-3">
+          {reviews.map(review => (
+            <ReviewItem key={review.id} review={review} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-6 rounded-md">
+          <p className="text-muted-foreground text-sm">
+            Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh
+            giá!
+          </p>
+        </div>
+      )}
+
+      {isAuthenticated && (
+        <div className="w-full">
+          {/* <Card className="shadow-sm">
+            <CardHeader className="p-2">
+              <CardTitle className="text-sm text-gray-800 dark:text-gray-200">
+                Viết đánh giá của bạn
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex items-center gap-1">
+            <CardContent className="p-3">
+              <form onSubmit={handleSubmit} className="space-y-2">
+                <div className="flex items-center gap-0.5">
                   {[1, 2, 3, 4, 5].map(star => (
                     <button
                       key={star}
@@ -92,18 +266,18 @@ export const ProductReviews = ({
                       onClick={() => setRating(star)}
                       onMouseEnter={() => setHover(star)}
                       onMouseLeave={() => setHover(0)}
-                      className="p-1"
+                      className="p-0.5"
                     >
                       <Star
-                        className={`w-6 h-6 ${
+                        className={`w-4 h-4 transition-colors duration-200 ${
                           (hover || rating) >= star
                             ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
+                            : "text-gray-300 dark:text-gray-600"
                         }`}
                       />
                     </button>
                   ))}
-                  <span className="ml-2 text-sm text-muted-foreground">
+                  <span className="ml-0.5 text-xs text-muted-foreground">
                     {rating > 0 ? `${rating} sao` : "Chọn số sao"}
                   </span>
                 </div>
@@ -111,88 +285,20 @@ export const ProductReviews = ({
                   placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
                   value={comment}
                   onChange={e => setComment(e.target.value)}
-                  className="min-h-[100px]"
+                  className="min-h-[50px] text-xs focus-visible:ring-offset-0 focus-visible:ring-blue-400"
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end pt-1">
                   <Button
                     type="submit"
                     disabled={isSubmitting || rating === 0 || !comment.trim()}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded-md transition-colors duration-200 text-xs"
                   >
                     {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
                   </Button>
                 </div>
               </form>
             </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {reviews.length > 0 ? (
-        <div className="space-y-6">
-          {reviews.map(review => (
-            <Card key={review.id}>
-              <CardContent className="pt-6">
-                <div className="flex gap-4">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage
-                      src={review.user.avatar}
-                      alt={review.user.name}
-                    />
-                    <AvatarFallback>
-                      {review.user.name
-                        .split(" ")
-                        .map(n => n[0])
-                        .join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">{review.user.name}</h4>
-                        <div className="flex items-center gap-1">
-                          {[1, 2, 3, 4, 5].map(star => (
-                            <Star
-                              key={star}
-                              className={`w-4 h-4 ${
-                                star <= review.rating
-                                  ? "fill-yellow-400 text-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {review.date}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-gray-700 dark:text-gray-300">
-                      {review.comment}
-                    </p>
-                    {review.images && review.images.length > 0 && (
-                      <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
-                        {review.images.map((img, idx) => (
-                          <img
-                            key={idx}
-                            src={img}
-                            alt={`Hình ảnh đánh giá ${idx + 1}`}
-                            className="h-20 w-20 rounded-md object-cover border"
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 border rounded-lg">
-          <p className="text-muted-foreground">
-            Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh
-            giá!
-          </p>
+          </Card> */}
         </div>
       )}
     </div>
