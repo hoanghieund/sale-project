@@ -59,7 +59,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   }, [api]);
 
   return (
-    <div className={cn("space-y-0",className)}>
+    <div className={cn("space-y-0 h-fit lg:sticky top-28",className)}>
       {/* Dialog cho phép hiển thị hình ảnh lớn khi nhấp vào */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         {/* Carousel chính hiển thị hình ảnh sản phẩm lớn */}
