@@ -1,5 +1,12 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   NavigationMenu,
@@ -29,8 +36,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useCart } from "../../context/CartContext";
-import { useWishlist } from "../../context/WishlistContext";
 import { useUser } from "../../hooks/use-user"; // Import useUser hook
 import { categoryService } from "../../services/categoryService"; // Import categoryService
 import { Category } from "../../types"; // Import Category type
@@ -41,9 +46,7 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
-  const { getCartItemsCount } = useCart();
-  const { getWishlistCount } = useWishlist();
-  const { isAuthenticated } = useUser(); // Use useUser hook
+  const { isAuthenticated, logout } = useUser(); // Use useUser hook
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục nổi bật
   const [allCategories, setAllCategories] = useState<Category[]>([]); // State để lưu trữ tất cả dữ liệu danh mục
 
@@ -230,15 +233,38 @@ const Header = () => {
             <div className="flex items-center gap-4">
               {isAuthenticated ? (
                 <>
-                  <Link to="/account">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full hover:bg-primary/10"
-                    >
-                      <User className="h-5 w-5" />
-                    </Button>
-                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full hover:bg-primary/10"
+                      >
+                        <User className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate("/account")}>
+                        Tài khoản
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => navigate("/seller/dashboard")}
+                      >
+                        Kênh người bán
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => {
+                          logout();
+                        }}
+                      >
+                        Đăng xuất
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
                   <Link to="/wishlist" className="relative">
                     <Button
@@ -247,14 +273,14 @@ const Header = () => {
                       className="relative rounded-full hover:bg-primary/10"
                     >
                       <Heart className="h-5 w-5" />
-                      {getWishlistCount() > 0 && (
+                      {/* {getWishlistCount() > 0 && (
                         <Badge
                           variant="destructive"
                           className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                         >
                           {getWishlistCount()}
                         </Badge>
-                      )}
+                      )} */}
                     </Button>
                   </Link>
 
@@ -265,14 +291,14 @@ const Header = () => {
                       className="relative rounded-full hover:bg-primary/10"
                     >
                       <ShoppingBag className="h-5 w-5" />
-                      {getCartItemsCount() > 0 && (
+                      {/* {getCartItemsCount() > 0 && (
                         <Badge
                           variant="destructive"
                           className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                         >
                           {getCartItemsCount()}
                         </Badge>
-                      )}
+                      )} */}
                     </Button>
                   </Link>
                 </>
