@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { Product } from "@/types";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { Eye, Heart, Star, Store, Trash2 } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 /**
@@ -20,11 +19,6 @@ import { Link } from "react-router-dom";
 interface ProductCardSimpleProps {
   product: Product;
   className?: string;
-  /**
-   * Hiển thị nút thêm vào giỏ hàng nhanh
-   * @default true
-   */
-  showQuickAdd?: boolean;
   /**
    * Hiển thị nút thêm vào danh sách yêu thích
    * @default true
@@ -51,14 +45,11 @@ interface ProductCardSimpleProps {
 const ProductCardSimple = ({
   product,
   className = "",
-  showQuickAdd = true,
   showWishlist = true,
   showRemoveFromWishlist = false,
   showQuickView = true,
   simple = false,
 }: ProductCardSimpleProps) => {
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   /**
    * Xử lý thêm vào danh sách yêu thích hoặc xóa khỏi danh sách yêu thích.
@@ -70,42 +61,12 @@ const ProductCardSimple = ({
     // Logic thêm/xóa vào danh sách yêu thích sẽ được triển khai tại đây
   };
 
-  /**
-   * Xử lý thêm sản phẩm vào giỏ hàng nhanh.
-   * @param e Sự kiện chuột.
-   */
-  const handleQuickAdd = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    setIsAddingToCart(true);
-    // Logic thêm vào giỏ hàng sẽ được triển khai tại đây
-    setTimeout(() => setIsAddingToCart(false), 1000);
-  };
-
-  /**
-   * Lấy giá thấp nhất từ danh sách SKU của sản phẩm.
-   * @returns Giá thấp nhất hoặc 0 nếu không có SKU.
-   */
-  const getMinPrice = () => {
-    if (
-      !product.productSkusDTOList ||
-      product.productSkusDTOList.length === 0
-    ) {
-      return 0;
-    }
-    return Math.min(...product.productSkusDTOList.map(sku => sku.price));
-  };
-
-  const minPrice = getMinPrice();
   return (
     <div
       className={cn("w-full", className)}
       data-testid="product-card"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-xl">
+      <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-lg">
         <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
           <Link to={`/product/${product.id}`} className="block h-full w-full">
             <img
@@ -271,9 +232,9 @@ const ProductCardSimple = ({
         <CardFooter className="px-4 pb-2 pt-0">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-primary">
+              <span className="text-lg font-bold text-destructive">
                 {/* Hiển thị giá thấp nhất từ ProductSku */}
-                {formatCurrencyUSD(minPrice - (minPrice * (product.discount?.discount_percent || 0)) / 100)}
+                {formatCurrencyUSD(product.priceSale || 0)}
               </span>
               {product.discount?.discount_percent && (
                 <span className="flex items-center">

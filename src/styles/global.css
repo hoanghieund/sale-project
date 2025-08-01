@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 220 13% 95%; /* Slightly darker Light Gray */
     --muted-foreground: 200 10% 45%; /* Muted Dark Slate Gray */
 
-    --accent: 83 100% 50%; /* Lime Green */
+    --accent: 83 100% 30%; /* Lime Green */
     --accent-foreground: 0 0% 0%; /* Black */
 
     --destructive: 0 84% 60%; /* Red */
@@ -34,7 +34,7 @@ All colors MUST be HSL.
 
     --border: 220 13% 95%; /* Light Gray */
     --input: 220 13% 95%; /* Light Gray */
-    --ring: 83 100% 50%; /* Lime Green */
+    --ring: 83 100% 30%; /* Lime Green */
     --star: 50 100% 50%; /* Yellow */
     --new: 210 100% 50%; /* Blue */
     --trending: 30 100% 50%; /* Orange */
@@ -52,7 +52,7 @@ All colors MUST be HSL.
     --sidebar-accent: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
     --sidebar-accent-foreground: 220 13% 95%; /* Light Gray */
     --sidebar-border: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
-    --sidebar-ring: 83 100% 50%; /* Lime Green */
+    --sidebar-ring: 83 100% 30%; /* Lime Green */
   }
 
   .dark {
@@ -74,7 +74,7 @@ All colors MUST be HSL.
     --muted: 200 10% 40%; /* Another shade of Dark Slate Gray */
     --muted-foreground: 220 13% 70%; /* Muted Light Gray */
 
-    --accent: 83 100% 50%; /* Lime Green */
+    --accent: 83 100% 30%; /* Lime Green */
     --accent-foreground: 0 0% 0%; /* Black */
 
     --destructive: 0 63% 31%; /* Darker Red */
@@ -82,7 +82,7 @@ All colors MUST be HSL.
 
     --border: 200 10% 40%; /* Another shade of Dark Slate Gray */
     --input: 200 10% 40%; /* Another shade of Dark Slate Gray */
-    --ring: 83 100% 50%; /* Lime Green */
+    --ring: 83 100% 30%; /* Lime Green */
     --sidebar-background: 200 10% 29%; /* Dark Slate Gray */
     --sidebar-foreground: 220 13% 95%; /* Light Gray */
     --sidebar-primary: 190 29% 33%; /* Teal */
@@ -90,7 +90,7 @@ All colors MUST be HSL.
     --sidebar-accent: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
     --sidebar-accent-foreground: 220 13% 95%; /* Light Gray */
     --sidebar-border: 200 10% 35%; /* Slightly lighter Dark Slate Gray */
-    --sidebar-ring: 83 100% 50%; /* Lime Green */
+    --sidebar-ring: 83 100% 30%; /* Lime Green */
   }
 }
 

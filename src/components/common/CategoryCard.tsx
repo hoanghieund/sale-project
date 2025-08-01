@@ -16,10 +16,8 @@ interface CategoryCardProps {
 const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
   return (
     <Link to={linkTo || `/category/${category.id}`}>
-      <Card className="text-center p-6 hover:shadow-lg transition-shadow cursor-pointer">
-        <div className="text-4xl mb-4">{category.icon}</div>
-        <h3 className="font-semibold text-lg mb-1">{category.name}</h3>
-        <p className="text-gray-500 text-sm">{category.totalProduct ? category.totalProduct.toLocaleString() : 0} items</p>
+      <Card className="p-4 flex justify-center items-center h-full">
+        <h3 className="font-semibold text-lg text-foreground">{category.name}</h3>
       </Card>
     </Link>
   );

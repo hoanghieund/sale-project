@@ -52,33 +52,31 @@ export interface Product {
   discount?: Discount; // Thông tin discount (optional khi populate)
 
   // Danh sách biến thể và hình ảnh
-  variantsDTOList?: Variant[]; // Danh sách biến thể
+  optionDTOs?: Option[]; // Danh sách option
   imagesDTOList?: Image[]; // Danh sách hình ảnh
-  productSkusDTOList?: ProductSku[]; // Danh sách SKU
-  variantOutOfStock?: any; // Thông tin về biến thể hết hàng
 
   // Thông tin tính toán
   sumPriceByOrders?: number; // Tổng doanh thu từ sản phẩm
 
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
+  price?: number; // Giá sản phẩm
+  priceSale?: number; // Giá sau khi giảm giá
 }
 
-// Size và Color được thay thế bằng Variant và VariantValue
-// Có thể tạo type aliases để tương thích ngược nếu cần
-export type Size = VariantValue;
-export type Color = VariantValue;
+export interface Option {
+  id: number; // bigint(20) trong SQL
+  name: string; // name varchar(255)
+  type: number;
+}
+
 
 // Shop Types - Dựa trên tbl_shop
 export interface Shop {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
   avatar?: string; // avatar varchar(255) - logo của shop
+  banner?: string; // banner varchar(255) - hình nền của shop
   status?: boolean; // status tinyint(1)
-  timeRequest?: Date | string; // time_request datetime
+  timeRequest?: string; // time_request datetime
   totalQuantity?: number; // Tổng số sản phẩm
   totalPrice?: number; // Tổng doanh thu
 }
@@ -240,55 +238,6 @@ export interface Ship {
   name?: string; // name varchar(255)
   price?: number; // price double
   status?: boolean; // status tinyint(1)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Product SKU Types - Dựa trên tbl_product_skus
-export interface ProductSku {
-  id: number; // bigint(20) trong SQL
-  name?: string; // name varchar(255)
-  price: number; // price double
-  quantity: number; // quantity int(11)
-  status?: boolean; // status tinyint(1)
-  productId?: number; // product_id bigint(20)
-  variantValueId1?: number; // variant_value_id_1 bigint(20)
-  variantValueId2?: number; // variant_value_id_2 bigint(20)
-  color?: any; // Thông tin màu sắc
-  size?: any; // Thông tin kích thước
-  totalProductSold?: number; // Số lượng đã bán
-  sumPriceByOrders?: number; // Tổng doanh thu
-  product?: Product; // Thông tin product (optional khi populate)
-  variantValue1?: VariantValue; // Thông tin variant value 1 (optional khi populate)
-  variantValue2?: VariantValue; // Thông tin variant value 2 (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Variant Types - Dựa trên tbl_variant
-export interface Variant {
-  id: number; // bigint(20) trong SQL
-  name?: string; // name varchar(255)
-  variantValueDTOList?: VariantValue[]; // Thông tin variant values (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Variant Value Types - Dựa trên tbl_variant_value
-export interface VariantValue {
-  id: number; // bigint(20) trong SQL
-  name?: string; // name varchar(255)
-  variantId?: number; // variant_id bigint(20)
-  variant?: Variant; // Thông tin variant (optional khi populate)
   // Audit fields
   createBy?: string; // create_by varchar(255)
   createDate?: Date; // create_date datetime

@@ -7,43 +7,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Product } from "@/types";
 import { getColorValue } from "@/utils/colors";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import parse from "html-react-parser";
-import { useEffect, useState } from "react";
-
-/**
- * Tìm SKU phù hợp với tổ hợp các giá trị biến thể đã chọn
- * @param product Sản phẩm hiện tại
- * @param selectedValues Các giá trị biến thể đã chọn theo variantId
- * @returns SKU phù hợp hoặc undefined nếu không tìm thấy
- */
-const findMatchingSku = (
-  product: Product,
-  selectedValues: Record<number, number>
-) => {
-  if (!product.productSkusDTOList || product.productSkusDTOList.length === 0) {
-    return undefined;
-  }
-
-  // Lấy tất cả các giá trị biến thể đã chọn
-  const selectedValueIds = Object.values(selectedValues);
-
-  // Tìm SKU phù hợp với tất cả các giá trị biến thể đã chọn
-  return product.productSkusDTOList.find(sku => {
-    // Lấy tất cả các ID giá trị biến thể của SKU hiện tại, loại bỏ các giá trị null/undefined
-    const skuVariantValueIds = [
-      sku.variantValueId1,
-      sku.variantValueId2,
-    ].filter(Boolean);
-
-    // SKU phù hợp nếu tất cả các giá trị biến thể đã chọn đều có trong SKU
-    return selectedValueIds.every(valueId =>
-      skuVariantValueIds.includes(valueId)
-    );
-  });
-};
+import { Star } from "lucide-react";
+import { useMemo, useState } from "react";
 
 /**
  * @interface ProductInfoProps
@@ -57,80 +27,103 @@ const findMatchingSku = (
  */
 interface ProductInfoProps {
   product: Product;
+  className?: string;
 }
 
 /**
  * ProductInfo - Component hiển thị thông tin chi tiết sản phẩm
  * @param {ProductInfoProps} props - Các props của component.
  */
-const ProductInfo = ({ product }: ProductInfoProps) => {
+const ProductInfo = ({ product, className }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
 
   // Lưu trữ các giá trị biến thể đã chọn theo variantId
   const [selectedVariantValues, setSelectedVariantValues] = useState<
     Record<number, number>
   >({});
-  // Lưu trữ SKU được chọn dựa trên tổ hợp các biến thể
-  const [selectedSku, setSelectedSku] = useState<number | null>(null);
 
-  useEffect(() => {
-    // Khởi tạo giá trị mặc định cho các biến thể
-    if (
-      product.variantsDTOList &&
-      product.variantsDTOList.length > 0 &&
-      product.productSkusDTOList &&
-      product.productSkusDTOList.length > 0
-    ) {
-      const initialVariantValues: Record<number, number> = {};
-
-      // Chọn giá trị đầu tiên cho mỗi loại biến thể
-      product.variantsDTOList.forEach(variant => {
-        if (
-          variant.variantValueDTOList &&
-          variant.variantValueDTOList.length > 0
-        ) {
-          initialVariantValues[variant.id] = variant.variantValueDTOList[0].id;
-        }
-      });
-
-      setSelectedVariantValues(initialVariantValues);
-
-      // Tìm SKU phù hợp với các giá trị biến thể đã chọn
-      const matchingSku = findMatchingSku(product, initialVariantValues);
-      if (matchingSku) {
-        setSelectedSku(matchingSku.id);
-      }
+  const getVariantName = (type: number) => {
+    switch (type) {
+      case 1:
+        return "FIT";
+      case 2:
+        return "Print Location";
+      case 3:
+        return "Color";
+      case 4:
+        return "Size";
+      default:
+        return "Unknown";
     }
-  }, [product]);
+  };
+
+ // Nhóm option theo type và chuẩn hóa tên nhóm bằng getVariantName.
+  // Trả về dạng:
+  // [
+  //   { name: 'FIT', values: [{ id: 1, name: 'Front' }, { id: 2, name: 'Back' }] },
+  //   { name: 'FIT_TYPE', values: [{ id: 3, name: 'Male Fit' }, { id: 4, name: 'Female Fit' }] },
+  //   { name: 'COLOR', values: [{ id: 5, name: 'black' }, ...] },
+  //   { name: 'SIZE', values: [{ id: 23, name: 'S' }, ...] }
+  // ]
+  const variantProduct = useMemo(() => {
+    // Phòng thủ khi thiếu dữ liệu
+    const options = product?.optionDTOs ?? [];
+
+    // Gom theo type, dùng Map để loại trùng theo name trong cùng type
+    const grouped = options.reduce<Record<number, Map<string, { id: number; name: string }>>>(
+      (acc, cur) => {
+        if (!acc[cur.type]) acc[cur.type] = new Map();
+        // Ưu tiên id đầu tiên cho mỗi name duy nhất trong cùng type
+        if (!acc[cur.type].has(cur.name)) {
+          acc[cur.type].set(cur.name, { id: cur.id, name: cur.name });
+        }
+        return acc;
+      },
+      {}
+    );
+
+    // Chuyển về mảng theo định dạng yêu cầu. Sắp xếp theo type để ổn định.
+    const result = Object.keys(grouped)
+      .map((k) => Number(k))
+      .sort((a, b) => a - b)
+      .map((type) => ({
+        name: getVariantName(type), // sử dụng getVariantName để lấy label nhóm
+        values: Array.from(grouped[type].values()), // Map -> Array<{id, value}>
+      }));
+
+    return result;
+  }, [product?.optionDTOs]);
 
   return (
-    <div className="space-y-4">
+    <div className={cn("space-y-4", className)}>
       {/* Product Info */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">{product.title}</h1>
+        {/* Tiêu đề: ưu tiên kích thước nhỏ hơn trên mobile, tăng ở md+ */}
+        <h1 className="text-2xl md:text-3xl font-bold">{product.title}</h1>
 
         <div className="space-y-1">
-          <div className="flex items-center">
-            <span className="text-star text-base">★</span>
-            <span className="text-base font-medium ml-1">
-              {product.star || 0}
-            </span>
-            <span className="text-foreground/50 text-sm ml-1">
+          {/* Khối rating/bán/badges: cho phép wrap và tạo khoảng cách đều khi xuống dòng */}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <div className="flex items-center gap-0.5">
+              <span className="text-base font-medium">{product.star || 0}</span>
+              <Star className="fill-yellow-400 text-yellow-400 w-4 h-4" />
+            </div>
+            <span className="text-foreground/50 text-sm">
               ({product.totalReview || 0} đánh giá)
             </span>
-            <span className="text-foreground text-sm ml-2">
+            <span className="text-foreground text-sm">
               Đã bán {product.totalProductSold || 0}
             </span>
             {product.isNew && (
               <>
-                <span className="bg-new/10 text-new px-2 py-1 rounded-md text-sm font-medium ml-2">
+                <span className="bg-new/10 text-new px-2 py-1 rounded-md text-sm font-medium">
                   Mới
                 </span>
               </>
             )}
             {product.isFlashSale && (
               <>
-                <span className="bg-trending/10 text-trending px-2 py-1 rounded-md text-sm font-medium ml-2">
+                <span className="bg-trending/10 text-trending px-2 py-1 rounded-md text-sm font-medium">
                   Flash Sale
                 </span>
               </>
@@ -138,85 +131,63 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           </div>
         </div>
 
-        <div className="space-y-1">
-          {selectedSku && product.productSkusDTOList ? (
-            <>
-              <div className="text-2xl font-bold text-destructive">
-                {formatCurrencyUSD(
-                  (product.productSkusDTOList.find(sku => sku.id === selectedSku)
-                    ?.price || 0) -
-                  ((product.productSkusDTOList.find(sku => sku.id === selectedSku)
-                    ?.price || 0) * (product.discount?.discount_percent || 0)) / 100
-                )}
-              </div>
-              {product.discount && (
-                <div className="space-x-1">
-                  <span className="text-lg text-foreground/50 line-through">
-                    {formatCurrencyUSD(Math.round(
-                      product.productSkusDTOList.find(
-                        sku => sku.id === selectedSku
-                      )?.price || 0
-                    ))}
-                  </span>
-                  <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-md text-sm font-medium">
-                    -{product.discount.discount_percent}%
-                  </span>
-                </div>
-              )}
-            </>
-          ) : (
-            <span className="text-2xl font-bold text-destructive">
-              {formatCurrencyUSD(product.amount || 0)}
-            </span>
-          )}
+        <div className="text-xl md:text-2xl font-bold text-destructive">
+          {formatCurrencyUSD(product.priceSale || 0)}
+        </div>
+        <div className="space-x-1">
+          {/* Giá gạch: responsive theo md */}
+          <span className="text-base md:text-lg text-foreground/50 line-through">
+            {formatCurrencyUSD(product.price || 0)}
+          </span>
+          <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-md text-sm font-medium">
+            -{product.discount.discount_percent}%
+          </span>
         </div>
       </div>
 
       {/* Variants Selection */}
-      {product.variantsDTOList && product.variantsDTOList.length > 0 && (
+      {variantProduct && variantProduct.length > 0 && (
         <div className="space-y-2">
-          {product.variantsDTOList.map(variant => (
-            <div key={variant.id} className="space-y-2">
-              <h3 className="font-medium text-gray-700">{variant.name}:</h3>
+          {variantProduct.map(variant => (
+            <div key={variant.name} className="space-y-2">
+              {/* Tiêu đề nhóm biến thể: nhỏ ở mobile, chuẩn ở md+ */}
+              <h3 className="font-medium text-gray-700 text-sm md:text-base">
+                {variant.name}
+              </h3>
               <div className="flex flex-wrap gap-2">
-                {variant.variantValueDTOList?.map(value => (
-                  <div key={value.id}> {/* Bao bọc bằng div hoặc Fragment */}
+                {variant.values?.map(value => (
+                  <div key={value.id}>
+                    {" "}
+                    {/* Bao bọc bằng div hoặc Fragment */}
                     {variant.name.toLowerCase() === "color" ? (
                       <ColorCircle
                         color={getColorValue(value.name)}
-                        isSelected={selectedVariantValues[variant.id] === value.id}
+                        isSelected={
+                          selectedVariantValues[variant.name] === value.id
+                        }
                         onClick={() => {
                           const newSelectedValues = {
                             ...selectedVariantValues,
-                            [variant.id]: value.id,
+                            [variant.name]: value.id,
                           };
                           setSelectedVariantValues(newSelectedValues);
-
-                          const matchingSku = findMatchingSku(product, newSelectedValues);
-                          if (matchingSku) {
-                            setSelectedSku(matchingSku.id);
-                          }
                           setQuantity(1);
                         }}
                       />
                     ) : (
                       <Button
+                        className="px-3"
                         variant={
-                          selectedVariantValues[variant.id] === value.id
+                          selectedVariantValues[variant.name] === value.id
                             ? "default"
                             : "outline"
                         }
                         onClick={() => {
                           const newSelectedValues = {
                             ...selectedVariantValues,
-                            [variant.id]: value.id,
+                            [variant.name]: value.id,
                           };
                           setSelectedVariantValues(newSelectedValues);
-
-                          const matchingSku = findMatchingSku(product, newSelectedValues);
-                          if (matchingSku) {
-                            setSelectedSku(matchingSku.id);
-                          }
                           setQuantity(1);
                         }}
                       >
@@ -231,72 +202,29 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         </div>
       )}
 
-      {/* Sản phẩm có sẵn */}
-      <div className="text-sm text-foreground">
-        <span className="font-medium">Sản phẩm có sẵn:</span>{" "}
-        {selectedSku && product.productSkusDTOList
-          ? product.productSkusDTOList.find(sku => sku.id === selectedSku)
-              ?.quantity
-          : product.amount}
-      </div>
-
       {/* Quantity */}
-      <div className="flex items-center gap-1 mb-1">
+      {/* Khối số lượng: tăng khoảng cách ở md để thoáng hơn */}
+      <div className="flex items-center gap-2 md:gap-3 mb-1">
         <span className="text-gray-700">Số lượng:</span>
-        <QuantitySelector
-          quantity={quantity}
-          onQuantityChange={setQuantity}
-          max={
-            selectedSku && product.productSkusDTOList
-              ? product.productSkusDTOList.find(sku => sku.id === selectedSku)
-                  ?.quantity || 1
-              : product.amount
-              ? 10
-              : 0
-          }
-        />
+        <QuantitySelector quantity={quantity} onQuantityChange={setQuantity} />
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-1 mb-1">
+      {/* Actions: stack dọc ở sm, nằm ngang ở md+; khoảng cách lớn hơn */}
+      <div className="flex gap-2 sm:flex-col md:flex-row mb-1">
         <Button
           onClick={() => {
             // Thêm sản phẩm vào giỏ hàng với biến thể đã chọn
-            console.log("Thêm vào giỏ:", {
-              productId: product.id,
-              skuId: selectedSku,
-              quantity: quantity,
-              selectedVariants: selectedVariantValues,
-            });
           }}
-          className="flex-1"
-          disabled={
-            selectedSku && product.productSkusDTOList
-              ? (product.productSkusDTOList.find(sku => sku.id === selectedSku)
-                  ?.quantity || 0) === 0
-              : product.amount === 0
-          }
+          className="w-full md:flex-1"
         >
           Thêm vào giỏ
         </Button>
         <Button
           onClick={() => {
             // Mua ngay sản phẩm với biến thể đã chọn
-            console.log("Mua ngay:", {
-              productId: product.id,
-              skuId: selectedSku,
-              quantity: quantity,
-              selectedVariants: selectedVariantValues,
-            });
           }}
-          className="flex-1"
+          className="w-full md:flex-1"
           variant="outline"
-          disabled={
-            selectedSku && product.productSkusDTOList
-              ? (product.productSkusDTOList.find(sku => sku.id === selectedSku)
-                  ?.quantity || 0) === 0
-              : product.amount === 0
-          }
         >
           Mua ngay
         </Button>
@@ -308,9 +236,10 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
             <AccordionTrigger className="text-base font-semibold">
               Mô tả sản phẩm
             </AccordionTrigger>
-            <AccordionContent className="prose max-w-none">
+            {/* Tối ưu typography cho nội dung mô tả, giữ max-width none để full width */}
+            <AccordionContent className="prose max-w-none prose-p:my-2 prose-ul:my-2 prose-li:my-1">
               {product.content ? (
-                <div className="text-foreground leading-normal">
+                <div className="text-foreground leading-normal text-sm md:text-base">
                   {parse(product.content)}
                 </div>
               ) : (
@@ -326,7 +255,8 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           <AccordionTrigger className="text-base font-semibold">
             Thông số sản phẩm
           </AccordionTrigger>
-          <AccordionContent className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+          {/* Grid 1 cột trên mobile, 2 cột từ md; khoảng cách giảm nhẹ để khớp design-system */}
+          <AccordionContent className="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
             {product.brand && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
@@ -434,7 +364,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
               </div>
             )}
             {product.totalReview !== undefined && (
-              <div className="flex border-b border-border py-2">
+              <div className="flex">
                 <span className="font-medium text-foreground w-1/3">
                   Số đánh giá:
                 </span>

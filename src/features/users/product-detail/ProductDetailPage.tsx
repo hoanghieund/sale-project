@@ -1,14 +1,9 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
+import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
+import LoadingSpinner from "@/components/common/LoadingSpinner"; // Spinner chung cho trạng thái loading
 import { Product, Shop } from "@/types";
 import { useEffect, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ProductImageCarousel from "./components/ProductImageCarousel";
 import ProductInfo from "./components/ProductInfo"; // Import the new component
 import ProductReviews from "./components/ProductReviews";
@@ -26,18 +21,15 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [shop, setShop] = useState<Shop | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!id) {
-        setError("Không tìm thấy ID sản phẩm.");
         setLoading(false);
         return;
       }
 
       setLoading(true);
-      setError(null);
       try {
         const productData: Product = await productDetailService.getProductById(
           id
@@ -50,7 +42,6 @@ const ProductDetailPage = () => {
         }
       } catch (err) {
         console.error("Lỗi khi tải dữ liệu:", err);
-        setError("Không thể tải thông tin sản phẩm hoặc cửa hàng.");
       } finally {
         setLoading(false);
       }
@@ -61,70 +52,41 @@ const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-red-500">
-        {error}
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
       </div>
     );
   }
 
   if (!product || !shop) {
-    return <Navigate to="/404" replace />;
+    return <EmptyStateDisplay />;
   }
 
   return (
     <div className="bg-background min-h-screen">
-      <div className="container mx-auto px-4 py-4">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to="/">Trang chủ</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link to={`/category/${product.categoryDto?.parent?.id}`}>
-                  {product.categoryDto?.parent?.name}
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link
-                    to={`/category/${product.categoryDto?.parent?.id}/${product.categoryDto?.id}`}
-                  >
-                    {product.categoryDto?.name}
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-            </>
-            <BreadcrumbItem>
-              <BreadcrumbPage>{product.title}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+      <BreadcrumbNav
+        items={[
+          { label: "Trang chủ", to: "/" },
+          {
+            label: product.categoryDto?.parent?.name,
+            to: `/category/${product.categoryDto?.parent?.id}`,
+          },
+          {
+            label: product.categoryDto?.name,
+            to: `/category/${product.categoryDto?.parent?.id}/${product.categoryDto?.id}`,
+          },
+          { label: product.title },
+        ]}
+      />
 
       <div className="container mx-auto px-4 pb-8 space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-5 lg:gap-12">
           <ProductImageCarousel
-            className="px-8"
+            className="px-8 col-span-3"
             images={product.imagesDTOList || []}
             productTitle={product.title}
           />
-          <ProductInfo product={product} />
+          <ProductInfo className="col-span-2" product={product} />
         </div>
 
         {/* Shop Info */}

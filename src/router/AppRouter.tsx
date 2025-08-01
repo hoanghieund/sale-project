@@ -37,9 +37,6 @@ const VerifyAccount = lazy(() => import("@/features/auth/VerifyAccount"));
 const CategoryPage = lazy(
   () => import("@/features/users/category/CategoryPage")
 );
-const SubcategoryPage = lazy(
-  () => import("@/features/users/sub-category/SubcategoryPage")
-);
 const ShopPage = lazy(() => import("@/features/users/shop/ShopPage"));
 
 // Seller Dashboard pages
@@ -69,10 +66,6 @@ const AppRouter = () => {
               <Route
                 path="/category/:categoryId"
                 element={<CategoryPage />}
-              />
-              <Route
-                path="/subcategory/:subcategoryId"
-                element={<SubcategoryPage />}
               />
               <Route path="/shop/:shopId" element={<ShopPage />} />
               <Route path="/about" element={<About />} />

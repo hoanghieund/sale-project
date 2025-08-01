@@ -323,7 +323,7 @@ const Header = () => {
                               <div key={child.id}>
                                 <NavigationMenuLink className="bg-card" asChild>
                                   <Link
-                                    to={`/subcategory/${child.id}`} // Điều hướng đến trang category của danh mục con
+                                    to={`/category/${child.id}`} // Điều hướng đến trang category của danh mục con
                                     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                   >
                                     <div className="text-sm font-medium leading-none">
@@ -406,7 +406,7 @@ const MobileNavigation = ({
                   {item.child.map(child => (
                     <div key={child.id}>
                       <Link
-                        to={`/subcategory/${child.id}`} // Sử dụng id để tạo đường dẫn
+                        to={`/category/${child.id}`} // Sử dụng id để tạo đường dẫn
                         className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
                         onClick={onClose}
                       >

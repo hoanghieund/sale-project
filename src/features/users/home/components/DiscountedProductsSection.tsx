@@ -30,7 +30,6 @@ const DiscountedProductsSection = ({
             <ProductCard
               key={product.id}
               product={product}
-              showQuickAdd={true}
               showWishlist={true}
               showQuickView={false}
               simple={false}

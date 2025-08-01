@@ -12,7 +12,6 @@ function getInstance() {
       "Content-Type": "application/json",
       "ngrok-skip-browser-warning": true,
     },
-    timeout: 5000, // request timeout
   });
   //hook interceptor cài ở đây
   axiosInstance.interceptors.request.use(

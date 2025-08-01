@@ -10,76 +10,76 @@ export const NAVIGATION_MENU: NavigationItem[] = [
       {
         id: 'men-clothing',
         label: 'Thời trang nam',
-        href: '/subcategory/thoi-trang-nam',
+        href: '/category/thoi-trang-nam',
         children: [
           {
             id: 'men-shirts',
             label: 'Áo sơ mi nam',
-            href: '/subcategory/ao-so-mi-nam',
+            href: '/category/ao-so-mi-nam',
           },
           {
             id: 'men-tshirts',
             label: 'Áo thun nam',
-            href: '/subcategory/ao-thun-nam',
+            href: '/category/ao-thun-nam',
           },
           {
             id: 'men-pants',
             label: 'Quần nam',
-            href: '/subcategory/quan-nam',
+            href: '/category/quan-nam',
           },
           {
             id: 'men-shoes',
             label: 'Giày nam',
-            href: '/subcategory/giay-nam',
+            href: '/category/giay-nam',
           },
         ],
       },
       {
         id: 'women-clothing',
         label: 'Thời trang nữ',
-        href: '/subcategory/thoi-trang-nu',
+        href: '/category/thoi-trang-nu',
         children: [
           {
             id: 'women-dresses',
             label: 'Váy nữ',
-            href: '/subcategory/vay-nu',
+            href: '/category/vay-nu',
           },
           {
             id: 'women-tops',
             label: 'Áo nữ',
-            href: '/subcategory/ao-nu',
+            href: '/category/ao-nu',
           },
           {
             id: 'women-pants',
             label: 'Quần nữ',
-            href: '/subcategory/quan-nu',
+            href: '/category/quan-nu',
           },
           {
             id: 'women-shoes',
             label: 'Giày nữ',
-            href: '/subcategory/giay-nu',
+            href: '/category/giay-nu',
           },
         ],
       },
       {
         id: 'accessories',
         label: 'Phụ kiện',
-        href: '/subcategory/phu-kien',
+        href: '/category/phu-kien',
         children: [
           {
             id: 'bags',
             label: 'Túi xách',
-            href: '/subcategory/tui-xach',
+            href: '/category/tui-xach',
           },
           {
             id: 'watches',
             label: 'Đồng hồ',
-            href: '/subcategory/dong-ho',
+            href: '/category/dong-ho',
           },
           {
             id: 'jewelry',
             label: 'Trang sức',
-            href: '/subcategory/trang-suc',
+            href: '/category/trang-suc',
           },
         ],
       },
@@ -93,17 +93,17 @@ export const NAVIGATION_MENU: NavigationItem[] = [
       {
         id: 'phones',
         label: 'Điện thoại',
-        href: '/subcategory/dien-thoai',
+        href: '/category/dien-thoai',
       },
       {
         id: 'laptops',
         label: 'Laptop',
-        href: '/subcategory/laptop',
+        href: '/category/laptop',
       },
       {
         id: 'accessories-tech',
         label: 'Phụ kiện công nghệ',
-        href: '/subcategory/phu-kien-cong-nghe',
+        href: '/category/phu-kien-cong-nghe',
       },
     ],
   },
@@ -115,17 +115,17 @@ export const NAVIGATION_MENU: NavigationItem[] = [
       {
         id: 'furniture',
         label: 'Nội thất',
-        href: '/subcategory/noi-that',
+        href: '/category/noi-that',
       },
       {
         id: 'home-decor',
         label: 'Trang trí nhà',
-        href: '/subcategory/trang-tri-nha',
+        href: '/category/trang-tri-nha',
       },
       {
         id: 'kitchen',
         label: 'Đồ dùng nhà bếp',
-        href: '/subcategory/do-dung-nha-bep',
+        href: '/category/do-dung-nha-bep',
       },
     ],
   },
@@ -137,12 +137,12 @@ export const NAVIGATION_MENU: NavigationItem[] = [
       {
         id: 'sports-equipment',
         label: 'Dụng cụ thể thao',
-        href: '/subcategory/dung-cu-the-thao',
+        href: '/category/dung-cu-the-thao',
       },
       {
         id: 'travel-gear',
         label: 'Đồ du lịch',
-        href: '/subcategory/do-du-lich',
+        href: '/category/do-du-lich',
       },
     ],
   },
@@ -154,12 +154,12 @@ export const NAVIGATION_MENU: NavigationItem[] = [
       {
         id: 'fiction',
         label: 'Tiểu thuyết',
-        href: '/subcategory/tieu-thuyet',
+        href: '/category/tieu-thuyet',
       },
       {
         id: 'education',
         label: 'Sách giáo dục',
-        href: '/subcategory/sach-giao-duc',
+        href: '/category/sach-giao-duc',
       },
     ],
   },
