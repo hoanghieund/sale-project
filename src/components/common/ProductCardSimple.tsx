@@ -6,10 +6,14 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
+import { productService } from "@/services/productService";
 import { Product } from "@/types";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { Eye, Heart, Star, Store, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 /**
@@ -37,7 +41,7 @@ interface ProductCardSimpleProps {
   showQuickView?: boolean;
   /**
    * Hiển thị theo kiểu đơn giản (không có các nút tương tác)
-   * @default false
+   * @default true
    */
   simple?: boolean;
 }
@@ -48,17 +52,45 @@ const ProductCardSimple = ({
   showWishlist = true,
   showRemoveFromWishlist = false,
   showQuickView = true,
-  simple = false,
+  simple = true,
 }: ProductCardSimpleProps) => {
+  const { isAuthenticated } = useUser(); // Use useUser hook
+  const { toast } = useToast(); // Use useToast hook for notifications
+  const [likedProduct, setLikedProduct] = useState(product.isLike || false);
 
-  /**
-   * Xử lý thêm vào danh sách yêu thích hoặc xóa khỏi danh sách yêu thích.
-   * @param e Sự kiện chuột.
-   */
-  const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Logic thêm/xóa vào danh sách yêu thích sẽ được triển khai tại đây
+  const handleLikeProduct = async (productId: number) => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Chưa đăng nhập",
+        description: "Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      setLikedProduct(prev => !prev);
+      if (likedProduct) {
+        await productService.unlikeProduct(productId);
+        toast({
+          title: "Thành công",
+          description: "Đã xóa sản phẩm khỏi danh sách yêu thích.",
+        });
+      } else {
+        await productService.likeProduct(productId);
+        toast({
+          title: "Thành công",
+          description: "Đã thêm sản phẩm vào danh sách yêu thích.",
+        });
+      }
+    } catch (error) {
+      setLikedProduct(prev => !prev);
+      toast({
+        title: "Lỗi",
+        description: "Có lỗi xảy ra khi cập nhật danh sách yêu thích. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+      console.error("Lỗi khi cập nhật danh sách yêu thích:", error);
+    }
   };
 
   return (
@@ -108,13 +140,12 @@ const ProductCardSimple = ({
             <>
               {/* Wishlist, Remove from Wishlist, and Quick View buttons */}
               <div className="absolute top-3 right-3 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {showWishlist && !showRemoveFromWishlist && (
+                {showWishlist && !showRemoveFromWishlist && isAuthenticated && (
                   <Button
                     variant="outline"
                     size="icon"
                     className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-red-500 transition-colors"
-                    onClick={handleWishlistToggle}
-                    data-testid="wishlist-button"
+                    onClick={() => handleLikeProduct(product.id)}
                   >
                     <Heart
                       className={cn(
@@ -124,19 +155,12 @@ const ProductCardSimple = ({
                     />
                   </Button>
                 )}
-                {showRemoveFromWishlist && (
+                {showRemoveFromWishlist && isAuthenticated && (
                   <Button
                     variant="outline"
                     size="icon"
                     className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-red-500 transition-colors"
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // if (removeFromWishlist) {
-                      //   removeFromWishlist(product.id);
-                      // }
-                    }}
-                    data-testid="remove-wishlist-button"
+                    onClick={() => handleLikeProduct(product.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

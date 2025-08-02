@@ -3,7 +3,24 @@ import { Input } from "@/components/ui/input";
 import { Facebook, Instagram, Mail, Twitter } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FOOTER_LINKS } from "../../data/constants";
+// Footer Links
+export const FOOTER_LINKS = {
+  help: [
+    // Giữ lại các trang chính có trong luồng nghiệp vụ
+    { label: 'About Us', href: '/about' },
+    { label: 'Contact Us', href: '/contact' },
+    { label: 'FAQs', href: '/faq' },
+    // Loại bỏ các trang không có trong luồng nghiệp vụ, chuyển hướng đến trang Contact
+    { label: 'Customer Support', href: '/contact' },
+  ],
+  policy: [
+    // Đơn giản hóa các chính sách, chuyển hướng đến các trang có sẵn
+    { label: 'Shipping & Returns', href: '/about' },
+    { label: 'Order Tracking', href: '/account' },
+    { label: 'Privacy Policy', href: '/privacy-policy' },
+    { label: 'Terms of Service', href: '/terms-of-service' },
+  ],
+};
 
 const Footer = () => {
   const [email, setEmail] = useState("");

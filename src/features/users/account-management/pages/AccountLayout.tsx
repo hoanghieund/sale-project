@@ -1,28 +1,29 @@
 // src/features/users/account-management/pages/AccountLayout.tsx
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import AccountSidebar from '../components/AccountSidebar'; // Đảm bảo đường dẫn đúng
+import { SidebarProvider } from "@/components/ui/sidebar";
+import React from "react";
+import { Outlet } from "react-router-dom";
+import AccountSidebar from "../components/AccountSidebar";
 
 /**
  * @component AccountLayout
  * @description Layout chung cho các trang quản lý tài khoản người dùng.
  * Bao gồm một sidebar điều hướng và một vùng để hiển thị nội dung trang con.
+ * Sử dụng SidebarProvider từ Shadcn UI để quản lý trạng thái sidebar.
  */
 const AccountLayout: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar */}
-        <aside className="md:w-1/4">
-          <AccountSidebar />
-        </aside>
-
-        {/* Content Area */}
-        <main className="md:w-3/4">
-          <Outlet /> {/* Hiển thị nội dung của các route con */}
-        </main>
+    <SidebarProvider defaultOpen={true}>
+      <div className="container mx-auto px-4 py-12 h-[80vh]">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Sidebar */}
+          <aside>
+            <AccountSidebar />
+          </aside>
+          {/* Content Area */}
+          <Outlet />
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

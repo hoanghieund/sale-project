@@ -202,7 +202,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
    * Đăng xuất người dùng
    */
   const logout = async () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("userData");
     // Cập nhật state
     dispatch({ type: "LOGOUT" });
   };

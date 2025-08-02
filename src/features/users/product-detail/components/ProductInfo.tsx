@@ -7,7 +7,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
+import { cartService } from "@/services/cartService";
 import { Product } from "@/types";
 import { getColorValue } from "@/utils/colors";
 import { formatCurrencyUSD } from "@/utils/formatters";
@@ -36,6 +39,8 @@ interface ProductInfoProps {
  */
 const ProductInfo = ({ product, className }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
+  const { toast } = useToast();
+  const { user } = useUser();
 
   // Lưu trữ các giá trị biến thể đã chọn theo variantId
   const [selectedVariantValues, setSelectedVariantValues] = useState<
@@ -57,7 +62,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
     }
   };
 
- // Nhóm option theo type và chuẩn hóa tên nhóm bằng getVariantName.
+  // Nhóm option theo type và chuẩn hóa tên nhóm bằng getVariantName.
   // Trả về dạng:
   // [
   //   { name: 'FIT', values: [{ id: 1, name: 'Front' }, { id: 2, name: 'Back' }] },
@@ -70,29 +75,79 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
     const options = product?.optionDTOs ?? [];
 
     // Gom theo type, dùng Map để loại trùng theo name trong cùng type
-    const grouped = options.reduce<Record<number, Map<string, { id: number; name: string }>>>(
-      (acc, cur) => {
-        if (!acc[cur.type]) acc[cur.type] = new Map();
-        // Ưu tiên id đầu tiên cho mỗi name duy nhất trong cùng type
-        if (!acc[cur.type].has(cur.name)) {
-          acc[cur.type].set(cur.name, { id: cur.id, name: cur.name });
-        }
-        return acc;
-      },
-      {}
-    );
+    const grouped = options.reduce<
+      Record<number, Map<string, { id: number; name: string }>>
+    >((acc, cur) => {
+      if (!acc[cur.type]) acc[cur.type] = new Map();
+      // Ưu tiên id đầu tiên cho mỗi name duy nhất trong cùng type
+      if (!acc[cur.type].has(cur.name)) {
+        acc[cur.type].set(cur.name, { id: cur.id, name: cur.name });
+      }
+      return acc;
+    }, {});
 
     // Chuyển về mảng theo định dạng yêu cầu. Sắp xếp theo type để ổn định.
     const result = Object.keys(grouped)
-      .map((k) => Number(k))
+      .map(k => Number(k))
       .sort((a, b) => a - b)
-      .map((type) => ({
+      .map(type => ({
         name: getVariantName(type), // sử dụng getVariantName để lấy label nhóm
         values: Array.from(grouped[type].values()), // Map -> Array<{id, value}>
       }));
 
     return result;
   }, [product?.optionDTOs]);
+
+  /**
+   * @function isAddToCartDisabled
+   * @description Xác định xem nút "Thêm vào giỏ" có nên bị vô hiệu hóa hay không.
+   * Nút bị vô hiệu hóa nếu sản phẩm có biến thể và số lượng biến thể đã chọn không khớp với tổng số nhóm biến thể.
+   */
+  const isAddToCartDisabled = useMemo(() => {
+    // Kiểm tra nếu sản phẩm có biến thể
+    const hasVariants = product.optionDTOs && product.optionDTOs.length > 0;
+
+    // Nếu sản phẩm có biến thể, kiểm tra xem tất cả các biến thể đã được chọn chưa
+    if (hasVariants) {
+      // Số lượng biến thể đã chọn phải khớp với số lượng nhóm biến thể
+      return Object.keys(selectedVariantValues).length !== variantProduct.length;
+    }
+    // Nếu sản phẩm không có biến thể, nút không bị vô hiệu hóa
+    return false;
+  }, [product.optionDTOs, selectedVariantValues, variantProduct]);
+
+  /**
+   * @function handleAddToCart
+   * @description Xử lý logic khi người dùng nhấn nút "Thêm vào giỏ".
+   * Kiểm tra xem tất cả các biến thể đã được chọn chưa trước khi thêm vào giỏ.
+   */
+  const handleAddToCart = async () => {
+    // Nếu nút bị vô hiệu hóa (tức là chưa chọn đủ biến thể), hiển thị lỗi và dừng.
+    if (isAddToCartDisabled) {
+      toast({
+        title: "Lỗi",
+        description: "Vui lòng chọn đầy đủ các biến thể sản phẩm trước khi thêm vào giỏ hàng.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Gọi API thêm vào giỏ hàng
+      await cartService.addToCart({ id: product.id }, quantity, user?.id);
+      toast({
+        title: "Thành công",
+        description: "Đã thêm sản phẩm vào giỏ hàng.",
+      });
+    } catch (error) {
+      console.log("🚀 ~ handleAddToCart ~ error:", error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể thêm sản phẩm vào giỏ hàng.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -212,10 +267,9 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
       {/* Actions: stack dọc ở sm, nằm ngang ở md+; khoảng cách lớn hơn */}
       <div className="flex gap-2 sm:flex-col md:flex-row mb-1">
         <Button
-          onClick={() => {
-            // Thêm sản phẩm vào giỏ hàng với biến thể đã chọn
-          }}
+          onClick={() => handleAddToCart()}
           className="w-full md:flex-1"
+          disabled={isAddToCartDisabled} // Vô hiệu hóa nút nếu biến thể chưa được chọn đầy đủ
         >
           Thêm vào giỏ
         </Button>
@@ -256,7 +310,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
             Thông số sản phẩm
           </AccordionTrigger>
           {/* Grid 1 cột trên mobile, 2 cột từ md; khoảng cách giảm nhẹ để khớp design-system */}
-          <AccordionContent className="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
+          <AccordionContent className="grid grid-cols-1 gap-x-6 gap-y-3">
             {product.brand && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">

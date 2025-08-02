@@ -1,45 +1,202 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { type Cart as CartItemType } from "@/types"; // Đổi tên Cart thành CartItemType để tránh trùng lặp
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../../../context/CartContext";
-import { getRandomImage } from "../../../utils/random-image";
+
+// Định nghĩa interface cho CartByShop
+interface CartByShop {
+  shopId: string;
+  shopName: string;
+  cartDTOList: CartItemType[];
+}
+
+// Định nghĩa interface cho CartSummary
+interface CartSummary {
+  subtotal: number;
+  discount: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  couponCode?: string; // Thêm couponCode vào CartSummary
+}
+
+// Hàm getRandomImage placeholder
+const getRandomImage = () => {
+  const images = [
+    "https://via.placeholder.com/150/FF0000/FFFFFF?text=Product1",
+    "https://via.placeholder.com/150/00FF00/FFFFFF?text=Product2",
+    "https://via.placeholder.com/150/0000FF/FFFFFF?text=Product3",
+  ];
+  return images[Math.floor(Math.random() * images.length)];
+};
 
 const Cart = () => {
-  const { cart, updateQuantity, removeFromCart, applyCoupon, removeCoupon } =
-    useCart();
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
+  // Khởi tạo cartByShop với dữ liệu giả định để test
+  const [cartByShop, setCartByShop] = useState<CartByShop[]>([
+    {
+      shopId: "shop1",
+      shopName: "Shop A",
+      cartDTOList: [
+        {
+          id: "item1",
+          quantity: 2,
+          product: {
+            id: "prod1",
+            title: "Product 1",
+            price: 10.0,
+            images: [getRandomImage()],
+            shop: { name: "Shop A" },
+          },
+          size: { name: "M" },
+          color: { name: "Red" },
+        },
+        {
+          id: "item2",
+          quantity: 1,
+          product: {
+            id: "prod2",
+            title: "Product 2",
+            price: 25.0,
+            images: [getRandomImage()],
+            shop: { name: "Shop A" },
+          },
+          size: { name: "L" },
+          color: { name: "Blue" },
+        },
+      ],
+    },
+    {
+      shopId: "shop2",
+      shopName: "Shop B",
+      cartDTOList: [
+        {
+          id: "item3",
+          quantity: 3,
+          product: {
+            id: "prod3",
+            title: "Product 3",
+            price: 5.0,
+            images: [getRandomImage()],
+            shop: { name: "Shop B" },
+          },
+          size: { name: "S" },
+          color: { name: "Green" },
+        },
+      ],
+    },
+  ]);
 
+  // State để lưu trữ tóm tắt giỏ hàng
+  const [cartSummary, setCartSummary] = useState<CartSummary>({
+    subtotal: 0,
+    discount: 0,
+    shipping: 0,
+    tax: 0,
+    total: 0,
+  });
+
+  /**
+   * @function calculateCartSummary
+   * @description Tính toán tổng tiền, chiết khấu, phí vận chuyển, thuế và tổng cộng dựa trên dữ liệu giỏ hàng.
+   * @param {CartByShop[]} currentCartByShop - Dữ liệu giỏ hàng theo cửa hàng.
+   * @returns {CartSummary} Đối tượng chứa các giá trị tổng kết.
+   */
+  const calculateCartSummary = (currentCartByShop: CartByShop[]): CartSummary => {
+    let subtotal = 0;
+    // Tính tổng phụ từ tất cả các mặt hàng trong giỏ hàng
+    currentCartByShop.forEach(shopCart => {
+      shopCart.cartDTOList.forEach(item => {
+        subtotal += (item.product.price || 0) * item.quantity;
+      });
+    });
+
+    // Giả định logic chiết khấu, vận chuyển, thuế
+    const discount = 0; // Thay thế bằng logic chiết khấu thực tế
+    const shipping = subtotal > 100 ? 0 : 10; // Miễn phí vận chuyển nếu tổng phụ > 100
+    const taxRate = 0.05; // Thuế 5%
+    const tax = subtotal * taxRate;
+    const total = subtotal - discount + shipping + tax;
+
+    return { subtotal, discount, shipping, tax, total };
+  };
+
+  /**
+   * @function removeFromCart
+   * @description Xóa một mặt hàng khỏi giỏ hàng. Nếu cửa hàng không còn mặt hàng nào, xóa cả cửa hàng đó.
+   * @param {string} itemId - ID của mặt hàng cần xóa.
+   */
+  const removeFromCart = (itemId: string) => {
+    setCartByShop(prevCartByShop => {
+      const newCartByShop = prevCartByShop
+        .map(shopCart => {
+          const updatedCartDTOList = shopCart.cartDTOList.filter(
+            item => item.id !== itemId
+          );
+          return { ...shopCart, cartDTOList: updatedCartDTOList };
+        })
+        .filter(shopCart => shopCart.cartDTOList.length > 0); // Xóa cửa hàng nếu không còn mặt hàng nào
+      return newCartByShop;
+    });
+  };
+
+  /**
+   * @function updateQuantity
+   * @description Cập nhật số lượng của một mặt hàng trong giỏ hàng.
+   * @param {string} itemId - ID của mặt hàng cần cập nhật.
+   * @param {number} newQuantity - Số lượng mới.
+   */
+  const updateQuantity = (itemId: string, newQuantity: number) => {
+    setCartByShop(prevCartByShop => {
+      const newCartByShop = prevCartByShop.map(shopCart => {
+        const updatedCartDTOList = shopCart.cartDTOList.map(item =>
+          item.id === itemId ? { ...item, quantity: newQuantity } : item
+        );
+        return { ...shopCart, cartDTOList: updatedCartDTOList };
+      });
+      return newCartByShop;
+    });
+  };
+
+  /**
+   * @function handleApplyCoupon
+   * @description Xử lý logic áp dụng mã giảm giá.
+   */
   const handleApplyCoupon = () => {
-    try {
-      applyCoupon(couponCode);
-      setCouponCode("");
+    // Logic áp dụng mã giảm giá.
+    // Tạm thời, giả định mã "SAVE10" giảm 10%.
+    if (couponCode === "SAVE10") {
+      setCartSummary(prevSummary => ({
+        ...prevSummary,
+        discount: prevSummary.subtotal * 0.1,
+        total: prevSummary.subtotal * 0.9 + prevSummary.shipping + prevSummary.tax,
+        couponCode: couponCode,
+      }));
       setCouponError("");
-    } catch (error) {
-      setCouponError(
-        error instanceof Error ? error.message : "Invalid coupon code"
-      );
+    } else {
+      setCouponError("Invalid coupon code.");
     }
   };
 
-  // Kiểm tra nếu giỏ hàng trống
-  if (!cart.items || cart.items.length === 0) {
-    return (
-      <div className="text-center py-16">
-        <ShoppingBag className="h-24 w-24 mx-auto text-muted-foreground mb-6" />
-        <h1 className="text-3xl font-bold mb-4">Your cart is empty</h1>
-        <p className="text-muted-foreground mb-8">
-          Looks like you haven't added anything to your cart yet.
-        </p>
-        <Link to="/products">
-          <Button size="lg">Continue Shopping</Button>
-        </Link>
-      </div>
-    );
-  }
+  /**
+   * @function removeCoupon
+   * @description Xóa mã giảm giá đã áp dụng.
+   */
+  const removeCoupon = () => {
+    setCouponCode("");
+    setCouponError("");
+    // Tái tính toán tổng tiền sau khi xóa mã giảm giá
+    setCartSummary(calculateCartSummary(cartByShop));
+  };
+
+  // useEffect để tính toán lại tổng tiền khi cartByShop thay đổi
+  useEffect(() => {
+    setCartSummary(calculateCartSummary(cartByShop));
+  }, [cartByShop]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -48,102 +205,118 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
-          {cart.items &&
-            cart.items.map(item => (
-              <div
-                key={item.id}
-                className="bg-card rounded-lg p-6 shadow-sm border border-border"
-              >
-                <div className="flex gap-4">
-                  {/* Product Image */}
-                  <div className="w-24 h-24 flex-shrink-0">
-                    <img
-                      src={
-                        (item.product as any).images?.[0] ||
-                        getRandomImage()
-                      }
-                      alt={item.product.title || "Product"}
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                  </div>
+          {cartByShop.length === 0 ? (
+            <div className="text-center text-muted-foreground py-12">
+              <p className="text-xl">Your cart is empty.</p>
+              <Link to="/products">
+                <Button variant="link" className="mt-4 text-lg">
+                  Start Shopping
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            cartByShop.map(shopCart => (
+              <div key={shopCart.shopId} className="space-y-4">
+                <h2 className="text-xl font-semibold mb-2">
+                  Shop: {shopCart.shopName}
+                </h2>
+                {shopCart.cartDTOList.map(item => (
+                  <div
+                    key={item.id}
+                    className="bg-card rounded-lg p-6 shadow-sm border border-border"
+                  >
+                    <div className="flex gap-4">
+                      {/* Product Image */}
+                      <div className="w-24 h-24 flex-shrink-0">
+                        <img
+                          src={
+                            (item.product as any).images?.[0] || getRandomImage()
+                          }
+                          alt={item.product.title || "Product"}
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                      </div>
 
-                  {/* Product Details */}
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-semibold line-clamp-2">
-                          <Link
-                            to={`/product/${item.product.id}`}
-                            className="hover:text-primary"
+                      {/* Product Details */}
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="font-semibold line-clamp-2">
+                              <Link
+                                to={`/product/${item.product.id}`}
+                                className="hover:text-primary"
+                              >
+                                {item.product.title}
+                              </Link>
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              by {item.product.shop?.name || "Unknown Shop"}
+                            </p>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-muted-foreground hover:text-destructive"
                           >
-                            {item.product.title}
-                          </Link>
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          by {item.product.shop?.name || "Unknown Shop"}
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-muted-foreground">
-                        <span>Size: {item.size?.name || "Standard"}</span>
-                        <span className="mx-2">•</span>
-                        <span>Color: {item.color?.name || "Default"}</span>
-                      </div>
-                      <div className="font-semibold">
-                        ${(item.product as any).price?.toFixed(2) || "0.00"}
-                      </div>
-                    </div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm text-muted-foreground">
+                            <span>Size: {item.size?.name || "Standard"}</span>
+                            <span className="mx-2">•</span>
+                            <span>Color: {item.color?.name || "Default"}</span>
+                          </div>
+                          <div className="font-semibold">
+                            ${(item.product as any).price?.toFixed(2) || "0.00"}
+                          </div>
+                        </div>
 
-                    {/* Quantity Controls */}
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
-                          }
-                          disabled={item.quantity <= 1}
-                          className="h-8 w-8"
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="w-12 text-center font-medium">
-                          {item.quantity}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
-                          }
-                          disabled={item.quantity >= 10}
-                          className="h-8 w-8"
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-                      <div className="font-bold">
-                        $
-                        {(
-                          (item.product as any).price * item.quantity || 0
-                        ).toFixed(2)}
+                        {/* Quantity Controls */}
+                        <div className="flex items-center justify-between mt-4">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity - 1)
+                              }
+                              disabled={item.quantity <= 1}
+                              className="h-8 w-8"
+                            >
+                              <Minus className="h-3 w-3" />
+                            </Button>
+                            <span className="w-12 text-center font-medium">
+                              {item.quantity}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity + 1)
+                              }
+                              disabled={item.quantity >= 10}
+                              className="h-8 w-8"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <div className="font-bold">
+                            $
+                            {(
+                              (item.product as any).price * item.quantity || 0
+                            ).toFixed(2)}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            ))
+          )}
         </div>
 
         {/* Order Summary */}
@@ -165,10 +338,10 @@ const Cart = () => {
             {couponError && (
               <p className="text-sm text-destructive mt-1">{couponError}</p>
             )}
-            {cart.couponCode && (
+            {cartSummary.couponCode && (
               <div className="flex items-center justify-between mt-2 text-sm">
                 <span className="text-green-600">
-                  Coupon "{cart.couponCode}" applied
+                  Coupon "{cartSummary.couponCode}" applied
                 </span>
                 <Button
                   variant="ghost"
@@ -188,39 +361,39 @@ const Cart = () => {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>${cart.subtotal.toFixed(2)}</span>
+              <span>${cartSummary.subtotal.toFixed(2)}</span>
             </div>
 
-            {cart.discount > 0 && (
+            {cartSummary.discount > 0 && (
               <div className="flex justify-between text-green-600">
                 <span>Discount</span>
-                <span>-${cart.discount.toFixed(2)}</span>
+                <span>-${cartSummary.discount.toFixed(2)}</span>
               </div>
             )}
 
             <div className="flex justify-between">
               <span>Shipping</span>
               <span>
-                {cart.shipping === 0 ? "Free" : `$${cart.shipping.toFixed(2)}`}
+                {cartSummary.shipping === 0 ? "Free" : `$${cartSummary.shipping.toFixed(2)}`}
               </span>
             </div>
 
             <div className="flex justify-between">
               <span>Tax</span>
-              <span>${cart.tax.toFixed(2)}</span>
+              <span>${cartSummary.tax.toFixed(2)}</span>
             </div>
 
             <Separator className="my-2" />
 
             <div className="flex justify-between text-lg font-bold">
               <span>Total</span>
-              <span>${cart.total.toFixed(2)}</span>
+              <span>${cartSummary.total.toFixed(2)}</span>
             </div>
           </div>
 
-          {cart.shipping === 0 && cart.subtotal < 100 && (
+          {cartSummary.shipping === 0 && cartSummary.subtotal < 100 && (
             <p className="text-sm text-muted-foreground mt-2">
-              Add ${(100 - cart.subtotal).toFixed(2)} more for free shipping!
+              Add ${(100 - cartSummary.subtotal).toFixed(2)} more for free shipping!
             </p>
           )}
 

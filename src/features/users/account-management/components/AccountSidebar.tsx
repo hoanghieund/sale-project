@@ -1,53 +1,83 @@
 /**
  * AccountSidebar Component
- * @description Sidebar for user account management pages, with navigation links and active state highlighting.
+ * @description Sidebar cho trang quản lý tài khoản người dùng, sử dụng Shadcn UI Sidebar component
  * @returns {JSX.Element}
  */
-import { useLocation, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils'; // Import cn utility for conditional classes
-import { User, MapPin, Package, Lock } from 'lucide-react'; // Import icons
+import { cn } from "@/lib/utils";
+import { ChevronRight, Lock, MapPin, Package, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+
+// Import các components từ Shadcn UI Sidebar
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 const AccountSidebar = (): JSX.Element => {
-  const location = useLocation(); // Get current location to determine active link
+  const location = useLocation(); // Lấy vị trí hiện tại để xác định link đang active
 
-  // Define navigation links with names, paths, and icons
+  // Định nghĩa các liên kết điều hướng với tên, đường dẫn và biểu tượng
   const navLinks = [
-    { name: 'Hồ sơ', path: '/account/profile', icon: User },
-    { name: 'Địa chỉ', path: '/account/address', icon: MapPin },
-    { name: 'Lịch sử đơn hàng', path: '/account/orders', icon: Package },
-    { name: 'Đổi mật khẩu', path: '/account/change-password', icon: Lock },
+    { name: "Hồ sơ", path: "/account/profile", icon: User },
+    { name: "Địa chỉ", path: "/account/address", icon: MapPin },
+    { name: "Lịch sử đơn hàng", path: "/account/orders", icon: Package },
+    { name: "Đổi mật khẩu", path: "/account/change-password", icon: Lock },
   ];
 
   return (
-    // Card-like container for the sidebar
-    <div className="w-full rounded-md border bg-card text-card-foreground shadow-sm">
-      <div className="flex flex-col space-y-1.5 p-6">
-        <h3 className="text-lg font-semibold leading-none tracking-tight">Tài khoản của tôi</h3>
-      </div>
-      <div className="p-4 pt-0">
-        <nav className="flex flex-col space-y-1">
-          {navLinks.map((link) => {
-            const isActive = location.pathname === link.path;
-            const Icon = link.icon;
+    <Sidebar
+      variant="inset"
+      collapsible="none"
+      className="rounded-md border bg-card text-card-foreground shadow-sm"
+    >
+      <SidebarHeader className="p-4 pb-0">
+        <h3 className="text-lg font-semibold leading-none tracking-tight">
+          Tài khoản của tôi
+        </h3>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navLinks.map(link => {
+                const isActive = location.pathname === link.path;
+                const Icon = link.icon;
 
-            return (
-              <Button
-                key={link.path}
-                asChild
-                variant={isActive ? 'secondary' : 'ghost'} // Highlight active link
-                className={cn('w-full justify-start')}
-              >
-                <Link to={link.path} className="flex items-center gap-3">
-                  <Icon className="h-4 w-4" />
-                  <span>{link.name}</span>
-                </Link>
-              </Button>
-            );
-          })}
-        </nav>
-      </div>
-    </div>
+                return (
+                  <SidebarMenuItem key={link.path}>
+                    <SidebarMenuButton
+                      asChild
+                      className={cn(
+                        "w-full justify-start",
+                        isActive &&
+                          "bg-sidebar-accent text-sidebar-accent-foreground"
+                      )}
+                    >
+                      <Link
+                        to={link.path}
+                        className="flex items-center gap-3 w-full"
+                      >
+                        <Icon className="h-4 w-4" />
+                        <span>{link.name}</span>
+                        {isActive && (
+                          <ChevronRight className="ml-auto h-4 w-4" />
+                        )}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 };
 

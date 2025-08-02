@@ -1,7 +1,4 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { CartProvider } from "@/context/CartContext";
-import RecentlyViewedProvider from "@/context/RecentlyViewedContext";
-import { WishlistProvider } from "@/context/WishlistContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { ModeProvider } from "./mode-provider";
@@ -27,13 +24,7 @@ const Providers: React.FC<ProvidersProps> = ({ children }) => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ModeProvider>
-          <UserProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <RecentlyViewedProvider>{children}</RecentlyViewedProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </UserProvider>
+          <UserProvider>{children}</UserProvider>
         </ModeProvider>
       </TooltipProvider>
     </QueryClientProvider>
