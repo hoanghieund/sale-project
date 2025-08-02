@@ -49,7 +49,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
           onClick={() => onPageChange(currentPage - 1)}
           aria-disabled={currentPage === 1}
           tabIndex={currentPage === 1 ? -1 : undefined}
-          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+          className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
         />
       </PaginationItem>
     );
@@ -63,6 +63,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
             <PaginationLink
               onClick={() => onPageChange(i)}
               isActive={currentPage === i}
+              className="cursor-pointer"
             >
               {i}
             </PaginationLink>
@@ -77,6 +78,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
           <PaginationLink
             onClick={() => onPageChange(1)}
             isActive={currentPage === 1}
+            className="cursor-pointer"
           >
             1
           </PaginationLink>
@@ -104,6 +106,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
             <PaginationLink
               onClick={() => onPageChange(i)}
               isActive={currentPage === i}
+              className="cursor-pointer"
             >
               {i}
             </PaginationLink>
@@ -122,6 +125,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
           <PaginationLink
             onClick={() => onPageChange(totalPages)}
             isActive={currentPage === totalPages}
+            className="cursor-pointer"
           >
             {totalPages}
           </PaginationLink>
@@ -137,7 +141,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
           aria-disabled={currentPage === totalPages}
           tabIndex={currentPage === totalPages ? -1 : undefined}
           className={
-            currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+            currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"
           }
         />
       </PaginationItem>

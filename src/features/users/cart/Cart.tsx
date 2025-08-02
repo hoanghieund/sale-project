@@ -1,95 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { type Cart as CartItemType } from "@/types"; // Đổi tên Cart thành CartItemType để tránh trùng lặp
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@/hooks/use-user";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
-// Định nghĩa interface cho CartByShop
-interface CartByShop {
-  shopId: string;
-  shopName: string;
-  cartDTOList: CartItemType[];
-}
-
-// Định nghĩa interface cho CartSummary
-interface CartSummary {
-  subtotal: number;
-  discount: number;
-  shipping: number;
-  tax: number;
-  total: number;
-  couponCode?: string; // Thêm couponCode vào CartSummary
-}
-
-// Hàm getRandomImage placeholder
-const getRandomImage = () => {
-  const images = [
-    "https://via.placeholder.com/150/FF0000/FFFFFF?text=Product1",
-    "https://via.placeholder.com/150/00FF00/FFFFFF?text=Product2",
-    "https://via.placeholder.com/150/0000FF/FFFFFF?text=Product3",
-  ];
-  return images[Math.floor(Math.random() * images.length)];
-};
+import CartSummaryCard from "./components/CartSummaryCard";
+import EmptyCartMessage from "./components/EmptyCartMessage";
+import ShopCartSection from "./components/ShopCartSection";
+import { cartService } from "./services/cartService";
+import { CartByShop, CartItemType, CartSummary } from "./types/cart-types";
 
 const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
-  // Khởi tạo cartByShop với dữ liệu giả định để test
-  const [cartByShop, setCartByShop] = useState<CartByShop[]>([
-    {
-      shopId: "shop1",
-      shopName: "Shop A",
-      cartDTOList: [
-        {
-          id: "item1",
-          quantity: 2,
-          product: {
-            id: "prod1",
-            title: "Product 1",
-            price: 10.0,
-            images: [getRandomImage()],
-            shop: { name: "Shop A" },
-          },
-          size: { name: "M" },
-          color: { name: "Red" },
-        },
-        {
-          id: "item2",
-          quantity: 1,
-          product: {
-            id: "prod2",
-            title: "Product 2",
-            price: 25.0,
-            images: [getRandomImage()],
-            shop: { name: "Shop A" },
-          },
-          size: { name: "L" },
-          color: { name: "Blue" },
-        },
-      ],
-    },
-    {
-      shopId: "shop2",
-      shopName: "Shop B",
-      cartDTOList: [
-        {
-          id: "item3",
-          quantity: 3,
-          product: {
-            id: "prod3",
-            title: "Product 3",
-            price: 5.0,
-            images: [getRandomImage()],
-            shop: { name: "Shop B" },
-          },
-          size: { name: "S" },
-          color: { name: "Green" },
-        },
-      ],
-    },
-  ]);
+  const [cartByShop, setCartByShop] = useState<CartByShop[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+  const { user } = useUser(); // Lấy thông tin người dùng từ context
 
   // State để lưu trữ tóm tắt giỏ hàng
   const [cartSummary, setCartSummary] = useState<CartSummary>({
@@ -99,6 +24,52 @@ const Cart = () => {
     tax: 0,
     total: 0,
   });
+
+  /**
+   * @function fetchCartData
+   * @description Lấy dữ liệu giỏ hàng từ API và cập nhật state.
+   */
+  const fetchCartData = async () => {
+    if (!user?.id) {
+      setError("User not logged in.");
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Gọi API để lấy giỏ hàng
+      const response = await cartService.getCart(user.id);
+      const fetchedCart = response.data.cartDTOList; // Giả định API trả về trực tiếp cartDTOList
+
+      // Nhóm các sản phẩm theo cửa hàng
+      const groupedCart: CartByShop[] = fetchedCart.reduce((acc: CartByShop[], item: CartItemType) => {
+        const shopId = item.product.shop?.id || 0; // Sử dụng ID cửa hàng hoặc 0 nếu không có
+        const shopName = item.product.shop?.name || "Unknown Shop";
+
+        let shopCart = acc.find(cart => cart.shopId === shopId);
+        if (!shopCart) {
+          shopCart = { shopId, shopName, cartDTOList: [] };
+          acc.push(shopCart);
+        }
+        shopCart.cartDTOList.push(item);
+        return acc;
+      }, []);
+
+      setCartByShop(groupedCart);
+      setCartSummary(calculateCartSummary(groupedCart)); // Tính toán lại tổng tiền sau khi fetch dữ liệu
+      setError(null);
+    } catch (err) {
+      setError("Failed to load cart. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to load cart. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   /**
    * @function calculateCartSummary
@@ -115,10 +86,10 @@ const Cart = () => {
       });
     });
 
-    // Giả định logic chiết khấu, vận chuyển, thuế
-    const discount = 0; // Thay thế bằng logic chiết khấu thực tế
-    const shipping = subtotal > 100 ? 0 : 10; // Miễn phí vận chuyển nếu tổng phụ > 100
-    const taxRate = 0.05; // Thuế 5%
+    // Logic chiết khấu, vận chuyển, thuế (có thể lấy từ API nếu có)
+    const discount = 0;
+    const shipping = subtotal > 100 ? 0 : 10;
+    const taxRate = 0.05;
     const tax = subtotal * taxRate;
     const total = subtotal - discount + shipping + tax;
 
@@ -128,57 +99,79 @@ const Cart = () => {
   /**
    * @function removeFromCart
    * @description Xóa một mặt hàng khỏi giỏ hàng. Nếu cửa hàng không còn mặt hàng nào, xóa cả cửa hàng đó.
-   * @param {string} itemId - ID của mặt hàng cần xóa.
+   * @param {number} itemId - ID của mặt hàng cần xóa.
    */
-  const removeFromCart = (itemId: string) => {
-    setCartByShop(prevCartByShop => {
-      const newCartByShop = prevCartByShop
-        .map(shopCart => {
-          const updatedCartDTOList = shopCart.cartDTOList.filter(
-            item => item.id !== itemId
-          );
-          return { ...shopCart, cartDTOList: updatedCartDTOList };
-        })
-        .filter(shopCart => shopCart.cartDTOList.length > 0); // Xóa cửa hàng nếu không còn mặt hàng nào
-      return newCartByShop;
-    });
+  const removeFromCart = async (itemId: number) => {
+    try {
+      await cartService.removeCartItem(itemId.toString()); // Chuyển itemId sang string nếu API yêu cầu
+      toast({
+        title: "Success",
+        description: "Product removed from cart.",
+      });
+      fetchCartData(); // Tải lại giỏ hàng sau khi xóa
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to remove product from cart. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   /**
    * @function updateQuantity
    * @description Cập nhật số lượng của một mặt hàng trong giỏ hàng.
-   * @param {string} itemId - ID của mặt hàng cần cập nhật.
+   * @param {number} itemId - ID của mặt hàng cần cập nhật.
    * @param {number} newQuantity - Số lượng mới.
    */
-  const updateQuantity = (itemId: string, newQuantity: number) => {
-    setCartByShop(prevCartByShop => {
-      const newCartByShop = prevCartByShop.map(shopCart => {
-        const updatedCartDTOList = shopCart.cartDTOList.map(item =>
-          item.id === itemId ? { ...item, quantity: newQuantity } : item
-        );
-        return { ...shopCart, cartDTOList: updatedCartDTOList };
+  const updateQuantity = async (itemId: number, newQuantity: number) => {
+    if (newQuantity < 1) return; // Đảm bảo số lượng không nhỏ hơn 1
+    try {
+      await cartService.updateCartItemQuantity(itemId.toString(), newQuantity); // Chuyển itemId sang string nếu API yêu cầu
+      toast({
+        title: "Success",
+        description: "Cart quantity updated.",
       });
-      return newCartByShop;
-    });
+      fetchCartData(); // Tải lại giỏ hàng sau khi cập nhật
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to update quantity. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   /**
    * @function handleApplyCoupon
    * @description Xử lý logic áp dụng mã giảm giá.
    */
-  const handleApplyCoupon = () => {
-    // Logic áp dụng mã giảm giá.
-    // Tạm thời, giả định mã "SAVE10" giảm 10%.
-    if (couponCode === "SAVE10") {
-      setCartSummary(prevSummary => ({
-        ...prevSummary,
-        discount: prevSummary.subtotal * 0.1,
-        total: prevSummary.subtotal * 0.9 + prevSummary.shipping + prevSummary.tax,
-        couponCode: couponCode,
-      }));
-      setCouponError("");
-    } else {
-      setCouponError("Invalid coupon code.");
+  const handleApplyCoupon = async () => {
+    if (!couponCode) {
+      setCouponError("Please enter a coupon code.");
+      return;
+    }
+    setCouponError("");
+    try {
+      const response = await cartService.applyCouponCode(couponCode);
+      // Giả định API trả về thông tin giỏ hàng đã cập nhật hoặc thông báo thành công
+      // Cần điều chỉnh tùy theo cấu trúc phản hồi của API
+      if (response.data.success) { // Giả định có trường success
+        toast({
+          title: "Success",
+          description: "Coupon applied successfully!",
+        });
+        fetchCartData(); // Tải lại giỏ hàng để cập nhật tổng tiền
+      } else {
+        setCouponError(response.data.message || "Invalid coupon code.");
+      }
+    } catch (err) {
+      setCouponError("Failed to apply coupon. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to apply coupon. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -189,14 +182,15 @@ const Cart = () => {
   const removeCoupon = () => {
     setCouponCode("");
     setCouponError("");
-    // Tái tính toán tổng tiền sau khi xóa mã giảm giá
-    setCartSummary(calculateCartSummary(cartByShop));
+    // Hiện tại không có API removeCoupon, nên chỉ reset UI và tải lại dữ liệu
+    // Nếu có API, cần gọi API ở đây
+    fetchCartData();
   };
 
-  // useEffect để tính toán lại tổng tiền khi cartByShop thay đổi
+  // useEffect để tải dữ liệu giỏ hàng khi component mount hoặc user.id thay đổi
   useEffect(() => {
-    setCartSummary(calculateCartSummary(cartByShop));
-  }, [cartByShop]);
+    fetchCartData();
+  }, [user?.id]); // Thêm user.id vào dependency array
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -206,207 +200,28 @@ const Cart = () => {
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {cartByShop.length === 0 ? (
-            <div className="text-center text-muted-foreground py-12">
-              <p className="text-xl">Your cart is empty.</p>
-              <Link to="/products">
-                <Button variant="link" className="mt-4 text-lg">
-                  Start Shopping
-                </Button>
-              </Link>
-            </div>
+            <EmptyCartMessage />
           ) : (
             cartByShop.map(shopCart => (
-              <div key={shopCart.shopId} className="space-y-4">
-                <h2 className="text-xl font-semibold mb-2">
-                  Shop: {shopCart.shopName}
-                </h2>
-                {shopCart.cartDTOList.map(item => (
-                  <div
-                    key={item.id}
-                    className="bg-card rounded-lg p-6 shadow-sm border border-border"
-                  >
-                    <div className="flex gap-4">
-                      {/* Product Image */}
-                      <div className="w-24 h-24 flex-shrink-0">
-                        <img
-                          src={
-                            (item.product as any).images?.[0] || getRandomImage()
-                          }
-                          alt={item.product.title || "Product"}
-                          className="w-full h-full object-cover rounded-md"
-                        />
-                      </div>
-
-                      {/* Product Details */}
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h3 className="font-semibold line-clamp-2">
-                              <Link
-                                to={`/product/${item.product.id}`}
-                                className="hover:text-primary"
-                              >
-                                {item.product.title}
-                              </Link>
-                            </h3>
-                            <p className="text-sm text-muted-foreground">
-                              by {item.product.shop?.name || "Unknown Shop"}
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-muted-foreground hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                          <div className="text-sm text-muted-foreground">
-                            <span>Size: {item.size?.name || "Standard"}</span>
-                            <span className="mx-2">•</span>
-                            <span>Color: {item.color?.name || "Default"}</span>
-                          </div>
-                          <div className="font-semibold">
-                            ${(item.product as any).price?.toFixed(2) || "0.00"}
-                          </div>
-                        </div>
-
-                        {/* Quantity Controls */}
-                        <div className="flex items-center justify-between mt-4">
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() =>
-                                updateQuantity(item.id, item.quantity - 1)
-                              }
-                              disabled={item.quantity <= 1}
-                              className="h-8 w-8"
-                            >
-                              <Minus className="h-3 w-3" />
-                            </Button>
-                            <span className="w-12 text-center font-medium">
-                              {item.quantity}
-                            </span>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() =>
-                                updateQuantity(item.id, item.quantity + 1)
-                              }
-                              disabled={item.quantity >= 10}
-                              className="h-8 w-8"
-                            >
-                              <Plus className="h-3 w-3" />
-                            </Button>
-                          </div>
-                          <div className="font-bold">
-                            $
-                            {(
-                              (item.product as any).price * item.quantity || 0
-                            ).toFixed(2)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ShopCartSection
+                key={shopCart.shopId}
+                shopCart={shopCart}
+                removeFromCart={removeFromCart}
+                updateQuantity={updateQuantity}
+              />
             ))
           )}
         </div>
 
         {/* Order Summary */}
-        <div className="bg-card rounded-lg p-6 shadow-sm h-fit border border-border">
-          <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-
-          {/* Coupon Code */}
-          <div className="mb-4">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Coupon code"
-                value={couponCode}
-                onChange={e => setCouponCode(e.target.value)}
-              />
-              <Button onClick={handleApplyCoupon} disabled={!couponCode}>
-                Apply
-              </Button>
-            </div>
-            {couponError && (
-              <p className="text-sm text-destructive mt-1">{couponError}</p>
-            )}
-            {cartSummary.couponCode && (
-              <div className="flex items-center justify-between mt-2 text-sm">
-                <span className="text-green-600">
-                  Coupon "{cartSummary.couponCode}" applied
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={removeCoupon}
-                  className="text-muted-foreground"
-                >
-                  Remove
-                </Button>
-              </div>
-            )}
-          </div>
-
-          <Separator className="my-4" />
-
-          {/* Price Breakdown */}
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>${cartSummary.subtotal.toFixed(2)}</span>
-            </div>
-
-            {cartSummary.discount > 0 && (
-              <div className="flex justify-between text-green-600">
-                <span>Discount</span>
-                <span>-${cartSummary.discount.toFixed(2)}</span>
-              </div>
-            )}
-
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span>
-                {cartSummary.shipping === 0 ? "Free" : `$${cartSummary.shipping.toFixed(2)}`}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Tax</span>
-              <span>${cartSummary.tax.toFixed(2)}</span>
-            </div>
-
-            <Separator className="my-2" />
-
-            <div className="flex justify-between text-lg font-bold">
-              <span>Total</span>
-              <span>${cartSummary.total.toFixed(2)}</span>
-            </div>
-          </div>
-
-          {cartSummary.shipping === 0 && cartSummary.subtotal < 100 && (
-            <p className="text-sm text-muted-foreground mt-2">
-              Add ${(100 - cartSummary.subtotal).toFixed(2)} more for free shipping!
-            </p>
-          )}
-
-          <Button className="w-full mt-6" size="lg" asChild>
-            <Link to="/checkout">Proceed to Checkout</Link>
-          </Button>
-
-          <Link to="/products">
-            <Button variant="outline" className="w-full mt-2">
-              Continue Shopping
-            </Button>
-          </Link>
-        </div>
+        <CartSummaryCard
+          cartSummary={cartSummary}
+          couponCode={couponCode}
+          couponError={couponError}
+          setCouponCode={setCouponCode}
+          handleApplyCoupon={handleApplyCoupon}
+          removeCoupon={removeCoupon}
+        />
       </div>
     </div>
   );
