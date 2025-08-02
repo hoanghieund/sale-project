@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/components/ui/use-toast";
-import { UserProfile } from "@/features/users/account-management/types/account";
 import { cn } from "@/lib/utils";
+import { User } from "@/types";
 
 // Định nghĩa schema validation cho form
 const profileFormSchema = z.object({
@@ -60,7 +60,7 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 interface ProfileFormProps {
-  initialData: UserProfile;
+  initialData: User;
 }
 
 /**
@@ -72,13 +72,21 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      username: initialData.username,
-      name: initialData.name,
-      email: initialData.email,
-      phone: initialData.phone,
-      shopName: initialData.shopName || "",
-      gender: initialData.gender,
-      dateOfBirth: new Date(initialData.dateOfBirth),
+      username: initialData?.username,
+      name: initialData?.username,
+      email: initialData?.email,
+      phone: initialData?.phone,
+      shopName: initialData?.shopName || "",
+      gender: initialData?.gender || "other",
+      // Tính toán dateOfBirth từ dayOfBirth, monthOfBirth, yearOfBirth
+      dateOfBirth:
+        initialData.yearOfBirth && initialData.monthOfBirth && initialData.dayOfBirth
+          ? new Date(
+              initialData.yearOfBirth,
+              initialData.monthOfBirth - 1, // Tháng trong JavaScript là 0-indexed
+              initialData.dayOfBirth
+            )
+          : undefined,
     },
     mode: "onChange",
   });
@@ -174,7 +182,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="flex flex-col space-y-1"
+                    className="flex"
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
@@ -232,9 +240,6 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
                       initialFocus
                     />
                   </PopoverContent>

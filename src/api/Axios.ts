@@ -1,8 +1,8 @@
 import axios from "axios";
 
-let axiosInstance = null;
+export let axiosInstance = null;
 
-function getInstance() {
+export function getInstance() {
   if (axiosInstance != null) {
     return axiosInstance;
   }

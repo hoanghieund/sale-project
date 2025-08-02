@@ -170,7 +170,7 @@ export interface User {
   file?: any; // File avatar nếu có
   phone?: string; // phone varchar(255)
   address?: string; // address varchar(255)
-  gender?: string | null; // gender bit(1)
+  gender?: "male"| "female" | "other" | null; // gender bit(1)
   dayOfBirth?: number | null; // day_of_birth int(11)
   monthOfBirth?: number | null; // month_of_birth int(11)
   yearOfBirth?: number | null; // year_of_birth int(11)
@@ -181,11 +181,6 @@ export interface User {
   newAccount?: boolean; // Đánh dấu tài khoản mới
   shop?: Shop; // Thông tin shop (optional khi populate)
   roles?: Role[]; // Thông tin roles (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
 }
 
 // User Role Types - Dựa trên user_roles table

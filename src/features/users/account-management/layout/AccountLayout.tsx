@@ -13,7 +13,7 @@ import AccountSidebar from "../components/AccountSidebar";
 const AccountLayout: React.FC = () => {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="container mx-auto px-4 py-12 h-[80vh]">
+      <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Sidebar */}
           <aside>

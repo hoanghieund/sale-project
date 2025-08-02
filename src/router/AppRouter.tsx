@@ -8,7 +8,7 @@ import RedirectRoute from "./RedirectRoute";
 // Lazy load pages for better performance
 const Home = lazy(() => import("@/features/users/home/Home"));
 const AccountLayout = lazy(
-  () => import("@/features/users/account-management/pages/AccountLayout")
+  () => import("@/features/users/account-management/layout/AccountLayout")
 );
 const ProfilePage = lazy(
   () => import("@/features/users/account-management/pages/ProfilePage")

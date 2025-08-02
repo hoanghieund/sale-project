@@ -246,7 +246,7 @@ const Header = () => {
                     <DropdownMenuContent className="w-56">
                       <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate("/account")}>
+                      <DropdownMenuItem onClick={() => navigate("/account/profile")}>
                         Tài khoản
                       </DropdownMenuItem>
                       <DropdownMenuItem
