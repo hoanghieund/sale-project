@@ -2,9 +2,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import React, { useCallback, useRef } from "react"; // Thêm import useRef và useCallback
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Thêm import cho Avatar components
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -23,21 +25,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "@/components/ui/use-toast";
+import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 import { User } from "@/types";
 
 // Định nghĩa schema validation cho form
 const profileFormSchema = z.object({
+  avatar: z.union([z.string(), z.instanceof(File)]).optional(), // Avatar có thể là string (URL) hoặc File
   username: z
-    .string()
-    .min(2, {
-      message: "Tên người dùng phải có ít nhất 2 ký tự.",
-    })
-    .max(30, {
-      message: "Tên người dùng không được vượt quá 30 ký tự.",
-    }),
-  name: z
     .string()
     .min(2, { message: "Tên phải có ít nhất 2 ký tự." })
     .max(50, { message: "Tên không được vượt quá 50 ký tự." }),
@@ -55,6 +50,7 @@ const profileFormSchema = z.object({
   dateOfBirth: z.date({
     required_error: "Ngày sinh là bắt buộc.",
   }),
+  file: z.instanceof(File).optional(), // Thêm trường file để xử lý upload ảnh
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -69,18 +65,21 @@ interface ProfileFormProps {
  * Sử dụng react-hook-form và zod để validation.
  */
 export function ProfileForm({ initialData }: ProfileFormProps) {
+  const { user , updateProfile } = useUser();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
+      avatar: initialData?.avatar || "", // Khởi tạo trường avatar
       username: initialData?.username,
-      name: initialData?.username,
       email: initialData?.email,
       phone: initialData?.phone,
       shopName: initialData?.shopName || "",
       gender: initialData?.gender || "other",
       // Tính toán dateOfBirth từ dayOfBirth, monthOfBirth, yearOfBirth
       dateOfBirth:
-        initialData.yearOfBirth && initialData.monthOfBirth && initialData.dayOfBirth
+        initialData.yearOfBirth &&
+        initialData.monthOfBirth &&
+        initialData.dayOfBirth
           ? new Date(
               initialData.yearOfBirth,
               initialData.monthOfBirth - 1, // Tháng trong JavaScript là 0-indexed
@@ -91,34 +90,96 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
     mode: "onChange",
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "Bạn đã gửi các giá trị sau:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  // Tạo một ref cho input file
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Xử lý click vào avatar để kích hoạt input file
+  const handleAvatarClick = useCallback(() => {
+    inputRef.current?.click();
+  }, []);
+
+  // Xử lý khi người dùng chọn file
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        // Cập nhật trường 'file' với đối tượng File thực tế
+        form.setValue("file", file);
+
+        // Đọc file để hiển thị preview cho trường 'avatar'
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          field.onChange(reader.result as string); // Cập nhật giá trị avatar trong form (preview URL)
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [form]
+  );
+
+  async function onSubmit(data: ProfileFormValues) {
+    try {
+      let formData = new FormData();
+      formData.append("id", user.id.toString()); // Chuyển đổi id sang string
+      formData.append("username", data.username);
+      formData.append("email", data.email);
+      formData.append("phone", data.phone);
+      formData.append("shopName", data.shopName || "");
+      // Thêm file vào formData nếu có
+      if (data.file) {
+        formData.append("file", data.file);
+      }
+      formData.append("gender", data.gender);
+
+      // Xử lý ngày sinh
+      if (data.dateOfBirth) {
+        const date = new Date(data.dateOfBirth);
+        formData.append("dayOfBirth", date.getDate().toString());
+        formData.append("monthOfBirth", (date.getMonth() + 1).toString()); // Tháng trong JS là 0-indexed
+        formData.append("yearOfBirth", date.getFullYear().toString());
+      }
+
+      await updateProfile(formData);
+    } catch (error) {}
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* Trường Username */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* Trường Avatar */}
         <FormField
           control={form.control}
-          name="username"
+          name="avatar"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tên người dùng</FormLabel>
+            <FormItem className="flex flex-col items-center space-y-4">
+              <FormLabel>Ảnh đại diện</FormLabel>
               <FormControl>
-                <Input placeholder="Tên người dùng của bạn" {...field} />
+                {/* Khi click vào div này sẽ kích hoạt input file */}
+                <div
+                  className="relative w-24 h-24 cursor-pointer"
+                  onClick={handleAvatarClick}
+                >
+                  {/* Hiển thị Avatar */}
+                  <Avatar className="w-full h-full">
+                    {field.value && typeof field.value === "string" && (
+                      <AvatarImage src={field.value} alt="Ảnh đại diện" />
+                    )}
+                    {field.value && field.value instanceof File && (
+                      <AvatarImage src={URL.createObjectURL(field.value)} alt="Ảnh đại diện" />
+                    )}
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  {/* Input file ẩn, được kích hoạt bởi click vào Avatar */}
+                  <Input
+                    ref={inputRef} // Gán ref
+                    type="file"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    onChange={e => handleFileChange(e, field)} // Xử lý thay đổi file
+                    accept="image/*" // Chỉ cho phép chọn file ảnh
+                  />
+                </div>
               </FormControl>
-              <FormDescription>
-                Đây là tên hiển thị công khai của bạn. Nó có thể là tên thật hoặc
-                một biệt danh.
-              </FormDescription>
+              <FormDescription>Tải lên ảnh đại diện của bạn.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -129,7 +190,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
           {/* Trường Name */}
           <FormField
             control={form.control}
-            name="name"
+            name="username"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tên đầy đủ</FormLabel>

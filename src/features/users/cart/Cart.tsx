@@ -1,20 +1,16 @@
 import { useToast } from "@/components/ui/use-toast";
-import { useUser } from "@/hooks/use-user";
 import { useEffect, useState } from "react";
 import CartSummaryCard from "./components/CartSummaryCard";
 import EmptyCartMessage from "./components/EmptyCartMessage";
 import ShopCartSection from "./components/ShopCartSection";
 import { cartService } from "./services/cartService";
-import { CartByShop, CartItemType, CartSummary } from "./types/cart-types";
+import { CartByShop, CartSummary } from "./types/cart-types";
 
 const Cart = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const [cartByShop, setCartByShop] = useState<CartByShop[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  const { user } = useUser(); // Lấy thông tin người dùng từ context
 
   // State để lưu trữ tóm tắt giỏ hàng
   const [cartSummary, setCartSummary] = useState<CartSummary>({
@@ -30,44 +26,17 @@ const Cart = () => {
    * @description Lấy dữ liệu giỏ hàng từ API và cập nhật state.
    */
   const fetchCartData = async () => {
-    if (!user?.id) {
-      setError("User not logged in.");
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
     try {
       // Gọi API để lấy giỏ hàng
-      const response = await cartService.getCart(user.id);
-      const fetchedCart = response.data.cartDTOList; // Giả định API trả về trực tiếp cartDTOList
-
-      // Nhóm các sản phẩm theo cửa hàng
-      const groupedCart: CartByShop[] = fetchedCart.reduce((acc: CartByShop[], item: CartItemType) => {
-        const shopId = item.product.shop?.id || 0; // Sử dụng ID cửa hàng hoặc 0 nếu không có
-        const shopName = item.product.shop?.name || "Unknown Shop";
-
-        let shopCart = acc.find(cart => cart.shopId === shopId);
-        if (!shopCart) {
-          shopCart = { shopId, shopName, cartDTOList: [] };
-          acc.push(shopCart);
-        }
-        shopCart.cartDTOList.push(item);
-        return acc;
-      }, []);
-
-      setCartByShop(groupedCart);
-      setCartSummary(calculateCartSummary(groupedCart)); // Tính toán lại tổng tiền sau khi fetch dữ liệu
-      setError(null);
+      const response = await cartService.getCart();
+      setCartByShop(response);
+      setCartSummary(calculateCartSummary(response)); // Tính toán lại tổng tiền sau khi fetch dữ liệu
     } catch (err) {
-      setError("Failed to load cart. Please try again.");
       toast({
         title: "Error",
         description: "Failed to load cart. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -82,7 +51,8 @@ const Cart = () => {
     // Tính tổng phụ từ tất cả các mặt hàng trong giỏ hàng
     currentCartByShop.forEach(shopCart => {
       shopCart.cartDTOList.forEach(item => {
-        subtotal += (item.product.price || 0) * item.quantity;
+        // Đảm bảo productDTO và price tồn tại trước khi tính toán
+        subtotal += (item.productDTO?.price || 0) * item.quantity;
       });
     });
 
@@ -93,7 +63,7 @@ const Cart = () => {
     const tax = subtotal * taxRate;
     const total = subtotal - discount + shipping + tax;
 
-    return { subtotal, discount, shipping, tax, total };
+    return { subtotal, discount, shipping, tax, total, couponCode };
   };
 
   /**
@@ -190,7 +160,7 @@ const Cart = () => {
   // useEffect để tải dữ liệu giỏ hàng khi component mount hoặc user.id thay đổi
   useEffect(() => {
     fetchCartData();
-  }, [user?.id]); // Thêm user.id vào dependency array
+  }, []); // Thêm user.id vào dependency array
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -204,7 +174,7 @@ const Cart = () => {
           ) : (
             cartByShop.map(shopCart => (
               <ShopCartSection
-                key={shopCart.shopId}
+                key={shopCart.id}
                 shopCart={shopCart}
                 removeFromCart={removeFromCart}
                 updateQuantity={updateQuantity}

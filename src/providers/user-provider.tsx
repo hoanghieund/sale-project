@@ -211,46 +211,49 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
    * Cập nhật thông tin người dùng
    * @param userData - Thông tin cần cập nhật
    */
-  const updateProfile = async (userData: Partial<User>) => {
+  const updateProfile = async (userData: FormData) => {
     if (!state.user) return;
 
     dispatch({ type: "UPDATE_PROFILE_START" });
 
-    // try {
-    //   // Gọi API cập nhật thông tin người dùng
-    //   const response = await authService.updateProfile(userData);
+    try {
+      // Gọi API cập nhật thông tin người dùng
+      const response = await authService.updateProfile(userData);
 
-    //   // Lấy thông tin user đã cập nhật từ response
-    //   const updatedUser = response;
+      // Lấy thông tin user đã cập nhật từ response
+      const updatedUser = response;
 
-    //   // Cập nhật state với thông tin user mới
-    //   dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: updatedUser });
+      // Cập nhật state với thông tin user mới
+      dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: updatedUser });
 
-    //   // Hiển thị thông báo thành công với useToast
-    //   toast({
-    //     title: "Cập nhật thành công",
-    //     description: "Thông tin của bạn đã được cập nhật",
-    //     variant: "default",
-    //   });
+      // Lưu thông tin user vào localStorage
+      localStorage.setItem("userData", JSON.stringify(updatedUser));
 
-    //   return updatedUser;
-    // } catch (error) {
-    //   // Xử lý lỗi và cập nhật state
-    //   const errorMessage =
-    //     error.response?.data?.message || "Cập nhật thông tin thất bại";
-    //   dispatch({
-    //     type: "UPDATE_PROFILE_FAILURE",
-    //     payload: errorMessage,
-    //   });
+      // Hiển thị thông báo thành công với useToast
+      toast({
+        title: "Cập nhật thành công",
+        description: "Thông tin của bạn đã được cập nhật",
+        variant: "default",
+      });
 
-    //   // Hiển thị thông báo lỗi với useToast
-    //   toast({
-    //     title: "Cập nhật thất bại",
-    //     description: errorMessage,
-    //     variant: "destructive",
-    //   });
-    //   throw error;
-    // }
+      return updatedUser;
+    } catch (error) {
+      // Xử lý lỗi và cập nhật state
+      const errorMessage =
+        error.response?.data?.message || "Cập nhật thông tin thất bại";
+      dispatch({
+        type: "UPDATE_PROFILE_FAILURE",
+        payload: errorMessage,
+      });
+
+      // Hiển thị thông báo lỗi với useToast
+      toast({
+        title: "Cập nhật thất bại",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw error;
+    }
   };
 
     /**

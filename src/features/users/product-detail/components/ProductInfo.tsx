@@ -8,15 +8,15 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 import { cartService } from "@/services/cartService";
 import { Product } from "@/types";
 import { getColorValue } from "@/utils/colors";
 import { formatCurrencyUSD } from "@/utils/formatters";
+import { useVariantProduct } from "@/utils/productUtils";
 import parse from "html-react-parser";
 import { Star } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 /**
  * @interface ProductInfoProps
@@ -40,81 +40,19 @@ interface ProductInfoProps {
 const ProductInfo = ({ product, className }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const { toast } = useToast();
-  const { user } = useUser();
 
   // Lưu trữ các giá trị biến thể đã chọn theo variantId
   const [selectedVariantValues, setSelectedVariantValues] = useState<
-    Record<number, number>
+    Record<string, number>
   >({});
 
-  const getVariantName = (type: number) => {
-    switch (type) {
-      case 1:
-        return "FIT";
-      case 2:
-        return "Print Location";
-      case 3:
-        return "Color";
-      case 4:
-        return "Size";
-      default:
-        return "Unknown";
-    }
-  };
+  const variantProduct = useVariantProduct(product);
 
-  // Nhóm option theo type và chuẩn hóa tên nhóm bằng getVariantName.
-  // Trả về dạng:
-  // [
-  //   { name: 'FIT', values: [{ id: 1, name: 'Front' }, { id: 2, name: 'Back' }] },
-  //   { name: 'FIT_TYPE', values: [{ id: 3, name: 'Male Fit' }, { id: 4, name: 'Female Fit' }] },
-  //   { name: 'COLOR', values: [{ id: 5, name: 'black' }, ...] },
-  //   { name: 'SIZE', values: [{ id: 23, name: 'S' }, ...] }
-  // ]
-  const variantProduct = useMemo(() => {
-    // Phòng thủ khi thiếu dữ liệu
-    const options = product?.optionDTOs ?? [];
-
-    // Gom theo type, dùng Map để loại trùng theo name trong cùng type
-    const grouped = options.reduce<
-      Record<number, Map<string, { id: number; name: string }>>
-    >((acc, cur) => {
-      if (!acc[cur.type]) acc[cur.type] = new Map();
-      // Ưu tiên id đầu tiên cho mỗi name duy nhất trong cùng type
-      if (!acc[cur.type].has(cur.name)) {
-        acc[cur.type].set(cur.name, { id: cur.id, name: cur.name });
-      }
-      return acc;
-    }, {});
-
-    // Chuyển về mảng theo định dạng yêu cầu. Sắp xếp theo type để ổn định.
-    const result = Object.keys(grouped)
-      .map(k => Number(k))
-      .sort((a, b) => a - b)
-      .map(type => ({
-        name: getVariantName(type), // sử dụng getVariantName để lấy label nhóm
-        values: Array.from(grouped[type].values()), // Map -> Array<{id, value}>
-      }));
-
-    return result;
-  }, [product?.optionDTOs]);
-
-  /**
-   * @function isAddToCartDisabled
-   * @description Xác định xem nút "Thêm vào giỏ" có nên bị vô hiệu hóa hay không.
-   * Nút bị vô hiệu hóa nếu sản phẩm có biến thể và số lượng biến thể đã chọn không khớp với tổng số nhóm biến thể.
-   */
-  const isAddToCartDisabled = useMemo(() => {
-    // Kiểm tra nếu sản phẩm có biến thể
-    const hasVariants = product.optionDTOs && product.optionDTOs.length > 0;
-
-    // Nếu sản phẩm có biến thể, kiểm tra xem tất cả các biến thể đã được chọn chưa
-    if (hasVariants) {
-      // Số lượng biến thể đã chọn phải khớp với số lượng nhóm biến thể
-      return Object.keys(selectedVariantValues).length !== variantProduct.length;
-    }
-    // Nếu sản phẩm không có biến thể, nút không bị vô hiệu hóa
-    return false;
-  }, [product.optionDTOs, selectedVariantValues, variantProduct]);
+  // Xác định xem nút có bị vô hiệu hóa không
+  const isAddToCartDisabled =
+    product.optionDTOs && product.optionDTOs.length > 0
+      ? Object.keys(selectedVariantValues).length !== variantProduct.length
+      : false;
 
   /**
    * @function handleAddToCart
@@ -126,7 +64,8 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
     if (isAddToCartDisabled) {
       toast({
         title: "Lỗi",
-        description: "Vui lòng chọn đầy đủ các biến thể sản phẩm trước khi thêm vào giỏ hàng.",
+        description:
+          "Vui lòng chọn đầy đủ các biến thể sản phẩm trước khi thêm vào giỏ hàng.",
         variant: "destructive",
       });
       return;
@@ -134,11 +73,20 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
 
     try {
       // Gọi API thêm vào giỏ hàng
-      await cartService.addToCart({ id: product.id }, quantity, user?.id);
+      await cartService.addToCart(
+        { id: product.id },
+        selectedVariantValues.fitId,
+        selectedVariantValues.printLocationId,
+        selectedVariantValues.colorId,
+        selectedVariantValues.sizeId,
+        quantity
+      );
       toast({
         title: "Thành công",
         description: "Đã thêm sản phẩm vào giỏ hàng.",
       });
+      setQuantity(1);
+      setSelectedVariantValues({});
     } catch (error) {
       console.log("🚀 ~ handleAddToCart ~ error:", error);
       toast({
@@ -218,12 +166,12 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                       <ColorCircle
                         color={getColorValue(value.name)}
                         isSelected={
-                          selectedVariantValues[variant.name] === value.id
+                          selectedVariantValues[variant.slug] === value.id
                         }
                         onClick={() => {
                           const newSelectedValues = {
                             ...selectedVariantValues,
-                            [variant.name]: value.id,
+                            [variant.slug]: value.id,
                           };
                           setSelectedVariantValues(newSelectedValues);
                           setQuantity(1);
@@ -233,14 +181,14 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                       <Button
                         className="px-3"
                         variant={
-                          selectedVariantValues[variant.name] === value.id
+                          selectedVariantValues[variant.slug] === value.id
                             ? "default"
                             : "outline"
                         }
                         onClick={() => {
                           const newSelectedValues = {
                             ...selectedVariantValues,
-                            [variant.name]: value.id,
+                            [variant.slug]: value.id,
                           };
                           setSelectedVariantValues(newSelectedValues);
                           setQuantity(1);

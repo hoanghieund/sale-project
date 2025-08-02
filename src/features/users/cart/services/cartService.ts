@@ -4,11 +4,10 @@ export const cartService = {
 
   /**
    * Lấy thông tin giỏ hàng hiện tại của người dùng.
-   * @param userId - ID của người dùng.
    * @returns Promise chứa danh sách các mặt hàng trong giỏ hàng.
    */
-  getCart: (userId: number) => {
-    return Axios.get(`/api/cart/${userId}`)
+  getCart: () => {
+    return Axios.get(`/api/cart/findAll`)
   },
 
   /**

@@ -68,7 +68,6 @@ export interface Option {
   type: number;
 }
 
-
 // Shop Types - Dựa trên tbl_shop
 export interface Shop {
   id: number; // bigint(20) trong SQL
@@ -170,7 +169,7 @@ export interface User {
   file?: any; // File avatar nếu có
   phone?: string; // phone varchar(255)
   address?: string; // address varchar(255)
-  gender?: "male"| "female" | "other" | null; // gender bit(1)
+  gender?: "male" | "female" | "other" | null; // gender bit(1)
   dayOfBirth?: number | null; // day_of_birth int(11)
   monthOfBirth?: number | null; // month_of_birth int(11)
   yearOfBirth?: number | null; // year_of_birth int(11)
@@ -258,26 +257,18 @@ export interface Image {
 export interface Cart {
   id: number; // bigint(20) trong SQL
   quantity: number; // quantity int(11)
-  totalPrice?: number; // total_price double
-  percentDiscount?: number; // percent_discount double
-  isPay?: boolean; // is_pay bit(1)
-  isReview?: boolean; // is_review bit(1)
-  star?: number; // star bigint(20) - rating
-  status?: boolean; // status bit(1)
-  ordersEntityId?: number; // orders_entity_id bigint(20)
-  productSkusEntityId?: number; // product_skus_entity_id bigint(20)
-  shopId?: number; // shop_id bigint(20)
-  userId?: number; // user_id bigint(20)
+  isReview: boolean; // is_review bit(1)
+  star?: number | null; // star bigint(20) - rating
+  // Các trường bổ sung từ API response
+  cartIds?: number[] | null; // IDs của cart items
+  name?: string | null; // Tên sản phẩm
+  fitId?: number | null; // ID của fit
+  printLocationId?: number | null; // ID của vị trí in
+  colorId?: number | null; // ID của màu sắc
+  sizeId?: number | null; // ID của kích thước
   // Relations
-  user?: User; // Thông tin user (optional khi populate)
-  shop?: Shop; // Thông tin shop (optional khi populate)
-  product?: Product; // Thông tin product (optional khi populate)
-  order?: Order; // Thông tin order (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
+  shop: Shop; // Thông tin shop
+  productDTO?: Product; // Thông tin product từ API
 }
 
 // Order Types - Dựa trên tbl_orders

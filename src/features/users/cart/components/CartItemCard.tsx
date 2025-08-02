@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { Cart } from "@/types";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { CartItemType } from "../types/cart-types";
 
 interface CartItemCardProps {
-  item: CartItemType;
+  item: Cart;
   removeFromCart: (itemId: number) => void;
   updateQuantity: (itemId: number, newQuantity: number) => void;
 }
@@ -27,8 +27,8 @@ const CartItemCard = ({ item, removeFromCart, updateQuantity }: CartItemCardProp
         {/* Product Image */}
         <div className="w-24 h-24 flex-shrink-0">
           <img
-            src={item.product.imagesDTOList?.[0]?.path}
-            alt={item.product.title || "Product"}
+            src={item.productDTO?.imagesDTOList?.[0]?.path}
+            alt={item.productDTO?.title || "Product"}
             className="w-full h-full object-cover rounded-md"
           />
         </div>
@@ -39,14 +39,14 @@ const CartItemCard = ({ item, removeFromCart, updateQuantity }: CartItemCardProp
             <div>
               <h3 className="font-semibold line-clamp-2">
                 <Link
-                  to={`/product/${item.product.id}`}
+                  to={`/product/${item.productDTO?.id}`}
                   className="hover:text-primary"
                 >
-                  {item.product.title}
+                  {item.productDTO?.title}
                 </Link>
               </h3>
               <p className="text-sm text-muted-foreground">
-                by {item.product.shop?.name || "Unknown Shop"}
+                by {item.productDTO?.shop?.name || "Unknown Shop"}
               </p>
             </div>
             <Button
@@ -60,13 +60,13 @@ const CartItemCard = ({ item, removeFromCart, updateQuantity }: CartItemCardProp
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
-              <span>Size: {item.size?.name || "Standard"}</span>
+            {/* <div className="text-sm text-muted-foreground">
+              <span>Size: {item.productDTO?.size?.name || "Standard"}</span>
               <span className="mx-2">•</span>
-              <span>Color: {item.color?.name || "Default"}</span>
-            </div>
+              <span>Color: {item.productDTO?.color?.name || "Default"}</span>
+            </div> */}
             <div className="font-semibold">
-              ${item.product.price?.toFixed(2) || "0.00"}
+              ${item.productDTO?.price?.toFixed(2) || "0.00"}
             </div>
           </div>
 
@@ -100,7 +100,7 @@ const CartItemCard = ({ item, removeFromCart, updateQuantity }: CartItemCardProp
               </Button>
             </div>
             <div className="font-bold">
-              ${(item.product.price * item.quantity || 0).toFixed(2)}
+              ${(item.productDTO?.price * item.quantity || 0).toFixed(2)}
             </div>
           </div>
         </div>

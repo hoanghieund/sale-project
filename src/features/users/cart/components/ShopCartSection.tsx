@@ -17,7 +17,7 @@ interface ShopCartSectionProps {
  */
 const ShopCartSection = ({ shopCart, removeFromCart, updateQuantity }: ShopCartSectionProps) => {
   return (
-    <div key={shopCart.shopId} className="space-y-4">
+    <div key={shopCart.id} className="space-y-4">
       <h2 className="text-xl font-semibold mb-2">
         Shop: {shopCart.shopName}
       </h2>

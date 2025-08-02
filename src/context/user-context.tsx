@@ -7,7 +7,7 @@ export interface UserContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
-  updateProfile: (userData: Partial<User>) => Promise<void>;
+  updateProfile: (userData: FormData) => Promise<void>;
   clearError: () => void;
   isLoading: boolean;
   error: string | null;

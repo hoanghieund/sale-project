@@ -70,4 +70,17 @@ export const authService = {
   refreshToken: (refreshToken: string) => {
     return Axios.post("/api/auth/refreshtoken", { refreshToken });
   },
+
+  /**
+   * Cập nhật thông tin người dùng
+   * @param userData - Thông tin người dùng
+   * @returns Promise với thông tin người dùng đã cập nhật
+   */
+  updateProfile: (userData: FormData) => {
+    return Axios.post("/api/user/update_profile", userData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
