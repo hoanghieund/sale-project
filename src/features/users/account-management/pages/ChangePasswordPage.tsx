@@ -1,10 +1,11 @@
 // src/features/users/account-management/pages/ChangePasswordPage.tsx
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Import Card components
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -15,17 +16,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { useUser } from "@/hooks/use-user";
+import { userService } from "../services/userService"; // Import userService
 
 // Định nghĩa schema validation cho form
 const passwordFormSchema = z.object({
   currentPassword: z.string().min(6, {
     message: "Mật khẩu hiện tại phải có ít nhất 6 ký tự.",
   }),
-  newPassword: z.string().min(6, {
-    message: "Mật khẩu mới phải có ít nhất 6 ký tự.",
-  }),
-  confirmNewPassword: z.string().min(6, {
-    message: "Xác nhận mật khẩu mới phải có ít nhất 6 ký tự.",
+  newPassword: z
+    .string()
+    .min(8, {
+      message: "Mật khẩu mới phải có ít nhất 8 ký tự.",
+    })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/, {
+      message: "Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt.",
+    }),
+  confirmNewPassword: z.string().min(8, {
+    message: "Xác nhận mật khẩu mới phải có ít nhất 8 ký tự.",
   }),
 }).refine((data) => data.newPassword === data.confirmNewPassword, {
   message: "Mật khẩu mới và xác nhận mật khẩu mới không khớp.",
@@ -40,32 +48,44 @@ type PasswordFormValues = z.infer<typeof passwordFormSchema>;
  * Sử dụng react-hook-form và zod để validation.
  */
 const ChangePasswordPage: React.FC = () => {
-  const form = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordFormSchema),
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmNewPassword: "",
-    },
-    mode: "onChange",
-  });
+ const {user} = useUser();
+ const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái loading
+ const form = useForm<PasswordFormValues>({
+   resolver: zodResolver(passwordFormSchema),
+   defaultValues: {
+     currentPassword: "",
+     newPassword: "",
+     confirmNewPassword: "",
+   },
+   mode: "onChange",
+ });
 
-  function onSubmit(data: PasswordFormValues) {
-    toast({
-      title: "Bạn đã gửi các giá trị sau:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-    // Logic thay đổi mật khẩu ở đây
-  }
+ async function onSubmit(data: PasswordFormValues) {
+   setIsLoading(true);
+   try {
+     await userService.changePassword(data.currentPassword, data.newPassword , user.id);
+     toast({
+       title: "Thành công!",
+       description: "Mật khẩu của bạn đã được thay đổi thành công.",
+       variant: "default",
+     });
+     form.reset(); // Reset form sau khi thành công
+   } catch (error) {
+     console.error("Lỗi khi thay đổi mật khẩu:", error);
+     toast({
+       title: "Lỗi!",
+       description: "Đã xảy ra lỗi khi thay đổi mật khẩu. Vui lòng thử lại.",
+       variant: "destructive",
+     });
+   } finally {
+     setIsLoading(false);
+   }
+ }
 
-  return (
-    <Card className="w-full bg-white"> {/* Bọc trong Card */}
-      <CardHeader>
-        <CardTitle className="text-lg">Đổi mật khẩu</CardTitle> {/* Thêm text-lg */}
+ return (
+   <Card className="w-full bg-white">
+     <CardHeader>
+       <CardTitle className="text-lg">Đổi mật khẩu</CardTitle>
       </CardHeader>
       <CardContent className="px-4"> {/* Thêm padding */}
         <Form {...form}>
@@ -116,7 +136,9 @@ const ChangePasswordPage: React.FC = () => {
             />
 
             <div className="flex justify-center">
-              <Button type="submit">Đổi mật khẩu</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Đang xử lý..." : "Đổi mật khẩu"}
+              </Button>
             </div>
           </form>
         </Form>

@@ -1,6 +1,5 @@
 // src/features/users/account-management/pages/AddressPage.tsx
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useUser } from "@/hooks/use-user";
 import { Address } from "@/types";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -23,12 +23,13 @@ import { addressService } from "../services/addressService";
  * Hiển thị danh sách địa chỉ và cho phép thêm, sửa, xóa địa chỉ thông qua AddressList và AddressForm.
  */
 const AddressPage: React.FC = () => {
+  const {user} = useUser();
   // State để quản lý trạng thái mở/đóng của dialog thêm địa chỉ
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   // State để lưu trữ danh sách địa chỉ
   const [addresses, setAddresses] = useState<Address[]>([]);
   // State để theo dõi trạng thái tải dữ liệu
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   // State để lưu trữ thông báo lỗi
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +41,7 @@ const AddressPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await addressService.getAddresses();
+      const data = await addressService.getAddresses(user.id);
       setAddresses(data);
     } catch (err) {
       console.error("Lỗi khi tải địa chỉ:", err);
@@ -62,9 +63,12 @@ const AddressPage: React.FC = () => {
    * @param {Omit<Address, 'id'>} address - Thông tin địa chỉ cần thêm.
    */
   const handleAddAddress = async (address: Omit<Address, "id">) => {
-    console.log("Thêm địa chỉ mới:", address);
+    const payload = {
+      ...address,
+      userId: user.id,
+    };
     try {
-      await addressService.addAddress(address);
+      await addressService.addAddress(payload);
       setIsAddDialogOpen(false);
       toast.success("Thêm địa chỉ thành công!");
       fetchAddresses(); // Re-fetch dữ liệu sau khi thêm thành công
@@ -80,9 +84,12 @@ const AddressPage: React.FC = () => {
    * @param {Address} address - Thông tin địa chỉ cần cập nhật.
    */
   const handleUpdateAddress = async (address: Address) => {
-    console.log("Cập nhật địa chỉ:", address);
+    const payload = {
+      ...address,
+      userId: user.id,
+    };
     try {
-      await addressService.updateAddress(address);
+      await addressService.updateAddress(payload);
       toast.success("Cập nhật địa chỉ thành công!");
       fetchAddresses(); // Re-fetch dữ liệu sau khi cập nhật thành công
     } catch (err) {
@@ -97,7 +104,7 @@ const AddressPage: React.FC = () => {
    * @param {number} id - ID của địa chỉ cần xóa.
    */
   const handleDeleteAddress = async (id: number) => {
-    console.log("Xóa địa chỉ:", id);
+    setLoading(true);
     try {
       await addressService.deleteAddress(id);
       toast.success("Xóa địa chỉ thành công!");
@@ -105,6 +112,8 @@ const AddressPage: React.FC = () => {
     } catch (err) {
       console.error("Lỗi khi xóa địa chỉ:", err);
       toast.error("Không thể xóa địa chỉ.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,15 +123,17 @@ const AddressPage: React.FC = () => {
    * @param {number} id - ID của địa chỉ cần đặt làm mặc định.
    */
   const handleSetDefaultAddress = async (id: number) => {
-    console.log("Đặt địa chỉ mặc định:", id);
+    setLoading(true);
     try {
       // Giả định có một API call để đặt địa chỉ mặc định
-      // await addressService.setDefaultAddress(id);
+      await addressService.setDefaultAddress(id , user.id);
       toast.success("Đặt địa chỉ mặc định thành công!");
       fetchAddresses(); // Re-fetch dữ liệu sau khi đặt mặc định thành công
     } catch (err) {
       console.error("Lỗi khi đặt địa chỉ mặc định:", err);
       toast.error("Không thể đặt địa chỉ mặc định.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,6 +146,7 @@ const AddressPage: React.FC = () => {
             <Button
               variant="outline"
               className="bg-primary text-primary-foreground hover:bg-primary/90"
+              disabled={loading} // Vô hiệu hóa nút khi đang tải
             >
               Thêm địa chỉ mới
             </Button>
@@ -152,14 +164,13 @@ const AddressPage: React.FC = () => {
         </Dialog>
       </CardHeader>
       <CardContent>
-        {loading ? (
-          <LoadingSpinner />
-        ) : error ? (
-          <EmptyStateMessage message={error} />
+        { error && !loading ? (
+          <EmptyStateMessage icon="🛍️"  message={error} />
         ) : addresses.length === 0 ? (
-          <EmptyStateMessage message="Bạn chưa có địa chỉ nào. Hãy thêm một địa chỉ mới!" />
+          <EmptyStateMessage icon="🛍️" message="Bạn chưa có địa chỉ nào. Hãy thêm một địa chỉ mới!" />
         ) : (
           <AddressList
+            disabled={loading}
             addresses={addresses} // Truyền dữ liệu địa chỉ từ state
             onUpdateAddress={handleUpdateAddress}
             onDeleteAddress={handleDeleteAddress}

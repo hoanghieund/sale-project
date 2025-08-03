@@ -1,10 +1,15 @@
 // src/features/users/account-management/components/AddressList.tsx
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { Address } from "@/types";
-import React, { useState } from 'react';
-import AddressForm from './AddressForm';
+import React, { useState } from "react";
+import AddressForm from "./AddressForm";
 
 /**
  * @interface AddressListProps
@@ -19,6 +24,7 @@ interface AddressListProps {
   onUpdateAddress: (address: Address) => void;
   onDeleteAddress: (id: number) => void;
   onSetDefaultAddress: (id: number) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -28,7 +34,13 @@ interface AddressListProps {
  * @param {AddressListProps} props Props của component.
  * @returns {JSX.Element} Element React.
  */
-const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, onDeleteAddress, onSetDefaultAddress }) => {
+const AddressList: React.FC<AddressListProps> = ({
+  addresses,
+  onUpdateAddress,
+  onDeleteAddress,
+  onSetDefaultAddress,
+  disabled,
+}) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
 
@@ -57,7 +69,17 @@ const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, o
    * @description Xử lý khi form địa chỉ được submit (cập nhật).
    * @param {Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>} data Dữ liệu địa chỉ từ form.
    */
-  const handleFormSubmit = (data: Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>) => {
+  const handleFormSubmit = (
+    data: Omit<
+      Address,
+      | "id"
+      | "user"
+      | "provinceName"
+      | "districtName"
+      | "wardName"
+      | "shopIdDistrict"
+    >
+  ) => {
     if (editingAddress) {
       // Cập nhật địa chỉ hiện có
       const updatedAddress: Address = {
@@ -97,9 +119,11 @@ const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, o
 
       <div className="space-y-4">
         {addresses.length === 0 ? (
-          <p className="text-muted-foreground text-center py-4">Bạn chưa có địa chỉ nào.</p>
+          <p className="text-muted-foreground text-center py-4">
+            Bạn chưa có địa chỉ nào.
+          </p>
         ) : (
-          addresses.map((address) => (
+          addresses.map(address => (
             // Mỗi địa chỉ được hiển thị trong một div với kiểu dáng tinh tế
             <div
               key={address.id}
@@ -110,11 +134,15 @@ const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, o
             >
               <div className="flex-grow mb-4 md:mb-0">
                 {/* Tên người nhận và số điện thoại */}
-                <p className="font-semibold text-lg text-gray-900">{address.fullName}</p>
-                <p className="text-sm text-gray-600">{address.phoneNumber}</p>
+                <p className="font-semibold text-lg text-gray-900">
+                  Tên đầy đủ: {address.fullName}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Điện thoại: {address.phoneNumber}
+                </p>
                 {/* Địa chỉ chi tiết */}
                 <p className="text-sm text-gray-600">
-                  {address.address}, {address.wardName}, {address.districtName}, {address.provinceName}
+                  Địa chỉ: {address.address}
                 </p>
                 {/* Nhãn cho địa chỉ hiện tại và địa chỉ lấy hàng */}
                 <div className="flex items-center gap-2 mt-1">
@@ -134,14 +162,29 @@ const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, o
               {/* Các nút hành động */}
               <div className="flex flex-col md:flex-row gap-2 flex-shrink-0">
                 {!address.isCurrent && (
-                  <Button variant="outline" size="sm" onClick={() => onSetDefaultAddress(address.id)}>
+                  <Button
+                    disabled={disabled}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSetDefaultAddress(address.id)}
+                  >
                     Đặt làm mặc định
                   </Button>
                 )}
-                <Button variant="outline" size="sm" onClick={() => handleEdit(address)}>
+                <Button
+                  disabled={disabled}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleEdit(address)}
+                >
                   Sửa
                 </Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDelete(address.id)}>
+                <Button
+                  disabled={disabled}
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDelete(address.id)}
+                >
                   Xóa
                 </Button>
               </div>

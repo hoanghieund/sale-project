@@ -17,7 +17,7 @@ export const addressService = {
    * @returns Promise với địa chỉ mới sau khi thêm.
    */
   addAddress: (address: Omit<Address, 'id'>) => {
-    return Axios.post(`/api/orderAddress/add`, address);
+    return Axios.post(`/api/orderAddress/createOrUpdate`, address);
   },
 
   /**
@@ -26,7 +26,7 @@ export const addressService = {
    * @returns Promise với địa chỉ sau khi cập nhật.
    */
   updateAddress: (address: Address) => {
-    return Axios.put(`/api/orderAddress/update`, address);
+    return Axios.put(`/api/orderAddress/createOrUpdate`, address);
   },
 
   /**
@@ -36,5 +36,15 @@ export const addressService = {
    */
   deleteAddress: (id: number) => {
     return Axios.del(`/api/orderAddress/delete/${id}`);
+  },
+
+  /**
+   * Đặt địa chỉ mặc định.
+   * @param id - ID của địa chỉ cần đặt làm mặc định.
+   * @param userId - ID của người dùng.
+   * @returns Promise khi đặt mặc định thành công.
+   */
+  setDefaultAddress: (id: number, userId: number) => {
+    return Axios.get(`/api/orderAddress/setDefaultAddress?id=${id}&userId=${userId}`);
   },
 };

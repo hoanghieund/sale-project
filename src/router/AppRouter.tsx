@@ -37,7 +37,6 @@ const ProductDetailPage = lazy(
 );
 // const Products = lazy(() => import("@/features/users/Products"));
 const Register = lazy(() => import("@/features/auth/Register"));
-const Wishlist = lazy(() => import("@/features/users/wish-list/Wishlist"));
 const PrivacyPolicy = lazy(() => import("@/features/general/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("@/features/general/TermsOfService"));
 const VerifyEmail = lazy(() => import("@/features/auth/VerifyEmail"));
@@ -84,7 +83,7 @@ const AppRouter = () => {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-success" element={<OrderSuccess />} />
               {/* User account */}
-              <Route path="/wishlist" element={<Wishlist />} />
+              {/* <Route path="/wishlist" element={<Wishlist />} /> */}
 
               {/* Account Management Layout - Các trang quản lý tài khoản */}
               <Route path="/account" element={<AccountLayout />}>
