@@ -11,9 +11,6 @@ export interface CartByShop {
 // Định nghĩa interface cho CartSummary
 export interface CartSummary {
   subtotal: number;
-  discount: number;
   shipping: number;
-  tax: number;
   total: number;
-  couponCode?: string; // Thêm couponCode vào CartSummary
 }

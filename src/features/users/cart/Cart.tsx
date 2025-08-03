@@ -1,5 +1,6 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner"; // Import LoadingSpinner
 import { useToast } from "@/components/ui/use-toast";
+import { calculateCartSummary } from "@/utils/cartUtils";
 import { useEffect, useState } from "react";
 import CartSummaryCard from "./components/CartSummaryCard";
 import EmptyCartMessage from "./components/EmptyCartMessage";
@@ -15,9 +16,7 @@ const Cart = () => {
   // State để lưu trữ tóm tắt giỏ hàng
   const [cartSummary, setCartSummary] = useState<CartSummary>({
     subtotal: 0,
-    discount: 0,
     shipping: 0,
-    tax: 0,
     total: 0,
   });
 
@@ -41,32 +40,6 @@ const Cart = () => {
     } finally {
       setIsLoading(false); // Đặt isLoading thành false trong khối finally
     }
-  };
-
-  /**
-   * @function calculateCartSummary
-   * @description Tính toán tổng tiền, chiết khấu, phí vận chuyển, thuế và tổng cộng dựa trên dữ liệu giỏ hàng.
-   * @param {CartByShop[]} currentCartByShop - Dữ liệu giỏ hàng theo cửa hàng.
-   * @returns {CartSummary} Đối tượng chứa các giá trị tổng kết.
-   */
-  const calculateCartSummary = (currentCartByShop: CartByShop[]): CartSummary => {
-    let subtotal = 0;
-    // Tính tổng phụ từ tất cả các mặt hàng trong giỏ hàng
-    currentCartByShop.forEach(shopCart => {
-      shopCart.cartDTOList.forEach(item => {
-        // Đảm bảo productDTO và price tồn tại trước khi tính toán
-        subtotal += (item.productDTO?.price || 0) * item.quantity;
-      });
-    });
-
-    // Logic chiết khấu, vận chuyển, thuế (có thể lấy từ API nếu có)
-    const discount = 0;
-    const shipping = subtotal > 100 ? 0 : 10;
-    const taxRate = 0.05;
-    const tax = subtotal * taxRate;
-    const total = subtotal - discount + shipping + tax;
-
-    return { subtotal, discount, shipping, tax, total };
   };
 
   /**
@@ -100,6 +73,7 @@ const Cart = () => {
   const updateQuantity = async (itemId: number, newQuantity: number) => {
     if (newQuantity < 1) return; // Đảm bảo số lượng không nhỏ hơn 1
     try {
+      setIsLoading(true); // Đặt isLoading thành true khi bắt đầu cập nhật
       await cartService.updateCartItemQuantity(itemId.toString(), newQuantity);
       toast({
         title: "Success",
@@ -140,7 +114,7 @@ const Cart = () => {
                 <LoadingSpinner />
               </div>
             )}
-            {cartByShop.length === 0 ? (
+            {cartByShop.length === 0 && !isLoading ? (
               <EmptyCartMessage />
             ) : (
               cartByShop.map(shopCart => (

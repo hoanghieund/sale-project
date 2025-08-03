@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { CartSummary } from "@/features/users/cart/types/cart-types";
+import { formatCurrencyUSD } from "@/utils/formatters";
 
 /**
  * Tóm tắt giá: Subtotal/Discount/Shipping/Tax/Total
@@ -11,36 +12,28 @@ interface Props {
 
 const PriceSummary = ({ summary }: Props) => {
   return (
-    <div className="space-y-2 text-sm">
-      <div className="flex justify-between">
-        <span>Subtotal</span>
-        <span>${summary.subtotal.toFixed(2)}</span>
-      </div>
-
-      {summary.discount > 0 && (
-        <div className="flex justify-between text-emerald-600">
-          <span>Discount</span>
-          <span>-${summary.discount.toFixed(2)}</span>
+      <div className="space-y-2">
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span>{formatCurrencyUSD(summary.subtotal)}</span>
         </div>
-      )}
 
-      <div className="flex justify-between">
-        <span>Shipping</span>
-        <span>{summary.shipping === 0 ? "Free" : `$${summary.shipping.toFixed(2)}`}</span>
+        <div className="flex justify-between">
+          <span>Shipping</span>
+          <span>
+            {summary.shipping === 0
+              ? "Free"
+              : `${formatCurrencyUSD(summary.shipping)}`}
+          </span>
+        </div>
+
+        <Separator className="my-2" />
+
+        <div className="flex justify-between text-lg font-bold">
+          <span>Total</span>
+          <span>{formatCurrencyUSD(summary.total)}</span>
+        </div>
       </div>
-
-      <div className="flex justify-between">
-        <span>Tax</span>
-        <span>${summary.tax.toFixed(2)}</span>
-      </div>
-
-      <Separator className="my-2" />
-
-      <div className="flex justify-between font-bold">
-        <span>Total</span>
-        <span>${summary.total.toFixed(2)}</span>
-      </div>
-    </div>
   );
 };
 

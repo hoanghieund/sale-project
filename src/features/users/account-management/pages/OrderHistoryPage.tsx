@@ -10,11 +10,11 @@ import OrderTabs from '../components/OrderTabs'; // OrderTabs sẽ chứa OrderL
  */
 const OrderHistoryPage: React.FC = () => {
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-white">
       <CardHeader>
         <CardTitle className="text-lg">Lịch sử đơn hàng</CardTitle>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent className="px-4">
         {/* OrderTabs đã bao gồm OrderList bên trong */}
         <OrderTabs />
       </CardContent>

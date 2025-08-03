@@ -63,13 +63,13 @@ const ChangePasswordPage: React.FC = () => {
   }
 
   return (
-    <Card className="w-full"> {/* Bọc trong Card */}
+    <Card className="w-full bg-white"> {/* Bọc trong Card */}
       <CardHeader>
         <CardTitle className="text-lg">Đổi mật khẩu</CardTitle> {/* Thêm text-lg */}
       </CardHeader>
-      <CardContent className="p-4"> {/* Thêm padding */}
+      <CardContent className="px-4"> {/* Thêm padding */}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Trường Mật khẩu hiện tại */}
             <FormField
               control={form.control}
@@ -115,7 +115,9 @@ const ChangePasswordPage: React.FC = () => {
               )}
             />
 
-            <Button type="submit">Đổi mật khẩu</Button>
+            <div className="flex justify-center">
+              <Button type="submit">Đổi mật khẩu</Button>
+            </div>
           </form>
         </Form>
       </CardContent>

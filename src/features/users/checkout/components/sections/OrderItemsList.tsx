@@ -13,7 +13,7 @@ const OrderItemsList = ({ items }: Props) => {
   return (
     <div className="space-y-4 mb-4">
       {items.map((item) => (
-        <CartItemCard key={item.id} item={item} />
+        <CartItemCard key={item.id} item={item} viewMode="compact" />
       ))}
     </div>
   );

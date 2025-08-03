@@ -1,15 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/use-toast";
 import { OrderStatus } from "@/types";
+import { AxiosError } from "axios";
 import { ArrowLeft, Lock } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { cartService } from "../cart/services/cartService";
 import { CartByShop, CartSummary } from "../cart/types/cart-types";
 import PaymentMethodSelector from "./components/PaymentMethodSelector";
 /**
  * Các section đã tách nhỏ
  */
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { calculateCartSummary } from "@/utils/cartUtils";
 import CheckoutHeader from "./components/sections/CheckoutHeader";
 import ContactInformationSection from "./components/sections/ContactInformationSection";
 import OrderItemsList from "./components/sections/OrderItemsList";
@@ -45,94 +50,41 @@ export interface CheckoutForm {
 const Checkout = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
-
-  // Dữ liệu cart mock: giữ nguyên như code gốc để không phá vỡ luồng
-  const [cart] = useState<{
+  const [cart, setCart] = useState<{
     cartByShopList: CartByShop[];
     summary: CartSummary;
-  } | null>({
-    cartByShopList: [
-      {
-        id: 1,
-        shopName: "Shop A",
-        shopIdDistrict: 1,
-        cartDTOList: [
-          {
-            id: 101,
-            quantity: 2,
-            isReview: false,
-            shop: { id: 1, name: "Shop A" },
-            productDTO: {
-              id: 1001,
-              title: "Sản phẩm A",
-              price: 150.0,
-              status: true,
-              imagesDTOList: [
-                {
-                  id: 1,
-                  path: "https://via.placeholder.com/150/0000FF/808080?text=ProductA",
-                },
-              ],
-            },
-            totalPrice: 300.0,
-          },
-          {
-            id: 102,
-            quantity: 1,
-            isReview: false,
-            shop: { id: 1, name: "Shop A" },
-            productDTO: {
-              id: 1002,
-              title: "Sản phẩm B",
-              price: 250.0,
-              status: true,
-              imagesDTOList: [
-                {
-                  id: 2,
-                  path: "https://via.placeholder.com/150/FF0000/FFFFFF?text=ProductB",
-                },
-              ],
-            },
-            totalPrice: 250.0,
-          },
-        ],
-      },
-      {
-        id: 2,
-        shopName: "Shop B",
-        shopIdDistrict: 2,
-        cartDTOList: [
-          {
-            id: 201,
-            quantity: 3,
-            isReview: false,
-            shop: { id: 2, name: "Shop B" },
-            productDTO: {
-              id: 2001,
-              title: "Sản phẩm C",
-              price: 50.0,
-              status: true,
-              imagesDTOList: [
-                {
-                  id: 3,
-                  path: "https://via.placeholder.com/150/00FF00/000000?text=ProductC",
-                },
-              ],
-            },
-            totalPrice: 150.0,
-          },
-        ],
-      },
-    ],
-    summary: {
-      subtotal: 700.0,
-      discount: 50.0,
-      shipping: 10.0,
-      tax: 35.0,
-      total: 695.0,
-      couponCode: "DISCOUNT10",
-    },
-  });
+  } | null>(null);
+  console.log('🚀 ~ Checkout ~ cart:', cart)
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  /**
+   * @function fetchCartData
+   * @description Lấy dữ liệu giỏ hàng từ API.
+   * @returns {Promise<void>}
+   */
+  useEffect(() => {
+    const fetchCartData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await cartService.getCart();
+        const summary = calculateCartSummary(response);
+        setCart({ cartByShopList: response, summary });
+      } catch (err) {
+        const error = err as AxiosError;
+        setError(error.message || "Không thể tải giỏ hàng.");
+        toast({
+          title: "Lỗi",
+          description: error.message || "Không thể tải giỏ hàng.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCartData();
+  }, []);
 
   // React Hook Form setup
   const methods = useForm<CheckoutForm>({
@@ -148,45 +100,42 @@ const Checkout = () => {
 
   const paymentMethodType = methods.watch("paymentMethodType");
   const paymentMethodId = methods.watch("paymentMethodId");
-
+ 
+  // Handler: thay đổi phương thức thanh toán
+  const handlePaymentMethodChange = (id: number, type: string) => {
+    methods.setValue("paymentMethodId", id);
+    methods.setValue("paymentMethodType", type as "card" | "paypal");
+  };
+ 
   // Tối ưu flatMap items để không tính lại khi re-render
+  // Đảm bảo allItems được định nghĩa trước bất kỳ return có điều kiện nào
   const allItems = useMemo(
     () =>
       cart?.cartByShopList.flatMap((shopCart) => shopCart.cartDTOList) ?? [],
     [cart]
   );
 
-  // Handler: thay đổi phương thức thanh toán
-  const handlePaymentMethodChange = (id: number, type: string) => {
-    methods.setValue("paymentMethodId", id);
-    methods.setValue("paymentMethodType", type as "card" | "paypal");
-  };
-
-  // Submit tổng: giữ nguyên logic ban đầu
-  const onSubmit = async (data: CheckoutForm) => {
-    setIsProcessing(true);
-    const orderData = {
-      ...data,
-      items: allItems,
-      totalPrice: cart?.summary.total ?? 0,
-      status: OrderStatus.PENDING,
-      timeOrder: new Date(),
-    };
-
-    try {
-      // mô phỏng xử lý thanh toán
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Order data:", orderData);
-      navigate("/order-success");
-    } catch (error) {
-      console.error("Lỗi khi xử lý thanh toán:", error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  if (!cart) {
-    // Defensive: tránh crash nếu cart null
+  // Defensive: tránh crash nếu cart null
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        < LoadingSpinner />
+      </div>
+    );
+  }
+ 
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center text-red-500">
+        <p>Lỗi: {error}</p>
+        <Button onClick={() => navigate("/cart")} className="mt-4">
+          Quay lại giỏ hàng
+        </Button>
+      </div>
+    );
+  }
+ 
+  if (!cart || !cart.cartByShopList || cart.cartByShopList.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
         <p className="text-center text-muted-foreground">
@@ -198,7 +147,30 @@ const Checkout = () => {
       </div>
     );
   }
-
+ 
+  // Submit tổng: giữ nguyên logic ban đầu
+  const onSubmit = async (data: CheckoutForm) => {
+    setIsProcessing(true);
+    const orderData = {
+      ...data,
+      items: allItems,
+      totalPrice: cart?.summary.total ?? 0,
+      status: OrderStatus.PENDING,
+      timeOrder: new Date(),
+    };
+ 
+    try {
+      // mô phỏng xử lý thanh toán
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log("Order data:", orderData);
+      navigate("/order-success");
+    } catch (error) {
+      console.error("Lỗi khi xử lý thanh toán:", error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+ 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">

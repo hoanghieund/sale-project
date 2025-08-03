@@ -2,14 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { Link } from "react-router-dom";
-
-interface CartSummary {
-  subtotal: number;
-  discount: number;
-  shipping: number;
-  tax: number;
-  total: number;
-}
+import { CartSummary } from "../types/cart-types";
 
 interface CartSummaryCardProps {
   cartSummary: CartSummary;
@@ -35,13 +28,6 @@ const CartSummaryCard = ({ cartSummary, disabledCheckout }: CartSummaryCardProps
           <span>{formatCurrencyUSD(cartSummary.subtotal)}</span>
         </div>
 
-        {cartSummary.discount > 0 && (
-          <div className="flex justify-between text-green-600">
-            <span>Discount</span>
-            <span>-{formatCurrencyUSD(cartSummary.discount)}</span>
-          </div>
-        )}
-
         <div className="flex justify-between">
           <span>Shipping</span>
           <span>
@@ -49,11 +35,6 @@ const CartSummaryCard = ({ cartSummary, disabledCheckout }: CartSummaryCardProps
               ? "Free"
               : `${formatCurrencyUSD(cartSummary.shipping)}`}
           </span>
-        </div>
-
-        <div className="flex justify-between">
-          <span>Tax</span>
-          <span>{formatCurrencyUSD(cartSummary.tax)}</span>
         </div>
 
         <Separator className="my-2" />

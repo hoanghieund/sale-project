@@ -39,6 +39,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../hooks/use-user"; // Import useUser hook
 import { categoryService } from "../../services/categoryService"; // Import categoryService
 import { Category } from "../../types"; // Import Category type
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,7 +47,7 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useUser(); // Use useUser hook
+  const { isAuthenticated, logout, user } = useUser(); // Use useUser hook
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục nổi bật
   const [allCategories, setAllCategories] = useState<Category[]>([]); // State để lưu trữ tất cả dữ liệu danh mục
 
@@ -235,18 +236,19 @@ const Header = () => {
                 <>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full hover:bg-primary/10"
-                      >
-                        <User className="h-5 w-5" />
-                      </Button>
+                      <Avatar className="h-7 w-7 cursor-pointer">
+                        <AvatarImage src={user?.avatar} alt={user?.avatar} />
+                        <AvatarFallback>
+                          <User className="h-5 w-5" />
+                        </AvatarFallback>
+                      </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                       <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate("/account/profile")}>
+                      <DropdownMenuItem
+                        onClick={() => navigate("/account/profile")}
+                      >
                         Tài khoản
                       </DropdownMenuItem>
                       <DropdownMenuItem

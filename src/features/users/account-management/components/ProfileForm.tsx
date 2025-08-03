@@ -60,7 +60,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
  * Sử dụng react-hook-form và zod để validation.
  */
 export function ProfileForm(s) {
-  const { user , updateProfile } = useUser();
+  const { user, updateProfile } = useUser();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -73,9 +73,7 @@ export function ProfileForm(s) {
       gender: user?.gender === "male" ? true : false,
       // Tính toán dateOfBirth từ dayOfBirth, monthOfBirth, yearOfBirth
       dateOfBirth:
-        user.yearOfBirth &&
-        user.monthOfBirth &&
-        user.dayOfBirth
+        user.yearOfBirth && user.monthOfBirth && user.dayOfBirth
           ? new Date(
               user.yearOfBirth,
               user.monthOfBirth - 1, // Tháng trong JavaScript là 0-indexed
@@ -162,7 +160,10 @@ export function ProfileForm(s) {
                       <AvatarImage src={field.value} alt="Ảnh đại diện" />
                     )}
                     {field.value && field.value instanceof File && (
-                      <AvatarImage src={URL.createObjectURL(field.value)} alt="Ảnh đại diện" />
+                      <AvatarImage
+                        src={URL.createObjectURL(field.value)}
+                        alt="Ảnh đại diện"
+                      />
                     )}
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
@@ -182,9 +183,8 @@ export function ProfileForm(s) {
           )}
         />
 
-        {/* Nhóm các trường Name, Email, Phone, Gender, Date of Birth */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Trường Name */}
+        {/* Nhóm các trường thông tin cơ bản: Tên, Email, Số điện thoại */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <FormField
             control={form.control}
             name="username"
@@ -199,7 +199,6 @@ export function ProfileForm(s) {
             )}
           />
 
-          {/* Trường Email */}
           <FormField
             control={form.control}
             name="email"
@@ -214,7 +213,6 @@ export function ProfileForm(s) {
             )}
           />
 
-          {/* Trường Phone */}
           <FormField
             control={form.control}
             name="phone"
@@ -228,8 +226,10 @@ export function ProfileForm(s) {
               </FormItem>
             )}
           />
+        </div>
 
-          {/* Trường Gender */}
+        {/* Nhóm các trường thông tin cá nhân: Giới tính, Ngày sinh */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="gender"
@@ -237,23 +237,22 @@ export function ProfileForm(s) {
               <FormItem className="space-y-3">
                 <FormLabel>Giới tính</FormLabel>
                 <FormControl>
-                  {/* RadioGroup cho giới tính */}
                   <RadioGroup
-                    // Khi giá trị thay đổi, chuyển đổi chuỗi "true"/"false" thành boolean
-                    onValueChange={(value) => field.onChange(value === "true")}
-                    // Giá trị mặc định được chuyển đổi từ boolean sang chuỗi "true"/"false"
+                    onValueChange={value => field.onChange(value === "true")}
                     defaultValue={field.value ? "true" : "false"}
-                    className="flex"
+                    className="flex space-x-4" // Thêm khoảng cách giữa các radio item
                   >
-                    {/* Lựa chọn Nam */}
-                    <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormItem className="flex items-center space-x-2">
+                      {" "}
+                      {/* Giảm space-x */}
                       <FormControl>
                         <RadioGroupItem value="true" />
                       </FormControl>
                       <FormLabel className="font-normal">Nam</FormLabel>
                     </FormItem>
-                    {/* Lựa chọn Nữ */}
-                    <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormItem className="flex items-center space-x-2">
+                      {" "}
+                      {/* Giảm space-x */}
                       <FormControl>
                         <RadioGroupItem value="false" />
                       </FormControl>
@@ -266,7 +265,6 @@ export function ProfileForm(s) {
             )}
           />
 
-          {/* Trường Date of Birth */}
           <FormField
             control={form.control}
             name="dateOfBirth"
@@ -279,7 +277,7 @@ export function ProfileForm(s) {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full pl-3 text-left font-normal",
+                          "w-full justify-start text-left font-normal", // Căn chỉnh trái và đầy đủ chiều rộng
                           !field.value && "text-muted-foreground"
                         )}
                       >
@@ -310,7 +308,7 @@ export function ProfileForm(s) {
           />
         </div>
 
-        {/* Trường Shop Name (tùy chọn) */}
+        {/* Trường Tên cửa hàng (tùy chọn) - Đặt riêng để dễ quản lý */}
         <FormField
           control={form.control}
           name="shopName"
@@ -328,7 +326,9 @@ export function ProfileForm(s) {
           )}
         />
 
-        <Button type="submit">Cập nhật hồ sơ</Button>
+        <div className="flex justify-center">
+          <Button type="submit">Cập nhật hồ sơ</Button>
+        </div>
       </form>
     </Form>
   );

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const HeroSection = () => {
   return (
     <section
-      className="relative bg-cover bg-center text-white py-20"
+      className="relative bg-cover bg-center text-white py-28"
       style={{ backgroundImage: `url('/assets/hero-running.jpg')` }}
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -20,16 +20,10 @@ const HeroSection = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            to="/products"
+            to="/seller"
             className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-lg"
           >
-            Explore Products
-          </Link>
-          <Link
-            to="/seller"
-            className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors"
-          >
-            Sell with Us
+             Sell with Us
           </Link>
         </div>
       </div>

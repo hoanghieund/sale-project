@@ -2,7 +2,6 @@ import { productService } from "@/features/users/home/services/productService";
 import { Product } from "@/types";
 import { useEffect, useState } from "react";
 import { AllProductsSection } from "./components/AllProductsSection"; // Import AllProductsSection
-import CallToActionSection from "./components/CallToActionSection";
 import FeaturedProductsSection from "./components/FeaturedProductsSection";
 import HeroSection from "./components/HeroSection";
 
@@ -59,7 +58,6 @@ const Index = () => {
         onPageChange={handlePageChange}
       />
 
-      <CallToActionSection />
     </div>
   );
 };
