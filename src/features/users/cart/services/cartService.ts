@@ -17,10 +17,7 @@ export const cartService = {
    * @returns Promise chứa thông tin giỏ hàng sau khi cập nhật.
    */
   updateCartItemQuantity: (itemId: string, quantity: number) => {
-    return Axios.put(`/api/cart/update-quantity`, {
-      itemId,
-      quantity,
-    })
+    return Axios.get(`/api/cart/changeQuantity/${itemId}/${quantity}`)
   },
 
   /**
@@ -32,14 +29,4 @@ export const cartService = {
     return Axios.del(`/api/cart/remove/${itemId}`)
   },
 
-  /**
-   * Áp dụng mã giảm giá cho giỏ hàng.
-   * @param couponCode - Mã giảm giá cần áp dụng.
-   * @returns Promise chứa thông tin mã giảm giá đã áp dụng.
-   */
-  applyCouponCode: (couponCode: string) => {
-    return Axios.post(`/api/coupon/apply`, {
-      couponCode,
-    })
-  },
 };

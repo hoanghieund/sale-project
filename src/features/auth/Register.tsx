@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
@@ -54,7 +53,6 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register: registerUser, isLoading, error, clearError } = useUser();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   // Xóa lỗi khi component unmount để tránh hiển thị lỗi khi quay lại trang đăng ký
   useEffect(() => {
@@ -83,11 +81,7 @@ const Register = () => {
       await registerUser(registerData as any);
       navigate(`/verify-email?email=${data.email}`);
     } catch (error) {
-      toast({
-        title: "Đăng ký thất bại",
-        description: error.response.data,
-        variant: "destructive",
-      });
+      console.error("Lỗi khi đăng ký:", error);
     }
   };
 

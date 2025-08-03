@@ -156,8 +156,24 @@ export interface Category {
   modifierDate?: Date; // modifier_date datetime
 }
 
-// Subcategory được merge vào Category với parentId
-// export interface Subcategory - Không cần thiết vì đã merge vào Category
+// Address Types - Dựa trên tbl_address
+export interface Address {
+  address: string;
+  district: number;
+  districtName: string;
+  fullName: string;
+  id: number;
+  isCurrent: boolean;
+  isShop: boolean;
+  phoneNumber: string;
+  province: number;
+  provinceName: string;
+  shopIdDistrict: number;
+  user: User;
+  userId: number;
+  wardCode: string;
+  wardName: string;
+}
 
 // User Types - Dựa trên tbl_user
 export interface User {
@@ -269,6 +285,7 @@ export interface Cart {
   // Relations
   shop: Shop; // Thông tin shop
   productDTO?: Product; // Thông tin product từ API
+  totalPrice?: number; // Tổng giá trị của mặt hàng
 }
 
 // Order Types - Dựa trên tbl_orders

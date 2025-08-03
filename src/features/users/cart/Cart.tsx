@@ -1,3 +1,4 @@
+import LoadingSpinner from "@/components/common/LoadingSpinner"; // Import LoadingSpinner
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import CartSummaryCard from "./components/CartSummaryCard";
@@ -7,10 +8,9 @@ import { cartService } from "./services/cartService";
 import { CartByShop, CartSummary } from "./types/cart-types";
 
 const Cart = () => {
-  const [couponCode, setCouponCode] = useState("");
-  const [couponError, setCouponError] = useState("");
   const [cartByShop, setCartByShop] = useState<CartByShop[]>([]);
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState<boolean>(false); // Khởi tạo isLoading state
 
   // State để lưu trữ tóm tắt giỏ hàng
   const [cartSummary, setCartSummary] = useState<CartSummary>({
@@ -26,6 +26,7 @@ const Cart = () => {
    * @description Lấy dữ liệu giỏ hàng từ API và cập nhật state.
    */
   const fetchCartData = async () => {
+    setIsLoading(true); // Đặt isLoading thành true trước khi gọi API
     try {
       // Gọi API để lấy giỏ hàng
       const response = await cartService.getCart();
@@ -37,6 +38,8 @@ const Cart = () => {
         description: "Failed to load cart. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false); // Đặt isLoading thành false trong khối finally
     }
   };
 
@@ -63,7 +66,7 @@ const Cart = () => {
     const tax = subtotal * taxRate;
     const total = subtotal - discount + shipping + tax;
 
-    return { subtotal, discount, shipping, tax, total, couponCode };
+    return { subtotal, discount, shipping, tax, total };
   };
 
   /**
@@ -97,7 +100,7 @@ const Cart = () => {
   const updateQuantity = async (itemId: number, newQuantity: number) => {
     if (newQuantity < 1) return; // Đảm bảo số lượng không nhỏ hơn 1
     try {
-      await cartService.updateCartItemQuantity(itemId.toString(), newQuantity); // Chuyển itemId sang string nếu API yêu cầu
+      await cartService.updateCartItemQuantity(itemId.toString(), newQuantity);
       toast({
         title: "Success",
         description: "Cart quantity updated.",
@@ -112,51 +115,6 @@ const Cart = () => {
     }
   };
 
-  /**
-   * @function handleApplyCoupon
-   * @description Xử lý logic áp dụng mã giảm giá.
-   */
-  const handleApplyCoupon = async () => {
-    if (!couponCode) {
-      setCouponError("Please enter a coupon code.");
-      return;
-    }
-    setCouponError("");
-    try {
-      const response = await cartService.applyCouponCode(couponCode);
-      // Giả định API trả về thông tin giỏ hàng đã cập nhật hoặc thông báo thành công
-      // Cần điều chỉnh tùy theo cấu trúc phản hồi của API
-      if (response.data.success) { // Giả định có trường success
-        toast({
-          title: "Success",
-          description: "Coupon applied successfully!",
-        });
-        fetchCartData(); // Tải lại giỏ hàng để cập nhật tổng tiền
-      } else {
-        setCouponError(response.data.message || "Invalid coupon code.");
-      }
-    } catch (err) {
-      setCouponError("Failed to apply coupon. Please try again.");
-      toast({
-        title: "Error",
-        description: "Failed to apply coupon. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  /**
-   * @function removeCoupon
-   * @description Xóa mã giảm giá đã áp dụng.
-   */
-  const removeCoupon = () => {
-    setCouponCode("");
-    setCouponError("");
-    // Hiện tại không có API removeCoupon, nên chỉ reset UI và tải lại dữ liệu
-    // Nếu có API, cần gọi API ở đây
-    fetchCartData();
-  };
-
   // useEffect để tải dữ liệu giỏ hàng khi component mount hoặc user.id thay đổi
   useEffect(() => {
     fetchCartData();
@@ -169,28 +127,38 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
-          {cartByShop.length === 0 ? (
-            <EmptyCartMessage />
-          ) : (
-            cartByShop.map(shopCart => (
-              <ShopCartSection
-                key={shopCart.id}
-                shopCart={shopCart}
-                removeFromCart={removeFromCart}
-                updateQuantity={updateQuantity}
-              />
-            ))
-          )}
+          {/*
+            Điều chỉnh hiển thị LoadingSpinner:
+            - Đặt spinner bên trong div chứa nội dung giỏ hàng.
+            - Khi isLoading là true, làm mờ nội dung và hiển thị spinner.
+            - Sử dụng `relative` trên div cha và `absolute inset-0` trên div của spinner
+              để spinner phủ lên toàn bộ khu vực nội dung.
+          */}
+          <div className={`relative ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <LoadingSpinner />
+              </div>
+            )}
+            {cartByShop.length === 0 ? (
+              <EmptyCartMessage />
+            ) : (
+              cartByShop.map(shopCart => (
+                <ShopCartSection
+                  key={shopCart.id}
+                  shopCart={shopCart}
+                  removeFromCart={removeFromCart}
+                  updateQuantity={updateQuantity}
+                />
+              ))
+            )}
+          </div>
         </div>
 
         {/* Order Summary */}
         <CartSummaryCard
           cartSummary={cartSummary}
-          couponCode={couponCode}
-          couponError={couponError}
-          setCouponCode={setCouponCode}
-          handleApplyCoupon={handleApplyCoupon}
-          removeCoupon={removeCoupon}
+          disabledCheckout={isLoading}
         />
       </div>
     </div>

@@ -27,6 +27,14 @@ export const authService = {
     });
   },
 
+    /**
+     * Lấy thông tin hồ sơ người dùng
+     * @returns Promise với thông tin hồ sơ người dùng
+     */
+    getUserProfile: async () => {
+      return Axios.get(`/api/user/me`);
+    },
+
   /**
    * Gửi yêu cầu khôi phục mật khẩu
    * @param email - Email

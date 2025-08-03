@@ -8,7 +8,7 @@ import AddressList from '../components/AddressList';
 
 // Giả định kiểu Address và các hàm service
 import { addAddress, deleteAddress, updateAddress } from '@/features/users/account-management/services/addressService';
-import { Address } from '@/features/users/account-management/types/address';
+import { Address } from '@/types';
 
 /**
  * @component AddressPage
@@ -22,8 +22,8 @@ const AddressPage: React.FC = () => {
   // Dữ liệu giả định cho danh sách địa chỉ. Trong thực tế sẽ fetch từ API.
   // TODO: Thực hiện fetch dữ liệu từ API và quản lý state cho danh sách địa chỉ
   const mockAddresses: Address[] = [
-    { id: '1', name: 'Nguyễn Văn A', phone: '0912345678', address: '123 Đường ABC, Quận 1, TP.HCM' },
-    { id: '2', name: 'Trần Thị B', phone: '0987654321', address: '456 Đường XYZ, Quận 2, TP.HCM' },
+    { id: 1, fullName: 'Nguyễn Văn A', phoneNumber: '0912345678', address: '123 Đường ABC, Quận 1, TP.HCM', district: 1, districtName: 'Quận 1', isCurrent: true, isShop: false, province: 79, provinceName: 'TP.HCM', shopIdDistrict: 0, user: {} as any, userId: 1, wardCode: '00001', wardName: 'Phường Bến Nghé' },
+    { id: 2, fullName: 'Trần Thị B', phoneNumber: '0987654321', address: '456 Đường XYZ, Quận 2, TP.HCM', district: 2, districtName: 'Quận 2', isCurrent: false, isShop: true, province: 79, provinceName: 'TP.HCM', shopIdDistrict: 0, user: {} as any, userId: 1, wardCode: '00002', wardName: 'Phường An Khánh' },
   ];
 
     /**
@@ -56,13 +56,25 @@ const AddressPage: React.FC = () => {
     /**
      * @function handleDeleteAddress
      * @description Xử lý xóa địa chỉ.
-     * @param {string} id - ID của địa chỉ cần xóa.
+     * @param {number} id - ID của địa chỉ cần xóa.
      */
-    const handleDeleteAddress = async (id: string) => {
+    const handleDeleteAddress = async (id: number) => {
       console.log('Xóa địa chỉ:', id);
       // Gọi API để xóa địa chỉ
       await deleteAddress(id); // Giả định hàm deleteAddress tồn tại và hoạt động
       // TODO: Cập nhật lại danh sách địa chỉ sau khi xóa thành công
+    };
+
+    /**
+     * @function handleSetDefaultAddress
+     * @description Xử lý đặt địa chỉ mặc định.
+     * @param {number} id - ID của địa chỉ cần đặt làm mặc định.
+     */
+    const handleSetDefaultAddress = async (id: number) => {
+      console.log('Đặt địa chỉ mặc định:', id);
+      // TODO: Gọi API để đặt địa chỉ mặc định
+      // Giả định có một API call để đặt địa chỉ mặc định
+      // Sau khi gọi API thành công, cần cập nhật lại danh sách địa chỉ
     };
 
     return (
@@ -76,13 +88,14 @@ const AddressPage: React.FC = () => {
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Thêm địa chỉ mới</DialogTitle>
-              </DialogHeader>
-              <AddressForm
-                onSubmit={handleAddAddress}
-                onCancel={() => setIsAddDialogOpen(false)} // Thêm onCancel để đóng dialog
-              />
+              {/* Bọc nội dung của DialogContent trong một div để đảm bảo chỉ có một phần tử con */}
+                <DialogHeader>
+                  <DialogTitle>Thêm địa chỉ mới</DialogTitle>
+                </DialogHeader>
+                <AddressForm
+                  onSubmit={handleAddAddress}
+                  onCancel={() => setIsAddDialogOpen(false)} // Thêm onCancel để đóng dialog
+                />
             </DialogContent>
           </Dialog>
         </CardHeader>
@@ -91,7 +104,7 @@ const AddressPage: React.FC = () => {
             addresses={mockAddresses} // Truyền dữ liệu địa chỉ giả định
             onUpdateAddress={handleUpdateAddress}
             onDeleteAddress={handleDeleteAddress}
-            // onAddAddressClick đã bị xóa khỏi AddressList
+            onSetDefaultAddress={handleSetDefaultAddress} // Truyền hàm đặt địa chỉ mặc định
           />
         </CardContent>
       </Card>

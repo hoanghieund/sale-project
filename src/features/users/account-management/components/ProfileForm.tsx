@@ -27,7 +27,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
-import { User } from "@/types";
 
 // Định nghĩa schema validation cho form
 const profileFormSchema = z.object({
@@ -44,8 +43,8 @@ const profileFormSchema = z.object({
     .string()
     .max(100, { message: "Tên cửa hàng không được vượt quá 100 ký tự." })
     .optional(),
-  gender: z.enum(["male", "female", "other"], {
-    message: "Vui lòng chọn giới tính.",
+  gender: z.boolean({
+    required_error: "Vui lòng chọn giới tính.",
   }),
   dateOfBirth: z.date({
     required_error: "Ngày sinh là bắt buộc.",
@@ -55,35 +54,32 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-interface ProfileFormProps {
-  initialData: User;
-}
-
 /**
  * @component ProfileForm
  * @description Form để chỉnh sửa thông tin hồ sơ người dùng.
  * Sử dụng react-hook-form và zod để validation.
  */
-export function ProfileForm({ initialData }: ProfileFormProps) {
+export function ProfileForm(s) {
   const { user , updateProfile } = useUser();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      avatar: initialData?.avatar || "", // Khởi tạo trường avatar
-      username: initialData?.username,
-      email: initialData?.email,
-      phone: initialData?.phone,
-      shopName: initialData?.shopName || "",
-      gender: initialData?.gender || "other",
+      avatar: user?.avatar || "", // Khởi tạo trường avatar
+      username: user?.username,
+      email: user?.email,
+      phone: user?.phone,
+      shopName: user?.shopName || "",
+      // Chuyển đổi giới tính từ chuỗi sang boolean: true cho "male", false cho "female"
+      gender: user?.gender === "male" ? true : false,
       // Tính toán dateOfBirth từ dayOfBirth, monthOfBirth, yearOfBirth
       dateOfBirth:
-        initialData.yearOfBirth &&
-        initialData.monthOfBirth &&
-        initialData.dayOfBirth
+        user.yearOfBirth &&
+        user.monthOfBirth &&
+        user.dayOfBirth
           ? new Date(
-              initialData.yearOfBirth,
-              initialData.monthOfBirth - 1, // Tháng trong JavaScript là 0-indexed
-              initialData.dayOfBirth
+              user.yearOfBirth,
+              user.monthOfBirth - 1, // Tháng trong JavaScript là 0-indexed
+              user.dayOfBirth
             )
           : undefined,
     },
@@ -129,7 +125,8 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
       if (data.file) {
         formData.append("file", data.file);
       }
-      formData.append("gender", data.gender);
+      // Chuyển đổi giá trị boolean của giới tính thành chuỗi để gửi đi
+      formData.append("gender", data.gender ? "true" : "false");
 
       // Xử lý ngày sinh
       if (data.dateOfBirth) {
@@ -240,28 +237,27 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               <FormItem className="space-y-3">
                 <FormLabel>Giới tính</FormLabel>
                 <FormControl>
+                  {/* RadioGroup cho giới tính */}
                   <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    // Khi giá trị thay đổi, chuyển đổi chuỗi "true"/"false" thành boolean
+                    onValueChange={(value) => field.onChange(value === "true")}
+                    // Giá trị mặc định được chuyển đổi từ boolean sang chuỗi "true"/"false"
+                    defaultValue={field.value ? "true" : "false"}
                     className="flex"
                   >
+                    {/* Lựa chọn Nam */}
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value="male" />
+                        <RadioGroupItem value="true" />
                       </FormControl>
                       <FormLabel className="font-normal">Nam</FormLabel>
                     </FormItem>
+                    {/* Lựa chọn Nữ */}
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value="female" />
+                        <RadioGroupItem value="false" />
                       </FormControl>
                       <FormLabel className="font-normal">Nữ</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="other" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Khác</FormLabel>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>

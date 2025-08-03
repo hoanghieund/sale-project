@@ -18,7 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
@@ -45,7 +44,6 @@ const Login = () => {
   const { login, isLoading, error } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
 
   const from = location.state?.from?.pathname || "/";
 
@@ -64,11 +62,7 @@ const Login = () => {
       await login(data.email, data.password);
       navigate(from, { replace: true });
     } catch (error) {
-      toast({
-        title: "Đăng nhập thất bại",
-        description: error.response.data,
-        variant: "destructive",
-      });
+      console.error("Lỗi khi đăng nhập:", error);
     }
   };
 

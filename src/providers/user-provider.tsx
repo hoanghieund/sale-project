@@ -22,7 +22,8 @@ type UserAction =
   | { type: "UPDATE_PROFILE_SUCCESS"; payload: User }
   | { type: "UPDATE_PROFILE_FAILURE"; payload: string }
   | { type: "CLEAR_ERROR" }
-  | { type: "LOAD_USER"; payload: User };
+  | { type: "LOAD_USER"; payload: User }
+  | { type: "FINISH_LOADING" }; // Thêm action mới để kết thúc trạng thái tải
 
 export interface UserState {
   user: User | null;
@@ -32,7 +33,7 @@ export interface UserState {
 
 const initialState: UserState = {
   user: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
 };
 
@@ -85,6 +86,12 @@ function userReducer(state: UserState, action: UserAction): UserState {
         user: action.payload,
       };
 
+    case "FINISH_LOADING": // Xử lý action FINISH_LOADING
+      return {
+        ...state,
+        isLoading: false,
+      };
+
     default:
       return state;
   }
@@ -102,7 +109,23 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const token = userData ? userData.token : null;
       // Nếu có token, thử lấy thông tin user từ API
       if (token) {
-        dispatch({ type: "LOGIN_SUCCESS", payload: userData });
+        try {
+          dispatch({ type: "LOGIN_START" });
+          // Gửi action LOGIN_SUCCESS nếu tải thành công
+          const response = await authService.getUserProfile();
+          dispatch({ type: "LOGIN_SUCCESS", payload: response });
+        } catch (error) {
+          // Ghi lỗi vào console nếu có lỗi trong quá trình tải
+          console.error("Lỗi khi tải thông tin người dùng:", error);
+          // Gửi action LOGIN_FAILURE nếu tải thất bại
+          dispatch({ type: "LOGIN_FAILURE", payload: "Tải thông tin người dùng thất bại" });
+        } finally {
+          // Luôn gửi action FINISH_LOADING để đảm bảo isLoading được đặt lại thành false
+          dispatch({ type: "FINISH_LOADING" });
+        }
+      } else {
+        // Nếu không có token, kết thúc trạng thái tải
+        dispatch({ type: "FINISH_LOADING" });
       }
     };
 
@@ -225,9 +248,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
       // Cập nhật state với thông tin user mới
       dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: updatedUser });
-
-      // Lưu thông tin user vào localStorage
-      localStorage.setItem("userData", JSON.stringify(updatedUser));
 
       // Hiển thị thông báo thành công với useToast
       toast({

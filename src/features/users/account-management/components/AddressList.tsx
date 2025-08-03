@@ -1,8 +1,8 @@
 // src/features/users/account-management/components/AddressList.tsx
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Address } from '@/features/users/account-management/types/address';
+import { cn } from "@/lib/utils";
+import { Address } from "@/types";
 import React, { useState } from 'react';
 import AddressForm from './AddressForm';
 
@@ -11,12 +11,14 @@ import AddressForm from './AddressForm';
  * @description Props cho component AddressList.
  * @property {Address[]} addresses Danh sách các địa chỉ để hiển thị.
  * @property {(address: Address) => void} onUpdateAddress Hàm callback khi cập nhật địa chỉ.
- * @property {(id: string) => void} onDeleteAddress Hàm callback khi xóa địa chỉ.
+ * @property {(id: number) => void} onDeleteAddress Hàm callback khi xóa địa chỉ.
+ * @property {(id: number) => void} onSetDefaultAddress Hàm callback khi đặt địa chỉ mặc định.
  */
 interface AddressListProps {
   addresses: Address[];
   onUpdateAddress: (address: Address) => void;
-  onDeleteAddress: (id: string) => void;
+  onDeleteAddress: (id: number) => void;
+  onSetDefaultAddress: (id: number) => void;
 }
 
 /**
@@ -26,7 +28,7 @@ interface AddressListProps {
  * @param {AddressListProps} props Props của component.
  * @returns {JSX.Element} Element React.
  */
-const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, onDeleteAddress }) => {
+const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, onDeleteAddress, onSetDefaultAddress }) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
 
@@ -43,9 +45,9 @@ const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, o
   /**
    * @function handleDelete
    * @description Xử lý khi nhấn nút "Xóa".
-   * @param {string} id ID của địa chỉ cần xóa.
+   * @param {number} id ID của địa chỉ cần xóa.
    */
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     console.log("Deleting address with ID:", id);
     onDeleteAddress(id);
   };
@@ -53,12 +55,16 @@ const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, o
   /**
    * @function handleFormSubmit
    * @description Xử lý khi form địa chỉ được submit (cập nhật).
-   * @param {Omit<Address, 'id'>} data Dữ liệu địa chỉ từ form.
+   * @param {Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>} data Dữ liệu địa chỉ từ form.
    */
-  const handleFormSubmit = (data: Omit<Address, 'id'>) => {
+  const handleFormSubmit = (data: Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>) => {
     if (editingAddress) {
       // Cập nhật địa chỉ hiện có
-      onUpdateAddress({ ...data, id: editingAddress.id });
+      const updatedAddress: Address = {
+        ...editingAddress, // Giữ lại các trường không thay đổi
+        ...data,
+      };
+      onUpdateAddress(updatedAddress);
     }
     setIsFormOpen(false);
     setEditingAddress(null);
@@ -94,23 +100,52 @@ const AddressList: React.FC<AddressListProps> = ({ addresses, onUpdateAddress, o
           <p className="text-muted-foreground text-center py-4">Bạn chưa có địa chỉ nào.</p>
         ) : (
           addresses.map((address) => (
-            <Card key={address.id} className="p-4 shadow-sm">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="font-semibold">{address.name}</p>
-                  <p className="text-sm text-gray-700">{address.phone}</p>
-                  <p className="text-sm text-gray-700">{address.address}</p>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => handleEdit(address)}>
-                    Sửa
-                  </Button>
-                  <Button variant="destructive" size="sm" onClick={() => handleDelete(address.id)}>
-                    Xóa
-                  </Button>
+            // Mỗi địa chỉ được hiển thị trong một div với kiểu dáng tinh tế
+            <div
+              key={address.id}
+              className={cn(
+                "p-4 border rounded-lg shadow-sm bg-white flex flex-col md:flex-row justify-between items-start md:items-center",
+                address.isCurrent && "border-primary" // Đánh dấu địa chỉ mặc định
+              )}
+            >
+              <div className="flex-grow mb-4 md:mb-0">
+                {/* Tên người nhận và số điện thoại */}
+                <p className="font-semibold text-lg text-gray-900">{address.fullName}</p>
+                <p className="text-sm text-gray-600">{address.phoneNumber}</p>
+                {/* Địa chỉ chi tiết */}
+                <p className="text-sm text-gray-600">
+                  {address.address}, {address.wardName}, {address.districtName}, {address.provinceName}
+                </p>
+                {/* Nhãn cho địa chỉ hiện tại và địa chỉ lấy hàng */}
+                <div className="flex items-center gap-2 mt-1">
+                  {address.isCurrent && (
+                    <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                      Mặc định
+                    </span>
+                  )}
+                  {/* Sử dụng thuộc tính isShop trong Address để hiển thị nhãn này */}
+                  {address.isShop && (
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                      Địa chỉ lấy hàng
+                    </span>
+                  )}
                 </div>
               </div>
-            </Card>
+              {/* Các nút hành động */}
+              <div className="flex flex-col md:flex-row gap-2 flex-shrink-0">
+                {!address.isCurrent && (
+                  <Button variant="outline" size="sm" onClick={() => onSetDefaultAddress(address.id)}>
+                    Đặt làm mặc định
+                  </Button>
+                )}
+                <Button variant="outline" size="sm" onClick={() => handleEdit(address)}>
+                  Sửa
+                </Button>
+                <Button variant="destructive" size="sm" onClick={() => handleDelete(address.id)}>
+                  Xóa
+                </Button>
+              </div>
+            </div>
           ))
         )}
       </div>

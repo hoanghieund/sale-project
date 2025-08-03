@@ -1,5 +1,4 @@
 import ColorCircle from "@/components/common/ColorCircle";
-import QuantitySelector from "@/components/common/QuantitySelector";
 import {
   Accordion,
   AccordionContent,
@@ -7,6 +6,13 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { cartService } from "@/services/cartService";
@@ -209,7 +215,22 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
       {/* Khối số lượng: tăng khoảng cách ở md để thoáng hơn */}
       <div className="flex items-center gap-2 md:gap-3 mb-1">
         <span className="text-gray-700">Số lượng:</span>
-        <QuantitySelector quantity={quantity} onQuantityChange={setQuantity} />
+        <Select
+          value={String(quantity)}
+          onValueChange={value => setQuantity(Number(value))}
+        >
+          <SelectTrigger className="w-24">
+            <SelectValue placeholder="Số lượng" />
+          </SelectTrigger>
+          <SelectContent>
+            {/* Tạo các lựa chọn số lượng từ 1 đến tối đa 10 hoặc số lượng tồn kho */}
+            {[...Array(999)].map((_, i) => (
+              <SelectItem key={i + 1} value={String(i + 1)}>
+                {i + 1}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Actions: stack dọc ở sm, nằm ngang ở md+; khoảng cách lớn hơn */}

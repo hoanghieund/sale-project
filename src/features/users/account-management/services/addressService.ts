@@ -4,7 +4,8 @@
  * @module addressService
  */
 
-import { Address } from '@/features/users/account-management/types/address'; // Import kiểu Address
+import { Address } from "@/types";
+
 
 export const getAddresses = () => {
   console.log("Fetching addresses...");
@@ -19,7 +20,7 @@ export const getAddresses = () => {
 export const addAddress = async (addressData: Omit<Address, 'id'>) => {
   console.log("Adding new address:", addressData);
   // Logic gọi API để thêm địa chỉ mới
-  return Promise.resolve({ ...addressData, id: `mock-id-${Date.now()}` }); // Trả về mock data với id
+  return Promise.resolve({ ...addressData, id: Date.now() }); // Trả về mock data với id là number
 };
 
 /**
@@ -36,9 +37,9 @@ export const updateAddress = async (addressData: Address) => {
 /**
  * @function deleteAddress
  * @description Xóa một địa chỉ.
- * @param {string} id ID của địa chỉ cần xóa.
+ * @param {number} id ID của địa chỉ cần xóa.
  */
-export const deleteAddress = async (id: string) => {
+export const deleteAddress = async (id: number) => {
   console.log("Deleting address with ID:", id);
   // Logic gọi API để xóa địa chỉ
   return Promise.resolve(); // Trả về Promise rỗng khi xóa thành công
