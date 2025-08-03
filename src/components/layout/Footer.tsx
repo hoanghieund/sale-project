@@ -10,13 +10,10 @@ export const FOOTER_LINKS = {
     { label: 'About Us', href: '/about' },
     { label: 'Contact Us', href: '/contact' },
     { label: 'FAQs', href: '/faq' },
-    // Loại bỏ các trang không có trong luồng nghiệp vụ, chuyển hướng đến trang Contact
-    { label: 'Customer Support', href: '/contact' },
   ],
   policy: [
     // Đơn giản hóa các chính sách, chuyển hướng đến các trang có sẵn
     { label: 'Shipping & Returns', href: '/about' },
-    { label: 'Order Tracking', href: '/account' },
     { label: 'Privacy Policy', href: '/privacy-policy' },
     { label: 'Terms of Service', href: '/terms-of-service' },
   ],

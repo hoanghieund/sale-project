@@ -102,11 +102,6 @@ export interface Discount {
 export interface Role {
   id: number; // int(11) trong SQL
   name?: string; // name varchar(255), ví dụ: ROLE_USER, ROLE_ADMIN, ROLE_SHOP_MANAGER
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
 }
 
 // User Token Types - Dựa trên tbl_user_token

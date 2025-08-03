@@ -30,7 +30,7 @@ const FeaturedProductsSection = ({
               product={product}
               showWishlist={true}
               showQuickView={false}
-              simple={false}
+              // simple={false}
             />
           ))}
         </div>

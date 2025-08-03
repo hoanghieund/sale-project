@@ -31,7 +31,7 @@ import {
   ShoppingBag,
   User, // Import LogIn icon
   UserPlus,
-  X
+  X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -47,6 +47,9 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useUser(); // Use useUser hook
+  const isRoleShop = !!user?.roles?.find(role => {
+    return role.name === "ROLE_SHOP_MANAGER";
+  });
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục nổi bật
   const [allCategories, setAllCategories] = useState<Category[]>([]); // State để lưu trữ tất cả dữ liệu danh mục
 
@@ -250,11 +253,23 @@ const Header = () => {
                       >
                         Tài khoản
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => navigate("/seller/dashboard")}
-                      >
-                        Kênh người bán
-                      </DropdownMenuItem>
+                      {isRoleShop ? (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => navigate("/seller/dashboard")}
+                          >
+                            Kênh người bán
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => navigate("/seller-registration")}
+                          >
+                            Đăng ký bán hàng
+                          </DropdownMenuItem>
+                        </>
+                      )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive"
