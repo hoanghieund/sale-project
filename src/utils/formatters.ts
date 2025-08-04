@@ -12,5 +12,7 @@ export const formatCurrencyUSD = (amount: number): string => {
   return amount.toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
+    minimumFractionDigits: 3, // Đảm bảo hiển thị ít nhất 2 chữ số thập phân
+    maximumFractionDigits: 3, // Đảm bảo hiển thị tối đa 2 chữ số thập phân
   });
 };
