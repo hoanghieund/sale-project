@@ -1,0 +1,23 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Vue.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - run: export NVM_DIR=/home/dev/.nvm && source /home/dev/.nvm/nvm.sh && cd /home/dev/actions-runner2/_work/b2c-FE/b2c-FE && npm install && npm run build
+    - run: sudo rm -rf /var/www/html/dist
+    - run: sudo cp -R /home/dev/actions-runner2/_work/b2c-FE/b2c-FE/dist /var/www/html/
+    - run: sudo systemctl restart nginx
+    
