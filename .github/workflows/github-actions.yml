@@ -14,7 +14,13 @@ jobs:
 
     runs-on: self-hosted
     steps:
-    - run: export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    - run: |
+          export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          nvm --version
+          node -v || echo "Node is not installed yet"
+          
     - run: cd /home/dev/actions-runner2/_work/b2c-FE && npm install pnpm -g && pnpm i && pnpm build
     - run: sudo rm -rf /var/www/html/dist
     - run: sudo cp -R /home/dev/actions-runner2/_work/b2c-FE/dist /var/www/html/
