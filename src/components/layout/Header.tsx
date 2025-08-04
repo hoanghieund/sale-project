@@ -347,7 +347,7 @@ const Header = () => {
           <nav className="hidden md:flex py-2 justify-center border-t border-border">
             <NavigationMenu>
               <NavigationMenuList className="gap-8">
-                {featuredCategories.map(item => (
+                {(featuredCategories || []).map(item => (
                   <NavigationMenuItem key={item.id}>
                     {item.child && item.child.length > 0 ? (
                       <>
