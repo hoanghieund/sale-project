@@ -23,6 +23,6 @@ jobs:
           
     - run: cd /home/dev/actions-runner2/_work/b2c-FE/b2c-FE && npm install pnpm -g && pnpm i && pnpm build
     - run: sudo rm -rf /var/www/html/dist
-    - run: sudo cp -R /home/dev/actions-runner2/_work/b2c-FE/dist /var/www/html/
+    - run: sudo cp -R /home/dev/actions-runner2/_work/b2c-FE/b2c-FE/dist /var/www/html/
     - run: sudo systemctl restart nginx
     
