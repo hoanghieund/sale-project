@@ -85,12 +85,18 @@ const Checkout = () => {
     );
   }
 
+  const [paypalOrderId, setPaypalOrderId] = useState<string | null>('');
   // Submit tổng: giữ nguyên logic ban đầu
-  const onSubmit = async (data: CheckoutForm) => {
+  /**
+   * Xử lý gửi biểu mẫu checkout để tạo đơn hàng.
+   * @param data Dữ liệu từ biểu mẫu checkout.
+   * @returns Promise<string> ID đơn hàng PayPal.
+   */
+  const onSubmit = async (data: CheckoutForm): Promise<string> => {
     setIsProcessing(true);
     try {
-      // mô phỏng xử lý thanh toán
-      await orderService.checkout({
+      // Gọi dịch vụ đặt hàng để tạo đơn hàng
+      const response = await orderService.checkout({
         // Chuyển đổi Set selectedItems thành một mảng chuỗi
         lstIdCart: Array.from(selectedItems).map(Number),
         feeShip: 1,
@@ -104,14 +110,19 @@ const Checkout = () => {
           phoneNumber: data.phone,
         },
       });
-      localStorage.removeItem("local_selected_items");
-      toast({
-        title: "Success",
-        description: "Order placed successfully.",
-      });
-      navigate("/account/orders");
+      // Trả về ID đơn hàng PayPal từ phản hồi
+       setPaypalOrderId(response.paypalOrderId);
+      return response.paypalOrderId;
     } catch (error) {
       console.error("Lỗi khi xử lý thanh toán:", error);
+      toast({
+        title: "Lỗi",
+        description: "Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+      // Ném lỗi để PayPal Buttons có thể xử lý
+      // Ném lỗi để PayPal Buttons có thể hiển thị lỗi cho người dùng.
+      throw new Error("Không thể tạo đơn hàng.");
     } finally {
       setIsProcessing(false);
     }
@@ -151,26 +162,35 @@ const Checkout = () => {
                 <PriceSummary summary={cart.summary} />
 
                 <PayPalButtons
-                  style={{ layout: "vertical" , disableMaxWidth: true }}
+                  style={{ layout: "vertical", disableMaxWidth: true }}
                   disabled={!methods.formState.isValid || isProcessing}
-                  createOrder={(_, actions) => {
-                    return actions.order.create({
-                      intent: "CAPTURE", // Thêm intent
-                      purchase_units: [
-                        {
-                          amount: {
-                            currency_code: "USD",
-                            value: cart.summary.total.toFixed(2),
-                          },
-                        },
-                      ],
-                    });
+                  createOrder={async (_, actions) => {
+                    // Xử lý logic tạo đơn hàng và trả về ID đơn hàng
+                    try {
+                      await methods.handleSubmit(onSubmit)();
+                      if (typeof paypalOrderId === 'string') {
+                        return paypalOrderId;
+                      } else {
+                        // Nếu onSubmit không trả về string, có thể là lỗi hoặc không mong muốn
+                        console.error("onSubmit không trả về ID đơn hàng hợp lệ.");
+                        throw new Error("Không thể tạo đơn hàng PayPal.");
+                      }
+                    } catch (error) {
+                      console.error("Lỗi khi gọi onSubmit trong createOrder của PayPal:", error);
+                      // Ném lỗi để PayPal Buttons có thể hiển thị lỗi cho người dùng
+                      throw error;
+                    }
                   }}
                   onApprove={async (data, actions) => {
                     const order = await actions.order.capture();
                     console.log("Order captured:", order);
                     // Gọi hàm onSubmit của bạn sau khi thanh toán thành công
-                    methods.handleSubmit(onSubmit)();
+                    localStorage.removeItem("local_selected_items");
+                    toast({
+                      title: "Success",
+                      description: "Order placed successfully.",
+                    });
+                    navigate("/account/orders");
                   }}
                 />
               </div>
