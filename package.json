@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "cp .env.dev .env && vite build",
-    "build:dev": "cp .env.dev .env && vite build --mode development",
+    "build": "cp env.dev .env && vite build",
+    "build:dev": "cp env.dev .env && vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
   },
