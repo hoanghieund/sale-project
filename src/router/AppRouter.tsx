@@ -31,7 +31,6 @@ const Login = lazy(() => import("@/features/auth/Login"));
 const ForgotPassword = lazy(() => import("@/features/auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/features/auth/ResetPassword"));
 const NotFound = lazy(() => import("@/features/general/NotFound"));
-const OrderSuccess = lazy(() => import("@/features/users/OrderSuccess"));
 const ProductDetailPage = lazy(
   () => import("@/features/users/product-detail/ProductDetailPage")
 );
@@ -83,7 +82,6 @@ const AppRouter = () => {
               {/* Shopping cart và checkout */}
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
-              <Route path="/order-success" element={<OrderSuccess />} />
               {/* User account */}
               {/* <Route path="/wishlist" element={<Wishlist />} /> */}
 

@@ -154,20 +154,14 @@ export interface Category {
 // Address Types - Dựa trên tbl_address
 export interface Address {
   address: string;
-  district: number;
-  districtName: string;
   fullName: string;
   id: number;
   isCurrent: boolean;
   isShop: boolean;
   phoneNumber: string;
-  province: number;
-  provinceName: string;
   shopIdDistrict: number;
   user: User;
   userId: number;
-  wardCode: string;
-  wardName: string;
 }
 
 // User Types - Dựa trên tbl_user

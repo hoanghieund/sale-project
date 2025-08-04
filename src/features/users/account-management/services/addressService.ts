@@ -26,7 +26,7 @@ export const addressService = {
    * @returns Promise với địa chỉ sau khi cập nhật.
    */
   updateAddress: (address: Address) => {
-    return Axios.put(`/api/orderAddress/createOrUpdate`, address);
+    return Axios.post(`/api/orderAddress/createOrUpdate`, address);
   },
 
   /**

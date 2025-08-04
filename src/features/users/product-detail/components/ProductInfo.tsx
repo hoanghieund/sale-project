@@ -242,7 +242,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
         >
           Thêm vào giỏ
         </Button>
-        <Button
+        {/* <Button
           onClick={() => {
             // Mua ngay sản phẩm với biến thể đã chọn
           }}
@@ -250,7 +250,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
           variant="outline"
         >
           Mua ngay
-        </Button>
+        </Button> */}
       </div>
 
       <Accordion type="single" collapsible className="w-full">

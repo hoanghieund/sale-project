@@ -2,23 +2,19 @@ import LoadingSpinner from "@/components/common/LoadingSpinner"; // Import Loadi
 import { useToast } from "@/components/ui/use-toast";
 import { calculateCartSummary } from "@/utils/cartUtils";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CartSummaryCard from "./components/CartSummaryCard";
 import EmptyCartMessage from "./components/EmptyCartMessage";
 import ShopCartSection from "./components/ShopCartSection";
 import { cartService } from "./services/cartService";
-import { CartByShop, CartSummary } from "./types/cart-types";
+import { CartByShop } from "./types/cart-types";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [cartByShop, setCartByShop] = useState<CartByShop[]>([]);
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(false); // Khởi tạo isLoading state
-
-  // State để lưu trữ tóm tắt giỏ hàng
-  const [cartSummary, setCartSummary] = useState<CartSummary>({
-    subtotal: 0,
-    shipping: 0,
-    total: 0,
-  });
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set()); // State để lưu trữ các ID của các sản phẩm được người dùng chọn
 
   /**
    * @function fetchCartData
@@ -29,8 +25,7 @@ const Cart = () => {
     try {
       // Gọi API để lấy giỏ hàng
       const response = await cartService.getCart();
-      setCartByShop(response);
-      setCartSummary(calculateCartSummary(response)); // Tính toán lại tổng tiền sau khi fetch dữ liệu
+      setCartByShop(response);// Tính toán lại tổng tiền sau khi fetch dữ liệu
     } catch (err) {
       toast({
         title: "Error",
@@ -89,10 +84,25 @@ const Cart = () => {
     }
   };
 
+  const handleCheckout = () => {
+    if (selectedItems.size === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one item to checkout.",
+        variant: "destructive",
+      });
+      return;
+    }
+    localStorage.setItem("selectedItems", JSON.stringify(Array.from(selectedItems)));
+    navigate("/checkout");
+  };
+
   // useEffect để tải dữ liệu giỏ hàng khi component mount hoặc user.id thay đổi
   useEffect(() => {
     fetchCartData();
   }, []); // Thêm user.id vào dependency array
+
+  const cartSummary = calculateCartSummary(cartByShop, selectedItems);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -123,6 +133,18 @@ const Cart = () => {
                   shopCart={shopCart}
                   removeFromCart={removeFromCart}
                   updateQuantity={updateQuantity}
+                  selectedItems={selectedItems}
+                  onSelectItem={(value)=>{
+                    setSelectedItems(prev => {
+                      const newSet = new Set(prev);
+                      if (newSet.has(value)) {
+                        newSet.delete(value);
+                      } else {
+                        newSet.add(value);
+                      }
+                      return newSet;
+                    });
+                  }}
                 />
               ))
             )}
@@ -133,6 +155,7 @@ const Cart = () => {
         <CartSummaryCard
           cartSummary={cartSummary}
           disabledCheckout={isLoading}
+          handleCheckout={handleCheckout}
         />
       </div>
     </div>

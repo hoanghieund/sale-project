@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -24,12 +25,16 @@ import { Link } from "react-router-dom";
  * @property {(itemId: number) => void} [removeFromCart] - Hàm tùy chọn để xóa sản phẩm khỏi giỏ hàng.
  * @property {(itemId: number, newQuantity: number) => void} [updateQuantity] - Hàm tùy chọn để cập nhật số lượng sản phẩm.
  * @property {'full' | 'compact'} [viewMode='full'] - Chế độ hiển thị của card: 'full' cho giỏ hàng, 'compact' cho trang thanh toán.
+ * @property {boolean} isSelected - Trạng thái đã chọn của sản phẩm.
+ * @property {(productId: string, isChecked: boolean) => void} onSelect - Hàm callback khi trạng thái chọn thay đổi.
  */
 interface CartItemCardProps {
   item: Cart;
   removeFromCart?: (itemId: number) => void;
   updateQuantity?: (itemId: number, newQuantity: number) => void;
   viewMode?: "full" | "compact";
+  isSelected?: boolean;
+  onSelect?: (productId: string, isChecked: boolean) => void;
 }
 
 /**
@@ -39,12 +44,16 @@ interface CartItemCardProps {
  * @param {CartItemType} props.item - Đối tượng sản phẩm trong giỏ hàng.
  * @param {function} props.removeFromCart - Hàm xử lý khi xóa sản phẩm khỏi giỏ hàng.
  * @param {function} props.updateQuantity - Hàm xử lý khi cập nhật số lượng sản phẩm.
+ * @param {boolean} props.isSelected - Trạng thái đã chọn của sản phẩm.
+ * @param {function} props.onSelect - Hàm xử lý khi chọn hoặc bỏ chọn sản phẩm.
  */
 const CartItemCard = ({
   item,
   removeFromCart,
   updateQuantity,
   viewMode = "full", // Mặc định là chế độ 'full'
+  isSelected,
+  onSelect,
 }: CartItemCardProps) => {
   const { productDTO } = item;
   const variantProduct = useVariantProduct(productDTO);
@@ -53,6 +62,17 @@ const CartItemCard = ({
   return (
     <Card key={item.id} className={isCompactMode ? "p-4" : "p-6"}>
       <div className="flex gap-4">
+        {/* Checkbox for selection */}
+        {!isCompactMode && ( // Chỉ hiển thị checkbox khi không ở chế độ compact
+          <div className="flex items-center">
+            <Checkbox
+              id={item.id.toString()}
+              checked={isSelected}
+              onCheckedChange={(checked) => onSelect(item.id.toString(), checked as boolean)}
+              className="mr-2"
+            />
+          </div>
+        )}
         {/* Product Image */}
         <div
           className={

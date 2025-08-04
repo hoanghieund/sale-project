@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FieldErrors, useFormContext } from "react-hook-form";
@@ -88,13 +87,6 @@ const PaymentSection = ({ header, selector, paymentMethodType, errors }: Props) 
         </div>
       )}
 
-      <div className="flex items-center space-x-2 mt-4">
-        {/* Lưu ý: Checkbox của shadcn là controlled -> đăng ký qua RHF là đủ trong ngữ cảnh này */}
-        <Checkbox id="saveInfo" {...register("saveInfo")} />
-        <Label htmlFor="saveInfo" className="text-sm">
-          Save this information for next time
-        </Label>
-      </div>
     </div>
   );
 };

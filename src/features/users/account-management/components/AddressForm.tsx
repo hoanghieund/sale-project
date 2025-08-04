@@ -119,7 +119,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ initialData, onSubmit, onCanc
           render={({ field }) => (
             <FormItem>
               <FormLabel>Số điện thoại</FormLabel>
-              <FormControl><Input type="number" placeholder="Nhập số điện thoại" {...field} className="w-full" /></FormControl>
+              <FormControl><Input placeholder="Nhập số điện thoại" {...field} className="w-full" /></FormControl>
               <FormMessage />
             </FormItem>
           )}

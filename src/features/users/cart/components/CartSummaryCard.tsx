@@ -7,6 +7,7 @@ import { CartSummary } from "../types/cart-types";
 interface CartSummaryCardProps {
   cartSummary: CartSummary;
   disabledCheckout?: boolean;
+  handleCheckout: () => void;
 }
 
 /**
@@ -15,7 +16,11 @@ interface CartSummaryCardProps {
  * @param {CartSummaryCardProps} props - Props cho component CartSummaryCard.
  * @param {CartSummary} props.cartSummary - Đối tượng chứa các giá trị tổng kết giỏ hàng.
  */
-const CartSummaryCard = ({ cartSummary, disabledCheckout }: CartSummaryCardProps) => {
+const CartSummaryCard = ({
+  cartSummary,
+  disabledCheckout,
+  handleCheckout,
+}: CartSummaryCardProps) => {
   return (
     <div className="bg-card rounded-lg p-6 shadow-sm h-fit border border-border lg:sticky top-32 text-sm">
       <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
@@ -45,8 +50,8 @@ const CartSummaryCard = ({ cartSummary, disabledCheckout }: CartSummaryCardProps
         </div>
       </div>
 
-      <Button className="w-full mt-6" size="lg" disabled={disabledCheckout}>
-        <Link to="/checkout">Proceed to Checkout</Link>
+      <Button onClick={handleCheckout} className="w-full mt-6" size="lg" disabled={disabledCheckout}>
+        Proceed to Checkout
       </Button>
 
       <Link to="/">

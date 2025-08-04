@@ -23,7 +23,7 @@ const Index = () => {
           allProductsResponse,
         ] = await Promise.allSettled([
           productService.getFeaturedProducts(),
-          productService.getAllProductsWithPagination(currentPage - 1, 24), // Lấy tất cả sản phẩm với phân trang
+          productService.getAllProductsWithPagination(currentPage - 1, 25), // Lấy tất cả sản phẩm với phân trang
         ]);
         if (featuredProductsResponse.status === "fulfilled") {
           setFeaturedProducts(featuredProductsResponse.value);

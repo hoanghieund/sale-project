@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PaymentMethod } from "@/types";
 import { CreditCard } from "lucide-react";
+import { useEffect, useState } from "react";
 
 // Interface cho props của component
 interface PaymentMethodSelectorProps {
@@ -31,21 +31,21 @@ const PaymentMethodSelector = ({
   useEffect(() => {
     // Mock data cho phương thức thanh toán
     const mockPaymentMethods: PaymentMethod[] = [
-      {
-        id: 1,
-        name: "Credit Card",
-        status: true,
-      },
+      // {
+      //   id: 1,
+      //   name: "Credit Card",
+      //   status: true,
+      // },
       {
         id: 2,
         name: "PayPal",
         status: true,
       },
-      {
-        id: 3,
-        name: "Bank Transfer",
-        status: true,
-      },
+      // {
+      //   id: 3,
+      //   name: "Bank Transfer",
+      //   status: true,
+      // },
     ];
 
     // Giả lập API call

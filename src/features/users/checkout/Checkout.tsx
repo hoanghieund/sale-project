@@ -22,6 +22,7 @@ import PaymentSection from "./components/sections/PaymentSection";
 import PriceSummary from "./components/sections/PriceSummary";
 import ShippingAddressSection from "./components/sections/ShippingAddressSection";
 import SubmitOrderButton from "./components/sections/SubmitOrderButton";
+import { orderService } from "./services/orderService";
 
 /**
  * CheckoutForm: typing cho toàn bộ form checkout
@@ -29,21 +30,16 @@ import SubmitOrderButton from "./components/sections/SubmitOrderButton";
  */
 export interface CheckoutForm {
   email: string;
-  firstName: string;
-  lastName: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
+  name: string;
   phone: string;
+  address: string;
+  selectedAddressId: string; // ID của địa chỉ đã chọn, hoặc 'other' nếu là địa chỉ khác
   paymentMethodId: number; // ID phương thức thanh toán từ DB
   paymentMethodType: "card" | "paypal"; // loại phương thức cho UI
   cardNumber: string;
   expiryDate: string;
   cvv: string;
   nameOnCard: string;
-  saveInfo: boolean;
   sameAsBilling: boolean;
 }
 
@@ -54,9 +50,11 @@ const Checkout = () => {
     cartByShopList: CartByShop[];
     summary: CartSummary;
   } | null>(null);
-  console.log('🚀 ~ Checkout ~ cart:', cart)
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const selectedItems = new Set<string>(
+    JSON.parse(localStorage.getItem("selectedItems") || "[]")
+  );
 
   /**
    * @function fetchCartData
@@ -68,8 +66,18 @@ const Checkout = () => {
       try {
         setIsLoading(true);
         const response = await cartService.getCart();
-        const summary = calculateCartSummary(response);
-        setCart({ cartByShopList: response, summary });
+        const summary = calculateCartSummary(response, selectedItems);
+        const cartList = response
+          .map(shopCart => {
+            // Lọc cartDTOList để chỉ giữ lại các item có id trong selectedItems
+            const filteredCartDTOList = shopCart.cartDTOList.filter(item =>
+              selectedItems.has(String(item.id))
+            );
+            // Trả về shopCart đã cập nhật với cartDTOList đã lọc
+            return { ...shopCart, cartDTOList: filteredCartDTOList };
+          })
+          .filter(shopCart => shopCart.cartDTOList.length > 0); // Chỉ giữ lại các shopCart có cartDTOList không rỗng
+        setCart({ cartByShopList: cartList, summary });
       } catch (err) {
         const error = err as AxiosError;
         setError(error.message || "Không thể tải giỏ hàng.");
@@ -89,29 +97,28 @@ const Checkout = () => {
   // React Hook Form setup
   const methods = useForm<CheckoutForm>({
     defaultValues: {
-      paymentMethodType: "card",
-      paymentMethodId: 1, // giả định thẻ là mặc định
+      paymentMethodType: "paypal",
+      paymentMethodId: 2, // giả định paypal là mặc định
       sameAsBilling: true,
-      saveInfo: false,
-      country: "United States",
+      selectedAddressId: "other",
     },
     // Tip: có thể thêm resolver của zod/yup nếu muốn nâng cấp validate
   });
 
   const paymentMethodType = methods.watch("paymentMethodType");
   const paymentMethodId = methods.watch("paymentMethodId");
- 
+  const selectedAddressId = methods.watch("selectedAddressId"); // Theo dõi selectedAddressId
+
   // Handler: thay đổi phương thức thanh toán
   const handlePaymentMethodChange = (id: number, type: string) => {
     methods.setValue("paymentMethodId", id);
     methods.setValue("paymentMethodType", type as "card" | "paypal");
   };
- 
+
   // Tối ưu flatMap items để không tính lại khi re-render
   // Đảm bảo allItems được định nghĩa trước bất kỳ return có điều kiện nào
   const allItems = useMemo(
-    () =>
-      cart?.cartByShopList.flatMap((shopCart) => shopCart.cartDTOList) ?? [],
+    () => cart?.cartByShopList.flatMap(shopCart => shopCart.cartDTOList) ?? [],
     [cart]
   );
 
@@ -119,11 +126,11 @@ const Checkout = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        < LoadingSpinner />
+        <LoadingSpinner />
       </div>
     );
   }
- 
+
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8 text-center text-red-500">
@@ -134,7 +141,7 @@ const Checkout = () => {
       </div>
     );
   }
- 
+
   if (!cart || !cart.cartByShopList || cart.cartByShopList.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -147,7 +154,7 @@ const Checkout = () => {
       </div>
     );
   }
- 
+
   // Submit tổng: giữ nguyên logic ban đầu
   const onSubmit = async (data: CheckoutForm) => {
     setIsProcessing(true);
@@ -158,19 +165,27 @@ const Checkout = () => {
       status: OrderStatus.PENDING,
       timeOrder: new Date(),
     };
- 
+    console.log("🚀 ~ onSubmit ~ orderData:", orderData);
+
     try {
       // mô phỏng xử lý thanh toán
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Order data:", orderData);
-      navigate("/order-success");
+      await orderService.checkout({
+        lstIdCart: JSON.parse(localStorage.getItem("selectedItems") || "[]"),
+        feeShip: 1,
+      });
+      localStorage.removeItem("selectedItems");
+      toast({
+        title: "Success",
+        description: "Order placed successfully.",
+      });
+      navigate("/");
     } catch (error) {
       console.error("Lỗi khi xử lý thanh toán:", error);
     } finally {
       setIsProcessing(false);
     }
   };
- 
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
@@ -189,7 +204,9 @@ const Checkout = () => {
               <div className="space-y-8">
                 <ContactInformationSection />
 
-                <ShippingAddressSection />
+                <ShippingAddressSection
+                  isDisabled={selectedAddressId !== "other"}
+                />
 
                 <PaymentSection
                   header="Payment Method"
