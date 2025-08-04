@@ -208,15 +208,15 @@ export interface DashboardStats {
 
 // Order Address Types - Dựa trên tbl_orders_address
 export interface OrderAddress {
-  id: number; // bigint(20) trong SQL
-  address?: string; // address varchar(255)
-  name?: string; // name varchar(255)
-  phone?: string; // phone varchar(255)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
+  id: number;
+  address: string;
+  shopIdDistrict: number;
+  isShop: boolean;
+  phoneNumber: string;
+  fullName: string;
+  isCurrent: boolean;
+  user: any; // Tạm thời là any
+  userId: number | null; // Có thể null
 }
 
 // Payment Method Types - Dựa trên tbl_payment_method
@@ -224,11 +224,6 @@ export interface PaymentMethod {
   id: number; // bigint(20) trong SQL
   name?: string; // name varchar(255)
   status?: boolean; // status tinyint(1)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
 }
 
 // Ship Types - Dựa trên tbl_ship
@@ -237,11 +232,6 @@ export interface Ship {
   name?: string; // name varchar(255)
   price?: number; // price double
   status?: boolean; // status tinyint(1)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
 }
 
 // Image Types - Dựa trên tbl_image
@@ -279,29 +269,23 @@ export interface Cart {
 
 // Order Types - Dựa trên tbl_orders
 export interface Order {
-  id: number; // bigint(20) trong SQL
-  code?: string; // code varchar(255) - order number
-  totalPrice?: number; // total_price double
-  totalQuantity?: number; // total_quantity int(11)
-  feeShip?: number; // fee_ship double
-  status?: number; // status int(11)
-  timeOrder?: Date; // time_order datetime
-  timePay?: Date; // time_pay datetime
-  orderAddressEntityId?: number; // order_address_entity_id bigint(20)
-  paymentMethodEntityId?: number; // payment_method_entity_id bigint(20)
-  shipEntityId?: number; // ship_entity_id bigint(20)
-  userId?: number; // user_id bigint(20)
-  // Relations
-  user?: User; // Thông tin user (optional khi populate)
-  orderAddress?: OrderAddress; // Thông tin địa chỉ (optional khi populate)
-  paymentMethod?: PaymentMethod; // Thông tin thanh toán (optional khi populate)
-  shipEntity?: Ship; // Thông tin vận chuyển (optional khi populate)
-  cartItems?: Cart[]; // Danh sách items trong order
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
+  id: number;
+  address: any; // Dựa trên API, có thể là null hoặc một đối tượng địa chỉ
+  totalQuantity: number;
+  status: number; // 0: Chờ xác nhận, 1: Chờ lấy hàng, 2: Đang giao, 3: Hoàn thành, 4: Đã hủy
+  totalPrice: number;
+  shop: any; // Tạm thời là any, có thể định nghĩa interface Shop sau
+  cartEntities: Cart[];
+  paymentMethod: any; // Tạm thời là any
+  ship: any; // Tạm thời là any
+  timeOrder: string; // "DD-MM-YYYY"
+  timePay: string; // "DD-MM-YYYY"
+  phoneNumber: string;
+  orderAddressDTO: OrderAddress;
+  code: string;
+  sumTotal: number;
+  userDTO: any; // Tạm thời là any, có thể định nghĩa interface UserDTO sau
+  feeShip: number;
 }
 
 // Order Status enum

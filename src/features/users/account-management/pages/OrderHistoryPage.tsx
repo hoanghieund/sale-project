@@ -1,7 +1,7 @@
 // src/features/users/account-management/pages/OrderHistoryPage.tsx
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import React from 'react';
-import OrderTabs from '../components/OrderTabs'; // OrderTabs sẽ chứa OrderList bên trong
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
+import OrderTabs from "../components/OrderTabs"; // OrderTabs sẽ chứa OrderList bên trong
 
 /**
  * @component OrderHistoryPage
@@ -11,7 +11,7 @@ import OrderTabs from '../components/OrderTabs'; // OrderTabs sẽ chứa OrderL
 const OrderHistoryPage: React.FC = () => {
   return (
     <Card className="w-full bg-white">
-      <CardHeader>
+      <CardHeader className="pb-0">
         <CardTitle className="text-lg">Lịch sử đơn hàng</CardTitle>
       </CardHeader>
       <CardContent className="px-4">

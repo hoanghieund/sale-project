@@ -100,7 +100,7 @@ const ProductCardSimple = ({
     >
       <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-lg">
         <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
-          <Link to={`/product/${product.id}`} className="block h-full w-full">
+          <Link to={`/product/${product.id}`} className="block h-full w-full" target="_blank" rel="noopener noreferrer">
             <img
               src={product.imagesDTOList?.[0]?.path || ""}
               alt={product.title}
@@ -172,7 +172,7 @@ const ProductCardSimple = ({
                     className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-primary transition-colors"
                     asChild
                   >
-                    <Link to={`/product/${product.id}`}>
+                    <Link to={`/product/${product.id}`} target="_blank" rel="noopener noreferrer">
                       <Eye className="h-4 w-4" />
                     </Link>
                   </Button>
@@ -202,7 +202,7 @@ const ProductCardSimple = ({
           )}
         </div>
         <CardHeader className="px-4 pt-2 pb-0">
-          <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
+          <Link to={`/product/${product.id}`} className="flex-1 flex flex-col" target="_blank" rel="noopener noreferrer">
             {/* Shop name */}
             <div className="flex items-center gap-1 mb-1">
               <Store className="h-3.5 w-3.5 text-muted-foreground" />
@@ -226,7 +226,7 @@ const ProductCardSimple = ({
           </Link>
         </CardHeader>
         <CardContent className="px-4 pb-2 pt-0">
-          <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
+          <Link to={`/product/${product.id}`} className="flex-1 flex flex-col" target="_blank" rel="noopener noreferrer">
             {/* Rating */}
             <div className="flex items-center gap-2 mb-1">
               <div className="flex items-center">

@@ -60,24 +60,24 @@ const CartItemCard = ({
   const isCompactMode = viewMode === "compact";
 
   return (
-    <Card key={item.id} className={isCompactMode ? "p-4" : "p-6"}>
-      <div className="flex gap-4">
+    <Card key={item.id} className={"p-2 bg-card/50"}>
+      <div className="flex gap-1">
         {/* Checkbox for selection */}
         {!isCompactMode && ( // Chỉ hiển thị checkbox khi không ở chế độ compact
           <div className="flex items-center">
             <Checkbox
               id={item.id.toString()}
               checked={isSelected}
-              onCheckedChange={(checked) => onSelect(item.id.toString(), checked as boolean)}
+              onCheckedChange={checked =>
+                onSelect(item.id.toString(), checked as boolean)
+              }
               className="mr-2"
             />
           </div>
         )}
         {/* Product Image */}
         <div
-          className={
-            isCompactMode ? "w-20 h-20 flex-shrink-0" : "w-32 h-32 flex-shrink-0"
-          }
+          className={"w-20 h-20 flex-shrink-0"}
         >
           <img
             src={item.productDTO?.imagesDTOList?.[0]?.path}
@@ -88,9 +88,9 @@ const CartItemCard = ({
 
         {/* Product Details */}
         <div className="flex-1">
-          <div className="flex justify-between items-start mb-2">
+          <div className="flex justify-between items-start mb-0">
             <div>
-              <h3 className="font-semibold line-clamp-2">
+              <h3 className="font-medium text-sm line-clamp-2">
                 <Link
                   to={`/product/${item.productDTO?.id}`}
                   className="hover:text-primary"
@@ -98,122 +98,116 @@ const CartItemCard = ({
                   {item.productDTO?.title}
                 </Link>
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 by {item.productDTO?.shop?.name || "Unknown Shop"}
               </p>
             </div>
-            {!isCompactMode && removeFromCart && ( // Ẩn nút xóa trong chế độ compact
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => removeFromCart(item.id)}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/20"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
+            {!isCompactMode &&
+              removeFromCart && ( // Ẩn nút xóa trong chế độ compact
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeFromCart(item.id)}
+                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/20"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
           </div>
 
           {/* Product Variant Details (Ẩn trong chế độ compact) */}
-          {!isCompactMode && (
-            <div className="text-sm text-muted-foreground mb-2 flex flex-wrap items-center gap-2">
-              {/* Hàm trợ giúp để tìm tên thuộc tính biến thể */}
-              {(() => {
-                const getVariantName = (
-                  slug: string,
-                  id: number | undefined
-                ) => {
-                  if (!id) return null;
-                  const variantType = variantProduct.find(
-                    (v) => v.slug === slug
-                  );
-                  if (!variantType) return null;
-                  const value = variantType.values.find((val) => val.id === id);
-                  return value ? value.name : null;
-                };
+          <div className="text-xs text-muted-foreground mb-0 flex flex-wrap items-center gap-1">
+            {/* Hàm trợ giúp để tìm tên thuộc tính biến thể */}
+            {(() => {
+              const getVariantName = (slug: string, id: number | undefined) => {
+                if (!id) return null;
+                const variantType = variantProduct.find(v => v.slug === slug);
+                if (!variantType) return null;
+                const value = variantType.values.find(val => val.id === id);
+                return value ? value.name : null;
+              };
 
-                const variantsToDisplay = [];
-                const colorName = getVariantName("colorId", item.colorId);
-                if (colorName) {
-                  const colorHex = getColorValue(colorName);
-                  variantsToDisplay.push(
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center gap-1"
-                    >
-                      Color:
-                      {colorHex && (
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: "12px",
-                            height: "12px",
-                            borderRadius: "50%",
-                            backgroundColor: colorHex,
-                            border: "1px solid #ccc",
-                          }}
-                        ></span>
-                      )}
-                    </Badge>
-                  );
-                }
-                const fitName = getVariantName("fitId", item.fitId);
-                if (fitName) {
-                  variantsToDisplay.push(
-                    <Badge variant="secondary">Fit: {fitName}</Badge>
-                  );
-                }
-                const printLocationName = getVariantName(
-                  "printLocationId",
-                  item.printLocationId
+              const variantsToDisplay = [];
+              const colorName = getVariantName("colorId", item.colorId);
+              if (colorName) {
+                const colorHex = getColorValue(colorName);
+                variantsToDisplay.push(
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    Color:
+                    {colorHex && (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: "12px",
+                          height: "12px",
+                          borderRadius: "50%",
+                          backgroundColor: colorHex,
+                          border: "1px solid #ccc",
+                        }}
+                      ></span>
+                    )}
+                  </Badge>
                 );
-                if (printLocationName) {
-                  variantsToDisplay.push(
-                    <Badge variant="secondary">
-                      Print Location: {printLocationName}
-                    </Badge>
-                  );
-                }
-                const sizeName = getVariantName("sizeId", item.sizeId);
-                if (sizeName) {
-                  variantsToDisplay.push(
-                    <Badge variant="secondary">Size: {sizeName}</Badge>
-                  );
-                }
-
-                return variantsToDisplay.length > 0 ? (
-                  <>
-                    {variantsToDisplay.map((variant, index) => (
-                      <React.Fragment key={index}>{variant}</React.Fragment>
-                    ))}
-                  </>
-                ) : (
-                  <p>No specific variants</p>
+              }
+              const fitName = getVariantName("fitId", item.fitId);
+              if (fitName) {
+                variantsToDisplay.push(
+                  <Badge variant="secondary">Fit: {fitName}</Badge>
                 );
-              })()}
-            </div>
-          )}
+              }
+              const printLocationName = getVariantName(
+                "printLocationId",
+                item.printLocationId
+              );
+              if (printLocationName) {
+                variantsToDisplay.push(
+                  <Badge variant="secondary">
+                    Print Location: {printLocationName}
+                  </Badge>
+                );
+              }
+              const sizeName = getVariantName("sizeId", item.sizeId);
+              if (sizeName) {
+                variantsToDisplay.push(
+                  <Badge variant="secondary">Size: {sizeName}</Badge>
+                );
+              }
 
-          <div className="flex items-center justify-between mt-2">
+              return variantsToDisplay.length > 0 ? (
+                <>
+                  {variantsToDisplay.map((variant, index) => (
+                    <React.Fragment key={index}>{variant}</React.Fragment>
+                  ))}
+                </>
+              ) : (
+                <p>No specific variants</p>
+              );
+            })()}
+          </div>
+
+          <div className="flex items-center justify-between mt-0">
             {productDTO?.priceSale &&
             productDTO.priceSale < productDTO.price ? (
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-lg text-red-600">
+              <div className="flex items-center gap-1">
+                <span className="font-bold text-sm text-red-600">
                   {formatCurrencyUSD(productDTO.priceSale)}
                 </span>
-                <span className="text-gray-500 line-through">
+                <span className="text-gray-500 line-through text-xs">
                   {formatCurrencyUSD(productDTO.price || 0)}
                 </span>
               </div>
             ) : (
-              <div className="font-bold text-lg">
+              <div className="font-bold text-sm">
                 {formatCurrencyUSD(productDTO?.price || 0)}
               </div>
             )}
             {productDTO.discount?.discount_percent > 0 && (
               <Badge
                 variant="secondary"
-                className="bg-red-500 text-white hover:bg-red-600"
+                className="bg-red-500 text-white hover:bg-red-600 text-xs"
               >
                 {/* Công thức tính phần trăm giảm giá: (Giá gốc - Giá khuyến mãi) / Giá gốc * 100 */}
                 -{productDTO.discount?.discount_percent}%
@@ -222,18 +216,18 @@ const CartItemCard = ({
           </div>
 
           {/* Quantity Controls */}
-          <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center justify-between mt-0">
             {/* Component chọn số lượng sử dụng Select */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Quantity:</span>
+            <div className="flex items-center gap-1">
+              <span className="text-xs text-muted-foreground">Quantity:</span>
               {!isCompactMode && updateQuantity ? ( // Ẩn điều khiển số lượng trong chế độ compact
                 <Select
                   value={String(item.quantity)}
-                  onValueChange={(value) =>
+                  onValueChange={value =>
                     updateQuantity(item.id, Number(value))
                   }
                 >
-                  <SelectTrigger className="w-24">
+                  <SelectTrigger className="w-14 h-6">
                     <SelectValue placeholder="Số lượng" />
                   </SelectTrigger>
                   <SelectContent>
@@ -246,12 +240,12 @@ const CartItemCard = ({
                   </SelectContent>
                 </Select>
               ) : (
-                <span className="text-sm text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   {item.quantity}
                 </span>
               )}
             </div>
-            <div className="font-bold">
+            <div className="font-bold text-sm">
               {formatCurrencyUSD(
                 calculatePrice(
                   item.productDTO?.priceSale || item.productDTO?.price || 0,

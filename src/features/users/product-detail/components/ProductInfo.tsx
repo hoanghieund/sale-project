@@ -20,7 +20,6 @@ import { Product } from "@/types";
 import { getColorValue } from "@/utils/colors";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { useVariantProduct } from "@/utils/productUtils";
-import parse from "html-react-parser";
 import { Star } from "lucide-react";
 import { useState } from "react";
 
@@ -43,6 +42,33 @@ interface ProductInfoProps {
  * ProductInfo - Component hiển thị thông tin chi tiết sản phẩm
  * @param {ProductInfoProps} props - Các props của component.
  */
+
+/**
+
+ * @function changeDescription
+
+
+
+ * @description Chuyển đổi chuỗi mô tả sản phẩm, thay thế dấu chấm phẩy bằng thẻ <br /> để hiển thị ngắt dòng.
+
+ * @param {string} description - Chuỗi mô tả sản phẩm.
+
+ * @returns {JSX.Element[]} Một mảng các phần tử JSX, mỗi phần tử là một đoạn văn bản hoặc thẻ <br />.
+ */
+const changeDescription = (description: string) => {
+  const items = description.split(';').filter(item => item.trim() !== ''); // Tách chuỗi và lọc bỏ các mục rỗng
+  if (items.length === 0) {
+    return null; // Không có nội dung để hiển thị
+  }
+  return (
+    <ul className="list-disc pl-5 space-y-1"> {/* Thêm class Tailwind CSS cho list-style và padding */}
+      {items.map((item, index) => (
+        <li key={index}>{item.trim()}</li> // Mỗi mục là một thẻ <li>
+      ))}
+    </ul>
+  );
+};
+
 const ProductInfo = ({ product, className }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const { toast } = useToast();
@@ -262,8 +288,8 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
             {/* Tối ưu typography cho nội dung mô tả, giữ max-width none để full width */}
             <AccordionContent className="prose max-w-none prose-p:my-2 prose-ul:my-2 prose-li:my-1">
               {product.content ? (
-                <div className="text-foreground leading-normal text-sm md:text-base">
-                  {parse(product.content)}
+                <div className="text-foreground leading-normal text-sm">
+                  {changeDescription(product.content)}
                 </div>
               ) : (
                 <p className="text-foreground/50 italic">

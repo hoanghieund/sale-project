@@ -1,15 +1,28 @@
 // src/features/users/account-management/components/OrderList.tsx
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Order } from '@/features/users/account-management/types/order';
-import { format } from 'date-fns';
-import React from 'react';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { getOrdersByUser } from "@/features/users/account-management/services/orderService";
+import CartItemCard from "@/features/users/cart/components/CartItemCard";
+import { useUser } from "@/hooks/use-user";
+import { Order } from "@/types";
+import { formatCurrencyUSD } from "@/utils/formatters";
+import { AxiosError } from "axios";
+import {
+  Calendar,
+  DollarSign,
+  Loader2,
+  MapPin,
+  Package,
+  Phone,
+  User,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 /**
  * @interface OrderListProps
@@ -26,134 +39,189 @@ interface OrderListProps {
  * @returns {JSX.Element} Component OrderList.
  */
 const OrderList: React.FC<OrderListProps> = ({ status }) => {
-  // Dữ liệu giả định cho các đơn hàng
-  const mockOrders: Order[] = [
-    {
-      id: 'ORD001',
-      userId: 'user1',
-      orderDate: '2023-01-15T10:00:00Z',
-      status: 'delivered',
-      totalAmount: 1500000,
-      items: [
-        { productId: 'PROD001', name: 'Áo thun nam', quantity: 1, price: 500000, image: '/assets/0d168f09-ff48-4572-a4c2-4d2d0a235c07.jpg' },
-        { productId: 'PROD002', name: 'Quần jean nữ', quantity: 1, price: 1000000, image: '/assets/1dfab7a2-63d8-4e55-8131-ff595959683b.jpg' },
-      ],
-    },
-    {
-      id: 'ORD002',
-      userId: 'user1',
-      orderDate: '2023-02-20T14:30:00Z',
-      status: 'pending',
-      totalAmount: 750000,
-      items: [
-        { productId: 'PROD003', name: 'Giày thể thao', quantity: 1, price: 750000, image: '/assets/4e44a15e-efe7-43c2-b4b1-10c83a01ae32.jpg' },
-      ],
-    },
-    {
-      id: 'ORD003',
-      userId: 'user1',
-      orderDate: '2023-03-01T09:00:00Z',
-      status: 'processing',
-      totalAmount: 200000,
-      items: [
-        { productId: 'PROD004', name: 'Mũ lưỡi trai', quantity: 2, price: 100000, image: '/assets/4e705d92-5f89-4690-9e02-cc1e494f6ce4.jpg' },
-      ],
-    },
-    {
-      id: 'ORD004',
-      userId: 'user1',
-      orderDate: '2023-03-05T11:45:00Z',
-      status: 'shipped',
-      totalAmount: 1200000,
-      items: [
-        { productId: 'PROD005', name: 'Đồng hồ thông minh', quantity: 1, price: 1200000, image: '/assets/4eb51449-7315-4a2f-8668-f3c764137922.jpg' },
-      ],
-    },
-    {
-      id: 'ORD005',
-      userId: 'user1',
-      orderDate: '2023-04-10T16:00:00Z',
-      status: 'delivered',
-      totalAmount: 300000,
-      items: [
-        { productId: 'PROD006', name: 'Balo du lịch', quantity: 1, price: 300000, image: '/assets/5e57f14e-cff8-4d38-bb4e-25d62a989da2.jpg' },
-      ],
-    },
-    {
-      id: 'ORD006',
-      userId: 'user1',
-      orderDate: '2023-04-12T18:00:00Z',
-      status: 'cancelled',
-      totalAmount: 450000,
-      items: [
-        { productId: 'PROD007', name: 'Tai nghe Bluetooth', quantity: 1, price: 450000, image: '/assets/8d57056f-7742-449c-9658-92c75f7fb2f9.jpg' },
-      ],
-    },
-  ];
+  const { user } = useUser();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      try {
+        const fetchedOrders = await getOrdersByUser({
+          userId: user.id.toString(),
+        });
+        setOrders(fetchedOrders);
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          setError(
+            err.response?.data?.message ||
+              "Không thể tải đơn hàng. Vui lòng thử lại sau."
+          );
+        } else {
+          setError("Đã xảy ra lỗi không xác định.");
+        }
+        console.error("Lỗi khi tải đơn hàng:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [user?.id]);
 
   // Lọc đơn hàng theo trạng thái
-  const filteredOrders = status === 'all'
-    ? mockOrders
-    : mockOrders.filter(order => {
-      if (status === 'pending_confirmation') return order.status === 'pending';
-      if (status === 'awaiting_pickup') return order.status === 'processing';
-      if (status === 'in_delivery') return order.status === 'shipped';
-      if (status === 'completed') return order.status === 'delivered';
-      return false;
-    });
+  const filteredOrders = orders.filter(order => {
+    if (status === "all") return true;
+    if (status === "pending_confirmation") return order.status === 0; // 0: Chờ xác nhận
+    if (status === "awaiting_pickup") return order.status === 1; // 1: Chờ lấy hàng
+    if (status === "in_delivery") return order.status === 2; // 2: Đang giao
+    if (status === "completed") return order.status === 3; // 3: Hoàn thành
+    if (status === "cancelled") return order.status === 4; // 4: Đã hủy
+    return false;
+  });
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <Loader2 className="h-10 w-10 animate-spin text-ring mb-3" />
+        <p className="text-lg text-gray-600 font-medium">
+          Đang tải đơn hàng của bạn...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="w-full max-w-xl mx-auto shadow-lg border-red-200 border-2">
+        <CardHeader className="bg-red-50 p-4 rounded-t-lg">
+          <CardTitle className="text-red-700 text-xl font-bold flex items-center">
+            <span className="mr-2">⚠️</span> Lỗi
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
+          <p className="text-red-600 text-base">{error}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <div className="mt-4">
+    <div className="mt-6 space-y-6">
       {filteredOrders.length === 0 ? (
-        <p className="text-center text-gray-700">Không có đơn hàng nào với trạng thái này.</p>
+        <p className="text-center text-gray-600 py-8 text-base">
+          Không có đơn hàng nào với trạng thái này.
+        </p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID Đơn hàng</TableHead>
-              <TableHead>Ngày đặt</TableHead>
-              <TableHead>Tổng tiền</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead>Sản phẩm</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredOrders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell className="font-medium text-sm">{order.id}</TableCell> {/* Thêm text-sm */}
-                <TableCell className="text-sm">{format(new Date(order.orderDate), 'dd/MM/yyyy HH:mm')}</TableCell> {/* Thêm text-sm */}
-                <TableCell className="text-sm">{order.totalAmount.toLocaleString('vi-VN')} VND</TableCell> {/* Thêm text-sm */}
-                <TableCell className="text-sm"> {/* Thêm text-sm */}
-                  {
-                    order.status === 'pending' ? 'Chờ xác nhận' :
-                    order.status === 'processing' ? 'Chờ lấy hàng' :
-                    order.status === 'shipped' ? 'Đang giao' :
-                    order.status === 'delivered' ? 'Hoàn thành' :
-                    'Đã hủy'
-                  }
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-col gap-2">
-                    {order.items.map(item => (
-                      <div key={item.productId} className="flex items-center gap-2">
-                        {item.image && (
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            width={50} // Thay đổi kích thước hình ảnh
-                            height={50} // Thay đổi kích thước hình ảnh
-                            className="rounded-md object-cover"
-                          />
-                        )}
-                        <span className="text-sm">{item.name} (x{item.quantity})</span> {/* Thêm text-sm */}
-                      </div>
-                    ))}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        filteredOrders.map(order => (
+          <Card
+            key={order.id}
+            className="bg-white shadow-none rounded-lg overflow-hidden"
+          >
+            <CardHeader className="bg-gray-50 p-3 border-b border-border flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-base font-bold text-black flex items-center">
+                  <Package className="h-4 w-4 mr-2 text-ring" /> Đơn hàng #
+                  {order.code}
+                </CardTitle>
+                <CardDescription className="text-xs text-foreground mt-1 flex items-center">
+                  <Calendar className="h-3 w-3 mr-1" /> Ngày đặt:{" "}
+                  {order.timeOrder}
+                </CardDescription>
+              </div>
+              <div className="text-right">
+                {order.status === 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
+                    Chờ xác nhận
+                  </span>
+                )}
+                {order.status === 1 && (
+                  <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 text-xs font-medium">
+                    Chờ lấy hàng
+                  </span>
+                )}
+                {order.status === 2 && (
+                  <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs font-medium">
+                    Đang giao
+                  </span>
+                )}
+                {order.status === 3 && (
+                  <span className="px-2 py-0.5 rounded-full bg-green-100 text-ring text-xs font-medium">
+                    Hoàn thành
+                  </span>
+                )}
+                {order.status === 4 && (
+                  <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-xs font-medium">
+                    Đã hủy
+                  </span>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className="p-3 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <h4 className="font-semibold text-foreground flex items-center">
+                    <User className="h-3 w-3 mr-1" /> Thông tin người nhận:
+                  </h4>
+                  <p className="text-xs text-gray-600 ml-4">
+                    {order.orderAddressDTO?.fullName || "N/A"}
+                  </p>
+                  <p className="text-xs text-gray-600 ml-4 flex items-center">
+                    <Phone className="h-3 w-3 mr-1" />{" "}
+                    {order.orderAddressDTO?.phoneNumber || "N/A"}
+                  </p>
+                  <p className="text-xs text-gray-600 ml-4 flex items-center">
+                    <MapPin className="h-3 w-3 mr-1" />{" "}
+                    {`${order.orderAddressDTO?.address}` ||
+                      "N/A"}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-semibold text-foreground flex items-center">
+                    <DollarSign className="h-3 w-3 mr-1" /> Tổng tiền:
+                  </h4>
+                  <p className="text-base font-bold text-ring ml-4">
+                    {formatCurrencyUSD(order.totalPrice)}
+                  </p>
+                  <h4 className="font-semibold text-foreground flex items-center">
+                    <Package className="h-3 w-3 mr-1" /> Tổng sản phẩm:
+                  </h4>
+                  <p className="text-xs text-gray-600 ml-4">
+                    {order.cartEntities.reduce(
+                      (sum, item) => sum + item.quantity,
+                      0
+                    )}{" "}
+                    sản phẩm
+                  </p>
+                </div>
+              </div>
+
+              <Separator className="my-3" />
+
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">
+                  Sản phẩm đã đặt:
+                </h4>
+                <div className="space-y-2">
+                  {order.cartEntities.map(item => (
+                    <CartItemCard
+                      key={item.id}
+                      item={item}
+                      viewMode="compact"
+                    />
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))
       )}
     </div>
   );

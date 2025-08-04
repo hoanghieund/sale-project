@@ -165,13 +165,18 @@ const Checkout = () => {
       status: OrderStatus.PENDING,
       timeOrder: new Date(),
     };
-    console.log("🚀 ~ onSubmit ~ orderData:", orderData);
 
     try {
       // mô phỏng xử lý thanh toán
       await orderService.checkout({
         lstIdCart: JSON.parse(localStorage.getItem("selectedItems") || "[]"),
         feeShip: 1,
+        orderAddressDTO :{
+          id: data.selectedAddressId === "other" ? null : Number(data.selectedAddressId),
+          fullName: data.name,
+          address: data.address,
+          phoneNumber: data.phone,
+        }
       });
       localStorage.removeItem("selectedItems");
       toast({
