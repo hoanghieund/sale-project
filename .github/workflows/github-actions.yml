@@ -18,6 +18,8 @@ jobs:
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+          node -v
           
     - run: cd /home/dev/actions-runner2/_work/b2c-FE && npm install pnpm -g && pnpm i && pnpm build
     - run: sudo rm -rf /var/www/html/dist
