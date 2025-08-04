@@ -1,108 +1,57 @@
-import LoadingSpinner from "@/components/common/LoadingSpinner"; // Import LoadingSpinner
-import { useToast } from "@/components/ui/use-toast";
-import { calculateCartSummary } from "@/utils/cartUtils";
-import { useEffect, useState } from "react";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label"; // Import Label component
+import { useCart } from "@/providers/cart-provider";
 import { useNavigate } from "react-router-dom";
 import CartSummaryCard from "./components/CartSummaryCard";
 import EmptyCartMessage from "./components/EmptyCartMessage";
 import ShopCartSection from "./components/ShopCartSection";
-import { cartService } from "./services/cartService";
-import { CartByShop } from "./types/cart-types";
 
+/**
+ * @component Cart
+ * @description Component hiển thị giỏ hàng với các sản phẩm đã được thêm.
+ * Sử dụng CartProvider context để quản lý state và logic cart.
+ * Hiển thị danh sách sản phẩm theo cửa hàng và form checkout.
+ */
 const Cart = () => {
+  // Navigation hook để điều hướng đến trang checkout
   const navigate = useNavigate();
-  const [cartByShop, setCartByShop] = useState<CartByShop[]>([]);
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState<boolean>(false); // Khởi tạo isLoading state
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set()); // State để lưu trữ các ID của các sản phẩm được người dùng chọn
+
+  // Sử dụng custom hook để truy cập Cart context
+  const {
+    cartByShop,
+    isLoading,
+    selectedItems,
+    cartSummary,
+    removeFromCart,
+    updateQuantity,
+    prepareCheckout,
+    onSelectItem,
+    onSelectAll, // Thêm onSelectAll từ useCart hook
+  } = useCart();
+
+  // Tính toán trạng thái checked của checkbox "Chọn tất cả sản phẩm"
+  const isAllSelected =
+    cartByShop.length > 0 &&
+    cartByShop.every(shopCart =>
+      shopCart.cartDTOList.every(item => selectedItems.has(item.id.toString()))
+    );
 
   /**
-   * @function fetchCartData
-   * @description Lấy dữ liệu giỏ hàng từ API và cập nhật state.
+   * @function handleCheckout
+   * @description Xử lý checkout: chuẩn bị dữ liệu và điều hướng đến trang checkout.
+   * Sử dụng prepareCheckout từ context để validate và chuẩn bị dữ liệu.
    */
-  const fetchCartData = async () => {
-    setIsLoading(true); // Đặt isLoading thành true trước khi gọi API
-    try {
-      // Gọi API để lấy giỏ hàng
-      const response = await cartService.getCart();
-      setCartByShop(response);// Tính toán lại tổng tiền sau khi fetch dữ liệu
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Failed to load cart. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false); // Đặt isLoading thành false trong khối finally
-    }
-  };
-
-  /**
-   * @function removeFromCart
-   * @description Xóa một mặt hàng khỏi giỏ hàng. Nếu cửa hàng không còn mặt hàng nào, xóa cả cửa hàng đó.
-   * @param {number} itemId - ID của mặt hàng cần xóa.
-   */
-  const removeFromCart = async (itemId: number) => {
-    try {
-      await cartService.removeCartItem(itemId.toString()); // Chuyển itemId sang string nếu API yêu cầu
-      toast({
-        title: "Success",
-        description: "Product removed from cart.",
-      });
-      fetchCartData(); // Tải lại giỏ hàng sau khi xóa
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Failed to remove product from cart. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  /**
-   * @function updateQuantity
-   * @description Cập nhật số lượng của một mặt hàng trong giỏ hàng.
-   * @param {number} itemId - ID của mặt hàng cần cập nhật.
-   * @param {number} newQuantity - Số lượng mới.
-   */
-  const updateQuantity = async (itemId: number, newQuantity: number) => {
-    if (newQuantity < 1) return; // Đảm bảo số lượng không nhỏ hơn 1
-    try {
-      setIsLoading(true); // Đặt isLoading thành true khi bắt đầu cập nhật
-      await cartService.updateCartItemQuantity(itemId.toString(), newQuantity);
-      toast({
-        title: "Success",
-        description: "Cart quantity updated.",
-      });
-      fetchCartData(); // Tải lại giỏ hàng sau khi cập nhật
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Failed to update quantity. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleCheckout = () => {
-    if (selectedItems.size === 0) {
-      toast({
-        title: "Error",
-        description: "Please select at least one item to checkout.",
-        variant: "destructive",
-      });
-      return;
+    // Gọi prepareCheckout để validate và chuẩn bị dữ liệu
+    const selectedItemsArray = prepareCheckout();
+
+    // Nếu chuẩn bị thành công, điều hướng đến trang checkout
+    if (selectedItemsArray) {
+      navigate("/checkout");
     }
-    localStorage.setItem("selectedItems", JSON.stringify(Array.from(selectedItems)));
-    navigate("/checkout");
+    // Nếu không thành công, prepareCheckout đã hiển thị toast error
   };
-
-  // useEffect để tải dữ liệu giỏ hàng khi component mount hoặc user.id thay đổi
-  useEffect(() => {
-    fetchCartData();
-  }, []); // Thêm user.id vào dependency array
-
-  const cartSummary = calculateCartSummary(cartByShop, selectedItems);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -111,6 +60,23 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
+          {cartByShop.length > 0 && (
+            <div className="flex items-center space-x-2 mb-4">
+              {/* Checkbox component từ shadcn/ui */}
+              <Checkbox
+                id="select-all-products"
+                checked={isAllSelected} // Cập nhật trạng thái checked dựa trên isAllSelected
+                onCheckedChange={onSelectAll} // Kết nối onCheckedChange với onSelectAll
+              />
+              {/* Label cho checkbox */}
+              <Label
+                htmlFor="select-all-products"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Chọn tất cả sản phẩm
+              </Label>
+            </div>
+          )}
           {/*
             Điều chỉnh hiển thị LoadingSpinner:
             - Đặt spinner bên trong div chứa nội dung giỏ hàng.
@@ -118,7 +84,11 @@ const Cart = () => {
             - Sử dụng `relative` trên div cha và `absolute inset-0` trên div của spinner
               để spinner phủ lên toàn bộ khu vực nội dung.
           */}
-          <div className={`relative ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
+          <div
+            className={`relative ${
+              isLoading ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center z-10">
                 <LoadingSpinner />
@@ -134,17 +104,7 @@ const Cart = () => {
                   removeFromCart={removeFromCart}
                   updateQuantity={updateQuantity}
                   selectedItems={selectedItems}
-                  onSelectItem={(value)=>{
-                    setSelectedItems(prev => {
-                      const newSet = new Set(prev);
-                      if (newSet.has(value)) {
-                        newSet.delete(value);
-                      } else {
-                        newSet.add(value);
-                      }
-                      return newSet;
-                    });
-                  }}
+                  onSelectItem={onSelectItem}
                 />
               ))
             )}

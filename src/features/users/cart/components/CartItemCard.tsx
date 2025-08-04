@@ -77,7 +77,7 @@ const CartItemCard = ({
         )}
         {/* Product Image */}
         <div
-          className={"w-20 h-20 flex-shrink-0"}
+          className={"w-20 h-full flex-shrink-0"}
         >
           <img
             src={item.productDTO?.imagesDTOList?.[0]?.path}

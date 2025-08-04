@@ -257,10 +257,10 @@ export interface Cart {
   // Các trường bổ sung từ API response
   cartIds?: number[] | null; // IDs của cart items
   name?: string | null; // Tên sản phẩm
-  fitId?: number | null; // ID của fit
-  printLocationId?: number | null; // ID của vị trí in
-  colorId?: number | null; // ID của màu sắc
-  sizeId?: number | null; // ID của kích thước
+  fitId: number | null; // ID của fit
+  printLocationId: number | null; // ID của vị trí in
+  colorId: number | null; // ID của màu sắc
+  sizeId: number | null; // ID của kích thước
   // Relations
   shop: Shop; // Thông tin shop
   productDTO?: Product; // Thông tin product từ API

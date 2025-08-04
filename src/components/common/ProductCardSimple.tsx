@@ -99,7 +99,7 @@ const ProductCardSimple = ({
       data-testid="product-card"
     >
       <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-lg">
-        <div className="aspect-square bg-muted flex items-center justify-center relative overflow-hidden">
+        <div className="bg-muted flex items-center justify-center relative overflow-hidden">
           <Link to={`/product/${product.id}`} className="block h-full w-full" target="_blank" rel="noopener noreferrer">
             <img
               src={product.imagesDTOList?.[0]?.path || ""}

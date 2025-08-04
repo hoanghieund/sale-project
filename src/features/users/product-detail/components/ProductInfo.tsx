@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { cartService } from "@/services/cartService";
+import { useCart } from "@/providers/cart-provider";
 import { Product } from "@/types";
 import { getColorValue } from "@/utils/colors";
 import { formatCurrencyUSD } from "@/utils/formatters";
@@ -56,12 +56,14 @@ interface ProductInfoProps {
  * @returns {JSX.Element[]} Một mảng các phần tử JSX, mỗi phần tử là một đoạn văn bản hoặc thẻ <br />.
  */
 const changeDescription = (description: string) => {
-  const items = description.split(';').filter(item => item.trim() !== ''); // Tách chuỗi và lọc bỏ các mục rỗng
+  const items = description.split(";").filter(item => item.trim() !== ""); // Tách chuỗi và lọc bỏ các mục rỗng
   if (items.length === 0) {
     return null; // Không có nội dung để hiển thị
   }
   return (
-    <ul className="list-disc pl-5 space-y-1"> {/* Thêm class Tailwind CSS cho list-style và padding */}
+    <ul className="list-disc pl-5 space-y-1">
+      {" "}
+      {/* Thêm class Tailwind CSS cho list-style và padding */}
       {items.map((item, index) => (
         <li key={index}>{item.trim()}</li> // Mỗi mục là một thẻ <li>
       ))}
@@ -72,6 +74,8 @@ const changeDescription = (description: string) => {
 const ProductInfo = ({ product, className }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const { toast } = useToast();
+  // Sử dụng custom hook để truy cập Cart context
+  const { addToCart, isLoading: isCartLoading } = useCart();
 
   // Lưu trữ các giá trị biến thể đã chọn theo variantId
   const [selectedVariantValues, setSelectedVariantValues] = useState<
@@ -90,6 +94,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
    * @function handleAddToCart
    * @description Xử lý logic khi người dùng nhấn nút "Thêm vào giỏ".
    * Kiểm tra xem tất cả các biến thể đã được chọn chưa trước khi thêm vào giỏ.
+   * Sử dụng addToCart từ CartProvider để thêm sản phẩm vào giỏ hàng.
    */
   const handleAddToCart = async () => {
     // Nếu nút bị vô hiệu hóa (tức là chưa chọn đủ biến thể), hiển thị lỗi và dừng.
@@ -104,28 +109,22 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
     }
 
     try {
-      // Gọi API thêm vào giỏ hàng
-      await cartService.addToCart(
-        { id: product.id },
+      // Sử dụng addToCart từ CartProvider thay vì gọi API trực tiếp
+      await addToCart(
+        product,
         selectedVariantValues.fitId,
         selectedVariantValues.printLocationId,
         selectedVariantValues.colorId,
         selectedVariantValues.sizeId,
         quantity
       );
-      toast({
-        title: "Thành công",
-        description: "Đã thêm sản phẩm vào giỏ hàng.",
-      });
+
+      // Reset form sau khi thêm thành công
       setQuantity(1);
       setSelectedVariantValues({});
     } catch (error) {
+      // Error handling đã được xử lý trong CartProvider
       console.log("🚀 ~ handleAddToCart ~ error:", error);
-      toast({
-        title: "Lỗi",
-        description: "Không thể thêm sản phẩm vào giỏ hàng.",
-        variant: "destructive",
-      });
     }
   };
 
@@ -264,7 +263,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
         <Button
           onClick={() => handleAddToCart()}
           className="w-full md:flex-1"
-          disabled={isAddToCartDisabled} // Vô hiệu hóa nút nếu biến thể chưa được chọn đầy đủ
+          disabled={isAddToCartDisabled || isCartLoading} // Vô hiệu hóa nút nếu biến thể chưa được chọn đầy đủ
         >
           Thêm vào giỏ
         </Button>

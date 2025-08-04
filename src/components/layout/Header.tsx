@@ -23,13 +23,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useCart } from "@/providers/cart-provider";
 import {
   ChevronDown,
   LogIn,
   Menu,
   Search,
   ShoppingBag,
-  User, // Import LogIn icon
+  User,
   UserPlus,
   X,
 } from "lucide-react";
@@ -39,6 +40,7 @@ import { useUser } from "../../hooks/use-user"; // Import useUser hook
 import { categoryService } from "../../services/categoryService"; // Import categoryService
 import { Category } from "../../types"; // Import Category type
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,6 +49,7 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useUser(); // Use useUser hook
+  const { getCartItemsCount } = useCart();
   const isRoleShop = !!user?.roles?.find(role => {
     return role.name === "ROLE_SHOP_MANAGER";
   });
@@ -234,6 +237,23 @@ const Header = () => {
 
             {/* Icons */}
             <div className="flex items-center gap-4">
+              <Link to="/cart" className="relative">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative rounded-full hover:bg-primary/10"
+                >
+                  <ShoppingBag className="h-5 w-5" />
+                  {getCartItemsCount() > 0 && (
+                    <Badge
+                      variant="destructive"
+                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                    >
+                      {getCartItemsCount()}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
               {isAuthenticated ? (
                 <>
                   <DropdownMenu>
@@ -299,24 +319,6 @@ const Header = () => {
                       )}
                     </Button>
                   </Link> */}
-
-                  <Link to="/cart" className="relative">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="relative rounded-full hover:bg-primary/10"
-                    >
-                      <ShoppingBag className="h-5 w-5" />
-                      {/* {getCartItemsCount() > 0 && (
-                        <Badge
-                          variant="destructive"
-                          className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                        >
-                          {getCartItemsCount()}
-                        </Badge>
-                      )} */}
-                    </Button>
-                  </Link>
                 </>
               ) : (
                 <div className="flex items-center gap-2">

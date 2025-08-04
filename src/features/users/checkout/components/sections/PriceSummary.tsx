@@ -12,7 +12,7 @@ interface Props {
 
 const PriceSummary = ({ summary }: Props) => {
   return (
-      <div className="space-y-2">
+      <div className="space-y-2 mb-4">
         <div className="flex justify-between">
           <span>Subtotal</span>
           <span>{formatCurrencyUSD(summary.subtotal)}</span>

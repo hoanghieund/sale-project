@@ -57,6 +57,11 @@ const ShippingAddressSection = ({ isDisabled }: ShippingAddressSectionProps) => 
             {...register("phone", { required: "Phone number is required" })}
             disabled={isDisabled}
           />
+          {errors.phone && (
+            <p className="text-sm text-destructive mt-1">
+              {errors.phone.message}
+            </p>
+          )}
         </div>
       </div>
     </div>

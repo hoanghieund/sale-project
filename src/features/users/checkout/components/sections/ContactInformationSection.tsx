@@ -17,6 +17,7 @@ const ContactInformationSection = () => {
     formState: { errors },
     setValue,
     watch,
+    trigger,
   } = useFormContext<CheckoutForm>();
   const { user } = useUser(); // Sử dụng hook useUser để lấy thông tin người dùng
 
@@ -49,9 +50,11 @@ const ContactInformationSection = () => {
    */
   const applyAddressToForm = (address: Address) => {
     // Gán firstName và lastName, sử dụng fullName nếu firstName/lastName không tồn tại
-    setValue("name", address.fullName);
-    setValue("address", address.address);
-    setValue("phone", address.phoneNumber);
+    setValue("name", address.fullName, { shouldValidate: true });
+    setValue("address", address.address, { shouldValidate: true });
+    setValue("phone", address.phoneNumber, { shouldValidate: true });
+    // Trigger validation after setting all fields
+    trigger();
     // Các trường city, state, zipCode, country không được cập nhật theo yêu cầu
   };
 
@@ -64,9 +67,10 @@ const ContactInformationSection = () => {
     setValue("selectedAddressId", addressId); // Cập nhật selectedAddressId qua react-hook-form
     if (addressId === "other") {
       // Xóa các trường form liên quan đến địa chỉ khi chọn "Other"
-      setValue("name", "");
-      setValue("address", "");
-      setValue("phone", "");
+      setValue("name", "", { shouldValidate: true });
+      setValue("address", "", { shouldValidate: true });
+      setValue("phone", "", { shouldValidate: true });
+      trigger();
     } else {
       const address = addresses.find(addr => addr.id.toString() === addressId);
       if (address) {
@@ -83,15 +87,18 @@ const ContactInformationSection = () => {
       // Tìm địa chỉ mặc định (isCurrent)
       const defaultAddress = addresses.find(addr => addr.isCurrent);
       if (defaultAddress) {
-        setValue("selectedAddressId", defaultAddress.id.toString()); // Cập nhật qua react-hook-form
+        setValue("selectedAddressId", defaultAddress.id.toString(), { shouldValidate: true }); // Cập nhật qua react-hook-form
         applyAddressToForm(defaultAddress);
+        trigger();
       } else if (addresses.length > 0) {
         // Nếu không có địa chỉ mặc định, nhưng có địa chỉ, chọn địa chỉ đầu tiên
-        setValue("selectedAddressId", addresses[0].id.toString()); // Cập nhật qua react-hook-form
+        setValue("selectedAddressId", addresses[0].id.toString(), { shouldValidate: true }); // Cập nhật qua react-hook-form
         applyAddressToForm(addresses[0]);
+        trigger();
       } else {
         // Nếu không có địa chỉ nào, đặt selectedAddressId là 'other'
-        setValue("selectedAddressId", "other");
+        setValue("selectedAddressId", "other", { shouldValidate: true });
+        trigger();
       }
     }
   }, [addresses]);

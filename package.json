@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "cp env.dev .env && vite",
     "build": "cp env.dev .env && vite build",
     "build:dev": "cp env.dev .env && vite build --mode development",
     "lint": "eslint .",
@@ -14,6 +14,7 @@
     "@21st-extension/react": "^0.5.14",
     "@21st-extension/toolbar-react": "^0.5.14",
     "@hookform/resolvers": "^3.9.0",
+    "@paypal/react-paypal-js": "^8.8.3",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",

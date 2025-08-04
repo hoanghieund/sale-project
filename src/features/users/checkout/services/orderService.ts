@@ -7,6 +7,6 @@ export const orderService = {
    * @returns Promise với thông tin đơn hàng
    */
   checkout: (orderData: any) => {
-    return Axios.post(`/api/order/order`, orderData);
+    return Axios.post(`/api/order/create-paypal-order`, orderData);
   },
 };
