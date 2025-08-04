@@ -49,10 +49,10 @@ const Index = () => {
     <div>
       <HeroSection />
 
-      <FeaturedProductsSection products={featuredProducts} />
+      <FeaturedProductsSection products={featuredProducts ?? []} />
 
       <AllProductsSection
-        products={allProducts}
+        products={allProducts ?? []}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
