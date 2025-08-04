@@ -14,8 +14,8 @@ jobs:
 
     runs-on: self-hosted
     steps:
-    - run: export NVM_DIR=~/.nvm
-    - run: source ~/.nvm/nvm.sh
+    - run: export NVM_DIR=/home/dev/.nvm
+    - run: source /home/dev/.nvm/nvm.sh
     - run: cd /home/dev/actions-runner2/_work/b2c-FE/b2c-FE && npm install pnpm -g && pnpm i && pnpm build
     - run: sudo rm -rf /var/www/html/dist
     - run: sudo cp -R /home/dev/actions-runner2/_work/b2c-FE/b2c-FE/dist /var/www/html/
