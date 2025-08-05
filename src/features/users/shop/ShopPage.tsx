@@ -4,22 +4,14 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
 import { Category, Product, Shop } from "@/types";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getProductsByShopId } from "./services/shopServices";
 // Import Breadcrumb from shadcn to replace manual breadcrumb
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
-import InputNumber from "@/components/common/InputNumber";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -27,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Star } from "lucide-react";
 // Tabs removed as no longer in use
 
@@ -50,12 +41,12 @@ const ShopPage = () => {
   // State for the new filtering system
   const [filters, setFilters] = useState({
     currentPage: 0,
-    pageSize: 20,
+    pageSize: 12,
     listIdChild: [] as number[],
     popular: false,
     latest: false,
     bestSell: false,
-    price: "",
+    price: true,
     priceFrom: "",
     priceTo: "",
   });
@@ -220,7 +211,7 @@ const ShopPage = () => {
       {/* Shop Info (refactored to Shadcn UI Card) */}
       <div className="container mx-auto px-4 -mt-20 relative z-10">
         {/* Using Card to ensure UI consistency and accessibility */}
-        <Card className="mb-8 shadow-lg bg-white">
+        <Card className="mb-8 shadow-sm bg-white">
           {/*
             Optimized CardHeader layout:
             - Main axis: Avatar | Shop information (name + short description + stats) | Actions
@@ -260,9 +251,7 @@ const ShopPage = () => {
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                   {/* Average Rating */}
                   <div className="flex items-center gap-4">
-                    <div className="text-xs text-muted-foreground">
-                      Rating
-                    </div>
+                    <div className="text-xs text-muted-foreground">Rating</div>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-0.5">
                         <span className="text-base font-medium">
@@ -305,244 +294,76 @@ const ShopPage = () => {
           </CardHeader>
         </Card>
 
-        {/* CATEGORY + PRODUCT AREA (Tabs system removed) */}
-        <Card className="mb-8 border border-border rounded-xl shadow-sm bg-white">
-          {/* Suggested shop categories: derived from products[0]?.categoryDto and expanded into unique categories */}
-          <CardHeader className="pb-2">
-            {/* Title and filters */}
-            <div className="space-y-4">
-              <div>
-                <CardTitle className="text-xl">Shop Products</CardTitle>
-                <CardDescription>
-                  Search and filter products according to your needs
-                </CardDescription>
-              </div>
-
-              {/* Category strip displayed above the product grid */}
-              <div>
-                <h3 className="text-base font-semibold mb-3 text-foreground">
-                  Related Categories
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {/*
-                    Clearly display Category vs Subcategory:
-                    - With parent: display "Category" badge for parent and "Sub" badge for current, separated by "›"
-                    - Without parent: display "Category" badge for itself
-                    Maintain style according to design-system, use colors from shadcn: badge outline + text-muted-foreground for easy differentiation.
-                  */}
-                  {categories.length > 0 ? (
-                    categories?.map((cat: Category) => {
-                      if (cat?.parent) {
-                        // With parent: display Category (parent) › Subcategory (current) pair
-                        return (
-                          <div
-                            key={`${cat.parent.id}-${cat.id}`}
-                            className="flex flex-wrap items-center gap-2 rounded-md border border-gray-100 p-2"
-                          >
-                            {/* Badge & link for Category (parent) */}
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground px-2 py-0.5 border border-border rounded">
-                                Category
-                              </span>
-                              <Button variant="outline" asChild className="h-8">
-                                <Link
-                                  to={`/category/${cat.parent.id}`}
-                                  className="text-sm"
-                                >
-                                  {cat.parent.name}
-                                </Link>
-                              </Button>
-                            </div>
-
-                            {/* Visual separator character */}
-                            <span className="text-muted-foreground">›</span>
-
-                            {/* Badge & link for Subcategory (current) */}
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground px-2 py-0.5 border border-border rounded">
-                                Sub
-                              </span>
-                              <Button variant="outline" asChild className="h-8">
-                                <Link
-                                  to={`/category/${cat.id}`}
-                                  className="text-sm"
-                                >
-                                  {cat.name}
-                                </Link>
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      }
-
-                      // Without parent: it is the Category itself
-                      return (
-                        <div
-                          key={cat.id}
-                          className="flex items-center gap-2 rounded-md border border-gray-100 p-2"
-                        >
-                          <span className="text-xs text-muted-foreground px-2 py-0.5 border border-border rounded">
-                            Category
-                          </span>
-                          <Button variant="outline" asChild className="h-8">
-                            <Link
-                              to={`/category/${cat.id}`}
-                              className="text-sm"
-                            >
-                              {cat.name}
-                            </Link>
-                          </Button>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <span className="text-sm text-muted-foreground">
-                      No categories yet
-                    </span>
-                  )}
-                </div>
-              </div>
+        {/* LAYOUT CHÍNH: SIDEBAR + CONTENT */}
+        <div className="flex flex-col lg:flex-row gap-6 mb-8">
+          {/* SIDEBAR BÊN TRÁI - BỘ LỌC */}
+          <div className="w-full lg:w-64 lg:flex-shrink-0 mb-6 lg:mb-0">
+            <div className="px-4 py-2">
+              <h3 className="text-lg font-semibold">Categories</h3>
             </div>
-          </CardHeader>
-
-          <Separator className="mx-6" />
-
-          <CardContent className="pt-6 space-y-6">
-            {/* Product filters */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Filter by special type */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Product Type</Label>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="popular"
-                      checked={filters.popular}
-                      onCheckedChange={checked =>
-                        setFilters(prev => ({
-                          ...prev,
-                          popular: !!checked,
-                          currentPage: 0,
-                        }))
-                      }
-                    />
-                    <Label htmlFor="popular" className="text-sm">
-                      Popular
-                    </Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-1">
+              {/* Categories */}
+              <div className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer lg:border-r-2">
+                <p className="text-sm">All</p>
+              </div>
+              {categories.length > 0 &&
+                categories.map((cat: Category) => (
+                  <div
+                    key={cat.id}
+                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer lg:border-r-2"
+                  >
+                    <p className="text-sm">{cat.name}</p>
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      {cat.totalProduct || 0}
+                    </Badge>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="latest"
-                      checked={filters.latest}
-                      onCheckedChange={checked =>
+                ))}
+            </div>
+          </div>
+
+          {/* CONTENT BÊN PHẢI */}
+          <div className="flex-1">
+            {/* Header với sort và view options */}
+            <div className="mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+                <h2 className="text-2xl font-bold">Featured items</h2>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Sort:</span>
+                    <Select
+                      value={String(!!filters.price)}
+                      onValueChange={value => {
                         setFilters(prev => ({
                           ...prev,
-                          latest: !!checked,
+                          price: value === "true",
                           currentPage: 0,
-                        }))
-                      }
-                    />
-                    <Label htmlFor="latest" className="text-sm">
-                      Latest
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="bestSell"
-                      checked={filters.bestSell}
-                      onCheckedChange={checked =>
-                        setFilters(prev => ({
-                          ...prev,
-                          bestSell: !!checked,
-                          currentPage: 0,
-                        }))
-                      }
-                    />
-                    <Label htmlFor="bestSell" className="text-sm">
-                      Best Selling
-                    </Label>
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="w-[120px] sm:w-32">
+                        <SelectValue placeholder="Custom" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="true">Low to High</SelectItem>
+                        <SelectItem value="false">High to Low</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
 
-              {/* Filter by price range */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Price Range (VND)</Label>
-                <div className="space-y-2">
-                  <InputNumber
-                    value={Number(priceInputs.priceFrom)}
-                    onChange={value =>
-                      handlePriceInputChange("priceFrom", value.toString())
-                    }
-                  />
-                  <InputNumber
-                    value={Number(priceInputs.priceTo)}
-                    onChange={value =>
-                      handlePriceInputChange("priceTo", value.toString())
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* Sort by price (boolean): false = descending, true = ascending */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Sort by Price</Label>
-                <Select
-                  value={String(filters.price)} // "true" | "false"
-                  onValueChange={value => {
-                    const mapped = value === "true";
-                    setFilters(prev => ({
-                      ...prev,
-                      price: mapped ? "true" : "false",
-                      currentPage: 0, // reset pagination when sorting changes
-                    }));
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select price sort" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Price: Low to High</SelectItem>
-                    <SelectItem value="false">Price: High to Low</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Products per page */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Show</Label>
-                <Select
-                  value={filters.pageSize.toString()}
-                  onValueChange={value =>
-                    setFilters(prev => ({
-                      ...prev,
-                      pageSize: Number(value),
-                      currentPage: 0,
-                    }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="12">12 products</SelectItem>
-                    <SelectItem value="20">20 products</SelectItem>
-                    <SelectItem value="40">40 products</SelectItem>
-                  </SelectContent>
-                </Select>
+              {/* Result Information */}
+              <div className="text-sm text-muted-foreground mb-4">
+                Displaying {products.length} of {totalElements} products
               </div>
             </div>
 
-            {/* Result Information */}
-            <div className="text-sm text-muted-foreground">
-              Displaying {products.length} of {totalElements} products
-            </div>
+            {/* Product Grid */}
             {loading ? (
               <LoadingSpinner />
             ) : (
               <>
-                {/* Product Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                   {products.map(product => (
                     <ProductCardSimple
                       key={product.id}
@@ -553,17 +374,18 @@ const ShopPage = () => {
                     />
                   ))}
                 </div>
+
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <CustomPagination
-                      currentPage={filters.currentPage + 1} // API uses base-0, UI uses base-1
+                      currentPage={filters.currentPage + 1}
                       totalPages={totalPages}
                       onPageChange={page => {
                         setFilters(prev => ({
                           ...prev,
                           currentPage: page - 1,
-                        })); // Convert to base-0 for API
+                        }));
                       }}
                       className="justify-center"
                     />
@@ -571,8 +393,8 @@ const ShopPage = () => {
                 )}
               </>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

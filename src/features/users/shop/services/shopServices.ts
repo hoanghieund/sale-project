@@ -13,9 +13,11 @@ export const getProductsByShopId = async (payload: {
   popular: boolean;
   latest: boolean;
   bestSell: boolean;
-  price: string;
+  price: boolean;
   priceFrom: number | string;
   priceTo: number | string;
 }) => {
-    return Axios.get(`/api/public/product/getProductByShop?shopId=${payload.id}&page=${payload.currentPage}&size=${payload.pageSize}&status=true&categoryChildId=${payload.listIdChild}&popular=${payload.popular}&latest=${payload.latest}&bestSell=${payload.bestSell}&price=${payload.price}&priceFrom=${payload.priceFrom}&priceTo=${payload.priceTo}`);
+  return Axios.get(
+    `/api/public/product/getProductByShop?shopId=${payload.id}&page=${payload.currentPage}&size=${payload.pageSize}&status=true&categoryChildId=${payload.listIdChild}&popular=${payload.popular}&latest=${payload.latest}&bestSell=${payload.bestSell}&price=${payload.price}&priceFrom=${payload.priceFrom}&priceTo=${payload.priceTo}`
+  );
 };

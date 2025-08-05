@@ -98,7 +98,7 @@ const ProductCardSimple = ({
   return (
     <div className={cn("w-full", className)} data-testid="product-card">
       <Card className="group overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col hover:shadow-lg">
-        <div className="bg-muted flex items-center justify-center relative overflow-hidden">
+        <div className="bg-muted aspect-square flex items-center justify-center relative overflow-hidden">
           <Link
             to={`/product/${product.slug}`}
             className="block h-full w-full"
