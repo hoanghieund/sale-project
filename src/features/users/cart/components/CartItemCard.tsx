@@ -60,7 +60,7 @@ const CartItemCard = ({
   const isCompactMode = viewMode === "compact";
 
   return (
-    <Card key={item.id} className={"p-2 bg-card/50"}>
+    <Card key={item.id} className={"p-2 bg-card/30"}>
       <div className="flex gap-1">
         {/* Checkbox for selection */}
         {!isCompactMode && ( // Chỉ hiển thị checkbox khi không ở chế độ compact

@@ -127,7 +127,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
             key={order.id}
             className="bg-white shadow-none rounded-lg overflow-hidden"
           >
-            <CardHeader className="bg-gray-50 p-3 border-b border-border flex flex-row items-center justify-between">
+            <CardHeader className="bg-card p-3 border-b border-border flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-base font-bold text-black flex items-center">
                   <Package className="h-4 w-4 mr-2 text-ring" /> Đơn hàng #

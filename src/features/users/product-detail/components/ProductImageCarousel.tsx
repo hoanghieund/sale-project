@@ -69,12 +69,12 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               <CarouselItem key={index}>
                 <div className="p-1">
                   <DialogTrigger asChild>
-                    <div className="flex aspect-square items-center justify-center cursor-pointer">
+                    <div className="flex aspect-[4/3] items-center justify-center cursor-pointer">
                       {img.path ? (
                         <img
                           src={img.path}
                           alt={`${productTitle} ${index + 1}`}
-                          className="w-full h-full object-cover rounded-xl"
+                          className="w-full h-full object-contain rounded-xl"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-xl">
@@ -93,7 +93,15 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
         {/* Dialog Content - Hiển thị carousel hình ảnh lớn trong popup */}
         <DialogContent className="p-2">
-          <Carousel className="w-full h-full">
+          {/*
+           * Carousel trong DialogContent được khởi tạo với initialScrollSnap để hiển thị
+           * hình ảnh đã được chọn trước đó.
+           */}
+          {/*
+           * Carousel trong DialogContent được khởi tạo với startIndex để hiển thị
+           * hình ảnh đã được chọn trước đó.
+           */}
+          <Carousel className="w-full h-full" opts={{ startIndex: selectedImage }}>
             <CarouselContent className="h-full">
               {images?.map((img, index) => (
                 <CarouselItem key={index} className="h-full">
