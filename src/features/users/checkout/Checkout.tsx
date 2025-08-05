@@ -66,8 +66,8 @@ const Checkout = () => {
 
   const selectedAddressId = methods.watch("selectedAddressId"); // Track selectedAddressId
 
- // Optimize flatMap items to avoid re-calculation on re-render
- // Ensure allItems is defined before any conditional return
+  // Optimize flatMap items to avoid re-calculation on re-render
+  // Ensure allItems is defined before any conditional return
   const allItems = useMemo(
     () => cart?.cartByShopList.flatMap(shopCart => shopCart.cartDTOList) ?? [],
     [cart]
@@ -140,10 +140,7 @@ const Checkout = () => {
       }
 
       if (!paypalOrderId) {
-        console.error(
-          "PayPal Order ID not found in response:",
-          response
-        );
+        console.error("PayPal Order ID not found in response:", response);
         throw new Error("API did not return PayPal Order ID");
       }
 
@@ -152,7 +149,8 @@ const Checkout = () => {
       console.error("Error processing payment:", error);
       toast({
         title: "Error",
-        description: "An error occurred while creating the order. Please try again.",
+        description:
+          "An error occurred while creating the order. Please try again.",
         variant: "destructive",
       });
       // Throw error so PayPal Buttons can handle it
@@ -165,91 +163,89 @@ const Checkout = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Minimal Header */}
-        <CheckoutHeader
-          onBack={() => navigate("/cart")}
-          title="Checkout"
-          backIcon={<ArrowLeft className="h-4 w-4" />}
-        />
+      {/* Minimal Header */}
+      <CheckoutHeader
+        onBack={() => navigate("/cart")}
+        title="Checkout"
+        backIcon={<ArrowLeft className="h-4 w-4" />}
+      />
 
-        {/* FormProvider shares context with child sections */}
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Left column: Customer info + address + payment */}
-              <div className="space-y-8">
-                <ContactInformationSection />
+      {/* FormProvider shares context with child sections */}
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left column: Customer info + address + payment */}
+            <div className="space-y-8">
+              <ContactInformationSection />
 
-                <ShippingAddressSection
-                  isDisabled={selectedAddressId !== "other"}
-                />
-              </div>
-
-              {/* Right column: Order Summary */}
-              <div className="bg-white rounded-lg p-6 shadow-sm h-fit border border-border lg:sticky top-32">
-                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-
-                <OrderItemsList items={allItems} />
-
-                <Separator className="my-4 bg-black" />
-
-                <PriceSummary summary={cart.summary} />
-
-                <PayPalButtons
-                  style={{ layout: "vertical", disableMaxWidth: true }}
-                  disabled={!methods.formState.isValid || isProcessing}
-                  createOrder={async (_, actions) => {
-                    // Handle order creation logic and return order ID
-                    try {
-                      // Validate form before calling onSubmit
-                      const isValid = await methods.trigger();
-                      if (!isValid) {
-                        throw new Error("Invalid form information.");
-                      }
-
-                     // Get form data and call onSubmit directly
-                     const formData = methods.getValues();
-                     const orderId = await onSubmit(formData);
-
-                     if (typeof orderId === "string" && orderId) {
-                       return orderId;
-                     } else {
-                       // If onSubmit does not return a string, it might be an error or unexpected
-                       console.error(
-                         "onSubmit did not return a valid order ID:",
-                         orderId
-                       );
-                       throw new Error("Could not create PayPal order.");
-                     }
-                   } catch (error) {
-                     console.error(
-                       "Error calling onSubmit in PayPal's createOrder:",
-                       error
-                     );
-                     // Throw error so PayPal Buttons can display the error to the user
-                     throw error;
-                    }
-                  }}
-                  onApprove={async (data, actions) => {
-                    const order = await actions.order.capture();
-                    console.log("Order captured:", order);
-                    // Gọi hàm onSubmit của bạn sau khi thanh toán thành công
-                    localStorage.removeItem("local_selected_items");
-                    setSelectedItems(new Set<string>());
-                    toast({
-                      title: "Success",
-                      description: "Order placed successfully.",
-                    });
-                    await fetchCartData();
-                    navigate("/account/orders");
-                  }}
-                />
-              </div>
+              <ShippingAddressSection
+                isDisabled={selectedAddressId !== "other"}
+              />
             </div>
-          </form>
-        </FormProvider>
-      </div>
+
+            {/* Right column: Order Summary */}
+            <div className="bg-white rounded-lg p-6 shadow-sm h-fit border border-border lg:sticky top-32">
+              <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+
+              <OrderItemsList items={allItems} />
+
+              <Separator className="my-4 bg-black" />
+
+              <PriceSummary summary={cart.summary} />
+
+              <PayPalButtons
+                style={{ layout: "vertical", disableMaxWidth: true }}
+                disabled={!methods.formState.isValid || isProcessing}
+                createOrder={async (_, actions) => {
+                  // Handle order creation logic and return order ID
+                  try {
+                    // Validate form before calling onSubmit
+                    const isValid = await methods.trigger();
+                    if (!isValid) {
+                      throw new Error("Invalid form information.");
+                    }
+
+                    // Get form data and call onSubmit directly
+                    const formData = methods.getValues();
+                    const orderId = await onSubmit(formData);
+
+                    if (typeof orderId === "string" && orderId) {
+                      return orderId;
+                    } else {
+                      // If onSubmit does not return a string, it might be an error or unexpected
+                      console.error(
+                        "onSubmit did not return a valid order ID:",
+                        orderId
+                      );
+                      throw new Error("Could not create PayPal order.");
+                    }
+                  } catch (error) {
+                    console.error(
+                      "Error calling onSubmit in PayPal's createOrder:",
+                      error
+                    );
+                    // Throw error so PayPal Buttons can display the error to the user
+                    throw error;
+                  }
+                }}
+                onApprove={async (data, actions) => {
+                  const order = await actions.order.capture();
+                  console.log("Order captured:", order);
+                  // Gọi hàm onSubmit của bạn sau khi thanh toán thành công
+                  localStorage.removeItem("local_selected_items");
+                  setSelectedItems(new Set<string>());
+                  toast({
+                    title: "Success",
+                    description: "Order placed successfully.",
+                  });
+                  await fetchCartData();
+                  navigate("/account/orders");
+                }}
+              />
+            </div>
+          </div>
+        </form>
+      </FormProvider>
     </div>
   );
 };

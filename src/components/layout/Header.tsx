@@ -261,7 +261,9 @@ const Header = () => {
                       </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuLabel className="text-base">
+                        {user?.username}
+                      </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => navigate("/account/profile")}
