@@ -22,7 +22,7 @@ export const calculateCartSummary = (
 ): CartSummary => {
   let subtotal = calculateTotalPrice(currentCartByShop, selectedItemIds);
 
-  const shipping = 1; // Giá trị vận chuyển cố định
+  const shipping = 0; // Giá trị vận chuyển cố định
   const total = subtotal + shipping; // Tổng cộng sau khi tính vận chuyển
 
   return { subtotal, shipping, total };

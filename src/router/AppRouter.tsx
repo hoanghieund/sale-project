@@ -49,6 +49,7 @@ const CategoryPage = lazy(
   () => import("@/features/users/category/CategoryPage")
 );
 const ShopPage = lazy(() => import("@/features/users/shop/ShopPage"));
+const SearchPage = lazy(() => import("@/features/users/search/SearchPage"));
 
 const AppRouter = () => {
   return (
@@ -70,6 +71,7 @@ const AppRouter = () => {
             <Route path="/product/:id" element={<ProductDetailPage />} />
             <Route path="/category/:categoryId" element={<CategoryPage />} />
             <Route path="/shop/:shopId" element={<ShopPage />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
