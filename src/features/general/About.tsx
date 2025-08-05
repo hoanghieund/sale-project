@@ -4,12 +4,12 @@ const About = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-sport-dark to-sport-dark/80 text-white">
+      <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-white">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             About DoneKick
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
             Your ultimate destination for authentic sneakers and premium
             athletic footwear
           </p>
@@ -54,7 +54,7 @@ const About = () => {
           <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-sport-dark rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Award className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Authenticity</h3>
@@ -65,7 +65,7 @@ const About = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-sport-dark rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Community</h3>
@@ -76,7 +76,7 @@ const About = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-sport-dark rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Target className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Excellence</h3>
@@ -87,7 +87,7 @@ const About = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-sport-dark rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-3">Passion</h3>
@@ -108,7 +108,7 @@ const About = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="w-32 h-32 bg-gradient-to-br from-sport-dark to-sport-dark/80 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-2xl font-bold">JD</span>
               </div>
               <h3 className="text-xl font-semibold mb-2">John Doe</h3>
@@ -119,7 +119,7 @@ const About = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-32 h-32 bg-gradient-to-br from-sport-dark to-sport-dark/80 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-2xl font-bold">JS</span>
               </div>
               <h3 className="text-xl font-semibold mb-2">Jane Smith</h3>
@@ -132,7 +132,7 @@ const About = () => {
             </div>
 
             <div className="text-center">
-              <div className="w-32 h-32 bg-gradient-to-br from-sport-dark to-sport-dark/80 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-2xl font-bold">MJ</span>
               </div>
               <h3 className="text-xl font-semibold mb-2">Mike Johnson</h3>
@@ -148,7 +148,7 @@ const About = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-sport-dark text-white">
+      <section className="py-16 bg-primary text-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             DoneKick by the Numbers
@@ -156,19 +156,19 @@ const About = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">50K+</div>
-              <div className="text-white/80">Happy Customers</div>
+              <div className="text-white">Happy Customers</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">100K+</div>
-              <div className="text-white/80">Products Sold</div>
+              <div className="text-white">Products Sold</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-white/80">Trusted Vendors</div>
+              <div className="text-white">Trusted Vendors</div>
             </div>
             <div>
               <div className="text-4xl font-bold mb-2">99.9%</div>
-              <div className="text-white/80">Authenticity Rate</div>
+              <div className="text-white">Authenticity Rate</div>
             </div>
           </div>
         </div>

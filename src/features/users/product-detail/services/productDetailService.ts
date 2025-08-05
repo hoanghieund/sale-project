@@ -7,8 +7,8 @@ export const productDetailService = {
    * @param productId ID của sản phẩm
    * @returns Promise chứa thông tin sản phẩm
    */
-  getProductById: async (slug: string) => {
-    return Axios.get(`/api/public/product/${slug}`);
+  getProductBySlug: async (slug: string) => {
+    return Axios.get(`/api/public/product/slug/${slug}`);
   },
 
   /**

@@ -135,12 +135,12 @@ const FAQ = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-sport-dark to-sport-dark/80 text-white">
+      <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-white">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Frequently Asked Questions
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
             Find answers to common questions about shopping, shipping, returns,
             and more.
           </p>

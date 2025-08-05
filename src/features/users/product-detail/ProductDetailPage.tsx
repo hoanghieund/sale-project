@@ -31,9 +31,8 @@ const ProductDetailPage = () => {
 
       setLoading(true);
       try {
-        const productData: Product = await productDetailService.getProductById(
-          slug
-        );
+        const productData: Product =
+          await productDetailService.getProductBySlug(slug);
         setProduct(productData);
 
         // Lấy thông tin shop từ dữ liệu API

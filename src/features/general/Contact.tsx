@@ -57,10 +57,10 @@ const Contact = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-sport-dark to-sport-dark/80 text-white">
+      <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-white">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Contact Us</h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
             We're here to help! Get in touch with our team for any questions or
             support.
           </p>
@@ -228,7 +228,7 @@ const Contact = () => {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-sport-dark rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
                         <Mail className="h-6 w-6 text-white" />
                       </div>
                       <div>
@@ -245,7 +245,7 @@ const Contact = () => {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-sport-dark rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
                         <Phone className="h-6 w-6 text-white" />
                       </div>
                       <div>
@@ -262,7 +262,7 @@ const Contact = () => {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-sport-dark rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
                         <MapPin className="h-6 w-6 text-white" />
                       </div>
                       <div>
@@ -285,7 +285,7 @@ const Contact = () => {
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-sport-dark rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
                         <Clock className="h-6 w-6 text-white" />
                       </div>
                       <div>
