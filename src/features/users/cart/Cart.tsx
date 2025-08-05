@@ -2,6 +2,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label"; // Import Label component
 import { useCart } from "@/providers/cart-provider";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CartSummaryCard from "./components/CartSummaryCard";
 import EmptyCartMessage from "./components/EmptyCartMessage";
@@ -21,6 +22,7 @@ const Cart = () => {
   const {
     cartByShop,
     isLoading,
+    fetchCartData,
     selectedItems,
     cartSummary,
     removeFromCart,
@@ -52,6 +54,10 @@ const Cart = () => {
     }
     // Nếu không thành công, prepareCheckout đã hiển thị toast error
   };
+
+  useEffect(() => {
+    fetchCartData();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

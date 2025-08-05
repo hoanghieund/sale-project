@@ -25,12 +25,15 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/providers/cart-provider";
 import {
-  ChevronDown,
-  LogIn,
+  ChevronDown, // Đổi tên User thành UserIcon để tránh xung đột với biến User đã có
+  History,
+  LogIn, // Thêm icon Store cho Kênh người bán
+  LogOut,
   Menu,
   Search,
-  ShoppingBag,
-  User,
+  ShoppingBag, // Thêm icon History cho Lịch sử Đơn hàng
+  Store,
+  User, // Thêm icon LogOut cho Đăng xuất
   UserPlus,
   X,
 } from "lucide-react";
@@ -118,7 +121,7 @@ const Header = () => {
       >
         <div className="container mx-auto px-4">
           {/* Top Row */}
-          <div className="flex items-center justify-between py-2.5">
+          <div className="flex items-center justify-between py-2.5 md:pb-0 gap-8">
             {/* Logo */}
             <div className="flex items-center gap-4">
               <Link to="/" className="flex items-center">
@@ -204,12 +207,15 @@ const Header = () => {
             )}
 
             {/* Search Bar - Desktop */}
-            <div className="hidden md:flex items-center gap-4">
-              <form onSubmit={handleSearch} className="flex items-center gap-2">
-                <div className="relative">
+            <div className="hidden md:flex items-center gap-4 flex-1">
+              <form
+                onSubmit={handleSearch}
+                className="flex items-center gap-2 flex-1"
+              >
+                <div className="relative flex-1">
                   <Input
                     placeholder="Search for products..."
-                    className="w-72 pr-10 rounded-full border-muted focus-visible:ring-primary"
+                    className="w-full pr-10 rounded-full border-black border-2 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                   />
@@ -271,13 +277,21 @@ const Header = () => {
                       <DropdownMenuItem
                         onClick={() => navigate("/account/profile")}
                       >
+                        <User className="mr-2 h-4 w-4" />
                         Tài khoản
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => navigate("/account/orders")}
+                      >
+                        <History className="mr-2 h-4 w-4" />
+                        Lịch sử Đơn hàng
                       </DropdownMenuItem>
                       {isRoleShop ? (
                         <>
                           <DropdownMenuItem
                             onClick={() => navigate("/seller/dashboard")}
                           >
+                            <Store className="mr-2 h-4 w-4" />
                             Kênh người bán
                           </DropdownMenuItem>
                         </>
@@ -286,6 +300,7 @@ const Header = () => {
                           <DropdownMenuItem
                             onClick={() => navigate("/seller-registration")}
                           >
+                            <ShoppingBag className="mr-2 h-4 w-4" />
                             Đăng ký bán hàng
                           </DropdownMenuItem>
                         </>
@@ -297,6 +312,7 @@ const Header = () => {
                           logout();
                         }}
                       >
+                        <LogOut className="mr-2 h-4 w-4" />
                         Đăng xuất
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -346,7 +362,7 @@ const Header = () => {
           </div>
 
           {/* Bottom Row - Navigation */}
-          <nav className="hidden md:flex py-2 justify-center border-t border-border">
+          <nav className="hidden md:flex py-2 justify-center">
             <NavigationMenu>
               <NavigationMenuList className="gap-8">
                 {(featuredCategories || []).map(item => (

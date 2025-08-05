@@ -1,26 +1,23 @@
-/**
- * Order Service
- * @module orderService
- */
-
 import { Axios } from '@/api/Axios';
-import { Order } from '@/features/users/account-management/types/order';
+import { Order } from '@/types';
 
-/**
- * @interface GetOrdersByUserParams
- * @description Tham số cho hàm getOrdersByUser.
- */
-interface GetOrdersByUserParams {
-  userId: string;
-}
+export const orderService = {
+  /**
+   * Lấy danh sách đơn hàng của người dùng.
+   * @param userId - ID của người dùng.
+   * @returns Promise với danh sách đơn hàng.
+   */
+  getOrdersByUser: async (userId: number): Promise<Order[]> => {
+    return await Axios.get(`/api/order/getByUser?id=${userId}`);
+  },
 
-/**
- * @function getOrdersByUser
- * @description Lấy danh sách đơn hàng của một người dùng từ API.
- * @param {GetOrdersByUserParams} params - Đối tượng chứa ID người dùng.
- * @returns {Promise<Order[]>} Một Promise chứa mảng các đối tượng Order.
- * @throws {Error} Nếu có lỗi xảy ra trong quá trình gọi API.
- */
-export const getOrdersByUser = async ({ userId }: GetOrdersByUserParams): Promise<Order[]> => {
-  return await Axios.get(`/api/order/getByUser?id=${userId}`);
+  /**
+   * Lấy danh sách đơn hàng của người dùng theo trạng thái.
+   * @param userId - ID của người dùng.
+   * @param status - Trạng thái của đơn hàng.
+   * @returns Promise với danh sách đơn hàng.
+   */
+  getOrdersByUserAndStatus: async (userId: number, status: number): Promise<Order[]> => {
+    return await Axios.get(`/api/order/getAllByUserIdAndStatus?status=${status}&id=${userId}`);
+  },
 };

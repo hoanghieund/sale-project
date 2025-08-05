@@ -39,6 +39,7 @@ const Checkout = () => {
     isLoading,
     selectedItems,
     cartSummary,
+    fetchCartData,
     setSelectedItems,
   } = useCart();
 
@@ -240,6 +241,7 @@ const Checkout = () => {
                       title: "Success",
                       description: "Order placed successfully.",
                     });
+                    await fetchCartData();
                     navigate("/account/orders");
                   }}
                 />

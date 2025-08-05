@@ -278,26 +278,28 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
         </Button> */}
       </div>
 
-      <Accordion type="single" collapsible className="w-full">
-        {product.content ? (
-          <AccordionItem value="product-description">
-            <AccordionTrigger className="text-base font-semibold">
-              Mô tả sản phẩm
-            </AccordionTrigger>
-            {/* Tối ưu typography cho nội dung mô tả, giữ max-width none để full width */}
-            <AccordionContent className="prose max-w-none prose-p:my-2 prose-ul:my-2 prose-li:my-1">
-              {product.content ? (
-                <div className="text-foreground leading-normal text-sm">
-                  {changeDescription(product.content)}
-                </div>
-              ) : (
-                <p className="text-foreground/50 italic">
-                  Không có mô tả chi tiết cho sản phẩm này.
-                </p>
-              )}
-            </AccordionContent>
-          </AccordionItem>
-        ) : null}
+      <Accordion
+        type="multiple"
+        defaultValue={["product-description", "product-specifications"]}
+        className="w-full"
+      >
+        <AccordionItem value="product-description">
+          <AccordionTrigger className="text-base font-semibold">
+            Mô tả sản phẩm
+          </AccordionTrigger>
+          {/* Tối ưu typography cho nội dung mô tả, giữ max-width none để full width */}
+          <AccordionContent className="prose max-w-none prose-p:my-2 prose-ul:my-2 prose-li:my-1">
+            {product.content ? (
+              <div className="text-foreground leading-normal text-sm">
+                {changeDescription(product.content)}
+              </div>
+            ) : (
+              <p className="text-foreground/50 italic">
+                Không có mô tả chi tiết cho sản phẩm này.
+              </p>
+            )}
+          </AccordionContent>
+        </AccordionItem>
 
         <AccordionItem value="product-specifications">
           <AccordionTrigger className="text-base font-semibold">

@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getOrdersByUser } from "@/features/users/account-management/services/orderService";
 import CartItemCard from "@/features/users/cart/components/CartItemCard";
 import { useUser } from "@/hooks/use-user";
 import { Order } from "@/types";
@@ -23,6 +22,7 @@ import {
   User,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { orderService } from "../services/orderService";
 
 /**
  * @interface OrderListProps
@@ -54,9 +54,11 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
       setLoading(true);
       setError(null);
       try {
-        const fetchedOrders = await getOrdersByUser({
-          userId: user.id.toString(),
-        });
+        const fetchOrdersFunc = status === "all" ? orderService.getOrdersByUser : orderService.getOrdersByUserAndStatus;
+        const fetchedOrders = await fetchOrdersFunc(
+          user.id,
+          Number(status)
+        );
         setOrders(fetchedOrders);
       } catch (err) {
         if (err instanceof AxiosError) {
@@ -74,7 +76,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
     };
 
     fetchOrders();
-  }, [user?.id]);
+  }, [user?.id , status]);
 
   // Lọc đơn hàng theo trạng thái
   const filteredOrders = orders.filter(order => {

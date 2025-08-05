@@ -1,3 +1,4 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OrderList from "@/features/users/account-management/components/OrderList";
 import React, { useState } from "react";
 
@@ -10,31 +11,30 @@ const OrderTabs: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
 
   return (
-    // <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
-    //   <TabsList className="grid w-full grid-cols-5">
-    //     <TabsTrigger value="all">Tất cả</TabsTrigger>
-    //     <TabsTrigger value="pending_confirmation">Chờ xác nhận</TabsTrigger>
-    //     <TabsTrigger value="awaiting_pickup">Chờ lấy hàng</TabsTrigger>
-    //     <TabsTrigger value="in_delivery">Đang giao</TabsTrigger>
-    //     <TabsTrigger value="completed">Hoàn thành</TabsTrigger>
-    //   </TabsList>
-    //   <TabsContent value="all">
-    //     <OrderList status="all" />
-    //   </TabsContent>
-    //   <TabsContent value="pending_confirmation">
-    //     <OrderList status="pending_confirmation" />
-    //   </TabsContent>
-    //   <TabsContent value="awaiting_pickup">
-    //     <OrderList status="awaiting_pickup" />
-    //   </TabsContent>
-    //   <TabsContent value="in_delivery">
-    //     <OrderList status="in_delivery" />
-    //   </TabsContent>
-    //   <TabsContent value="completed">
-    //     <OrderList status="completed" />
-    //   </TabsContent>
-    // </Tabs>
-    <OrderList status="all" />
+    <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
+      <TabsList className="grid w-full grid-cols-5">
+        <TabsTrigger value="all">Tất cả</TabsTrigger>
+        <TabsTrigger value="pending_confirmation">Chờ xác nhận</TabsTrigger>
+        <TabsTrigger value="awaiting_pickup">Chờ lấy hàng</TabsTrigger>
+        <TabsTrigger value="in_delivery">Đang giao</TabsTrigger>
+        <TabsTrigger value="completed">Hoàn thành</TabsTrigger>
+      </TabsList>
+      <TabsContent value="all">
+        <OrderList status="all" />
+      </TabsContent>
+      <TabsContent value="pending_confirmation">
+        <OrderList status="1" />
+      </TabsContent>
+      <TabsContent value="awaiting_pickup">
+        <OrderList status="2" />
+      </TabsContent>
+      <TabsContent value="in_delivery">
+        <OrderList status="3" />
+      </TabsContent>
+      <TabsContent value="completed">
+        <OrderList status="5" />
+      </TabsContent>
+    </Tabs>
   );
 };
 
