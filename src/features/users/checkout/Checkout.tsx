@@ -34,7 +34,13 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   // Sử dụng custom hook để truy cập Cart context
-  const { cartByShop, isLoading, selectedItems, cartSummary } = useCart();
+  const {
+    cartByShop,
+    isLoading,
+    selectedItems,
+    cartSummary,
+    setSelectedItems,
+  } = useCart();
 
   const cart = {
     cartByShopList: cartByShop
@@ -85,7 +91,6 @@ const Checkout = () => {
     );
   }
 
-  const [paypalOrderId, setPaypalOrderId] = useState<string | null>('');
   // Submit tổng: giữ nguyên logic ban đầu
   /**
    * Xử lý gửi biểu mẫu checkout để tạo đơn hàng.
@@ -110,9 +115,38 @@ const Checkout = () => {
           phoneNumber: data.phone,
         },
       });
-      // Trả về ID đơn hàng PayPal từ phản hồi
-       setPaypalOrderId(response.paypalOrderId);
-      return response.paypalOrderId;
+
+      // Kiểm tra các tên property có thể có trong response
+      const possibleOrderIdFields = [
+        "paypalOrderId",
+        "orderId",
+        "id",
+        "order_id",
+        "paypal_order_id",
+        "data.paypalOrderId",
+        "data.orderId",
+      ];
+
+      let paypalOrderId = null;
+      for (const field of possibleOrderIdFields) {
+        const value = field.includes(".")
+          ? field.split(".").reduce((obj, key) => obj?.[key], response)
+          : response?.[field];
+        if (value) {
+          paypalOrderId = value;
+          break;
+        }
+      }
+
+      if (!paypalOrderId) {
+        console.error(
+          "Không tìm thấy PayPal Order ID trong response:",
+          response
+        );
+        throw new Error("API không trả về PayPal Order ID");
+      }
+
+      return paypalOrderId;
     } catch (error) {
       console.error("Lỗi khi xử lý thanh toán:", error);
       toast({
@@ -167,16 +201,31 @@ const Checkout = () => {
                   createOrder={async (_, actions) => {
                     // Xử lý logic tạo đơn hàng và trả về ID đơn hàng
                     try {
-                      await methods.handleSubmit(onSubmit)();
-                      if (typeof paypalOrderId === 'string') {
-                        return paypalOrderId;
+                      // Validate form trước khi gọi onSubmit
+                      const isValid = await methods.trigger();
+                      if (!isValid) {
+                        throw new Error("Thông tin form không hợp lệ.");
+                      }
+
+                      // Lấy form data và gọi onSubmit trực tiếp
+                      const formData = methods.getValues();
+                      const orderId = await onSubmit(formData);
+
+                      if (typeof orderId === "string" && orderId) {
+                        return orderId;
                       } else {
                         // Nếu onSubmit không trả về string, có thể là lỗi hoặc không mong muốn
-                        console.error("onSubmit không trả về ID đơn hàng hợp lệ.");
+                        console.error(
+                          "onSubmit không trả về ID đơn hàng hợp lệ:",
+                          orderId
+                        );
                         throw new Error("Không thể tạo đơn hàng PayPal.");
                       }
                     } catch (error) {
-                      console.error("Lỗi khi gọi onSubmit trong createOrder của PayPal:", error);
+                      console.error(
+                        "Lỗi khi gọi onSubmit trong createOrder của PayPal:",
+                        error
+                      );
                       // Ném lỗi để PayPal Buttons có thể hiển thị lỗi cho người dùng
                       throw error;
                     }
@@ -186,6 +235,7 @@ const Checkout = () => {
                     console.log("Order captured:", order);
                     // Gọi hàm onSubmit của bạn sau khi thanh toán thành công
                     localStorage.removeItem("local_selected_items");
+                    setSelectedItems(new Set<string>());
                     toast({
                       title: "Success",
                       description: "Order placed successfully.",
