@@ -2,6 +2,7 @@
 export interface Product {
   // Thông tin cơ bản
   id: number; // bigint(20) trong SQL
+  slug: string;
   title: string; // title trong SQL
   description?: string; // description text trong SQL
   content?: string; // content text trong SQL

@@ -16,7 +16,7 @@ import { productDetailService } from "./services/productDetailService";
  */
 
 const ProductDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [shop, setShop] = useState<Shop | null>(null);
@@ -24,7 +24,7 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!id) {
+      if (!slug) {
         setLoading(false);
         return;
       }
@@ -32,7 +32,7 @@ const ProductDetailPage = () => {
       setLoading(true);
       try {
         const productData: Product = await productDetailService.getProductById(
-          id
+          slug
         );
         setProduct(productData);
 
@@ -48,7 +48,7 @@ const ProductDetailPage = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [slug]);
 
   if (loading) {
     return (

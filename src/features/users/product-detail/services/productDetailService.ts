@@ -7,8 +7,8 @@ export const productDetailService = {
    * @param productId ID của sản phẩm
    * @returns Promise chứa thông tin sản phẩm
    */
-  getProductById: async (productId: string) => {
-    return Axios.get(`/api/public/product/${productId}`);
+  getProductById: async (slug: string) => {
+    return Axios.get(`/api/public/product/${slug}`);
   },
 
   /**
@@ -17,7 +17,9 @@ export const productDetailService = {
    * @returns Promise chứa danh sách đánh giá
    */
   getReviewsByProductId: async (productId: number) => {
-    return Axios.get(`/api/public/comment/getPageCommentParent/10/${productId}`);
+    return Axios.get(
+      `/api/public/comment/getPageCommentParent/10/${productId}`
+    );
   },
 
   /**
@@ -26,7 +28,10 @@ export const productDetailService = {
    * @param reviewData Dữ liệu đánh giá (rating, comment)
    * @returns Promise chứa kết quả gửi đánh giá
    */
-  submitReview: async (productId: string, reviewData: { star: number; content: string }) => {
+  submitReview: async (
+    productId: string,
+    reviewData: { star: number; content: string }
+  ) => {
     return Axios.post(`/api/private/reviews/product/${productId}`, reviewData);
   },
 };

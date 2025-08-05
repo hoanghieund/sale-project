@@ -68,7 +68,7 @@ const AppRouter = () => {
             {/* <Route element={<ActiveAccountRoute />}> */}
             {/* Các trang công khai - không cần đăng nhập */}
             <Route path="/" element={<Home />} />
-            <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/product/:slug" element={<ProductDetailPage />} />
             <Route path="/category/:categoryId" element={<CategoryPage />} />
             <Route path="/shop/:shopId" element={<ShopPage />} />
             <Route path="/search" element={<SearchPage />} />
