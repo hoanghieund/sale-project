@@ -23,16 +23,16 @@ const OrderTabs: React.FC = () => {
         <OrderList status="all" />
       </TabsContent>
       <TabsContent value="pending_confirmation">
-        <OrderList status="1" />
+        <OrderList status="0" />
       </TabsContent>
       <TabsContent value="awaiting_pickup">
-        <OrderList status="2" />
+        <OrderList status="1" />
       </TabsContent>
       <TabsContent value="in_delivery">
-        <OrderList status="3" />
+        <OrderList status="2" />
       </TabsContent>
       <TabsContent value="completed">
-        <OrderList status="5" />
+        <OrderList status="3" />
       </TabsContent>
     </Tabs>
   );

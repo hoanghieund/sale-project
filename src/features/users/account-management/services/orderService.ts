@@ -1,5 +1,4 @@
 import { Axios } from '@/api/Axios';
-import { Order } from '@/types';
 
 export const orderService = {
   /**
@@ -7,8 +6,8 @@ export const orderService = {
    * @param userId - ID của người dùng.
    * @returns Promise với danh sách đơn hàng.
    */
-  getOrdersByUser: async (userId: number): Promise<Order[]> => {
-    return await Axios.get(`/api/order/getByUser?id=${userId}`);
+  getOrdersByUser: async (userId: number) => {
+    return await Axios.get(`/api/order/getAllOrderByUser?id=${userId}`);
   },
 
   /**
@@ -17,7 +16,7 @@ export const orderService = {
    * @param status - Trạng thái của đơn hàng.
    * @returns Promise với danh sách đơn hàng.
    */
-  getOrdersByUserAndStatus: async (userId: number, status: number): Promise<Order[]> => {
-    return await Axios.get(`/api/order/getAllByUserIdAndStatus?status=${status}&id=${userId}`);
+  getOrdersByUserAndStatus: async (userId: number, status: number) => {
+    return await Axios.get(`/api/order/getAllOrderByUserIdAndStatus?status=${status}&id=${userId}`);
   },
 };

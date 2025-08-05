@@ -33,7 +33,7 @@ const AllProductsSection: React.FC<AllProductsSectionProps> = ({
   return (
     <section className="py-12 bg-muted/10">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Tất Cả Sản Phẩm</h2>
+        <h2 className="text-3xl font-bold text-center mb-8">Khám Phá Toàn Bộ Sản Phẩm - Mua Sắm Trực Tuyến Dễ Dàng</h2>
         {/* Lưới hiển thị sản phẩm */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {products.map(product => (

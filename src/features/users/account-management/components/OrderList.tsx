@@ -59,7 +59,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
           user.id,
           Number(status)
         );
-        setOrders(fetchedOrders);
+        setOrders(fetchedOrders.content);
       } catch (err) {
         if (err instanceof AxiosError) {
           setError(
