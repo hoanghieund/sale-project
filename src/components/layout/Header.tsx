@@ -25,17 +25,16 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/providers/cart-provider";
 import {
-  ChevronDown, // Đổi tên User thành UserIcon để tránh xung đột với biến User đã có
+  ChevronDown,
   History,
-  LogIn, // Thêm icon Store cho Kênh người bán
+  LogIn,
   LogOut,
   Menu,
   Search,
-  ShoppingBag, // Thêm icon History cho Lịch sử Đơn hàng
+  ShoppingBag,
   Store,
-  User, // Thêm icon LogOut cho Đăng xuất
+  User,
   UserPlus,
-  X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -97,9 +96,8 @@ const Header = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
+    navigate(`/search?keyword=${encodeURIComponent(searchQuery.trim())}`);
+    clearSearch();
   };
 
   const clearSearch = () => {
@@ -191,17 +189,6 @@ const Header = () => {
                       <Search className="h-4 w-4" />
                     </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full hover:bg-primary/10"
-                    onClick={() => {
-                      clearSearch();
-                      setIsSearchOpen(false);
-                    }}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
                 </form>
               </div>
             )}
@@ -228,16 +215,6 @@ const Header = () => {
                     <Search className="h-4 w-4" />
                   </Button>
                 </div>
-                {searchQuery && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearSearch}
-                    className="rounded-full hover:bg-primary/10"
-                  >
-                    Clear
-                  </Button>
-                )}
               </form>
             </div>
 

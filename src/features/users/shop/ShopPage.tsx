@@ -8,6 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import { getProductsByShopId } from "./services/shopServices";
 // Import Breadcrumb từ shadcn để thay thế breadcrumb thủ công
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
+import InputNumber from "@/components/common/InputNumber";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -42,7 +42,6 @@ interface shopUi extends Shop {
 const ShopPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const [shop, setShop] = useState<shopUi>({} as shopUi);
-  console.log("🚀 ~ ShopPage ~ shop:", shop);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -469,20 +468,16 @@ const ShopPage = () => {
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Khoảng giá (VNĐ)</Label>
                 <div className="space-y-2">
-                  <Input
-                    placeholder="Giá từ"
-                    type="number"
-                    value={priceInputs.priceFrom}
-                    onChange={e =>
-                      handlePriceInputChange("priceFrom", e.target.value)
+                  <InputNumber
+                    value={Number(priceInputs.priceFrom)}
+                    onChange={value =>
+                      handlePriceInputChange("priceFrom", value.toString())
                     }
                   />
-                  <Input
-                    placeholder="Giá đến"
-                    type="number"
-                    value={priceInputs.priceTo}
-                    onChange={e =>
-                      handlePriceInputChange("priceTo", e.target.value)
+                  <InputNumber
+                    value={Number(priceInputs.priceTo)}
+                    onChange={value =>
+                      handlePriceInputChange("priceTo", value.toString())
                     }
                   />
                 </div>

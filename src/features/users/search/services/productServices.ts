@@ -8,13 +8,12 @@ interface GetProductsBySearchKeywordParams {
   popular?: boolean;
   latest?: boolean;
   bestSell?: boolean;
-  price?: string; // "asc" | "desc" | ""
+  price?: string; // true = tăng dần, false = giảm dần
   priceFrom?: string | number;
   priceTo?: string | number;
 }
 
 export const productService = {
-
   /**
    * Lấy danh sách sản phẩm theo từ khóa tìm kiếm
    * @param params - Tham số tìm kiếm sản phẩm
