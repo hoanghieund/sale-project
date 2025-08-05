@@ -13,7 +13,7 @@ import React from "react";
 
 /**
  * @interface CustomPaginationProps
- * @description Định nghĩa các props cho component CustomPagination.
+ * @description Defines the props for the CustomPagination component.
  */
 interface CustomPaginationProps {
   currentPage: number;
@@ -24,9 +24,9 @@ interface CustomPaginationProps {
 
 /**
  * @component CustomPagination
- * @description Component phân trang tái sử dụng cho toàn bộ ứng dụng.
- * @param {CustomPaginationProps} props - Các props của component.
- * @returns {JSX.Element | null} Element JSX của component CustomPagination hoặc null nếu không có phân trang.
+ * @description Reusable pagination component for the entire application.
+ * @param {CustomPaginationProps} props - The component's props.
+ * @returns {JSX.Element | null} JSX element of the CustomPagination component or null if no pagination.
  */
 const CustomPagination: React.FC<CustomPaginationProps> = ({
   currentPage,
@@ -34,15 +34,15 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
   onPageChange,
   className = "",
 }) => {
-  // Nếu chỉ có 1 trang hoặc không có trang nào, không hiển thị phân trang
+  // If there is only 1 page or no page, do not display pagination
   if (totalPages <= 1) {
     return null;
   }
 
-  // Hàm tạo các mục phân trang dựa trên tổng số trang và trang hiện tại
+  // Function to create pagination items based on total pages and current page
   const renderPaginationItems = () => {
     const items = [];
-    // Thêm nút Previous
+    // Add Previous button
     items.push(
       <PaginationItem key="previous">
         <PaginationPrevious
@@ -54,9 +54,9 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
       </PaginationItem>
     );
 
-    // Logic hiển thị các nút số trang
+    // Logic to display page number buttons
     if (totalPages <= 7) {
-      // Hiển thị tất cả các trang nếu tổng số trang nhỏ hơn hoặc bằng 7
+      // Display all pages if total pages are less than or equal to 7
       for (let i = 1; i <= totalPages; i++) {
         items.push(
           <PaginationItem key={`page-${i}`}>
@@ -71,8 +71,8 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
         );
       }
     } else {
-      // Logic hiển thị các trang với dấu ba chấm nếu tổng số trang lớn hơn 7
-      // Luôn hiển thị trang 1
+      // Logic to display pages with ellipses if total pages are greater than 7
+      // Always display page 1
       items.push(
         <PaginationItem key="page-1">
           <PaginationLink
@@ -85,12 +85,12 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
         </PaginationItem>
       );
 
-      // Hiển thị dấu ba chấm nếu trang hiện tại lớn hơn 3
+      // Display ellipsis if current page is greater than 3
       if (currentPage > 3) {
         items.push(<PaginationEllipsis key="ellipsis-start" />);
       }
 
-      // Hiển thị 2 trang xung quanh trang hiện tại
+      // Display 2 pages around the current page
       let startPage = Math.max(2, currentPage - 1);
       let endPage = Math.min(totalPages - 1, currentPage + 1);
 
@@ -114,12 +114,12 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
         );
       }
 
-      // Hiển thị dấu ba chấm nếu trang hiện tại nhỏ hơn totalPages - 2
+      // Display ellipsis if current page is less than totalPages - 2
       if (currentPage < totalPages - 2) {
         items.push(<PaginationEllipsis key="ellipsis-end" />);
       }
 
-      // Luôn hiển thị trang cuối cùng
+      // Always display the last page
       items.push(
         <PaginationItem key={`page-${totalPages}`}>
           <PaginationLink
@@ -133,7 +133,7 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
       );
     }
 
-    // Thêm nút Next
+    // Add Next button
     items.push(
       <PaginationItem key="next">
         <PaginationNext

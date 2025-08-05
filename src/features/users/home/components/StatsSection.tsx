@@ -1,6 +1,6 @@
 /**
  * StatsSection Component
- * Hiển thị các số liệu thống kê về sản phẩm, cửa hàng, khách hàng và sự hài lòng.
+ * Displays statistics on products, stores, customers, and satisfaction.
  */
 const StatsSection = () => {
   return (

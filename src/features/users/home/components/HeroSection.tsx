@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 /**
  * HeroSection Component
- * Hiển thị phần hero của trang chủ với tiêu đề, mô tả và các nút kêu gọi hành động.
+ * Displays the hero section of the homepage with a title, description, and call-to-action buttons.
  */
 const HeroSection = () => {
   return (
@@ -13,10 +13,10 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="container relative z-10 mx-auto px-4 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          Sàn Thương Mại Điện Tử Hàng Đầu Việt Nam
+          Leading E-commerce Platform in Vietnam
         </h1>
         <p className="text-xl md:text-2xl mb-8 opacity-90">
-          Kết nối người mua và người bán trên toàn thế giới. Khám phá hàng ngàn sản phẩm chất lượng, giao dịch an toàn và tiện lợi.
+          Connecting buyers and sellers worldwide. Discover thousands of quality products, safe and convenient transactions.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

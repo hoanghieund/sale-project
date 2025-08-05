@@ -2,18 +2,18 @@ import { Axios } from "@/api/Axios";
 
 export const categoryService = {
   /**
-   * Lấy thông tin danh mục theo id
-   * @param id - Slug của danh mục
-   * @returns Promise với thông tin danh mục và các danh mục con
+   * Retrieves category information by ID.
+   * @param id - The slug of the category.
+   * @returns A Promise with category information and its subcategories.
    */
   getCategoryById: (id: string) => {
     return Axios.get(`/api/public/category/getRootCategory/${id}`);
   },
 
   /**
-   * Lấy thông tin danh mục con theo parent id
-   * @param id - Slug của danh mục
-   * @returns Promise với thông tin danh mục và các danh mục con
+   * Retrieves subcategory information by parent ID.
+   * @param id - The slug of the parent category.
+   * @returns A Promise with subcategory information and its children.
    */
   getCategoryByParent: (id: string) => {
     return Axios.get(`/api/public/category/getCategoryByParent/${id}`);

@@ -1,6 +1,6 @@
 import { Cart } from "@/types/index";
 
-// Định nghĩa interface cho CartByShop
+// Define interface for CartByShop
 export interface CartByShop {
   id: number;
   shopName: string;
@@ -8,7 +8,7 @@ export interface CartByShop {
   cartDTOList: Cart[];
 }
 
-// Định nghĩa interface cho CartSummary
+// Define interface for CartSummary
 export interface CartSummary {
   subtotal: number;
   shipping: number;

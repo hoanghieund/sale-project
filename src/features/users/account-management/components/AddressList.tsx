@@ -13,11 +13,11 @@ import AddressForm from "./AddressForm";
 
 /**
  * @interface AddressListProps
- * @description Props cho component AddressList.
- * @property {Address[]} addresses Danh sách các địa chỉ để hiển thị.
- * @property {(address: Address) => void} onUpdateAddress Hàm callback khi cập nhật địa chỉ.
- * @property {(id: number) => void} onDeleteAddress Hàm callback khi xóa địa chỉ.
- * @property {(id: number) => void} onSetDefaultAddress Hàm callback khi đặt địa chỉ mặc định.
+ * @description Props for the AddressList component.
+ * @property {Address[]} addresses List of addresses to display.
+ * @property {(address: Address) => void} onUpdateAddress Callback function when updating an address.
+ * @property {(id: number) => void} onDeleteAddress Callback function when deleting an address.
+ * @property {(id: number) => void} onSetDefaultAddress Callback function when setting default address.
  */
 interface AddressListProps {
   addresses: Address[];
@@ -29,10 +29,10 @@ interface AddressListProps {
 
 /**
  * @function AddressList
- * @description Component hiển thị danh sách các địa chỉ, cung cấp chức năng sửa, xóa.
- * Nút "Thêm địa chỉ mới" đã được chuyển lên AddressPage.
- * @param {AddressListProps} props Props của component.
- * @returns {JSX.Element} Element React.
+ * @description Component that displays a list of addresses with edit and delete functionality.
+ * The "Add New Address" button has been moved up to AddressPage.
+ * @param {AddressListProps} props Component props.
+ * @returns {JSX.Element} React element.
  */
 const AddressList: React.FC<AddressListProps> = ({
   addresses,
@@ -46,8 +46,8 @@ const AddressList: React.FC<AddressListProps> = ({
 
   /**
    * @function handleEdit
-   * @description Xử lý khi nhấn nút "Sửa".
-   * @param {Address} address Địa chỉ cần chỉnh sửa.
+   * @description Handles edit button click.
+   * @param {Address} address Address to be edited.
    */
   const handleEdit = (address: Address) => {
     setEditingAddress(address);
@@ -56,8 +56,8 @@ const AddressList: React.FC<AddressListProps> = ({
 
   /**
    * @function handleDelete
-   * @description Xử lý khi nhấn nút "Xóa".
-   * @param {number} id ID của địa chỉ cần xóa.
+   * @description Handles delete button click.
+   * @param {number} id ID of the address to be deleted.
    */
   const handleDelete = (id: number) => {
     console.log("Deleting address with ID:", id);
@@ -66,8 +66,8 @@ const AddressList: React.FC<AddressListProps> = ({
 
   /**
    * @function handleFormSubmit
-   * @description Xử lý khi form địa chỉ được submit (cập nhật).
-   * @param {Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>} data Dữ liệu địa chỉ từ form.
+   * @description Handles form submission (update).
+   * @param {Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>} data Address data from the form.
    */
   const handleFormSubmit = (
     data: Omit<
@@ -81,9 +81,9 @@ const AddressList: React.FC<AddressListProps> = ({
     >
   ) => {
     if (editingAddress) {
-      // Cập nhật địa chỉ hiện có
+      // Update existing address
       const updatedAddress: Address = {
-        ...editingAddress, // Giữ lại các trường không thay đổi
+        ...editingAddress, // Keep unchanged fields
         ...data,
       };
       onUpdateAddress(updatedAddress);
@@ -94,7 +94,7 @@ const AddressList: React.FC<AddressListProps> = ({
 
   /**
    * @function handleFormCancel
-   * @description Xử lý khi form địa chỉ bị hủy.
+   * @description Handles form cancellation.
    */
   const handleFormCancel = () => {
     setIsFormOpen(false);
@@ -103,14 +103,14 @@ const AddressList: React.FC<AddressListProps> = ({
 
   return (
     <>
-      {/* Dialog cho form Sửa địa chỉ */}
+      {/* Dialog for Edit Address form */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Sửa địa chỉ</DialogTitle>
+            <DialogTitle>Edit Address</DialogTitle>
           </DialogHeader>
           <AddressForm
-            initialData={editingAddress || undefined} // initialData có thể là undefined nếu không có địa chỉ chỉnh sửa
+            initialData={editingAddress || undefined} // initialData can be undefined if no address is being edited
             onSubmit={handleFormSubmit}
             onCancel={handleFormCancel}
           />
@@ -120,7 +120,7 @@ const AddressList: React.FC<AddressListProps> = ({
       <div className="space-y-4">
         {addresses.length === 0 ? (
           <p className="text-muted-foreground text-center py-4">
-            Bạn chưa có địa chỉ nào.
+            You don't have any addresses yet.
           </p>
         ) : (
           addresses.map(address => (
@@ -133,33 +133,33 @@ const AddressList: React.FC<AddressListProps> = ({
               )}
             >
               <div className="flex-grow mb-4 md:mb-0">
-                {/* Tên người nhận và số điện thoại */}
+                {/* Recipient name and phone number */}
                 <p className="font-semibold text-lg text-gray-900">
-                  Tên đầy đủ: {address.fullName}
+                  Full Name: {address.fullName}
                 </p>
                 <p className="text-sm text-gray-600">
-                  Điện thoại: {address.phoneNumber}
+                  Phone: {address.phoneNumber}
                 </p>
-                {/* Địa chỉ chi tiết */}
+                {/* Detailed address */}
                 <p className="text-sm text-gray-600">
-                  Địa chỉ: {address.address}
+                  Address: {address.address}
                 </p>
-                {/* Nhãn cho địa chỉ hiện tại và địa chỉ lấy hàng */}
+                {/* Tags for default and pickup addresses */}
                 <div className="flex items-center gap-2 mt-1">
                   {address.isCurrent && (
                     <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
-                      Mặc định
+                      Default
                     </span>
                   )}
-                  {/* Sử dụng thuộc tính isShop trong Address để hiển thị nhãn này */}
+                  {/* Using isShop property from Address to display this tag */}
                   {address.isShop && (
                     <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                      Địa chỉ lấy hàng
+                      Pickup Address
                     </span>
                   )}
                 </div>
               </div>
-              {/* Các nút hành động */}
+              {/* Action buttons */}
               <div className="flex flex-col md:flex-row gap-2 flex-shrink-0">
                 {!address.isCurrent && (
                   <Button
@@ -168,7 +168,7 @@ const AddressList: React.FC<AddressListProps> = ({
                     size="sm"
                     onClick={() => onSetDefaultAddress(address.id)}
                   >
-                    Đặt làm mặc định
+                    Set as Default
                   </Button>
                 )}
                 <Button
@@ -177,7 +177,7 @@ const AddressList: React.FC<AddressListProps> = ({
                   size="sm"
                   onClick={() => handleEdit(address)}
                 >
-                  Sửa
+                  Edit
                 </Button>
                 <Button
                   disabled={disabled}
@@ -185,7 +185,7 @@ const AddressList: React.FC<AddressListProps> = ({
                   size="sm"
                   onClick={() => handleDelete(address.id)}
                 >
-                  Xóa
+                  Delete
                 </Button>
               </div>
             </div>

@@ -2,8 +2,8 @@ import { Product } from "@/types";
 import { useEffect, useState } from "react";
 
 /**
- * SellerProducts - Trang quản lý sản phẩm cho seller
- * Hiển thị danh sách sản phẩm và cho phép thêm, sửa, xóa sản phẩm
+ * SellerProducts - Product management page for sellers
+ * Displays a list of products and allows adding, editing, and deleting products
  */
 const SellerProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -41,7 +41,7 @@ const SellerProducts = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
+        <div className="text-lg">Loading...</div>
       </div>
     );
   }
@@ -52,15 +52,15 @@ const SellerProducts = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Quản lý sản phẩm</h1>
-            <p className="text-gray-600">Thêm, sửa và quản lý sản phẩm của cửa hàng</p>
+            <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+            <p className="text-gray-600">Add, edit, and manage your store's products</p>
           </div>
           <button
             onClick={handleAddProduct}
             className="bgnewtext-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             <span>+</span>
-            Thêm sản phẩm
+            Add Product
           </button>
         </div>
 
@@ -70,7 +70,7 @@ const SellerProducts = () => {
             <div className="flex-1">
               <input
                 type="text"
-                placeholder="Tìm kiếm sản phẩm..."
+                placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -82,13 +82,13 @@ const SellerProducts = () => {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="all">Tất cả</option>
-                <option value="active">Đang bán</option>
-                <option value="inactive">Tạm ngưng</option>
-                <option value="out-of-stock">Hết hàng</option>
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="out-of-stock">Out of Stock</option>
               </select>
               <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                Lọc
+                Filter
               </button>
             </div>
           </div>
@@ -101,22 +101,22 @@ const SellerProducts = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sản phẩm
+                    Product
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Danh mục
+                    Category
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Giá
+                    Price
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tồn kho
+                    Stock
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trạng thái
+                    Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Thao tác
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -126,13 +126,13 @@ const SellerProducts = () => {
                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex flex-col items-center">
                         <div className="text-6xl mb-4">📦</div>
-                        <h3 className="text-lg font-medium mb-2">Chưa có sản phẩm nào</h3>
-                        <p className="text-gray-400 mb-4">Bắt đầu bằng cách thêm sản phẩm đầu tiên của bạn</p>
+                        <h3 className="text-lg font-medium mb-2">No products yet</h3>
+                        <p className="text-gray-400 mb-4">Start by adding your first product</p>
                         <button
                           onClick={handleAddProduct}
                           className="bgnewtext-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                         >
-                          Thêm sản phẩm đầu tiên
+                          Add First Product
                         </button>
                       </div>
                     </td>
@@ -171,7 +171,7 @@ const SellerProducts = () => {
                         }).format(product.price)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.status ? "Còn hàng" : "Hết hàng"}
+                        {product.status ? "In Stock" : "Out of Stock"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -179,7 +179,7 @@ const SellerProducts = () => {
                             ? "bg-green-100 text-green-800" 
                             : "bg-red-100 text-red-800"
                         }`}>
-                          {product.status ? "Đang bán" : "Hết hàng"}
+                          {product.status ? "Selling" : "Out of Stock"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -188,19 +188,19 @@ const SellerProducts = () => {
                             onClick={() => handleEditProduct(product.id)}
                             className="textnewhover:text-blue-900"
                           >
-                            Sửa
+                            Edit
                           </button>
                           <button
                             onClick={() => handleToggleStatus(product.id)}
                             className="text-yellow-600 hover:text-yellow-900"
                           >
-                            {product.status ? "Tạm ngưng" : "Kích hoạt"}
+                            {product.status ? "Deactivate" : "Activate"}
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product.id)}
                             className="text-red-600 hover:text-red-900"
                           >
-                            Xóa
+                            Delete
                           </button>
                         </div>
                       </td>
@@ -217,7 +217,7 @@ const SellerProducts = () => {
           <div className="flex justify-center mt-8">
             <nav className="flex items-center gap-2">
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
-                Trước
+                Previous
               </button>
               <button className="px-3 py-2 text-sm bgnewtext-white rounded-md">
                 1
@@ -229,7 +229,7 @@ const SellerProducts = () => {
                 3
               </button>
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
-                Sau
+                Next
               </button>
             </nav>
           </div>

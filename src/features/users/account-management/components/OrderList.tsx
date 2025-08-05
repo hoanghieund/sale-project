@@ -26,7 +26,7 @@ import { orderService } from "../services/orderService";
 
 /**
  * @interface OrderListProps
- * @description Props cho component OrderList.
+ * @description Props for the OrderList component.
  */
 interface OrderListProps {
   status: string;
@@ -34,9 +34,9 @@ interface OrderListProps {
 
 /**
  * @function OrderList
- * @description Component hiển thị danh sách đơn hàng dựa trên trạng thái được chọn.
- * @param {OrderListProps} { status } - Trạng thái đơn hàng để lọc.
- * @returns {JSX.Element} Component OrderList.
+ * @description Component that displays a list of orders based on the selected status.
+ * @param {OrderListProps} { status } - Order status for filtering.
+ * @returns {JSX.Element} The OrderList component.
  */
 const OrderList: React.FC<OrderListProps> = ({ status }) => {
   const { user } = useUser();
@@ -64,12 +64,12 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
         if (err instanceof AxiosError) {
           setError(
             err.response?.data?.message ||
-              "Không thể tải đơn hàng. Vui lòng thử lại sau."
+              "Could not load orders. Please try again later."
           );
         } else {
-          setError("Đã xảy ra lỗi không xác định.");
+          setError("An unknown error occurred.");
         }
-        console.error("Lỗi khi tải đơn hàng:", err);
+        console.error("Error loading orders:", err);
       } finally {
         setLoading(false);
       }
@@ -78,14 +78,14 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
     fetchOrders();
   }, [user?.id , status]);
 
-  // Lọc đơn hàng theo trạng thái
+  // Filter orders by status
   const filteredOrders = orders.filter(order => {
     if (status === "all") return true;
-    if (status === "pending_confirmation") return order.status === 0; // 0: Chờ xác nhận
-    if (status === "awaiting_pickup") return order.status === 1; // 1: Chờ lấy hàng
-    if (status === "in_delivery") return order.status === 2; // 2: Đang giao
-    if (status === "completed") return order.status === 3; // 3: Hoàn thành
-    if (status === "cancelled") return order.status === 4; // 4: Đã hủy
+    if (status === "pending_confirmation") return order.status === 0; // 0: Pending confirmation
+    if (status === "awaiting_pickup") return order.status === 1; // 1: Awaiting pickup
+    if (status === "in_delivery") return order.status === 2; // 2: In delivery
+    if (status === "completed") return order.status === 3; // 3: Completed
+    if (status === "cancelled") return order.status === 4; // 4: Canceled
     return false;
   });
 
@@ -94,7 +94,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
       <div className="flex flex-col items-center justify-center py-12">
         <Loader2 className="h-10 w-10 animate-spin text-ring mb-3" />
         <p className="text-lg text-gray-600 font-medium">
-          Đang tải đơn hàng của bạn...
+          Loading your orders...
         </p>
       </div>
     );
@@ -105,7 +105,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
       <Card className="w-full max-w-xl mx-auto shadow-lg border-red-200 border-2">
         <CardHeader className="bg-red-50 p-4 rounded-t-lg">
           <CardTitle className="text-red-700 text-xl font-bold flex items-center">
-            <span className="mr-2">⚠️</span> Lỗi
+            <span className="mr-2">⚠️</span> Error
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4">
@@ -119,7 +119,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
     <div className="mt-6 space-y-6">
       {filteredOrders.length === 0 ? (
         <p className="text-center text-gray-600 py-8 text-base">
-          Không có đơn hàng nào với trạng thái này.
+          No orders found with this status.
         </p>
       ) : (
         filteredOrders.map(order => (
@@ -130,38 +130,38 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
             <CardHeader className="bg-card p-3 border-b border-border flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-base font-bold text-black flex items-center">
-                  <Package className="h-4 w-4 mr-2 text-ring" /> Đơn hàng #
+                  <Package className="h-4 w-4 mr-2 text-ring" /> Order #
                   {order.code}
                 </CardTitle>
                 <CardDescription className="text-xs text-foreground mt-1 flex items-center">
-                  <Calendar className="h-3 w-3 mr-1" /> Ngày đặt:{" "}
+                  <Calendar className="h-3 w-3 mr-1" /> Order date:{" "}
                   {order.timeOrder}
                 </CardDescription>
               </div>
               <div className="text-right">
                 {order.status === 0 && (
                   <span className="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
-                    Chờ xác nhận
+                    Pending confirmation
                   </span>
                 )}
                 {order.status === 1 && (
                   <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 text-xs font-medium">
-                    Chờ lấy hàng
+                    Awaiting pickup
                   </span>
                 )}
                 {order.status === 2 && (
                   <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs font-medium">
-                    Đang giao
+                    In delivery
                   </span>
                 )}
                 {order.status === 3 && (
                   <span className="px-2 py-0.5 rounded-full bg-green-100 text-ring text-xs font-medium">
-                    Hoàn thành
+                    Completed
                   </span>
                 )}
                 {order.status === 4 && (
                   <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-xs font-medium">
-                    Đã hủy
+                    Canceled
                   </span>
                 )}
               </div>
@@ -170,7 +170,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <h4 className="font-semibold text-foreground flex items-center">
-                    <User className="h-3 w-3 mr-1" /> Thông tin người nhận:
+                    <User className="h-3 w-3 mr-1" /> Recipient information:
                   </h4>
                   <p className="text-xs text-gray-600 ml-4">
                     {order.orderAddressDTO?.fullName || "N/A"}
@@ -187,20 +187,20 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-semibold text-foreground flex items-center">
-                    <DollarSign className="h-3 w-3 mr-1" /> Tổng tiền:
+                    <DollarSign className="h-3 w-3 mr-1" /> Total amount:
                   </h4>
                   <p className="text-base font-bold text-ring ml-4">
                     {formatCurrencyUSD(order.totalPrice)}
                   </p>
                   <h4 className="font-semibold text-foreground flex items-center">
-                    <Package className="h-3 w-3 mr-1" /> Tổng sản phẩm:
+                    <Package className="h-3 w-3 mr-1" /> Total products:
                   </h4>
                   <p className="text-xs text-gray-600 ml-4">
                     {order.cartEntities.reduce(
                       (sum, item) => sum + item.quantity,
                       0
                     )}{" "}
-                    sản phẩm
+                    products
                   </p>
                 </div>
               </div>
@@ -209,7 +209,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
 
               <div>
                 <h4 className="font-semibold text-foreground mb-2">
-                  Sản phẩm đã đặt:
+                  Ordered products:
                 </h4>
                 <div className="space-y-2">
                   {order.cartEntities.map(item => (

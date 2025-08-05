@@ -5,7 +5,7 @@ import type { CheckoutForm } from "../../Checkout";
 
 /**
  * Section: Shipping Address
- * Gom nhóm field địa chỉ, hiển thị lỗi theo từng input
+ * Groups address fields and displays errors for each input
  */
 interface ShippingAddressSectionProps {
   isDisabled: boolean;

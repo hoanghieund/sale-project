@@ -1,17 +1,17 @@
 import { Axios } from "@/api/Axios";
 
 /**
- * Dịch vụ người dùng
+ * User service
  * @module userService
  */
 export const userService = {
-  /**
-   * Thay đổi mật khẩu của người dùng.
-   * @param oldPassword - Mật khẩu hiện tại của người dùng.
-   * @param newPassword - Mật khẩu mới của người dùng.
-   * @param userId - ID của người dùng.
-   * @returns Promise khi thay đổi mật khẩu thành công.
-   */
+ /**
+  * Changes the user's password.
+  * @param oldPassword - The user's current password.
+  * @param newPassword - The user's new password.
+  * @param userId - The user's ID.
+  * @returns Promise upon successful password change.
+  */
   changePassword: async (oldPassword: string, newPassword: string , userId: number) => {
     return await Axios.post("/api/user/updatePassWord", {
       id: userId,

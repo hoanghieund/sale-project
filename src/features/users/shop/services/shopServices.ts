@@ -2,8 +2,8 @@ import { Axios } from "../../../../api/Axios";
 
 /**
  * @function getProductsByShopId
- * @description Lấy danh sách sản phẩm thuộc về một cửa hàng bằng shopId.
- * @param payload - Đối tượng chứa thông tin cho yêu cầu API.
+ * @description Retrieves a list of products belonging to a shop by shopId.
+ * @param payload - Object containing information for the API request.
  */
 export const getProductsByShopId = async (payload: {
   id: number;

@@ -23,23 +23,23 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import * as z from "zod";
 
-// Định nghĩa schema validation sử dụng Zod
+// Define validation schema using Zod
 const formSchema = z.object({
-  email: z.string().email({ message: "Email không hợp lệ." }),
+  email: z.string().email({ message: "Invalid email address." }),
 });
 
 /**
  * @function ForgotPassword
- * @description Component React cho trang quên mật khẩu.
- * Sử dụng các component Shadcn UI và React Hook Form để tạo giao diện người dùng và quản lý form.
- * @returns {JSX.Element} Phần tử JSX hiển thị trang quên mật khẩu.
+ * @description React component for the Forgot Password page.
+ * Uses Shadcn UI components and React Hook Form to create the user interface and manage forms.
+ * @returns {JSX.Element} JSX element displaying the Forgot Password page.
  */
 const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Khởi tạo form với React Hook Form và Zod resolver
+  // Initialize form with React Hook Form and Zod resolver
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,9 +49,9 @@ const ForgotPassword = () => {
 
   /**
    * @function onSubmit
-   * @description Xử lý khi người dùng gửi form yêu cầu khôi phục mật khẩu.
-   * Gửi email đến API và xử lý trạng thái tải cũng như lỗi.
-   * @param {z.infer<typeof formSchema>} values - Dữ liệu form đã được validate.
+   * @description Handles the submission of the password recovery request form.
+   * Sends the email to the API and manages loading states and errors.
+   * @param {z.infer<typeof formSchema>} values - Validated form data.
    */
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
@@ -60,17 +60,17 @@ const ForgotPassword = () => {
       formData.append("email", values.email);
       await authService.forgotPassword(formData);
       toast({
-        title: "Thành công!",
+        title: "Success!",
         description:
-          "Yêu cầu khôi phục mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.",
+          "Password recovery request has been sent. Please check your email.",
         variant: "default",
       });
       navigate("/reset-password");
     } catch (error) {
-      console.error("Lỗi khi gửi yêu cầu khôi phục mật khẩu:", error);
+      console.error("Error sending password recovery request:", error);
       toast({
-        title: "Lỗi!",
-        description: error.response?.data?.message || "Đã xảy ra lỗi không mong muốn.",
+        title: "Error!",
+        description: error.response?.data?.message || "An unexpected error occurred.",
         variant: "destructive",
       });
     } finally {
@@ -81,9 +81,9 @@ const ForgotPassword = () => {
   return (
     <div className="bg-card rounded-lg p-6 border border-muted">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Quên mật khẩu</CardTitle>
+        <CardTitle className="text-2xl text-center">Forgot Password</CardTitle>
         <CardDescription className="text-center">
-          Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
+          Enter your email to receive a password reset link.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -103,16 +103,16 @@ const ForgotPassword = () => {
               )}
             />
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Đang gửi..." : "Gửi yêu cầu"}
+              {loading ? "Sending..." : "Send Request"}
             </Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center">
         <div className="text-sm text-muted-foreground">
-          Quay lại trang đăng nhập{" "}
+          Back to login page{" "}
           <Link to="/login" className="text-primary hover:underline">
-            Đăng nhập
+            Login
           </Link>
         </div>
       </CardFooter>

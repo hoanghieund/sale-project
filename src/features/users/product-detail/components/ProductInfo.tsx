@@ -25,13 +25,13 @@ import { useState } from "react";
 
 /**
  * @interface ProductInfoProps
- * @description Định nghĩa các props cho component ProductInfo.
- * @property {Product} product - Đối tượng sản phẩm.
- * @property {Shop} shop - Đối tượng cửa hàng.
- * @property {Record<number, number>} selectedVariantValues - Giá trị biến thể đã chọn.
- * @property {(values: Record<number, number>) => void} setSelectedVariantValues - Callback cập nhật giá trị biến thể đã chọn.
- * @property {number | null} selectedSku - ID của SKU đã chọn.
- * @property {(skuId: number | null) => void} setSelectedSku - Callback cập nhật SKU đã chọn.
+ * @description Defines the props for the ProductInfo component.
+ * @property {Product} product - The product object.
+ * @property {Shop} shop - The shop object.
+ * @property {Record<number, number>} selectedVariantValues - Selected variant values.
+ * @property {(values: Record<number, number>) => void} setSelectedVariantValues - Callback to update selected variant values.
+ * @property {number | null} selectedSku - ID of the selected SKU.
+ * @property {(skuId: number | null) => void} setSelectedSku - Callback to update the selected SKU.
  */
 interface ProductInfoProps {
   product: Product;
@@ -39,33 +39,27 @@ interface ProductInfoProps {
 }
 
 /**
- * ProductInfo - Component hiển thị thông tin chi tiết sản phẩm
- * @param {ProductInfoProps} props - Các props của component.
+ * ProductInfo - Component to display product details.
+ * @param {ProductInfoProps} props - The component's props.
  */
 
 /**
-
  * @function changeDescription
-
-
-
- * @description Chuyển đổi chuỗi mô tả sản phẩm, thay thế dấu chấm phẩy bằng thẻ <br /> để hiển thị ngắt dòng.
-
- * @param {string} description - Chuỗi mô tả sản phẩm.
-
- * @returns {JSX.Element[]} Một mảng các phần tử JSX, mỗi phần tử là một đoạn văn bản hoặc thẻ <br />.
+ * @description Converts the product description string, replacing semicolons with <br /> tags for line breaks.
+ * @param {string} description - The product description string.
+ * @returns {JSX.Element[]} An array of JSX elements, each being a text segment or a <br /> tag.
  */
 const changeDescription = (description: string) => {
-  const items = description.split(";").filter(item => item.trim() !== ""); // Tách chuỗi và lọc bỏ các mục rỗng
+  const items = description.split(";").filter(item => item.trim() !== ""); // Split string and filter out empty items
   if (items.length === 0) {
-    return null; // Không có nội dung để hiển thị
+    return null; // No content to display
   }
   return (
     <ul className="list-disc pl-5 space-y-1">
       {" "}
-      {/* Thêm class Tailwind CSS cho list-style và padding */}
+      {/* Add Tailwind CSS classes for list-style and padding */}
       {items.map((item, index) => (
-        <li key={index}>{item.trim()}</li> // Mỗi mục là một thẻ <li>
+        <li key={index}>{item.trim()}</li> // Each item is an <li> tag
       ))}
     </ul>
   );
@@ -74,42 +68,42 @@ const changeDescription = (description: string) => {
 const ProductInfo = ({ product, className }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const { toast } = useToast();
-  // Sử dụng custom hook để truy cập Cart context
+  // Use custom hook to access Cart context
   const { addToCart, isLoading: isCartLoading } = useCart();
 
-  // Lưu trữ các giá trị biến thể đã chọn theo variantId
+  // Store selected variant values by variantId
   const [selectedVariantValues, setSelectedVariantValues] = useState<
     Record<string, number>
   >({});
 
   const variantProduct = useVariantProduct(product);
 
-  // Xác định xem nút có bị vô hiệu hóa không
+  // Determine if the button is disabled
   const isAddToCartDisabled =
-    product.optionDTOs && product.optionDTOs.length > 0
-      ? Object.keys(selectedVariantValues).length !== variantProduct.length
+    product?.optionDTOs && product?.optionDTOs.length > 0
+      ? Object.keys(selectedVariantValues).length !== variantProduct?.length
       : false;
 
   /**
    * @function handleAddToCart
-   * @description Xử lý logic khi người dùng nhấn nút "Thêm vào giỏ".
-   * Kiểm tra xem tất cả các biến thể đã được chọn chưa trước khi thêm vào giỏ.
-   * Sử dụng addToCart từ CartProvider để thêm sản phẩm vào giỏ hàng.
+   * @description Handles the logic when the user clicks the "Add to Cart" button.
+   * Checks if all variants have been selected before adding to cart.
+   * Uses addToCart from CartProvider to add the product to the cart.
    */
   const handleAddToCart = async () => {
-    // Nếu nút bị vô hiệu hóa (tức là chưa chọn đủ biến thể), hiển thị lỗi và dừng.
+    // If the button is disabled (meaning not all variants are selected), display an error and stop.
     if (isAddToCartDisabled) {
       toast({
-        title: "Lỗi",
+        title: "Error",
         description:
-          "Vui lòng chọn đầy đủ các biến thể sản phẩm trước khi thêm vào giỏ hàng.",
+          "Please select all product variants before adding to cart.",
         variant: "destructive",
       });
       return;
     }
 
     try {
-      // Sử dụng addToCart từ CartProvider thay vì gọi API trực tiếp
+      // Use addToCart from CartProvider instead of calling API directly
       await addToCart(
         product,
         selectedVariantValues.fitId,
@@ -119,11 +113,11 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
         quantity
       );
 
-      // Reset form sau khi thêm thành công
+      // Reset form after successful addition
       setQuantity(1);
       setSelectedVariantValues({});
     } catch (error) {
-      // Error handling đã được xử lý trong CartProvider
+      // Error handling is already managed in CartProvider
       console.log("🚀 ~ handleAddToCart ~ error:", error);
     }
   };
@@ -132,30 +126,32 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
     <div className={cn("space-y-4", className)}>
       {/* Product Info */}
       <div className="space-y-2">
-        {/* Tiêu đề: ưu tiên kích thước nhỏ hơn trên mobile, tăng ở md+ */}
-        <h1 className="text-2xl md:text-3xl font-bold">{product.title}</h1>
+        {/* Title: smaller size on mobile, increases on md+ */}
+        <h1 className="text-2xl md:text-3xl font-bold">{product?.title}</h1>
 
         <div className="space-y-1">
-          {/* Khối rating/bán/badges: cho phép wrap và tạo khoảng cách đều khi xuống dòng */}
+          {/* Rating/sales/badges block: allows wrapping and even spacing when wrapping */}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <div className="flex items-center gap-0.5">
-              <span className="text-base font-medium">{product.star || 0}</span>
+              <span className="text-base font-medium">
+                {product?.star || 0}
+              </span>
               <Star className="fill-yellow-400 text-yellow-400 w-4 h-4" />
             </div>
             <span className="text-foreground/50 text-sm">
-              ({product.totalReview || 0} đánh giá)
+              ({product?.totalReview || 0} reviews)
             </span>
             <span className="text-foreground text-sm">
-              Đã bán {product.totalProductSold || 0}
+              Sold {product?.totalProductSold || 0}
             </span>
-            {product.isNew && (
+            {product?.isNew && (
               <>
                 <span className="bg-new/10 text-new px-2 py-1 rounded-md text-sm font-medium">
-                  Mới
+                  New
                 </span>
               </>
             )}
-            {product.isFlashSale && (
+            {product?.isFlashSale && (
               <>
                 <span className="bg-trending/10 text-trending px-2 py-1 rounded-md text-sm font-medium">
                   Flash Sale
@@ -166,25 +162,25 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
         </div>
 
         <div className="text-xl md:text-2xl font-bold text-destructive">
-          {formatCurrencyUSD(product.priceSale || 0)}
+          {formatCurrencyUSD(product?.priceSale || 0)}
         </div>
         <div className="space-x-1">
-          {/* Giá gạch: responsive theo md */}
+          {/* Strikethrough price: responsive to md */}
           <span className="text-base md:text-lg text-foreground/50 line-through">
-            {formatCurrencyUSD(product.price || 0)}
+            {formatCurrencyUSD(product?.price || 0)}
           </span>
           <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-md text-sm font-medium">
-            -{product.discount.discount_percent}%
+            -{product?.discount?.discount_percent}%
           </span>
         </div>
       </div>
 
       {/* Variants Selection */}
-      {variantProduct && variantProduct.length > 0 && (
+      {variantProduct && variantProduct?.length > 0 && (
         <div className="space-y-2">
-          {variantProduct.map(variant => (
+          {variantProduct?.map(variant => (
             <div key={variant.name} className="space-y-2">
-              {/* Tiêu đề nhóm biến thể: nhỏ ở mobile, chuẩn ở md+ */}
+              {/* Variant group title: small on mobile, standard on md+ */}
               <h3 className="font-medium text-gray-700 text-sm md:text-base">
                 {variant.name}
               </h3>
@@ -192,7 +188,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                 {variant.values?.map(value => (
                   <div key={value.id}>
                     {" "}
-                    {/* Bao bọc bằng div hoặc Fragment */}
+                    {/* Wrap with div or Fragment */}
                     {variant.name.toLowerCase() === "color" ? (
                       <ColorCircle
                         color={getColorValue(value.name)}
@@ -237,18 +233,18 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
       )}
 
       {/* Quantity */}
-      {/* Khối số lượng: tăng khoảng cách ở md để thoáng hơn */}
+      {/* Quantity block: increases spacing on md for better layout */}
       <div className="flex items-center gap-2 md:gap-3 mb-1">
-        <span className="text-gray-700">Số lượng:</span>
+        <span className="text-gray-700">Quantity:</span>
         <Select
           value={String(quantity)}
           onValueChange={value => setQuantity(Number(value))}
         >
           <SelectTrigger className="w-24">
-            <SelectValue placeholder="Số lượng" />
+            <SelectValue placeholder="Quantity" />
           </SelectTrigger>
           <SelectContent>
-            {/* Tạo các lựa chọn số lượng từ 1 đến tối đa 10 hoặc số lượng tồn kho */}
+            {/* Create quantity options from 1 to max 10 or stock quantity */}
             {[...Array(999)].map((_, i) => (
               <SelectItem key={i + 1} value={String(i + 1)}>
                 {i + 1}
@@ -258,23 +254,23 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
         </Select>
       </div>
 
-      {/* Actions: stack dọc ở sm, nằm ngang ở md+; khoảng cách lớn hơn */}
+      {/* Actions: stack vertically on sm, horizontal on md+; larger spacing */}
       <div className="flex gap-2 sm:flex-col md:flex-row mb-1">
         <Button
           onClick={() => handleAddToCart()}
           className="w-full md:flex-1"
-          disabled={isAddToCartDisabled || isCartLoading} // Vô hiệu hóa nút nếu biến thể chưa được chọn đầy đủ
+          disabled={isAddToCartDisabled || isCartLoading} // Disable button if variants are not fully selected
         >
-          Thêm vào giỏ
+          Add to Cart
         </Button>
         {/* <Button
           onClick={() => {
-            // Mua ngay sản phẩm với biến thể đã chọn
+            // Buy product immediately with selected variant
           }}
           className="w-full md:flex-1"
           variant="outline"
         >
-          Mua ngay
+          Buy Now
         </Button> */}
       </div>
 
@@ -285,17 +281,17 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
       >
         <AccordionItem value="product-description">
           <AccordionTrigger className="text-base font-semibold">
-            Mô tả sản phẩm
+            Product Description
           </AccordionTrigger>
-          {/* Tối ưu typography cho nội dung mô tả, giữ max-width none để full width */}
+          {/* Optimize typography for description content, keep max-width none for full width */}
           <AccordionContent className="prose max-w-none prose-p:my-2 prose-ul:my-2 prose-li:my-1">
-            {product.content ? (
+            {product?.content ? (
               <div className="text-foreground leading-normal text-sm">
-                {changeDescription(product.content)}
+                {changeDescription(product?.content)}
               </div>
             ) : (
               <p className="text-foreground/50 italic">
-                Không có mô tả chi tiết cho sản phẩm này.
+                No detailed description available for this product.
               </p>
             )}
           </AccordionContent>
@@ -303,122 +299,122 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
 
         <AccordionItem value="product-specifications">
           <AccordionTrigger className="text-base font-semibold">
-            Thông số sản phẩm
+            Product Specifications
           </AccordionTrigger>
-          {/* Grid 1 cột trên mobile, 2 cột từ md; khoảng cách giảm nhẹ để khớp design-system */}
+          {/* 1-column grid on mobile, 2-columns from md; slightly reduced spacing to match design-system */}
           <AccordionContent className="grid grid-cols-1 gap-x-6 gap-y-3">
-            {product.brand && (
+            {product?.brand && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Thương hiệu:
+                  Brand:
                 </span>
-                <span className="text-foreground">{product.brand}</span>
+                <span className="text-foreground">{product?.brand}</span>
               </div>
             )}
-            {product.material && (
+            {product?.material && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Chất liệu:
+                  Material:
                 </span>
-                <span className="text-foreground">{product.material}</span>
+                <span className="text-foreground">{product?.material}</span>
               </div>
             )}
-            {product.origin && (
+            {product?.origin && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Xuất xứ:
+                  Origin:
                 </span>
-                <span className="text-foreground">{product.origin}</span>
+                <span className="text-foreground">{product?.origin}</span>
               </div>
             )}
-            {product.style && (
+            {product?.style && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Phong cách:
+                  Style:
                 </span>
-                <span className="text-foreground">{product.style}</span>
+                <span className="text-foreground">{product?.style}</span>
               </div>
             )}
-            {(product.height || product.width || product.length) && (
+            {(product?.height || product?.width || product?.length) && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Kích thước:
+                  Dimensions:
                 </span>
                 <span className="text-foreground">
                   {[
-                    product.height && `Cao ${product.height}cm`,
-                    product.width && `Rộng ${product.width}cm`,
-                    product.length && `Dài ${product.length}cm`,
+                    product?.height && `Height ${product?.height}cm`,
+                    product?.width && `Width ${product?.width}cm`,
+                    product?.length && `Length ${product?.length}cm`,
                   ]
                     .filter(Boolean)
                     .join(", ")}
                 </span>
               </div>
             )}
-            {product.weight && (
+            {product?.weight && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Trọng lượng:
+                  Weight:
                 </span>
-                <span className="text-foreground">{product.weight}g</span>
+                <span className="text-foreground">{product?.weight}g</span>
               </div>
             )}
-            {product.isNew !== undefined && (
+            {product?.isNew !== undefined && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Sản phẩm mới:
+                  New Product:
                 </span>
                 <span className="text-foreground">
-                  {product.isNew ? "Có" : "Không"}
+                  {product?.isNew ? "Yes" : "No"}
                 </span>
               </div>
             )}
-            {product.isFlashSale !== undefined && (
+            {product?.isFlashSale !== undefined && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Flash sale:
+                  Flash Sale:
                 </span>
                 <span className="text-foreground">
-                  {product.isFlashSale ? "Có" : "Không"}
+                  {product?.isFlashSale ? "Yes" : "No"}
                 </span>
               </div>
             )}
-            {product.isTrending !== undefined && (
+            {product?.isTrending !== undefined && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Xu hướng:
+                  Trending:
                 </span>
                 <span className="text-foreground">
-                  {product.isTrending ? "Có" : "Không"}
+                  {product?.isTrending ? "Yes" : "No"}
                 </span>
               </div>
             )}
-            {product.timeCreate && (
+            {product?.timeCreate && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Ngày đăng:
+                  Date Posted:
                 </span>
-                <span className="text-foreground">{product.timeCreate}</span>
+                <span className="text-foreground">{product?.timeCreate}</span>
               </div>
             )}
-            {product.categoryDto && (
+            {product?.categoryDto && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
-                  Danh mục:
+                  Category:
                 </span>
                 <span className="text-foreground">
-                  {product.categoryDto.parent?.name &&
-                    `${product.categoryDto.parent.name} > `}
-                  {product.categoryDto.name}
+                  {product?.categoryDto.parent?.name &&
+                    `${product?.categoryDto.parent.name} > `}
+                  {product?.categoryDto.name}
                 </span>
               </div>
             )}
-            {product.totalReview !== undefined && (
+            {product?.totalReview !== undefined && (
               <div className="flex">
                 <span className="font-medium text-foreground w-1/3">
-                  Số đánh giá:
+                  Number of Reviews:
                 </span>
-                <span className="text-foreground">{product.totalReview}</span>
+                <span className="text-foreground">{product?.totalReview}</span>
               </div>
             )}
           </AccordionContent>

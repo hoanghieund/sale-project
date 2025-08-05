@@ -5,8 +5,8 @@ import type { CheckoutForm } from "../../Checkout";
 
 /**
  * Section: Payment
- * - Nhận vào selector (component chọn phương thức thanh toán) để linh hoạt thay đổi UI
- * - Hiển thị form card khi type === 'card'
+ * - Accepts a selector (payment method selection component) for flexible UI changes
+ * - Displays card form when type === 'card'
  */
 interface Props {
   header: string;
@@ -22,7 +22,7 @@ const PaymentSection = ({ header, selector, paymentMethodType, errors }: Props) 
     <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
       <h2 className="text-xl font-semibold mb-4">{header}</h2>
 
-      {/* Component selector bên ngoài (PaymentMethodSelector) */}
+      {/* External selector component (PaymentMethodSelector) */}
       {selector}
 
       {paymentMethodType === "card" && (

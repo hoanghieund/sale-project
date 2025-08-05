@@ -1,6 +1,6 @@
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
-import LoadingSpinner from "@/components/common/LoadingSpinner"; // Spinner chung cho trạng thái loading
+import LoadingSpinner from "@/components/common/LoadingSpinner"; // General spinner for loading state
 import { Product, Shop } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -11,8 +11,8 @@ import ShopInfoCard from "./components/ShopInfoCard"; // Import the new ShopInfo
 import { productDetailService } from "./services/productDetailService";
 
 /**
- * ProductDetailPage - Trang chi tiết sản phẩm C2C Marketplace
- * Hiển thị thông tin sản phẩm, shop bán hàng và các sản phẩm liên quan
+ * ProductDetailPage - C2C Marketplace Product Detail Page
+ * Displays product information, seller shop, and related products
  */
 
 const ProductDetailPage = () => {
@@ -35,12 +35,12 @@ const ProductDetailPage = () => {
           await productDetailService.getProductBySlug(slug);
         setProduct(productData);
 
-        // Lấy thông tin shop từ dữ liệu API
+        // Fetch shop information from API data
         if (productData.shop) {
           setShop(productData.shop);
         }
       } catch (err) {
-        console.error("Lỗi khi tải dữ liệu:", err);
+        console.error("Error loading data:", err);
       } finally {
         setLoading(false);
       }
@@ -65,14 +65,14 @@ const ProductDetailPage = () => {
     <div className="bg-background min-h-screen">
       <BreadcrumbNav
         items={[
-          { label: "Trang chủ", to: "/" },
+          { label: "Home", to: "/" },
           {
             label: product.categoryDto?.parent?.name,
             to: `/category/${product.categoryDto?.parent?.id}`,
           },
           {
             label: product.categoryDto?.name,
-            to: `/category/${product.categoryDto?.parent?.id}/${product.categoryDto?.id}`,
+            to: `/category/${product.categoryDto?.id}`,
           },
           { label: product.title },
         ]}

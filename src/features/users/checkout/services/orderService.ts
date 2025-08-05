@@ -2,8 +2,8 @@ import { Axios } from "@/api/Axios";
 
 export const orderService = {
   /**
-   * thanh toán đơn hàng
-   * @param orderData - Thông tin đơn hàng
+   * Handles order checkout
+   * @param orderData - Order information
    * @returns Promise với thông tin đơn hàng
    */
   checkout: (orderData: any) => {

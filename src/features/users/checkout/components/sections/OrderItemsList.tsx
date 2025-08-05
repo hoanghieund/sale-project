@@ -2,8 +2,8 @@ import CartItemCard from "@/features/users/cart/components/CartItemCard";
 import { Cart } from "@/types";
 
 /**
- * Danh sách item trong Order Summary
- * Tối ưu hóa re-render bằng cách chỉ nhận mảng items đã tính sẵn từ parent
+ * List of items in Order Summary
+ * Optimizes re-renders by only receiving pre-calculated items array from parent
  */
 interface Props {
   items: Cart[];

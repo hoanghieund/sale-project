@@ -2,8 +2,8 @@ import { SellerDashboardStats } from "@/types";
 import { useEffect, useState } from "react";
 
 /**
- * SellerDashboard - Trang dashboard chính cho seller
- * Hiển thị thống kê tổng quan về shop và hoạt động bán hàng
+ * SellerDashboard - Main dashboard page for sellers
+ * Displays an overview of the shop and sales activities
  */
 const SellerDashboard = () => {
   const [stats, setStats] = useState<SellerDashboardStats | null>(null);
@@ -29,7 +29,7 @@ const SellerDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
+        <div className="text-lg">Loading...</div>
       </div>
     );
   }
@@ -37,7 +37,7 @@ const SellerDashboard = () => {
   if (!stats) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Không thể tải dữ liệu</div>
+        <div className="text-lg">Unable to load data</div>
       </div>
     );
   }
@@ -54,8 +54,8 @@ const SellerDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard Seller</h1>
-          <p className="text-gray-600">Quản lý cửa hàng và theo dõi hiệu suất bán hàng</p>
+          <h1 className="text-3xl font-bold text-gray-900">Seller Dashboard</h1>
+          <p className="text-gray-600">Manage your store and track sales performance</p>
         </div>
 
         {/* Quick Actions */}
@@ -63,25 +63,25 @@ const SellerDashboard = () => {
           <button className="bg-new text-white p-4 rounded-lg hover:bg-blue-700 transition-colors">
             <div className="text-center">
               <div className="text-2xl mb-2">📦</div>
-              <div className="font-semibold">Thêm sản phẩm</div>
+              <div className="font-semibold">Add Product</div>
             </div>
           </button>
           <button className="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors">
             <div className="text-center">
               <div className="text-2xl mb-2">📋</div>
-              <div className="font-semibold">Quản lý đơn hàng</div>
+              <div className="font-semibold">Manage Orders</div>
             </div>
           </button>
           <button className="bg-purple-600 text-white p-4 rounded-lg hover:bg-purple-700 transition-colors">
             <div className="text-center">
               <div className="text-2xl mb-2">🏪</div>
-              <div className="font-semibold">Cài đặt shop</div>
+              <div className="font-semibold">Shop Settings</div>
             </div>
           </button>
           <button className="bg-orange-600 text-white p-4 rounded-lg hover:bg-orange-700 transition-colors">
             <div className="text-center">
               <div className="text-2xl mb-2">📊</div>
-              <div className="font-semibold">Báo cáo</div>
+              <div className="font-semibold">Reports</div>
             </div>
           </button>
         </div>
@@ -91,7 +91,7 @@ const SellerDashboard = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Tổng sản phẩm</p>
+                <p className="text-sm text-gray-600">Total Products</p>
                 <p className="text-2xl font-bold text-gray-900">{stats.totalProducts}</p>
               </div>
               <div className="text-3xl">📦</div>
@@ -101,7 +101,7 @@ const SellerDashboard = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Tổng đơn hàng</p>
+                <p className="text-sm text-gray-600">Total Orders</p>
                 <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
               </div>
               <div className="text-3xl">🛒</div>
@@ -111,7 +111,7 @@ const SellerDashboard = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Tổng doanh thu</p>
+                <p className="text-sm text-gray-600">Total Revenue</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {formatCurrency(stats.totalRevenue)}
                 </p>
@@ -123,7 +123,7 @@ const SellerDashboard = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Đơn hàng chờ xử lý</p>
+                <p className="text-sm text-gray-600">Pending Orders</p>
                 <p className="text-2xl font-bold text-orange-600">{stats.pendingOrders}</p>
               </div>
               <div className="text-3xl">⏳</div>
@@ -135,7 +135,7 @@ const SellerDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Revenue Chart */}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-4">Doanh thu 6 tháng gần đây</h3>
+            <h3 className="text-lg font-semibold mb-4">Revenue Last 6 Months</h3>
             <div className="h-64 flex items-end justify-between gap-2">
               {stats.monthlyRevenue.map((revenue, index) => {
                 const maxRevenue = Math.max(...stats.monthlyRevenue);
@@ -162,26 +162,26 @@ const SellerDashboard = () => {
                 <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                   <div>
                     <p className="font-medium">#DH{String(index + 1).padStart(4, '0')}</p>
-                    <p className="text-sm text-gray-600">Khách hàng {index + 1}</p>
+                    <p className="text-sm text-gray-600">Customer {index + 1}</p>
                   </div>
                   <div className="text-right">
                     <p className="font-medium">{formatCurrency(299000 * (index + 1))}</p>
                     <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                      Chờ xử lý
+                      Pending
                     </span>
                   </div>
                 </div>
               ))}
             </div>
             <button className="w-full mt-4 text-new hover:text-blue-800 text-sm font-medium">
-              Xem tất cả đơn hàng →
+              View all orders →
             </button>
           </div>
         </div>
 
         {/* Navigation Menu */}
         <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold mb-4">Quản lý nhanh</h3>
+          <h3 className="text-lg font-semibold mb-4">Quick Management</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <a
               href="/seller/products"
@@ -189,8 +189,8 @@ const SellerDashboard = () => {
             >
               <span className="text-2xl">📦</span>
               <div>
-                <p className="font-medium">Quản lý sản phẩm</p>
-                <p className="text-sm text-gray-600">Thêm, sửa, xóa sản phẩm</p>
+                <p className="font-medium">Manage Products</p>
+                <p className="text-sm text-gray-600">Add, edit, delete products</p>
               </div>
             </a>
             <a
@@ -199,8 +199,8 @@ const SellerDashboard = () => {
             >
               <span className="text-2xl">📋</span>
               <div>
-                <p className="font-medium">Quản lý đơn hàng</p>
-                <p className="text-sm text-gray-600">Xử lý đơn hàng, vận chuyển</p>
+                <p className="font-medium">Manage Orders</p>
+                <p className="text-sm text-gray-600">Process orders, shipping</p>
               </div>
             </a>
             <a
@@ -209,8 +209,8 @@ const SellerDashboard = () => {
             >
               <span className="text-2xl">🏪</span>
               <div>
-                <p className="font-medium">Cài đặt cửa hàng</p>
-                <p className="text-sm text-gray-600">Thông tin, chính sách shop</p>
+                <p className="font-medium">Store Settings</p>
+                <p className="text-sm text-gray-600">Shop information, policies</p>
               </div>
             </a>
           </div>

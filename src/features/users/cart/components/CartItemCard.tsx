@@ -19,14 +19,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 /**
- * Định nghĩa các props cho component CartItemCard.
+ * Defines the props for the CartItemCard component.
  * @interface CartItemCardProps
- * @property {Cart} item - Đối tượng sản phẩm trong giỏ hàng.
- * @property {(itemId: number) => void} [removeFromCart] - Hàm tùy chọn để xóa sản phẩm khỏi giỏ hàng.
- * @property {(itemId: number, newQuantity: number) => void} [updateQuantity] - Hàm tùy chọn để cập nhật số lượng sản phẩm.
- * @property {'full' | 'compact'} [viewMode='full'] - Chế độ hiển thị của card: 'full' cho giỏ hàng, 'compact' cho trang thanh toán.
- * @property {boolean} isSelected - Trạng thái đã chọn của sản phẩm.
- * @property {(productId: string, isChecked: boolean) => void} onSelect - Hàm callback khi trạng thái chọn thay đổi.
+ * @property {Cart} item - The cart item object.
+ * @property {(itemId: number) => void} [removeFromCart] - Optional function to remove the item from the cart.
+ * @property {(itemId: number, newQuantity: number) => void} [updateQuantity] - Optional function to update the item quantity.
+ * @property {'full' | 'compact'} [viewMode='full'] - Display mode of the card: 'full' for the cart, 'compact' for the checkout page.
+ * @property {boolean} isSelected - Selected status of the product.
+ * @property {(productId: string, isChecked: boolean) => void} onSelect - Callback function when selection status changes.
  */
 interface CartItemCardProps {
   item: Cart;
@@ -39,19 +39,19 @@ interface CartItemCardProps {
 
 /**
  * @component CartItemCard
- * @description Hiển thị thông tin chi tiết của một sản phẩm trong giỏ hàng.
- * @param {CartItemCardProps} props - Props cho component CartItemCard.
- * @param {CartItemType} props.item - Đối tượng sản phẩm trong giỏ hàng.
- * @param {function} props.removeFromCart - Hàm xử lý khi xóa sản phẩm khỏi giỏ hàng.
- * @param {function} props.updateQuantity - Hàm xử lý khi cập nhật số lượng sản phẩm.
- * @param {boolean} props.isSelected - Trạng thái đã chọn của sản phẩm.
- * @param {function} props.onSelect - Hàm xử lý khi chọn hoặc bỏ chọn sản phẩm.
+ * @description Displays detailed information of a product in the cart.
+ * @param {CartItemCardProps} props - Props for the CartItemCard component.
+ * @param {CartItemType} props.item - The cart item object.
+ * @param {function} props.removeFromCart - Function to handle removing the item from the cart.
+ * @param {function} props.updateQuantity - Function to handle updating the item quantity.
+ * @param {boolean} props.isSelected - Selected status of the product.
+ * @param {function} props.onSelect - Function to handle selecting or deselecting the product.
  */
 const CartItemCard = ({
   item,
   removeFromCart,
   updateQuantity,
-  viewMode = "full", // Mặc định là chế độ 'full'
+  viewMode = "full", // Default to 'full' mode
   isSelected,
   onSelect,
 }: CartItemCardProps) => {
@@ -63,7 +63,7 @@ const CartItemCard = ({
     <Card key={item.id} className={"p-2 bg-card/30"}>
       <div className="flex gap-1">
         {/* Checkbox for selection */}
-        {!isCompactMode && ( // Chỉ hiển thị checkbox khi không ở chế độ compact
+        {!isCompactMode && ( // Only display checkbox when not in compact mode
           <div className="flex items-center">
             <Checkbox
               id={item.id.toString()}
@@ -103,7 +103,7 @@ const CartItemCard = ({
               </p>
             </div>
             {!isCompactMode &&
-              removeFromCart && ( // Ẩn nút xóa trong chế độ compact
+              removeFromCart && ( // Hide delete button in compact mode
                 <Button
                   variant="ghost"
                   size="icon"
@@ -115,9 +115,9 @@ const CartItemCard = ({
               )}
           </div>
 
-          {/* Product Variant Details (Ẩn trong chế độ compact) */}
+          {/* Product Variant Details (Hidden in compact mode) */}
           <div className="text-xs text-muted-foreground mb-0 flex flex-wrap items-center gap-1">
-            {/* Hàm trợ giúp để tìm tên thuộc tính biến thể */}
+            {/* Helper function to find variant attribute name */}
             {(() => {
               const getVariantName = (slug: string, id: number | undefined) => {
                 if (!id) return null;
@@ -209,7 +209,7 @@ const CartItemCard = ({
                 variant="secondary"
                 className="bg-red-500 text-white hover:bg-red-600 text-xs"
               >
-                {/* Công thức tính phần trăm giảm giá: (Giá gốc - Giá khuyến mãi) / Giá gốc * 100 */}
+                {/* Discount percentage calculation formula: (Original Price - Sale Price) / Original Price * 100 */}
                 -{productDTO.discount?.discount_percent}%
               </Badge>
             )}
@@ -217,10 +217,10 @@ const CartItemCard = ({
 
           {/* Quantity Controls */}
           <div className="flex items-center justify-between mt-0">
-            {/* Component chọn số lượng sử dụng Select */}
+            {/* Quantity selection component using Select */}
             <div className="flex items-center gap-1">
               <span className="text-xs text-muted-foreground">Quantity:</span>
-              {!isCompactMode && updateQuantity ? ( // Ẩn điều khiển số lượng trong chế độ compact
+              {!isCompactMode && updateQuantity ? ( // Hide quantity controls in compact mode
                 <Select
                   value={String(item.quantity)}
                   onValueChange={value =>
@@ -228,10 +228,10 @@ const CartItemCard = ({
                   }
                 >
                   <SelectTrigger className="w-14 h-6">
-                    <SelectValue placeholder="Số lượng" />
+                    <SelectValue placeholder="Quantity" />
                   </SelectTrigger>
                   <SelectContent>
-                    {/* Tạo các lựa chọn số lượng từ 1 đến tối đa 10 hoặc số lượng tồn kho */}
+                    {/* Create quantity options from 1 to a maximum of 10 or inventory quantity */}
                     {[...Array(999)].map((_, i) => (
                       <SelectItem key={i + 1} value={String(i + 1)}>
                         {i + 1}

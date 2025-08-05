@@ -6,7 +6,7 @@ import { Category, Product, Shop } from "@/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getProductsByShopId } from "./services/shopServices";
-// Import Breadcrumb từ shadcn để thay thế breadcrumb thủ công
+// Import Breadcrumb from shadcn to replace manual breadcrumb
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import InputNumber from "@/components/common/InputNumber";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,24 +29,25 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Star } from "lucide-react";
-// Loại bỏ Tabs vì không còn sử dụng
+// Tabs removed as no longer in use
 
 interface shopUi extends Shop {
   star?: number;
 }
 
 /**
- * ShopPage - Trang hiển thị thông tin cửa hàng
- * Hiển thị thông tin cửa hàng và danh sách sản phẩm của cửa hàng
+ * ShopPage - Shop Information Display Page
+ * Displays shop information and a list of shop products
  */
 const ShopPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const [shop, setShop] = useState<shopUi>({} as shopUi);
+  console.log("🚀 ~ ShopPage ~ shop:", shop);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // State cho hệ thống lọc mới
+  // State for the new filtering system
   const [filters, setFilters] = useState({
     currentPage: 0,
     pageSize: 20,
@@ -59,22 +60,22 @@ const ShopPage = () => {
     priceTo: "",
   });
 
-  // Separate state cho price inputs để debounce
+  // Separate state for price inputs to debounce
   const [priceInputs, setPriceInputs] = useState({
     priceFrom: "",
     priceTo: "",
   });
 
-  // Timer reference cho debounce
+  // Timer reference for debounce
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // State cho phân trang
+  // State for pagination
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
   /**
-   * Debounced function để cập nhật price filters
-   * Chờ 800ms sau khi người dùng ngừng nhập mới gọi API
+   * Debounced function to update price filters
+   * Waits 800ms after user stops typing before calling API
    */
   const debouncedUpdatePriceFilters = useCallback(
     (priceFrom: string, priceTo: string) => {
@@ -87,7 +88,7 @@ const ShopPage = () => {
           ...prev,
           priceFrom,
           priceTo,
-          currentPage: 0, // Reset về trang đầu khi thay đổi bộ lọc
+          currentPage: 0, // Reset to first page when filters change
         }));
       }, 800); // Delay 800ms
     },
@@ -95,17 +96,17 @@ const ShopPage = () => {
   );
 
   /**
-   * Xử lý thay đổi price input với debounce
+   * Handles price input changes with debounce
    */
   const handlePriceInputChange = useCallback(
     (field: "priceFrom" | "priceTo", value: string) => {
-      // Cập nhật ngay lập tức UI state
+      // Immediately update UI state
       setPriceInputs(prev => ({
         ...prev,
         [field]: value,
       }));
 
-      // Gọi debounced update cho filters
+      // Call debounced update for filters
       const newPriceFrom =
         field === "priceFrom" ? value : priceInputs.priceFrom;
       const newPriceTo = field === "priceTo" ? value : priceInputs.priceTo;
@@ -114,14 +115,14 @@ const ShopPage = () => {
     [priceInputs, debouncedUpdatePriceFilters]
   );
 
-  // Hàm fetch dữ liệu với filters
+  // Function to fetch data with filters
   const fetchShopData = async () => {
     setLoading(true);
     try {
-      // Chuẩn hoá payload theo interface service:
-      // - 'price' phải là string (ví dụ: '', 'asc', 'desc'), không phải boolean.
-      // - 'priceFrom'/'priceTo' cho phép string | number, giữ nguyên.
-      // - listIdChild đảm bảo là number[].
+      // Normalize payload according to service interface:
+      // - 'price' must be a string (e.g., '', 'asc', 'desc'), not a boolean.
+      // - 'priceFrom'/'priceTo' allow string | number, keep as is.
+      // - listIdChild ensures it's number[].
       const payload = {
         id: Number(shopId),
         currentPage: filters.currentPage,
@@ -149,11 +150,11 @@ const ShopPage = () => {
       setShop(shop);
       setCategories(categories);
 
-      // Cập nhật thông tin phân trang
+      // Update pagination information
       setTotalPages(response.productDTOPage?.totalPages || 0);
       setTotalElements(response.productDTOPage?.totalElements || 0);
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu cửa hàng:", error);
+      console.error("Error loading shop data:", error);
       setShop(null);
       setProducts([]);
       setTotalPages(0);
@@ -163,14 +164,14 @@ const ShopPage = () => {
     }
   };
 
-  // Effect để fetch dữ liệu khi shopId hoặc filters thay đổi
+  // Effect to fetch data when shopId or filters change
   useEffect(() => {
     if (shopId) {
       fetchShopData();
     }
   }, [shopId, filters]);
 
-  // Sync priceInputs với filters ban đầu
+  // Sync priceInputs with initial filters
   useEffect(() => {
     setPriceInputs({
       priceFrom: filters.priceFrom,
@@ -178,7 +179,7 @@ const ShopPage = () => {
     });
   }, [filters.priceFrom, filters.priceTo]);
 
-  // Cleanup debounce timer khi component unmount
+  // Cleanup debounce timer when component unmounts
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
@@ -195,42 +196,42 @@ const ShopPage = () => {
     <div className="min-h-screen bg-background">
       <BreadcrumbNav
         items={[
-          { label: "Trang chủ", to: "/" },
-          { label: "Cửa hàng" },
+          { label: "Home", to: "/" },
+          { label: "Shop" },
           { label: shop.name },
         ]}
       />
       {/* Shop Banner */}
-      {/* Banner cửa hàng động theo shop.banner; fallback về placeholder nếu thiếu */}
+      {/* Dynamic shop banner based on shop.banner; fallbacks to placeholder if missing */}
       <div
         className="relative h-80 bg-primary"
         style={{
-          // dùng hình nền cover để hiển thị đủ chiều ngang, giữ tỉ lệ
+          // Use cover background to display full width, maintain aspect ratio
           backgroundImage: `url(${shop?.banner?.trim()})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
       >
-        {/* Lớp phủ tối để đảm bảo nội dung phía trên có độ tương phản tốt */}
+        {/* Dark overlay to ensure good contrast for content above */}
         <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
       {/* Shop Info (refactored to Shadcn UI Card) */}
       <div className="container mx-auto px-4 -mt-20 relative z-10">
-        {/* Sử dụng Card để đảm bảo tính nhất quán UI và khả năng truy cập */}
+        {/* Using Card to ensure UI consistency and accessibility */}
         <Card className="mb-8 shadow-lg bg-white">
           {/*
-            Tối ưu bố cục CardHeader:
-            - Trục chính: Avatar | Thông tin shop (tên + mô tả ngắn + stats) | Hành động
-            - Sử dụng grid cho khu vực stats để cân bằng và nổi bật hơn
-            - Dùng màu/spacing theo design-system: text-xl/lg, gap-4/6, rounded-lg, bg-muted, shadow-sm
+            Optimized CardHeader layout:
+            - Main axis: Avatar | Shop information (name + short description + stats) | Actions
+            - Using grid for stats area for balance and prominence
+            - Using colors/spacing from design-system: text-xl/lg, gap-4/6, rounded-lg, bg-muted, shadow-sm
           */}
           <CardHeader className="pb-4">
             <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-              {/* Avatar cửa hàng */}
+              {/* Shop Avatar */}
               <Avatar className="w-24 h-24 md:w-28 md:h-28 border-4 border-white shadow-lg rounded-full">
-                {/* Phòng thủ src/alt */}
+                {/* Defensive src/alt */}
                 <AvatarImage
                   src={shop?.avatar?.trim() || ""}
                   alt={shop?.name || "Shop"}
@@ -240,27 +241,27 @@ const ShopPage = () => {
                 </AvatarFallback>
               </Avatar>
 
-              {/* Khối nội dung trung tâm: Tên + mô tả + chỉ số */}
+              {/* Central content block: Name + description + metrics */}
               <div className="flex-1 w-full">
-                {/* Tên shop */}
+                {/* Shop Name */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle className="text-2xl md:text-3xl leading-none tracking-wide">
                     {shop?.name}
                   </CardTitle>
-                  {/* Hành động đặt lên cùng hàng ở viewport rộng để tiết kiệm chiều dọc */}
+                  {/* Actions placed on the same line in wide viewports to save vertical space */}
                   <div className="hidden lg:flex items-center gap-2">
                     <Button variant="outline" className="h-9">
-                      Chat ngay
+                      Chat now
                     </Button>
                   </div>
                 </div>
 
-                {/* Khu vực chỉ số: làm nổi bật, dễ quét mắt */}
+                {/* Metrics area: highlighted, easy to scan */}
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-                  {/* Đánh giá trung bình */}
+                  {/* Average Rating */}
                   <div className="flex items-center gap-4">
                     <div className="text-xs text-muted-foreground">
-                      Đánh giá
+                      Rating
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-0.5">
@@ -272,20 +273,20 @@ const ShopPage = () => {
                     </div>
                   </div>
 
-                  {/* Tổng số sản phẩm */}
+                  {/* Total products */}
                   <div className="flex items-center gap-4">
                     <div className="text-xs text-muted-foreground">
-                      Sản phẩm
+                      Products
                     </div>
                     <div className="text-xl md:text-2xl font-bold text-primary leading-none">
                       {shop?.totalQuantity}
                     </div>
                   </div>
 
-                  {/* Ngày đăng */}
+                  {/* Listing Date */}
                   <div className="flex items-center gap-4">
                     <div className="text-xs text-muted-foreground">
-                      Ngày đăng sản phẩm
+                      Product Listing Date
                     </div>
                     <div className="text-xl md:text-2xl font-bold text-primary leading-none">
                       {shop?.timeRequest}
@@ -294,51 +295,51 @@ const ShopPage = () => {
                 </div>
               </div>
 
-              {/* Nhóm hành động bên phải - hiển thị trên mobile dưới cùng */}
+              {/* Right action group - displayed at the bottom on mobile */}
               <div className="flex lg:hidden w-full">
                 <Button variant="outline" className="w-full">
-                  Chat ngay
+                  Chat now
                 </Button>
               </div>
             </div>
           </CardHeader>
         </Card>
 
-        {/* KHU VỰC DANH MỤC + SẢN PHẨM (đã bỏ hệ Tabs) */}
+        {/* CATEGORY + PRODUCT AREA (Tabs system removed) */}
         <Card className="mb-8 border border-border rounded-xl shadow-sm bg-white">
-          {/* Gợi ý danh mục của cửa hàng: lấy từ products[0]?.categoryDto và mở rộng thành danh mục duy nhất */}
+          {/* Suggested shop categories: derived from products[0]?.categoryDto and expanded into unique categories */}
           <CardHeader className="pb-2">
-            {/* Tiêu đề và bộ lọc */}
+            {/* Title and filters */}
             <div className="space-y-4">
               <div>
-                <CardTitle className="text-xl">Sản phẩm của cửa hàng</CardTitle>
+                <CardTitle className="text-xl">Shop Products</CardTitle>
                 <CardDescription>
-                  Tìm kiếm và lọc sản phẩm theo nhu cầu của bạn
+                  Search and filter products according to your needs
                 </CardDescription>
               </div>
 
-              {/* Dải danh mục hiển thị phía trên lưới sản phẩm */}
+              {/* Category strip displayed above the product grid */}
               <div>
                 <h3 className="text-base font-semibold mb-3 text-foreground">
-                  Danh mục liên quan
+                  Related Categories
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {/*
-                    Hiển thị rõ ràng Category vs Subcategory:
-                    - Có parent: hiển thị badge "Category" cho parent và badge "Sub" cho current, phân tách bằng "›"
-                    - Không có parent: hiển thị badge "Category" cho chính nó
-                    Giữ style theo design-system, dùng màu từ shadcn: badge outline + text-muted-foreground để dễ phân biệt.
+                    Clearly display Category vs Subcategory:
+                    - With parent: display "Category" badge for parent and "Sub" badge for current, separated by "›"
+                    - Without parent: display "Category" badge for itself
+                    Maintain style according to design-system, use colors from shadcn: badge outline + text-muted-foreground for easy differentiation.
                   */}
                   {categories.length > 0 ? (
                     categories?.map((cat: Category) => {
                       if (cat?.parent) {
-                        // Có parent: hiển thị cặp Category (parent) › Subcategory (current)
+                        // With parent: display Category (parent) › Subcategory (current) pair
                         return (
                           <div
                             key={`${cat.parent.id}-${cat.id}`}
-                            className="flex items-center gap-2 rounded-md border border-gray-100 p-2"
+                            className="flex flex-wrap items-center gap-2 rounded-md border border-gray-100 p-2"
                           >
-                            {/* Badge & link cho Category (parent) */}
+                            {/* Badge & link for Category (parent) */}
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-muted-foreground px-2 py-0.5 border border-border rounded">
                                 Category
@@ -353,10 +354,10 @@ const ShopPage = () => {
                               </Button>
                             </div>
 
-                            {/* Ký tự phân tách trực quan */}
+                            {/* Visual separator character */}
                             <span className="text-muted-foreground">›</span>
 
-                            {/* Badge & link cho Subcategory (current) */}
+                            {/* Badge & link for Subcategory (current) */}
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-muted-foreground px-2 py-0.5 border border-border rounded">
                                 Sub
@@ -374,7 +375,7 @@ const ShopPage = () => {
                         );
                       }
 
-                      // Không có parent: chính nó là Category
+                      // Without parent: it is the Category itself
                       return (
                         <div
                           key={cat.id}
@@ -396,7 +397,7 @@ const ShopPage = () => {
                     })
                   ) : (
                     <span className="text-sm text-muted-foreground">
-                      Chưa có danh mục
+                      No categories yet
                     </span>
                   )}
                 </div>
@@ -407,11 +408,11 @@ const ShopPage = () => {
           <Separator className="mx-6" />
 
           <CardContent className="pt-6 space-y-6">
-            {/* Bộ lọc sản phẩm */}
+            {/* Product filters */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Lọc theo loại đặc biệt */}
+              {/* Filter by special type */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Loại sản phẩm</Label>
+                <Label className="text-sm font-medium">Product Type</Label>
                 <div className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <Checkbox
@@ -426,7 +427,7 @@ const ShopPage = () => {
                       }
                     />
                     <Label htmlFor="popular" className="text-sm">
-                      Phổ biến
+                      Popular
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -442,7 +443,7 @@ const ShopPage = () => {
                       }
                     />
                     <Label htmlFor="latest" className="text-sm">
-                      Mới nhất
+                      Latest
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -458,15 +459,15 @@ const ShopPage = () => {
                       }
                     />
                     <Label htmlFor="bestSell" className="text-sm">
-                      Bán chạy
+                      Best Selling
                     </Label>
                   </div>
                 </div>
               </div>
 
-              {/* Lọc theo khoảng giá */}
+              {/* Filter by price range */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Khoảng giá (VNĐ)</Label>
+                <Label className="text-sm font-medium">Price Range (VND)</Label>
                 <div className="space-y-2">
                   <InputNumber
                     value={Number(priceInputs.priceFrom)}
@@ -483,9 +484,9 @@ const ShopPage = () => {
                 </div>
               </div>
 
-              {/* Sắp xếp theo giá (boolean): false = giảm dần, true = tăng dần */}
+              {/* Sort by price (boolean): false = descending, true = ascending */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Sắp xếp giá</Label>
+                <Label className="text-sm font-medium">Sort by Price</Label>
                 <Select
                   value={String(filters.price)} // "true" | "false"
                   onValueChange={value => {
@@ -493,23 +494,23 @@ const ShopPage = () => {
                     setFilters(prev => ({
                       ...prev,
                       price: mapped ? "true" : "false",
-                      currentPage: 0, // reset phân trang khi đổi sort
+                      currentPage: 0, // reset pagination when sorting changes
                     }));
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn sắp xếp giá" />
+                    <SelectValue placeholder="Select price sort" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="true">Giá tăng dần</SelectItem>
-                    <SelectItem value="false">Giá giảm dần</SelectItem>
+                    <SelectItem value="true">Price: Low to High</SelectItem>
+                    <SelectItem value="false">Price: High to Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Số sản phẩm trên trang */}
+              {/* Products per page */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Hiển thị</Label>
+                <Label className="text-sm font-medium">Show</Label>
                 <Select
                   value={filters.pageSize.toString()}
                   onValueChange={value =>
@@ -524,23 +525,23 @@ const ShopPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="12">12 sản phẩm</SelectItem>
-                    <SelectItem value="20">20 sản phẩm</SelectItem>
-                    <SelectItem value="40">40 sản phẩm</SelectItem>
+                    <SelectItem value="12">12 products</SelectItem>
+                    <SelectItem value="20">20 products</SelectItem>
+                    <SelectItem value="40">40 products</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Thông tin kết quả */}
+            {/* Result Information */}
             <div className="text-sm text-muted-foreground">
-              Hiển thị {products.length} trong tổng số {totalElements} sản phẩm
+              Displaying {products.length} of {totalElements} products
             </div>
             {loading ? (
               <LoadingSpinner />
             ) : (
               <>
-                {/* Lưới sản phẩm */}
+                {/* Product Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                   {products.map(product => (
                     <ProductCardSimple
@@ -552,17 +553,17 @@ const ShopPage = () => {
                     />
                   ))}
                 </div>
-                {/* Phân trang */}
+                {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <CustomPagination
-                      currentPage={filters.currentPage + 1} // API sử dụng base-0, UI sử dụng base-1
+                      currentPage={filters.currentPage + 1} // API uses base-0, UI uses base-1
                       totalPages={totalPages}
                       onPageChange={page => {
                         setFilters(prev => ({
                           ...prev,
                           currentPage: page - 1,
-                        })); // Chuyển về base-0 cho API
+                        })); // Convert to base-0 for API
                       }}
                       className="justify-center"
                     />

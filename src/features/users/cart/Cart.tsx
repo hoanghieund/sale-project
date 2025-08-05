@@ -10,15 +10,15 @@ import ShopCartSection from "./components/ShopCartSection";
 
 /**
  * @component Cart
- * @description Component hiển thị giỏ hàng với các sản phẩm đã được thêm.
- * Sử dụng CartProvider context để quản lý state và logic cart.
- * Hiển thị danh sách sản phẩm theo cửa hàng và form checkout.
+ * @description Component displays the shopping cart with added products.
+ * Uses CartProvider context to manage cart state and logic.
+ * Displays the product list by shop and checkout form.
  */
 const Cart = () => {
-  // Navigation hook để điều hướng đến trang checkout
+  // Navigation hook to navigate to the checkout page
   const navigate = useNavigate();
 
-  // Sử dụng custom hook để truy cập Cart context
+  // Use custom hook to access Cart context
   const {
     cartByShop,
     isLoading,
@@ -29,10 +29,10 @@ const Cart = () => {
     updateQuantity,
     prepareCheckout,
     onSelectItem,
-    onSelectAll, // Thêm onSelectAll từ useCart hook
+    onSelectAll, // Add onSelectAll from useCart hook
   } = useCart();
 
-  // Tính toán trạng thái checked của checkbox "Chọn tất cả sản phẩm"
+  // Calculate the checked state of the "Select all products" checkbox
   const isAllSelected =
     cartByShop.length > 0 &&
     cartByShop.every(shopCart =>
@@ -41,18 +41,18 @@ const Cart = () => {
 
   /**
    * @function handleCheckout
-   * @description Xử lý checkout: chuẩn bị dữ liệu và điều hướng đến trang checkout.
-   * Sử dụng prepareCheckout từ context để validate và chuẩn bị dữ liệu.
+   * @description Handles checkout: prepares data and navigates to the checkout page.
+   * Uses prepareCheckout from context to validate and prepare data.
    */
   const handleCheckout = () => {
-    // Gọi prepareCheckout để validate và chuẩn bị dữ liệu
+    // Call prepareCheckout to validate and prepare data
     const selectedItemsArray = prepareCheckout();
 
-    // Nếu chuẩn bị thành công, điều hướng đến trang checkout
+    // If successful, navigate to the checkout page
     if (selectedItemsArray) {
       navigate("/checkout");
     }
-    // Nếu không thành công, prepareCheckout đã hiển thị toast error
+    // If unsuccessful, prepareCheckout has already displayed a toast error
   };
 
   useEffect(() => {
@@ -68,27 +68,27 @@ const Cart = () => {
         <div className="lg:col-span-2 space-y-4">
           {cartByShop.length > 0 && (
             <div className="flex items-center space-x-2 mb-4">
-              {/* Checkbox component từ shadcn/ui */}
+              {/* Checkbox component from shadcn/ui */}
               <Checkbox
                 id="select-all-products"
-                checked={isAllSelected} // Cập nhật trạng thái checked dựa trên isAllSelected
-                onCheckedChange={onSelectAll} // Kết nối onCheckedChange với onSelectAll
+                checked={isAllSelected} // Update checked state based on isAllSelected
+                onCheckedChange={onSelectAll} // Connect onCheckedChange with onSelectAll
               />
-              {/* Label cho checkbox */}
+              {/* Label for checkbox */}
               <Label
                 htmlFor="select-all-products"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Chọn tất cả sản phẩm
+                Select All Products
               </Label>
             </div>
           )}
           {/*
-            Điều chỉnh hiển thị LoadingSpinner:
-            - Đặt spinner bên trong div chứa nội dung giỏ hàng.
-            - Khi isLoading là true, làm mờ nội dung và hiển thị spinner.
-            - Sử dụng `relative` trên div cha và `absolute inset-0` trên div của spinner
-              để spinner phủ lên toàn bộ khu vực nội dung.
+            Adjusting LoadingSpinner display:
+            - Place the spinner inside the div containing cart content.
+            - When isLoading is true, dim the content and display the spinner.
+            - Use `relative` on the parent div and `absolute inset-0` on the spinner's div
+              to make the spinner cover the entire content area.
           */}
           <div
             className={`relative ${

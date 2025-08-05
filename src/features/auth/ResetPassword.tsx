@@ -23,18 +23,18 @@ import { z } from "zod";
 
 /**
  * @constant passwordResetSchema
- * @description Schema validation sử dụng Zod để xác thực biểu mẫu đặt lại mật khẩu.
- * - `newPassword`: Phải là chuỗi, tối thiểu 6 ký tự.
- * - `confirmPassword`: Phải là chuỗi.
- * - Sử dụng `.refine` để đảm bảo `newPassword` và `confirmPassword` khớp nhau.
+ * @description Schema validation using Zod for password reset form.
+ * - `newPassword`: Must be a string, minimum 6 characters.
+ * - `confirmPassword`: Must be a string.
+ * - Uses `.refine` to ensure `newPassword` and `confirmPassword` match.
  */
 const passwordResetSchema = z
   .object({
-    newPassword: z.string().min(6, { message: "Mật khẩu mới phải có ít nhất 6 ký tự." }),
+    newPassword: z.string().min(6, { message: "New password must be at least 6 characters." }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Mật khẩu xác nhận không khớp.",
+    message: "Confirm password does not match.",
     path: ["confirmPassword"],
   });
 
@@ -42,15 +42,15 @@ type PasswordResetFormValues = z.infer<typeof passwordResetSchema>;
 
 /**
  * @function ResetPassword
- * @description Component React cho trang đặt lại mật khẩu, sử dụng react-hook-form và Zod.
- * @returns {JSX.Element} Phần tử JSX hiển thị trang đặt lại mật khẩu.
+ * @description React component for the password reset page, using react-hook-form and Zod.
+ * @returns {JSX.Element} JSX element displaying the password reset page.
  */
 const ResetPassword = () => {
   const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const token = searchParams.get("email");
 
-  // Khởi tạo form với react-hook-form và zodResolver
+  // Initialize form with react-hook-form and zodResolver
   const form = useForm<PasswordResetFormValues>({
     resolver: zodResolver(passwordResetSchema),
     defaultValues: {
@@ -61,27 +61,27 @@ const ResetPassword = () => {
 
   /**
    * @function onSubmit
-   * @description Xử lý khi người dùng gửi biểu mẫu sau khi đã được xác thực.
-   * @param {PasswordResetFormValues} data - Dữ liệu từ biểu mẫu.
+   * @description Handles form submission after validation.
+   * @param {PasswordResetFormValues} data - Form data.
    */
   const onSubmit = async (data: PasswordResetFormValues) => {
     try {
-      // Gọi service để đặt lại mật khẩu
+      // Call service to reset password
       await authService.resetPassword(data.newPassword, token);
-      // Điều hướng người dùng đến trang đăng nhập sau khi thành công
+      // Navigate user to login page upon success
       navigate("/login");
     } catch (error) {
-      console.error("Lỗi khi đặt lại mật khẩu:", error);
-      // Có thể thêm toast notification để thông báo lỗi cho người dùng ở đây
+      console.error("Error resetting password:", error);
+      // Can add toast notification to inform user of error here
     }
   };
 
   return (
     <div className="bg-card rounded-lg p-6 border border-muted">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Đặt lại mật khẩu</CardTitle>
+        <CardTitle className="text-2xl text-center">Reset Password</CardTitle>
         <CardDescription className="text-center">
-          Vui lòng nhập mật khẩu mới của bạn.
+          Please enter your new password.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -92,11 +92,11 @@ const ResetPassword = () => {
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mật khẩu mới</FormLabel>
+                  <FormLabel>New Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Nhập mật khẩu mới"
+                      placeholder="Enter new password"
                       {...field}
                     />
                   </FormControl>
@@ -109,11 +109,11 @@ const ResetPassword = () => {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Xác nhận mật khẩu</FormLabel>
+                  <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Xác nhận mật khẩu mới"
+                      placeholder="Confirm new password"
                       {...field}
                     />
                   </FormControl>
@@ -122,13 +122,13 @@ const ResetPassword = () => {
               )}
             />
             <Button type="submit" className="w-full mt-4">
-              Đặt lại mật khẩu
+              Reset Password
             </Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center">
-        {/* Có thể thêm liên kết quay lại trang đăng nhập nếu cần */}
+        {/* Can add link back to login page if needed */}
       </CardFooter>
     </div>
   );

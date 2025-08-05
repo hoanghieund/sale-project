@@ -1,6 +1,6 @@
 /**
  * AccountSidebar Component
- * @description Sidebar cho trang quản lý tài khoản người dùng, sử dụng Shadcn UI Sidebar component
+ * @description Sidebar for user account management page, using Shadcn UI Sidebar component
  * @returns {JSX.Element}
  */
 import { cn } from "@/lib/utils";
@@ -20,14 +20,14 @@ import {
 } from "@/components/ui/sidebar";
 
 const AccountSidebar = (): JSX.Element => {
-  const location = useLocation(); // Lấy vị trí hiện tại để xác định link đang active
+  const location = useLocation(); // Get current location to determine active link
 
-  // Định nghĩa các liên kết điều hướng với tên, đường dẫn và biểu tượng
+  // Define navigation links with name, path, and icon
   const navLinks = [
-    { name: "Hồ sơ", path: "/account/profile", icon: User },
-    { name: "Địa chỉ", path: "/account/address", icon: MapPin },
-    { name: "Lịch sử đơn hàng", path: "/account/orders", icon: Package },
-    { name: "Đổi mật khẩu", path: "/account/change-password", icon: Lock },
+    { name: "Profile", path: "/account/profile", icon: User },
+    { name: "Addresses", path: "/account/address", icon: MapPin },
+    { name: "Order History", path: "/account/orders", icon: Package },
+    { name: "Change Password", path: "/account/change-password", icon: Lock },
   ];
 
   return (
@@ -38,7 +38,7 @@ const AccountSidebar = (): JSX.Element => {
     >
       <SidebarHeader className="p-4 pb-0">
         <h3 className="text-lg font-semibold leading-none tracking-tight">
-          Tài khoản của tôi
+          My Account
         </h3>
       </SidebarHeader>
       <SidebarContent>

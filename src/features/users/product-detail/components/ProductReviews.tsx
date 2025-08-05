@@ -31,20 +31,20 @@ interface Review {
     shopName: string | null;
     newAccount: boolean;
   };
-  productDTO?: any; // Có thể cần định nghĩa interface chi tiết hơn cho ProductDTO nếu được sử dụng nhiều
-  parent: any; // Có thể cần định nghĩa interface chi tiết hơn cho Parent nếu có
+  productDTO?: any; // TODO: Consider defining a more detailed interface for ProductDTO if widely used.
+  parent: any; // TODO: Consider defining a more detailed interface for Parent if applicable.
   idParent: number | null;
   timeComment: string;
   totalLike: number | null;
-  child: Review[] | null; // Child review có cùng cấu trúc với Review
+  child: Review[] | null; // Child reviews have the same structure as Review.
   active: number | null;
   star: number;
 }
 
 /**
- * Component để hiển thị một đánh giá và các đánh giá con của nó một cách đệ quy.
- * @param {Object} props - Props của component.
- * @param {Review} props.review - Đối tượng đánh giá cần hiển thị.
+ * Component to display a review and its child reviews recursively.
+ * @param {Object} props - Component props.
+ * @param {Review} props.review - The review object to display.
  */
 const ReviewItem = ({ review }: { review: Review }) => {
   return (
@@ -93,7 +93,7 @@ const ReviewItem = ({ review }: { review: Review }) => {
               <div className="flex gap-1.5 mt-2 overflow-x-auto pb-1">
                 <img
                   src={review.image}
-                  alt={`Hình ảnh đánh giá`}
+                  alt={`Review image`}
                   className="h-12 w-12 rounded-sm object-cover"
                 />
               </div>
@@ -146,8 +146,8 @@ export const ProductReviews = ({
     } catch (error) {
       console.error("Error fetching reviews:", error);
       toast({
-        title: "Lỗi",
-        description: "Không thể tải đánh giá sản phẩm.",
+        title: "Error",
+        description: "Failed to load product reviews.",
         variant: "destructive",
       });
     }
@@ -168,8 +168,8 @@ export const ProductReviews = ({
   //   e.preventDefault();
   //   if (rating === 0 || !comment.trim() || !productId) {
   //     toast({
-  //       title: "Lỗi",
-  //       description: "Vui lòng chọn số sao và nhập nội dung đánh giá.",
+  //       title: "Error",
+  //       description: "Please select a star rating and enter review content.",
   //       variant: "destructive",
   //     });
   //     return;
@@ -182,17 +182,17 @@ export const ProductReviews = ({
   //       content: comment.trim(),
   //     });
   //     toast({
-  //       title: "Thành công",
-  //       description: "Đánh giá của bạn đã được gửi thành công!",
+  //       title: "Success",
+  //       description: "Your review has been submitted successfully!",
   //     });
   //     setRating(0);
   //     setComment("");
-  //     fetchReviews(); // Tải lại danh sách đánh giá sau khi gửi thành công
+  //     fetchReviews(); // Reload review list after successful submission
   //   } catch (error) {
   //     console.error("Error submitting review:", error);
   //     toast({
-  //       title: "Lỗi",
-  //       description: "Không thể gửi đánh giá. Vui lòng thử lại.",
+  //       title: "Error",
+  //       description: "Failed to submit review. Please try again.",
   //       variant: "destructive",
   //     });
   //   } finally {
@@ -205,7 +205,7 @@ export const ProductReviews = ({
       <div className="flex flex-col justify-between items-start gap-3">
         <div className="flex-shrink-0 flex items-start gap-4">
           <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200">
-            Đánh giá sản phẩm
+            Product Reviews
           </h2>
           <div className="flex items-center gap-1">
             <div className="flex items-baseline">
@@ -227,7 +227,7 @@ export const ProductReviews = ({
               ))}
             </div>
             <span className="text-xs text-muted-foreground">
-              ({totalReviews} đánh giá)
+              ({totalReviews} reviews)
             </span>
           </div>
         </div>
@@ -242,8 +242,7 @@ export const ProductReviews = ({
       ) : (
         <div className="text-center py-6 rounded-md">
           <p className="text-muted-foreground text-sm">
-            Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh
-            giá!
+            No reviews yet for this product. Be the first to review!
           </p>
         </div>
       )}
@@ -253,7 +252,7 @@ export const ProductReviews = ({
           {/* <Card className="shadow-sm">
             <CardHeader className="p-2">
               <CardTitle className="text-sm text-gray-800 dark:text-gray-200">
-                Viết đánh giá của bạn
+                Write Your Review
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3">
@@ -278,11 +277,11 @@ export const ProductReviews = ({
                     </button>
                   ))}
                   <span className="ml-0.5 text-xs text-muted-foreground">
-                    {rating > 0 ? `${rating} sao` : "Chọn số sao"}
+                    {rating > 0 ? `${rating} stars` : "Select stars"}
                   </span>
                 </div>
                 <Textarea
-                  placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
+                  placeholder="Share your thoughts about the product..."
                   value={comment}
                   onChange={e => setComment(e.target.value)}
                   className="min-h-[50px] text-xs focus-visible:ring-offset-0 focus-visible:ring-blue-400"
@@ -293,7 +292,7 @@ export const ProductReviews = ({
                     disabled={isSubmitting || rating === 0 || !comment.trim()}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded-md transition-colors duration-200 text-xs"
                   >
-                    {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
+                    {isSubmitting ? "Submitting..." : "Submit Review"}
                   </Button>
                 </div>
               </form>

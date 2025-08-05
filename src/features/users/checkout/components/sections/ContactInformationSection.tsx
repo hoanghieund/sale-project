@@ -9,7 +9,7 @@ import type { CheckoutForm } from "../../Checkout";
 
 /**
  * Section: Contact Information and Shipping Address
- * Dùng useFormContext để truy cập register, errors, setValue mà không cần prop drilling
+ * Uses useFormContext to access register, errors, setValue without prop drilling
  */
 const ContactInformationSection = () => {
   const {
@@ -19,14 +19,14 @@ const ContactInformationSection = () => {
     watch,
     trigger,
   } = useFormContext<CheckoutForm>();
-  const { user } = useUser(); // Sử dụng hook useUser để lấy thông tin người dùng
+  const { user } = useUser(); // Use useUser hook to get user information
 
   const [addresses, setAddresses] = useState<Address[]>([]);
-  // Không cần state cục bộ cho selectedAddressId nữa, sẽ dùng react-hook-form
+  // No need for local state for selectedAddressId anymore, using react-hook-form
 
   /**
    * @function fetchAddresses
-   * @description Lấy danh sách địa chỉ của người dùng khi component mount hoặc userId thay đổi.
+   * @description Fetches the user's address list when the component mounts or userId changes.
    */
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -45,8 +45,8 @@ const ContactInformationSection = () => {
 
   /**
    * @function applyAddressToForm
-   * @description Gán các giá trị từ đối tượng Address vào các trường của form.
-   * @param address - Đối tượng Address chứa thông tin địa chỉ.
+   * @description Assigns values from the Address object to the form fields.
+   * @param address - Address object containing address information.
    */
   const applyAddressToForm = (address: Address) => {
     // Gán firstName và lastName, sử dụng fullName nếu firstName/lastName không tồn tại
@@ -60,8 +60,8 @@ const ContactInformationSection = () => {
 
   /**
    * @function handleAddressChange
-   * @description Xử lý sự kiện khi người dùng chọn một địa chỉ từ dropdown.
-   * @param addressId - ID của địa chỉ được chọn.
+   * @description Handles the event when a user selects an address from the dropdown.
+   * @param addressId - ID of the selected address.
    */
   const handleAddressChange = (addressId: string) => {
     setValue("selectedAddressId", addressId); // Cập nhật selectedAddressId qua react-hook-form
@@ -80,7 +80,7 @@ const ContactInformationSection = () => {
   };
 
   /**
-   * @description Tự động chọn địa chỉ mặc định (isDefault = true) nếu có, và gán vào form.
+   * @description Automatically selects the default address (isDefault = true) if available, and assigns it to the form.
    */
   useEffect(() => {
     if (addresses.length > 0) {
@@ -109,10 +109,10 @@ const ContactInformationSection = () => {
         Contact Information and Shipping Address
       </h2>
       <div className="space-y-4">
-        {/* Dropdown để chọn địa chỉ đã lưu */}
+        {/* Dropdown to select a saved address */}
         <div className="col-span-full space-y-2">
           <Label htmlFor="address-radio-group">Select an existing address</Label>
-          {/* Sử dụng register để react-hook-form quản lý giá trị của RadioGroup */}
+          {/* Use register to let react-hook-form manage the RadioGroup value */}
           <RadioGroup
             onValueChange={handleAddressChange}
             value={watch("selectedAddressId") || ""}
@@ -148,7 +148,7 @@ const ContactInformationSection = () => {
                 </Label>
               </div>
             ))}
-            {/* Thêm tùy chọn "Other" */}
+            {/* Add "Other" option */}
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="other" id="address-other" />
               <Label htmlFor="address-other" className="p-2 cursor-pointer hover:bg-muted/50 transition-colors duration-200 w-full border rounded-md">

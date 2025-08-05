@@ -3,8 +3,8 @@ import { CartSummary } from "@/features/users/cart/types/cart-types";
 import { formatCurrencyUSD } from "@/utils/formatters";
 
 /**
- * Tóm tắt giá: Subtotal/Discount/Shipping/Tax/Total
- * Hiển thị đơn giản theo design system
+ * Price summary: Subtotal/Discount/Shipping/Tax/Total
+ * Simple display following the design system
  */
 interface Props {
   summary: CartSummary;

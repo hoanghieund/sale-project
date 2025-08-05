@@ -3,6 +3,7 @@ import CategoryCard from "@/components/common/CategoryCard";
 import CustomPagination from "@/components/common/CustomPagination";
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
+import InputNumber from "@/components/common/InputNumber";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
 import {
@@ -13,7 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -30,8 +30,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 /**
- * CategoryPage - Trang hiển thị danh mục chính
- * Hiển thị danh sách subcategories và sản phẩm với bộ lọc và phân trang
+ * CategoryPage - Main category display page
+ * Displays a list of subcategories and products with filters and pagination
  */
 const CategoryPage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -40,7 +40,7 @@ const CategoryPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // State cho hệ thống lọc mới
+  // State for new filter system
   const [filters, setFilters] = useState({
     currentPage: 0,
     pageSize: 20,
@@ -52,16 +52,16 @@ const CategoryPage = () => {
     priceTo: "",
   });
 
-  // Separate state cho price inputs để debounce
+  // Separate state for price inputs for debounce
   const [priceInputs, setPriceInputs] = useState({
     priceFrom: "",
     priceTo: "",
   });
 
-  // Timer reference cho debounce
+  // Timer reference for debounce
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // State cho phân trang
+  // State for pagination
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
@@ -83,15 +83,15 @@ const CategoryPage = () => {
         setSubcategories([]);
       }
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu danh mục:", error);
+      console.error("Error loading category data:", error);
       setCategories([]);
       setSubcategories([]);
     }
   }, []);
 
   /**
-   * Debounced function để cập nhật price filters
-   * Chờ 800ms sau khi người dùng ngừng nhập mới gọi API
+   * Debounced function to update price filters
+   * Waits 800ms after user stops typing before calling API
    */
   const debouncedUpdatePriceFilters = useCallback(
     (priceFrom: string, priceTo: string) => {
@@ -104,7 +104,7 @@ const CategoryPage = () => {
           ...prev,
           priceFrom,
           priceTo,
-          currentPage: 0, // Reset về trang đầu khi thay đổi bộ lọc
+          currentPage: 0, // Reset to first page when changing filters
         }));
       }, 800); // Delay 800ms
     },
@@ -112,17 +112,17 @@ const CategoryPage = () => {
   );
 
   /**
-   * Xử lý thay đổi price input với debounce
+   * Handles price input changes with debounce
    */
   const handlePriceInputChange = useCallback(
     (field: "priceFrom" | "priceTo", value: string) => {
-      // Cập nhật ngay lập tức UI state
+      // Immediately update UI state
       setPriceInputs(prev => ({
         ...prev,
         [field]: value,
       }));
 
-      // Gọi debounced update cho filters
+      // Call debounced update for filters
       const newPriceFrom =
         field === "priceFrom" ? value : priceInputs.priceFrom;
       const newPriceTo = field === "priceTo" ? value : priceInputs.priceTo;
@@ -132,7 +132,7 @@ const CategoryPage = () => {
   );
 
   /**
-   * Fetch dữ liệu sản phẩm với filters
+   * Fetches product data with filters
    */
   const fetchProductData = async (
     categoryParentId: number,
@@ -142,7 +142,7 @@ const CategoryPage = () => {
 
     setLoading(true);
     try {
-      // Chuẩn hoá payload theo interface service
+      // Standardize payload according to service interface
       const payload = {
         categoryParentId,
         categoryChildId,
@@ -162,11 +162,11 @@ const CategoryPage = () => {
 
       setProducts(products);
 
-      // Cập nhật thông tin phân trang
+      // Update pagination information
       setTotalPages(response?.totalPages || 0);
       setTotalElements(response?.totalElements || 0);
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu sản phẩm:", error);
+      console.error("Error loading product data:", error);
       setProducts([]);
       setTotalPages(0);
       setTotalElements(0);
@@ -175,14 +175,14 @@ const CategoryPage = () => {
     }
   };
 
-  // Effect để fetch dữ liệu category khi categoryId thay đổi
+  // Effect to fetch category data when categoryId changes
   useEffect(() => {
     if (categoryId) {
       fetchCategoryData(categoryId);
     }
   }, [categoryId, fetchCategoryData]);
 
-  // Effect để fetch dữ liệu sản phẩm khi categoryId hoặc filters thay đổi
+  // Effect to fetch product data when categoryId or filters change
   useEffect(() => {
     if (categoryId && categories.length === 1) {
       fetchProductData(Number(categoryId));
@@ -191,7 +191,7 @@ const CategoryPage = () => {
     }
   }, [categoryId, categories, filters]);
 
-  // Sync priceInputs với filters ban đầu
+  // Sync priceInputs with initial filters
   useEffect(() => {
     setPriceInputs({
       priceFrom: filters.priceFrom,
@@ -199,7 +199,7 @@ const CategoryPage = () => {
     });
   }, [filters.priceFrom, filters.priceTo]);
 
-  // Cleanup debounce timer khi component unmount
+  // Cleanup debounce timer when component unmounts
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
@@ -211,17 +211,17 @@ const CategoryPage = () => {
   const breadcrumbItems = useMemo(() => {
     if (categories.length === 1) {
       return [
-        { label: "Trang chủ", to: "/" },
+        { label: "Home", to: "/" },
         { label: categories[0].name, to: `/category/${categories[0].id}` },
       ];
     } else if (categories.length === 2) {
       return [
-        { label: "Trang chủ", to: "/" },
+        { label: "Home", to: "/" },
         { label: categories[0].name, to: `/category/${categories[0].id}` },
         { label: categories[1].name, to: `/category/${categories[1].id}` },
       ];
     } else {
-      return [{ label: "Trang chủ", to: "/" }, { label: "Danh mục" }];
+      return [{ label: "Home", to: "/" }, { label: "Category" }];
     }
   }, [categoryId, categories]);
 
@@ -235,7 +235,7 @@ const CategoryPage = () => {
         {subcategories.length > 0 && (
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold ">Danh mục</h2>
+              <h2 className="text-2xl font-bold ">Categories</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -248,7 +248,7 @@ const CategoryPage = () => {
                   />
                 ))
               ) : (
-                <EmptyStateMessage icon="🛍️" message="Chưa có danh mục con" />
+                <EmptyStateMessage icon="🛍️" message="No subcategories yet" />
               )}
             </div>
           </div>
@@ -257,19 +257,21 @@ const CategoryPage = () => {
         {/* Products with Filters */}
         <Card className="bg-white">
           <CardHeader>
-            <CardTitle className="text-2xl">Sản phẩm trong danh mục</CardTitle>
+            <CardTitle className="text-2xl">
+              Products in this Category
+            </CardTitle>
             <CardDescription>
-              Khám phá các sản phẩm đa dạng trong danh mục này
+              Explore a variety of products in this category
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Bộ lọc */}
+            {/* Filters */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4 rounded-lg">
               {/* Subcategories Filter */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Loại sản phẩm</Label>
+                <Label className="text-sm font-medium">Product Type</Label>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {/* Bộ lọc bổ sung - Popular, Latest, Best Sell */}
+                  {/* Additional Filters - Popular, Latest, Best Sell */}
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="popular"
@@ -286,7 +288,7 @@ const CategoryPage = () => {
                       htmlFor="popular"
                       className="text-sm font-normal cursor-pointer"
                     >
-                      Phổ biến
+                      Popular
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -305,7 +307,7 @@ const CategoryPage = () => {
                       htmlFor="latest"
                       className="text-sm font-normal cursor-pointer"
                     >
-                      Mới nhất
+                      Latest
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -324,38 +326,34 @@ const CategoryPage = () => {
                       htmlFor="bestSell"
                       className="text-sm font-normal cursor-pointer"
                     >
-                      Bán chạy
+                      Best Selling
                     </Label>
                   </div>
                 </div>
               </div>
 
-              {/* Khoảng giá */}
+              {/* Price Range */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Khoảng giá (VNĐ)</Label>
+                <Label className="text-sm font-medium">Price Range (VND)</Label>
                 <div className="space-y-2">
-                  <Input
-                    type="number"
-                    placeholder="Giá từ"
-                    value={priceInputs.priceFrom}
-                    onChange={e =>
-                      handlePriceInputChange("priceFrom", e.target.value)
+                  <InputNumber
+                    value={Number(priceInputs.priceFrom)}
+                    onChange={value =>
+                      handlePriceInputChange("priceFrom", value.toString())
                     }
                   />
-                  <Input
-                    type="number"
-                    placeholder="Giá đến"
-                    value={priceInputs.priceTo}
-                    onChange={e =>
-                      handlePriceInputChange("priceTo", e.target.value)
+                  <InputNumber
+                    value={Number(priceInputs.priceTo)}
+                    onChange={value =>
+                      handlePriceInputChange("priceTo", value.toString())
                     }
                   />
                 </div>
               </div>
 
-              {/* Sắp xếp theo giá */}
+              {/* Sort by Price */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Sắp xếp giá</Label>
+                <Label className="text-sm font-medium">Sort by Price</Label>
                 <Select
                   value={filters.price}
                   onValueChange={value => {
@@ -367,18 +365,18 @@ const CategoryPage = () => {
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn sắp xếp giá" />
+                    <SelectValue placeholder="Select price sort" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="asc">Giá tăng dần</SelectItem>
-                    <SelectItem value="desc">Giá giảm dần</SelectItem>
+                    <SelectItem value="asc">Price: Low to High</SelectItem>
+                    <SelectItem value="desc">Price: High to Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Số sản phẩm trên trang */}
+              {/* Products per page */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">Hiển thị</Label>
+                <Label className="text-sm font-medium">Display</Label>
                 <Select
                   value={filters.pageSize.toString()}
                   onValueChange={value =>
@@ -393,9 +391,9 @@ const CategoryPage = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="12">12 sản phẩm</SelectItem>
-                    <SelectItem value="20">20 sản phẩm</SelectItem>
-                    <SelectItem value="40">40 sản phẩm</SelectItem>
+                    <SelectItem value="12">12 products</SelectItem>
+                    <SelectItem value="20">20 products</SelectItem>
+                    <SelectItem value="40">40 products</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -403,16 +401,16 @@ const CategoryPage = () => {
 
             <Separator />
 
-            {/* Thông tin kết quả */}
+            {/* Result Information */}
             <div className="text-sm text-muted-foreground">
-              Hiển thị {products.length} trong tổng số {totalElements} sản phẩm
+              Showing {products.length} of {totalElements} products
             </div>
 
             {loading ? (
               <LoadingSpinner />
             ) : (
               <>
-                {/* Lưới sản phẩm */}
+                {/* Product Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                   {products.length > 0 ? (
                     products.map(product => (
@@ -431,17 +429,17 @@ const CategoryPage = () => {
                   )}
                 </div>
 
-                {/* Phân trang */}
+                {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <CustomPagination
-                      currentPage={filters.currentPage + 1} // API sử dụng base-0, UI sử dụng base-1
+                      currentPage={filters.currentPage + 1} // API uses 0-based, UI uses 1-based
                       totalPages={totalPages}
                       onPageChange={page => {
                         setFilters(prev => ({
                           ...prev,
                           currentPage: page - 1,
-                        })); // Chuyển về base-0 cho API
+                        })); // Convert to 0-based for API
                       }}
                       className="justify-center"
                     />

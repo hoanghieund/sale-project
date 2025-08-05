@@ -4,17 +4,17 @@ import { ProfileForm } from "../components/ProfileForm";
 
 /**
  * @component ProfilePage
- * @description Trang hiển thị và chỉnh sửa thông tin cá nhân của người dùng.
- * Sử dụng Card component để nhóm tiêu đề và form thông tin cá nhân.
- * Dữ liệu hồ sơ người dùng được tải từ API.
+ * @description Page to display and edit user personal information.
+ * Uses Card component to group title and personal information form.
+ * User profile data is loaded from the API.
  */
 const ProfilePage: React.FC = () => {
 
-  // Hiển thị form với dữ liệu đã tải hoặc thông báo nếu không có dữ liệu
+  // Display form with loaded data or a message if no data.
   return (
     <Card className="w-full bg-white">
       <CardHeader>
-        <CardTitle className="text-lg">Thông tin cá nhân</CardTitle>
+        <CardTitle className="text-lg">Personal Information</CardTitle>
       </CardHeader>
       <CardContent className="p-4">
         <ProfileForm  />

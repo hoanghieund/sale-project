@@ -26,23 +26,23 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-// Định nghĩa schema validation với Zod
+// Define validation schema with Zod
 const registerFormSchema = z
   .object({
     username: z
       .string()
-      .min(2, { message: "Tên người dùng phải có ít nhất 2 ký tự" }),
-    email: z.string().email({ message: "Email không hợp lệ" }),
+      .min(2, { message: "Username must be at least 2 characters" }),
+    email: z.string().email({ message: "Invalid email address" }),
     password: z
       .string()
-      .min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
+      .min(6, { message: "Password must be at least 6 characters" }),
     confirmPassword: z.string(),
     agreeToTerms: z.boolean().refine(val => val === true, {
-      message: "Bạn phải đồng ý với điều khoản và điều kiện",
+      message: "You must agree to the terms and conditions",
     }),
   })
   .refine(data => data.password === data.confirmPassword, {
-    message: "Mật khẩu xác nhận không khớp",
+    message: "Confirm password does not match",
     path: ["confirmPassword"],
   });
 
@@ -54,14 +54,14 @@ const Register = () => {
   const { register: registerUser, isLoading, error, clearError } = useUser();
   const navigate = useNavigate();
 
-  // Xóa lỗi khi component unmount để tránh hiển thị lỗi khi quay lại trang đăng ký
+  // Clear errors when component unmounts to prevent displaying errors when returning to the registration page
   useEffect(() => {
     return () => {
       clearError();
     };
   }, [clearError]);
 
-  // Định nghĩa form với react-hook-form và zod validation
+  // Define form with react-hook-form and zod validation
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -71,7 +71,7 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      // Tạo object đăng ký theo cấu trúc mới
+      // Create registration object with new structure
       const registerData = {
         username: data.username,
         email: data.email,
@@ -81,7 +81,7 @@ const Register = () => {
       await registerUser(registerData as any);
       navigate(`/verify-email?email=${data.email}`);
     } catch (error) {
-      console.error("Lỗi khi đăng ký:", error);
+      console.error("Registration error:", error);
     }
   };
 

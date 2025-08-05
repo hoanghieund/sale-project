@@ -20,7 +20,7 @@ const LoadingSpinner: React.FC = () => {
         />
 
         {/* Nhãn trạng thái tải */}
-        <p className="text-sm text-muted-foreground">Đang tải...</p>
+        <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     </div>
   );

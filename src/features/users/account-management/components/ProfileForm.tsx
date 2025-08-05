@@ -28,55 +28,55 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 
-// Định nghĩa schema validation cho form
+// Form validation schema
 const profileFormSchema = z.object({
-  avatar: z.union([z.string(), z.instanceof(File)]).optional(), // Avatar có thể là string (URL) hoặc File
+  avatar: z.union([z.string(), z.instanceof(File)]).optional(), // Avatar can be string (URL) or File
   username: z
     .string()
-    .min(2, { message: "Tên phải có ít nhất 2 ký tự." })
-    .max(50, { message: "Tên không được vượt quá 50 ký tự." }),
-  email: z.string().email({ message: "Email không hợp lệ." }),
+    .min(2, { message: "Name must be at least 2 characters." })
+    .max(50, { message: "Name cannot exceed 50 characters." }),
+  email: z.string().email({ message: "Invalid email address." }),
   phone: z
     .string()
-    .regex(/^\d{10,11}$/, { message: "Số điện thoại không hợp lệ." }),
+    .regex(/^\d{10,11}$/, { message: "Invalid phone number format." }),
   shopName: z
     .string()
-    .max(100, { message: "Tên cửa hàng không được vượt quá 100 ký tự." })
+    .max(100, { message: "Shop name cannot exceed 100 characters." })
     .optional(),
   gender: z.boolean({
-    required_error: "Vui lòng chọn giới tính.",
+    required_error: "Please select a gender.",
   }),
   dateOfBirth: z.date({
-    required_error: "Ngày sinh là bắt buộc.",
+    required_error: "Date of birth is required.",
   }),
-  file: z.instanceof(File).optional(), // Thêm trường file để xử lý upload ảnh
+  file: z.instanceof(File).optional(), // File field for handling image upload
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 /**
  * @component ProfileForm
- * @description Form để chỉnh sửa thông tin hồ sơ người dùng.
- * Sử dụng react-hook-form và zod để validation.
+ * @description Form for editing user profile information.
+ * Uses react-hook-form and zod for validation.
  */
-export function ProfileForm(s) {
+export function ProfileForm() {
   const { user, updateProfile } = useUser();
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      avatar: user?.avatar || "", // Khởi tạo trường avatar
+      avatar: user?.avatar || "", // Initialize avatar field
       username: user?.username,
       email: user?.email,
       phone: user?.phone,
       shopName: user?.shopName || "",
-      // Chuyển đổi giới tính từ chuỗi sang boolean: true cho "male", false cho "female"
+      // Convert gender from string to boolean: true for "male", false for "female"
       gender: user?.gender === "male" ? true : false,
-      // Tính toán dateOfBirth từ dayOfBirth, monthOfBirth, yearOfBirth
+      // Calculate dateOfBirth from dayOfBirth, monthOfBirth, yearOfBirth
       dateOfBirth:
         user.yearOfBirth && user.monthOfBirth && user.dayOfBirth
           ? new Date(
               user.yearOfBirth,
-              user.monthOfBirth - 1, // Tháng trong JavaScript là 0-indexed
+              user.monthOfBirth - 1, // Month in JavaScript is 0-indexed
               user.dayOfBirth
             )
           : undefined,
@@ -84,26 +84,26 @@ export function ProfileForm(s) {
     mode: "onChange",
   });
 
-  // Tạo một ref cho input file
+  // Create a ref for the file input
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Xử lý click vào avatar để kích hoạt input file
+  // Handle click on avatar to trigger file input
   const handleAvatarClick = useCallback(() => {
     inputRef.current?.click();
   }, []);
 
-  // Xử lý khi người dùng chọn file
+  // Handle file selection
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
       const file = e.target.files?.[0];
       if (file) {
-        // Cập nhật trường 'file' với đối tượng File thực tế
+        // Update 'file' field with the actual File object
         form.setValue("file", file);
 
-        // Đọc file để hiển thị preview cho trường 'avatar'
+        // Read file to display preview for 'avatar' field
         const reader = new FileReader();
         reader.onloadend = () => {
-          field.onChange(reader.result as string); // Cập nhật giá trị avatar trong form (preview URL)
+          field.onChange(reader.result as string); // Update avatar value in form (preview URL)
         };
         reader.readAsDataURL(file);
       }
@@ -114,23 +114,23 @@ export function ProfileForm(s) {
   async function onSubmit(data: ProfileFormValues) {
     try {
       let formData = new FormData();
-      formData.append("id", user.id.toString()); // Chuyển đổi id sang string
+      formData.append("id", user.id.toString()); // Convert id to string
       formData.append("username", data.username);
       formData.append("email", data.email);
       formData.append("phone", data.phone);
       formData.append("shopName", data.shopName || "");
-      // Thêm file vào formData nếu có
+      // Add file to formData if exists
       if (data.file) {
         formData.append("file", data.file);
       }
-      // Chuyển đổi giá trị boolean của giới tính thành chuỗi để gửi đi
+      // Convert boolean gender value to string for submission
       formData.append("gender", data.gender ? "true" : "false");
 
-      // Xử lý ngày sinh
+      // Process date of birth
       if (data.dateOfBirth) {
         const date = new Date(data.dateOfBirth);
         formData.append("dayOfBirth", date.getDate().toString());
-        formData.append("monthOfBirth", (date.getMonth() + 1).toString()); // Tháng trong JS là 0-indexed
+        formData.append("monthOfBirth", (date.getMonth() + 1).toString()); // Month in JS is 0-indexed
         formData.append("yearOfBirth", date.getFullYear().toString());
       }
 
@@ -141,58 +141,58 @@ export function ProfileForm(s) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Trường Avatar */}
+        {/* Avatar Field */}
         <FormField
           control={form.control}
           name="avatar"
           render={({ field }) => (
             <FormItem className="flex flex-col items-center space-y-4">
-              <FormLabel>Ảnh đại diện</FormLabel>
+              <FormLabel>Profile Picture</FormLabel>
               <FormControl>
-                {/* Khi click vào div này sẽ kích hoạt input file */}
+                {/* Clicking this div will trigger the file input */}
                 <div
                   className="relative w-24 h-24 cursor-pointer"
                   onClick={handleAvatarClick}
                 >
-                  {/* Hiển thị Avatar */}
+                  {/* Display Avatar */}
                   <Avatar className="w-full h-full">
                     {field.value && typeof field.value === "string" && (
-                      <AvatarImage src={field.value} alt="Ảnh đại diện" />
+                      <AvatarImage src={field.value} alt="Profile picture" />
                     )}
                     {field.value && field.value instanceof File && (
                       <AvatarImage
                         src={URL.createObjectURL(field.value)}
-                        alt="Ảnh đại diện"
+                        alt="Profile picture"
                       />
                     )}
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  {/* Input file ẩn, được kích hoạt bởi click vào Avatar */}
+                  {/* Hidden file input, triggered by clicking the Avatar */}
                   <Input
-                    ref={inputRef} // Gán ref
+                    ref={inputRef} // Assign ref
                     type="file"
                     className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={e => handleFileChange(e, field)} // Xử lý thay đổi file
-                    accept="image/*" // Chỉ cho phép chọn file ảnh
+                    onChange={e => handleFileChange(e, field)} // Handle file change
+                    accept="image/*" // Only allow image files
                   />
                 </div>
               </FormControl>
-              <FormDescription>Tải lên ảnh đại diện của bạn.</FormDescription>
+              <FormDescription>Upload your profile picture.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Nhóm các trường thông tin cơ bản: Tên, Email, Số điện thoại */}
+        {/* Basic Information Group: Name, Email, Phone */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tên đầy đủ</FormLabel>
+                <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Tên đầy đủ của bạn" {...field} />
+                  <Input placeholder="Your full name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -206,7 +206,7 @@ export function ProfileForm(s) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Email của bạn" {...field} type="email" />
+                  <Input placeholder="Your email" {...field} type="email" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -218,9 +218,9 @@ export function ProfileForm(s) {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Số điện thoại</FormLabel>
+                <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Số điện thoại của bạn" {...field} />
+                  <Input placeholder="Your phone number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -228,35 +228,31 @@ export function ProfileForm(s) {
           />
         </div>
 
-        {/* Nhóm các trường thông tin cá nhân: Giới tính, Ngày sinh */}
+        {/* Personal Information Group: Gender, Date of Birth */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="gender"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel>Giới tính</FormLabel>
+                <FormLabel>Gender</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={value => field.onChange(value === "true")}
                     defaultValue={field.value ? "true" : "false"}
-                    className="flex space-x-4" // Thêm khoảng cách giữa các radio item
+                    className="flex space-x-4" // Add spacing between radio items
                   >
                     <FormItem className="flex items-center space-x-2">
-                      {" "}
-                      {/* Giảm space-x */}
                       <FormControl>
                         <RadioGroupItem value="true" />
                       </FormControl>
-                      <FormLabel className="font-normal">Nam</FormLabel>
+                      <FormLabel className="font-normal">Male</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-2">
-                      {" "}
-                      {/* Giảm space-x */}
                       <FormControl>
                         <RadioGroupItem value="false" />
                       </FormControl>
-                      <FormLabel className="font-normal">Nữ</FormLabel>
+                      <FormLabel className="font-normal">Female</FormLabel>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
@@ -270,21 +266,21 @@ export function ProfileForm(s) {
             name="dateOfBirth"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Ngày sinh</FormLabel>
+                <FormLabel>Date of Birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-full justify-start text-left font-normal", // Căn chỉnh trái và đầy đủ chiều rộng
+                          "w-full justify-start text-left font-normal", // Left-aligned and full width
                           !field.value && "text-muted-foreground"
                         )}
                       >
                         {field.value ? (
                           format(field.value, "PPP")
                         ) : (
-                          <span>Chọn ngày</span>
+                          <span>Pick a date</span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -300,7 +296,7 @@ export function ProfileForm(s) {
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  Ngày sinh của bạn được sử dụng để tính tuổi.
+                  Your date of birth is used to calculate your age.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -308,18 +304,18 @@ export function ProfileForm(s) {
           />
         </div>
 
-        {/* Trường Tên cửa hàng (tùy chọn) - Đặt riêng để dễ quản lý */}
+        {/* Shop Name Field (Optional) - Placed separately for better management */}
         <FormField
           control={form.control}
           name="shopName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tên cửa hàng (tùy chọn)</FormLabel>
+              <FormLabel>Shop Name (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Tên cửa hàng của bạn" {...field} />
+                <Input placeholder="Your shop name" {...field} />
               </FormControl>
               <FormDescription>
-                Nếu bạn là người bán, đây là tên cửa hàng của bạn.
+                If you are a seller, this will be your shop name.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -327,7 +323,7 @@ export function ProfileForm(s) {
         />
 
         <div className="flex justify-center">
-          <Button type="submit">Cập nhật hồ sơ</Button>
+          <Button type="submit">Update Profile</Button>
         </div>
       </form>
     </Form>

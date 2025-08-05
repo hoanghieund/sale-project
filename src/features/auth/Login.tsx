@@ -26,17 +26,17 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as z from "zod";
 
-// Định nghĩa schema validation với Zod
+// Define validation schema with Zod
 const loginFormSchema = z.object({
   email: z
     .string()
-    .email({ message: "Email không hợp lệ" })
-    .min(1, { message: "Email là bắt buộc" }),
-  password: z.string().min(6, { message: "Mật khẩu phải có ít nhất 6 ký tự" }),
+    .email({ message: "Invalid email" })
+    .min(1, { message: "Email is required" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   rememberMe: z.boolean().default(false),
 });
 
-// Kiểu dữ liệu từ schema
+// Data type from schema
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 const Login = () => {
@@ -62,7 +62,7 @@ const Login = () => {
       await login(data.email, data.password);
       navigate(from, { replace: true });
     } catch (error) {
-      console.error("Lỗi khi đăng nhập:", error);
+      console.error("Error during login:", error);
     }
   };
 
@@ -169,12 +169,12 @@ const Login = () => {
                   to="/forgot-password"
                   className="text-sm text-primary hover:underline"
                 >
-                  Quên mật khẩu?
+                  Forgot password?
                 </Link>
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
             </form>
           </Form>

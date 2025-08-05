@@ -17,26 +17,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
-import { userService } from "../services/userService"; // Import userService
+import { userService } from "../services/userService"; // Imports the user service for password change functionality
 
-// Định nghĩa schema validation cho form
+// Defines the validation schema for the password change form using Zod.
 const passwordFormSchema = z.object({
   currentPassword: z.string().min(6, {
-    message: "Mật khẩu hiện tại phải có ít nhất 6 ký tự.",
+    message: "Current password must be at least 6 characters.",
   }),
   newPassword: z
     .string()
     .min(8, {
-      message: "Mật khẩu mới phải có ít nhất 8 ký tự.",
+      message: "New password must be at least 8 characters.",
     })
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/, {
-      message: "Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường, một số và một ký tự đặc biệt.",
+      message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
     }),
   confirmNewPassword: z.string().min(8, {
-    message: "Xác nhận mật khẩu mới phải có ít nhất 8 ký tự.",
+    message: "Confirm new password must be at least 8 characters.",
   }),
 }).refine((data) => data.newPassword === data.confirmNewPassword, {
-  message: "Mật khẩu mới và xác nhận mật khẩu mới không khớp.",
+  message: "New password and confirm new password do not match.",
   path: ["confirmNewPassword"],
 });
 
@@ -44,12 +44,12 @@ type PasswordFormValues = z.infer<typeof passwordFormSchema>;
 
 /**
  * @component ChangePasswordPage
- * @description Trang cho phép người dùng thay đổi mật khẩu.
- * Sử dụng react-hook-form và zod để validation.
+ * @description Page allowing users to change their password.
+ * Uses react-hook-form and Zod for validation.
  */
 const ChangePasswordPage: React.FC = () => {
  const {user} = useUser();
- const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái loading
+ const [isLoading, setIsLoading] = useState(false); // State to manage loading status during API calls
  const form = useForm<PasswordFormValues>({
    resolver: zodResolver(passwordFormSchema),
    defaultValues: {
@@ -65,16 +65,16 @@ const ChangePasswordPage: React.FC = () => {
    try {
      await userService.changePassword(data.currentPassword, data.newPassword , user.id);
      toast({
-       title: "Thành công!",
-       description: "Mật khẩu của bạn đã được thay đổi thành công.",
+       title: "Success!",
+       description: "Your password has been successfully changed.",
        variant: "default",
      });
-     form.reset(); // Reset form sau khi thành công
+     form.reset(); // Resets the form fields after successful submission
    } catch (error) {
-     console.error("Lỗi khi thay đổi mật khẩu:", error);
+     console.error("Error changing password:", error);
      toast({
-       title: "Lỗi!",
-       description: "Đã xảy ra lỗi khi thay đổi mật khẩu. Vui lòng thử lại.",
+       title: "Error!",
+       description: "An error occurred while changing your password. Please try again.",
        variant: "destructive",
      });
    } finally {
@@ -85,50 +85,50 @@ const ChangePasswordPage: React.FC = () => {
  return (
    <Card className="w-full bg-white">
      <CardHeader>
-       <CardTitle className="text-lg">Đổi mật khẩu</CardTitle>
+       <CardTitle className="text-lg">Change Password</CardTitle>
       </CardHeader>
-      <CardContent className="px-4"> {/* Thêm padding */}
+      <CardContent className="px-4"> {/* Adds padding */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Trường Mật khẩu hiện tại */}
+            {/* Current Password Field */}
             <FormField
               control={form.control}
               name="currentPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mật khẩu hiện tại</FormLabel>
+                  <FormLabel>Current Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Nhập mật khẩu hiện tại" {...field} />
+                    <Input type="password" placeholder="Enter your current password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Trường Mật khẩu mới */}
+            {/* New Password Field */}
             <FormField
               control={form.control}
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mật khẩu mới</FormLabel>
+                  <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Nhập mật khẩu mới" {...field} />
+                    <Input type="password" placeholder="Enter your new password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Trường Xác nhận mật khẩu mới */}
+            {/* Confirm New Password Field */}
             <FormField
               control={form.control}
               name="confirmNewPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Xác nhận mật khẩu mới</FormLabel>
+                  <FormLabel>Confirm New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Xác nhận mật khẩu mới" {...field} />
+                    <Input type="password" placeholder="Confirm your new password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,7 +137,7 @@ const ChangePasswordPage: React.FC = () => {
 
             <div className="flex justify-center">
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Đang xử lý..." : "Đổi mật khẩu"}
+                {isLoading ? "Processing..." : "Change Password"}
               </Button>
             </div>
           </form>

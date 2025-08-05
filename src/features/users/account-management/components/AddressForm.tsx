@@ -18,21 +18,21 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Address } from '@/types';
 
-// Định nghĩa schema validation cho form sử dụng Zod
+// Define form validation schema using Zod
 const formSchema = z.object({
-  fullName: z.string().min(1, { message: "Tên đầy đủ không được để trống." }),
-  phoneNumber: z.string().min(1, { message: "Số điện thoại không được để trống." }).regex(/^\d+$/, { message: "Số điện thoại không hợp lệ." }),
-  address: z.string().min(1, { message: "Địa chỉ không được để trống." }),
+  fullName: z.string().min(1, { message: "Full name is required." }),
+  phoneNumber: z.string().min(1, { message: "Phone number is required." }).regex(/^\d+$/, { message: "Invalid phone number format." }),
+  address: z.string().min(1, { message: "Address is required." }),
   isCurrent: z.boolean().optional(),
   isShop: z.boolean().optional(),
 });
 
 /**
  * @interface AddressFormProps
- * @description Props cho component AddressForm.
- * @property {Address | null} initialData Dữ liệu địa chỉ ban đầu nếu đang chỉnh sửa.
- * @property {(data: Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>) => void} onSubmit Hàm callback khi form được submit.
- * @property {() => void} onCancel Hàm callback khi hủy bỏ form.
+ * @description Props for the AddressForm component.
+ * @property {Address | null} initialData Initial address data when editing.
+ * @property {(data: Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>) => void} onSubmit Callback function when form is submitted.
+ * @property {() => void} onCancel Callback function when form is cancelled.
  */
 interface AddressFormProps {
   initialData?: Address | null;
@@ -42,9 +42,9 @@ interface AddressFormProps {
 
 /**
  * @function AddressForm
- * @description Component form để thêm mới hoặc chỉnh sửa địa chỉ.
- * @param {AddressFormProps} props Props của component.
- * @returns {JSX.Element} Element React.
+ * @description Form component for adding or editing an address.
+ * @param {AddressFormProps} props Component props.
+ * @returns {JSX.Element} React element.
  */
 const AddressForm: React.FC<AddressFormProps> = ({ initialData, onSubmit, onCancel }) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,7 +64,7 @@ const AddressForm: React.FC<AddressFormProps> = ({ initialData, onSubmit, onCanc
     },
   });
 
-  // Đặt lại giá trị form khi initialData thay đổi (khi chỉnh sửa địa chỉ khác)
+  // Reset form values when initialData changes (when editing a different address)
   useEffect(() => {
     if (initialData) {
       form.reset({
@@ -87,58 +87,58 @@ const AddressForm: React.FC<AddressFormProps> = ({ initialData, onSubmit, onCanc
 
   /**
    * @function handleSubmit
-   * @description Xử lý khi form được submit.
-   * @param {z.infer<typeof formSchema>} values Giá trị của form.
+   * @description Handles form submission.
+   * @param {z.infer<typeof formSchema>} values Form values.
    */
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Form submitted with values:", values);
-    // Ép kiểu values thành Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'> để khớp với kiểu của onSubmit
+    // Type cast values to match onSubmit type
     onSubmit(values as Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        {/* Trường Tên đầy đủ */}
+        {/* Full Name Field */}
         <FormField
           control={form.control}
           name="fullName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tên đầy đủ</FormLabel>
-              <FormControl><Input placeholder="Nhập tên đầy đủ" {...field} className="w-full" /></FormControl>
+              <FormLabel>Full Name</FormLabel>
+              <FormControl><Input placeholder="Enter full name" {...field} className="w-full" /></FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Trường Số điện thoại */}
+        {/* Phone Number Field */}
         <FormField
           control={form.control}
           name="phoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Số điện thoại</FormLabel>
-              <FormControl><Input placeholder="Nhập số điện thoại" {...field} className="w-full" /></FormControl>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl><Input placeholder="Enter phone number" {...field} className="w-full" /></FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Trường Địa chỉ */}
+        {/* Address Field */}
         <FormField
           control={form.control}
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Địa chỉ cụ thể</FormLabel>
-              <FormControl><Textarea placeholder="Nhập địa chỉ chi tiết (VD: Số nhà, tên đường)" {...field} className="w-full" /></FormControl>
+              <FormLabel>Full Address</FormLabel>
+              <FormControl><Textarea placeholder="Enter detailed address (e.g., house number, street name)" {...field} className="w-full" /></FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Trường Mặc định */}
+        {/* Default Address Field */}
         <FormField
           control={form.control}
           name="isCurrent"
@@ -151,14 +151,14 @@ const AddressForm: React.FC<AddressFormProps> = ({ initialData, onSubmit, onCanc
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Đặt làm địa chỉ mặc định</FormLabel>
+                <FormLabel>Set as default address</FormLabel>
                 <FormMessage />
               </div>
             </FormItem>
           )}
         />
 
-        {/* Địa chỉ lấy hàng */}
+        {/* Pickup Address Field */}
         <FormField
           control={form.control}
           name="isShop"
@@ -171,19 +171,19 @@ const AddressForm: React.FC<AddressFormProps> = ({ initialData, onSubmit, onCanc
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>Đặt làm địa chỉ lấy hàng</FormLabel>
+                <FormLabel>Set as pickup address</FormLabel>
                 <FormMessage />
               </div>
             </FormItem>
           )}
         />
 
-        {/* Nút lưu và hủy */}
+        {/* Save and Cancel Buttons */}
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={onCancel}>
-            Hủy
+            Cancel
           </Button>
-          <Button type="submit">Lưu địa chỉ</Button>
+          <Button type="submit">Save Address</Button>
         </div>
       </form>
     </Form>

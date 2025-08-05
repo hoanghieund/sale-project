@@ -1,6 +1,6 @@
 import { Axios } from "@/api/Axios";
 
-// Interface cho params bộ lọc sản phẩm theo category
+// Interface for product filter parameters by category
 interface GetProductsByCategoryParams {
   categoryParentId: number;
   categoryChildId?: number;
@@ -16,9 +16,9 @@ interface GetProductsByCategoryParams {
 
 export const productService = {
   /**
-   * Lấy danh sách sản phẩm theo categoryId với bộ lọc
-   * @param params - Tham số lọc sản phẩm
-   * @returns Promise với dữ liệu phân trang sản phẩm và thông tin danh mục
+   * Retrieves a list of products by categoryId with filters.
+   * @param params - Product filter parameters.
+   * @returns A Promise with paginated product data and category information.
    */
   getProductsByCategoryId: (params: GetProductsByCategoryParams) => {
     return Axios.get(`/api/public/product/getProductByManyThing`, {
@@ -36,11 +36,11 @@ export const productService = {
   },
 
   /**
-   * Lấy danh sách sản phẩm theo categoryId (phương thức cũ để backward compatibility)
-   * @param categoryParentId - ID của danh mục cha
-   * @param page - Trang hiện tại
-   * @param size - Số lượng sản phẩm trên một trang
-   * @returns Promise với danh sách sản phẩm
+   * Retrieves a list of products by categoryId (old method for backward compatibility).
+   * @param categoryParentId - The ID of the parent category.
+   * @param page - The current page number.
+   * @param size - The number of products per page.
+   * @returns A Promise with the list of products.
    */
   getProductsByCategoryIdSimple: (categoryParentId: number, page: number, size: number) => {
     return Axios.get(`/api/public/product/getProductByManyThing`, {

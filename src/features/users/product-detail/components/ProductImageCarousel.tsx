@@ -1,5 +1,5 @@
 // src/components/common/ProductImageCarousel.tsx
-// Component này hiển thị carousel hình ảnh sản phẩm và các hình ảnh thu nhỏ để điều hướng.
+// This component displays a product image carousel and thumbnail images for navigation.
 
 import {
   Carousel,
@@ -15,13 +15,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"; // Import Dialog components from shadcn/ui
 import { cn } from "@/lib/utils";
-import { type Image as ProductImage } from "@/types"; // Đảm bảo đường dẫn này đúng với ProductDetailPage.tsx
+import { type Image as ProductImage } from "@/types"; // Ensure this path is correct for ProductDetailPage.tsx
 import React, { useEffect, useState } from "react";
 
 /**
  * @typedef ProductImageCarouselProps
- * @property {ProductImage[]} images - Mảng các đối tượng hình ảnh để hiển thị trong carousel.
- * @property {string} productTitle - Tiêu đề sản phẩm, được sử dụng cho văn bản thay thế hình ảnh.
+ * @property {ProductImage[]} images - Array of image objects to display in the carousel.
+ * @property {string} productTitle - Product title, used for image alt text.
  */
 interface ProductImageCarouselProps {
   images: ProductImage[];
@@ -32,10 +32,10 @@ interface ProductImageCarouselProps {
 /**
  * ProductImageCarousel Component
  *
- * Component này hiển thị một carousel hình ảnh sản phẩm lớn và một hàng các hình ảnh thu nhỏ
- * cho phép người dùng điều hướng giữa các hình ảnh.
+ * This component displays a large product image carousel and a row of thumbnail images
+ * allowing users to navigate between images.
  *
- * @param {ProductImageCarouselProps} props - Các props cho component ProductImageCarousel.
+ * @param {ProductImageCarouselProps} props - Props for the ProductImageCarousel component.
  * @returns {JSX.Element} ProductImageCarousel component.
  */
 const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
@@ -45,9 +45,9 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 }) => {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedImage, setSelectedImage] = useState(0);
-  const [isDialogOpen, setIsDialogOpen] = useState(false); // State để quản lý trạng thái mở/đóng của dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // State to manage dialog open/close status
 
-  // Cập nhật selectedImage khi carousel thay đổi slide
+  // Update selectedImage when carousel slides change
   useEffect(() => {
     if (!api) {
       return;
@@ -60,9 +60,9 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   return (
     <div className={cn("space-y-0 h-fit lg:sticky top-32",className)}>
-      {/* Dialog cho phép hiển thị hình ảnh lớn khi nhấp vào */}
+      {/* Dialog to display large image when clicked */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        {/* Carousel chính hiển thị hình ảnh sản phẩm lớn */}
+        {/* Main carousel displaying large product images */}
         <Carousel setApi={setApi} className="w-full mx-auto">
           <CarouselContent>
             {images?.map((img, index) => (
@@ -91,15 +91,15 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
           <CarouselNext />
         </Carousel>
 
-        {/* Dialog Content - Hiển thị carousel hình ảnh lớn trong popup */}
+        {/* Dialog Content - Display large image carousel in popup */}
         <DialogContent className="p-2">
           {/*
-           * Carousel trong DialogContent được khởi tạo với initialScrollSnap để hiển thị
-           * hình ảnh đã được chọn trước đó.
+           * Carousel in DialogContent is initialized with initialScrollSnap to display
+           * the previously selected image.
            */}
           {/*
-           * Carousel trong DialogContent được khởi tạo với startIndex để hiển thị
-           * hình ảnh đã được chọn trước đó.
+           * Carousel in DialogContent is initialized with startIndex to display
+           * the previously selected image.
            */}
           <Carousel className="w-full h-full" opts={{ startIndex: selectedImage }}>
             <CarouselContent className="h-full">
@@ -127,14 +127,14 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
         </DialogContent>
       </Dialog>
 
-      {/* Image Thumbnails - Hiển thị hình ảnh thu nhỏ để người dùng chọn */}
+      {/* Image Thumbnails - Display thumbnails for user selection */}
       <div className="flex justify-center gap-2 mt-4">
         {images?.map((img, index) => (
           <button
             key={index}
             onClick={() => {
               setSelectedImage(index);
-              api?.scrollTo(index); // Cuộn đến slide tương ứng khi nhấp vào thumbnail
+              api?.scrollTo(index); // Scroll to the corresponding slide when thumbnail is clicked
             }}
             className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
               selectedImage === index

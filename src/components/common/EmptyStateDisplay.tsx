@@ -3,8 +3,8 @@
 import React from 'react';
 
 /**
- * Component hiển thị thông báo khi không tìm thấy dữ liệu hoặc sản phẩm.
- * Được thiết kế để tái sử dụng với giao diện hấp dẫn hơn cho các trạng thái rỗng.
+ * Component to display a message when no data or products are found.
+ * Designed for reusability with a more appealing interface for empty states.
  *
  * @returns {JSX.Element} EmptyStateDisplay component.
  */
@@ -25,12 +25,12 @@ const EmptyStateDisplay: React.FC = () => {
           d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         ></path>
       </svg>
-      <h2 className="mb-2 text-2xl font-semibold text-gray-700">Rất tiếc!</h2>
+      <h2 className="mb-2 text-2xl font-semibold text-gray-700">Oops!</h2>
       <p className="mb-6 text-gray-600">
-        Không tìm thấy dữ liệu nào phù hợp với yêu cầu của bạn.
+        No data found matching your criteria.
       </p>
       <p className="text-sm text-gray-500">
-        Vui lòng thử tìm kiếm với các tiêu chí khác hoặc quay lại trang chủ.
+        Please try searching with different criteria or return to the homepage.
       </p>
     </div>
   );

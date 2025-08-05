@@ -3,7 +3,7 @@ import { Product } from "@/types";
 
 /**
  * FeaturedProductsSection Component
- * Hiển thị danh sách các sản phẩm nổi bật trên trang chủ.
+ * Displays a list of featured products on the homepage.
  * @param {Product[]} products - Mảng các đối tượng sản phẩm nổi bật.
  */
 interface FeaturedProductsSectionProps {
@@ -17,9 +17,9 @@ const FeaturedProductsSection = ({
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Sản Phẩm Nổi Bật - Mua Sắm Ngay Hôm Nay!</h2>
+          <h2 className="text-3xl font-bold mb-4">Featured Products - Shop Now!</h2>
           <p className="text-gray-600">
-            Khám phá các sản phẩm được yêu thích nhất và bán chạy nhất tại [Tên cửa hàng của bạn]. Chất lượng đảm bảo, ưu đãi hấp dẫn!
+            Discover the most loved and best-selling products at [Your Store Name]. Quality guaranteed, attractive offers!
           </p>
         </div>
 

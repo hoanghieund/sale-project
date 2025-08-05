@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 /**
- * Các section đã tách nhỏ
+ * Separated sections
  */
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useCart } from "@/providers/cart-provider";
@@ -20,20 +20,20 @@ import { orderService } from "./services/orderService";
 
 /**
  * CheckoutForm: typing cho toàn bộ form checkout
- * Lưu ý: Tuân thủ form-rules -> react-hook-form + shadcn/ui/form
+ * Note: Follow form-rules -> react-hook-form + shadcn/ui/form
  */
 export interface CheckoutForm {
   email: string;
   name: string;
   phone: string;
   address: string;
-  selectedAddressId: string; // ID của địa chỉ đã chọn, hoặc 'other' nếu là địa chỉ khác
+  selectedAddressId: string; // ID of the selected address, or 'other' if it's a different address
 }
 
 const Checkout = () => {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
-  // Sử dụng custom hook để truy cập Cart context
+  // Use custom hook to access Cart context
   const {
     cartByShop,
     isLoading,
@@ -46,11 +46,11 @@ const Checkout = () => {
   const cart = {
     cartByShopList: cartByShop
       .map(shopCart => {
-        // Lọc cartDTOList để chỉ giữ lại các item có id trong selectedItems
+        // Filter cartDTOList to only keep items with IDs in selectedItems
         const filteredCartDTOList = shopCart.cartDTOList.filter(item =>
           selectedItems.has(String(item.id))
         );
-        // Trả về shopCart đã cập nhật với cartDTOList đã lọc
+        // Return updated shopCart with filtered cartDTOList
         return { ...shopCart, cartDTOList: filteredCartDTOList };
       })
       .filter(shopCart => shopCart.cartDTOList.length > 0),
@@ -64,16 +64,16 @@ const Checkout = () => {
     },
   });
 
-  const selectedAddressId = methods.watch("selectedAddressId"); // Theo dõi selectedAddressId
+  const selectedAddressId = methods.watch("selectedAddressId"); // Track selectedAddressId
 
-  // Tối ưu flatMap items để không tính lại khi re-render
-  // Đảm bảo allItems được định nghĩa trước bất kỳ return có điều kiện nào
+ // Optimize flatMap items to avoid re-calculation on re-render
+ // Ensure allItems is defined before any conditional return
   const allItems = useMemo(
     () => cart?.cartByShopList.flatMap(shopCart => shopCart.cartDTOList) ?? [],
     [cart]
   );
 
-  // Defensive: tránh crash nếu cart null
+  // Defensive: avoid crash if cart is null
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -86,24 +86,24 @@ const Checkout = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-center mt-4">
-          <Button onClick={() => navigate("/cart")}>Quay lại giỏ hàng</Button>
+          <Button onClick={() => navigate("/cart")}>Back to cart</Button>
         </div>
       </div>
     );
   }
 
-  // Submit tổng: giữ nguyên logic ban đầu
+  // Overall submit: keep original logic
   /**
-   * Xử lý gửi biểu mẫu checkout để tạo đơn hàng.
-   * @param data Dữ liệu từ biểu mẫu checkout.
-   * @returns Promise<string> ID đơn hàng PayPal.
+   * Handle submission of the checkout form to create an order.
+   * @param data Data from the checkout form.
+   * @returns Promise<string> PayPal order ID.
    */
   const onSubmit = async (data: CheckoutForm): Promise<string> => {
     setIsProcessing(true);
     try {
-      // Gọi dịch vụ đặt hàng để tạo đơn hàng
+      // Call order service to create the order
       const response = await orderService.checkout({
-        // Chuyển đổi Set selectedItems thành một mảng chuỗi
+        // Convert Set selectedItems to a string array
         lstIdCart: Array.from(selectedItems).map(Number),
         feeShip: 1,
         orderAddressDTO: {
@@ -117,7 +117,7 @@ const Checkout = () => {
         },
       });
 
-      // Kiểm tra các tên property có thể có trong response
+      // Check for possible property names in the response
       const possibleOrderIdFields = [
         "paypalOrderId",
         "orderId",
@@ -141,23 +141,23 @@ const Checkout = () => {
 
       if (!paypalOrderId) {
         console.error(
-          "Không tìm thấy PayPal Order ID trong response:",
+          "PayPal Order ID not found in response:",
           response
         );
-        throw new Error("API không trả về PayPal Order ID");
+        throw new Error("API did not return PayPal Order ID");
       }
 
       return paypalOrderId;
     } catch (error) {
-      console.error("Lỗi khi xử lý thanh toán:", error);
+      console.error("Error processing payment:", error);
       toast({
-        title: "Lỗi",
-        description: "Đã xảy ra lỗi khi tạo đơn hàng. Vui lòng thử lại.",
+        title: "Error",
+        description: "An error occurred while creating the order. Please try again.",
         variant: "destructive",
       });
-      // Ném lỗi để PayPal Buttons có thể xử lý
-      // Ném lỗi để PayPal Buttons có thể hiển thị lỗi cho người dùng.
-      throw new Error("Không thể tạo đơn hàng.");
+      // Throw error so PayPal Buttons can handle it
+      // Throw error so PayPal Buttons can display the error to the user.
+      throw new Error("Could not create order.");
     } finally {
       setIsProcessing(false);
     }
@@ -166,18 +166,18 @@ const Checkout = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header tối giản */}
+        {/* Minimal Header */}
         <CheckoutHeader
           onBack={() => navigate("/cart")}
           title="Checkout"
           backIcon={<ArrowLeft className="h-4 w-4" />}
         />
 
-        {/* FormProvider chia sẻ context cho các section con */}
+        {/* FormProvider shares context with child sections */}
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Cột trái: Thông tin khách + địa chỉ + thanh toán */}
+              {/* Left column: Customer info + address + payment */}
               <div className="space-y-8">
                 <ContactInformationSection />
 
@@ -186,7 +186,7 @@ const Checkout = () => {
                 />
               </div>
 
-              {/* Cột phải: Tóm tắt đơn hàng */}
+              {/* Right column: Order Summary */}
               <div className="bg-white rounded-lg p-6 shadow-sm h-fit border border-border lg:sticky top-32">
                 <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
 
@@ -200,35 +200,35 @@ const Checkout = () => {
                   style={{ layout: "vertical", disableMaxWidth: true }}
                   disabled={!methods.formState.isValid || isProcessing}
                   createOrder={async (_, actions) => {
-                    // Xử lý logic tạo đơn hàng và trả về ID đơn hàng
+                    // Handle order creation logic and return order ID
                     try {
-                      // Validate form trước khi gọi onSubmit
+                      // Validate form before calling onSubmit
                       const isValid = await methods.trigger();
                       if (!isValid) {
-                        throw new Error("Thông tin form không hợp lệ.");
+                        throw new Error("Invalid form information.");
                       }
 
-                      // Lấy form data và gọi onSubmit trực tiếp
-                      const formData = methods.getValues();
-                      const orderId = await onSubmit(formData);
+                     // Get form data and call onSubmit directly
+                     const formData = methods.getValues();
+                     const orderId = await onSubmit(formData);
 
-                      if (typeof orderId === "string" && orderId) {
-                        return orderId;
-                      } else {
-                        // Nếu onSubmit không trả về string, có thể là lỗi hoặc không mong muốn
-                        console.error(
-                          "onSubmit không trả về ID đơn hàng hợp lệ:",
-                          orderId
-                        );
-                        throw new Error("Không thể tạo đơn hàng PayPal.");
-                      }
-                    } catch (error) {
-                      console.error(
-                        "Lỗi khi gọi onSubmit trong createOrder của PayPal:",
-                        error
-                      );
-                      // Ném lỗi để PayPal Buttons có thể hiển thị lỗi cho người dùng
-                      throw error;
+                     if (typeof orderId === "string" && orderId) {
+                       return orderId;
+                     } else {
+                       // If onSubmit does not return a string, it might be an error or unexpected
+                       console.error(
+                         "onSubmit did not return a valid order ID:",
+                         orderId
+                       );
+                       throw new Error("Could not create PayPal order.");
+                     }
+                   } catch (error) {
+                     console.error(
+                       "Error calling onSubmit in PayPal's createOrder:",
+                       error
+                     );
+                     // Throw error so PayPal Buttons can display the error to the user
+                     throw error;
                     }
                   }}
                   onApprove={async (data, actions) => {

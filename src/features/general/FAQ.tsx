@@ -17,7 +17,7 @@ const faqData: FAQItem[] = [
     id: "1",
     question: "How do I know if a product is authentic?",
     answer:
-      "Every product on DoneKick goes through our rigorous authentication process conducted by expert authenticators. We use advanced techniques including material analysis, construction examination, and comparison with authentic reference materials. All products come with a certificate of authenticity, and we offer a 100% authenticity guarantee or your money back.",
+      "Every product on DoneKick undergoes a rigorous authentication process conducted by expert authenticators. We use advanced techniques including material analysis, construction examination, and comparison with authentic reference materials. All products come with a certificate of authenticity, and we offer a 100% authenticity guarantee or your money back.",
     category: "Authentication",
   },
   {
@@ -59,7 +59,7 @@ const faqData: FAQItem[] = [
     id: "7",
     question: "Can I cancel or modify my order?",
     answer:
-      "Orders can be cancelled or modified within 1 hour of placement, provided they haven't entered the fulfillment process. After this window, we cannot guarantee changes. Contact our customer service team immediately if you need to make changes to your order.",
+      "Orders can be canceled or modified within 1 hour of placement, provided they haven't entered the fulfillment process. After this window, we cannot guarantee changes. Contact our customer service team immediately if you need to make changes to your order.",
     category: "Orders",
   },
   {

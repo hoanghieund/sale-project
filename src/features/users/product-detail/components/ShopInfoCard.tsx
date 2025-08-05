@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 
 /**
  * @interface ShopInfoCardProps
- * @description Định nghĩa props cho component ShopInfoCard.
- * @property {Shop} shop - Đối tượng chứa thông tin chi tiết về cửa hàng.
+ * @description Defines props for the ShopInfoCard component.
+ * @property {Shop} shop - Object containing detailed shop information.
  */
 interface ShopInfoCardProps {
   shop: Shop;
@@ -17,9 +17,9 @@ interface ShopInfoCardProps {
 
 /**
  * @function ShopInfoCard
- * @description Component hiển thị thông tin chi tiết của một cửa hàng.
- * @param {ShopInfoCardProps} { shop } - Props chứa thông tin cửa hàng.
- * @returns {JSX.Element} Một thẻ div chứa thông tin cửa hàng.
+ * @description Component displaying detailed information about a shop.
+ * @param {ShopInfoCardProps} { shop } - Props containing shop information.
+ * @returns {JSX.Element} A div card containing shop information.
  */
 const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
   return (
@@ -36,29 +36,29 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
             {shop.totalQuantity !== undefined && (
               <p>
-                <span className="font-medium">Tổng sản phẩm:</span> {shop?.totalQuantity || 0}
+                <span className="font-medium">Total Products:</span> {shop?.totalQuantity || 0}
               </p>
             )}
             {shop.totalPrice !== undefined && (
               <p>
-                <span className="font-medium">Tổng doanh thu:</span>{" "}
+                <span className="font-medium">Total Revenue:</span>{" "}
                 {formatCurrencyUSD(shop?.totalPrice || 0)}
               </p>
             )}
             {shop.status !== undefined && (
               <Badge variant={shop.status ? "default" : "destructive"}>
-                {shop.status ? "Đang hoạt động" : "Tạm dừng"}
+                {shop.status ? "Active" : "Paused"}
               </Badge>
             )}
             {shop.timeRequest && (
               <p className="text-xs text-muted-foreground">
-                Tham gia từ: {new Date(shop.timeRequest).toLocaleDateString("vi-VN")}
+                Joined: {new Date(shop.timeRequest).toLocaleDateString("en-US")}
               </p>
             )}
           </div>
         </div>
         <Button asChild variant="outline">
-          <Link to={`/shop/${shop.id}`}>Xem shop</Link>
+          <Link to={`/shop/${shop.id}`}>View Shop</Link>
         </Button>
       </CardContent>
     </Card>

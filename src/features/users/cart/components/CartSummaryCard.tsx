@@ -12,9 +12,9 @@ interface CartSummaryCardProps {
 
 /**
  * @component CartSummaryCard
- * @description Hiển thị tóm tắt đơn hàng, bao gồm mã giảm giá, tổng phụ, chiết khấu, vận chuyển, thuế và tổng cộng.
- * @param {CartSummaryCardProps} props - Props cho component CartSummaryCard.
- * @param {CartSummary} props.cartSummary - Đối tượng chứa các giá trị tổng kết giỏ hàng.
+ * @description Displays the order summary, including discount codes, subtotal, discount, shipping, tax, and total.
+ * @param {CartSummaryCardProps} props - Props for the CartSummaryCard component.
+ * @param {CartSummary} props.cartSummary - Object containing the cart summary values.
  */
 const CartSummaryCard = ({
   cartSummary,

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 /**
  * @function OrderTabs
- * @description Component hiển thị các tab trạng thái đơn hàng và truyền trạng thái được chọn tới OrderList.
+ * @description Component displaying order status tabs and passing the selected status to OrderList.
  * @returns {JSX.Element} Component OrderTabs.
  */
 const OrderTabs: React.FC = () => {
@@ -13,11 +13,11 @@ const OrderTabs: React.FC = () => {
   return (
     <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid w-full grid-cols-5">
-        <TabsTrigger value="all">Tất cả</TabsTrigger>
-        <TabsTrigger value="pending_confirmation">Chờ xác nhận</TabsTrigger>
-        <TabsTrigger value="awaiting_pickup">Chờ lấy hàng</TabsTrigger>
-        <TabsTrigger value="in_delivery">Đang giao</TabsTrigger>
-        <TabsTrigger value="completed">Hoàn thành</TabsTrigger>
+        <TabsTrigger value="all">All</TabsTrigger>
+        <TabsTrigger value="pending_confirmation">Pending Confirmation</TabsTrigger>
+        <TabsTrigger value="awaiting_pickup">Awaiting Pickup</TabsTrigger>
+        <TabsTrigger value="in_delivery">In Delivery</TabsTrigger>
+        <TabsTrigger value="completed">Completed</TabsTrigger>
       </TabsList>
       <TabsContent value="all">
         <OrderList status="all" />

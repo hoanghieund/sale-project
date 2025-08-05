@@ -12,11 +12,11 @@ interface PaymentMethodSelectorProps {
 }
 
 /**
- * Component hiển thị và chọn phương thức thanh toán
- * Sử dụng PaymentMethod type từ database
- * 
- * @param value - ID của phương thức thanh toán đang được chọn
- * @param onChange - Callback khi thay đổi phương thức thanh toán
+ * Component to display and select payment methods
+ * Uses PaymentMethod type from the database
+ *
+ * @param value - ID of the currently selected payment method
+ * @param onChange - Callback when changing the payment method
  * @param register - react-hook-form register function
  */
 const PaymentMethodSelector = ({
@@ -27,9 +27,9 @@ const PaymentMethodSelector = ({
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch danh sách phương thức thanh toán từ API hoặc mock data
+  // Fetch payment method list from API or mock data
   useEffect(() => {
-    // Mock data cho phương thức thanh toán
+    // Mock data for payment methods
     const mockPaymentMethods: PaymentMethod[] = [
       // {
       //   id: 1,
@@ -48,13 +48,13 @@ const PaymentMethodSelector = ({
       // },
     ];
 
-    // Giả lập API call
+    // Simulate API call
     setTimeout(() => {
       setPaymentMethods(mockPaymentMethods);
       setLoading(false);
     }, 500);
 
-    // Trong thực tế, sẽ gọi API ở đây
+    // In a real application, you would call the API here
     // const fetchPaymentMethods = async () => {
     //   try {
     //     const response = await fetch("/api/payment-methods");
@@ -69,25 +69,25 @@ const PaymentMethodSelector = ({
     // fetchPaymentMethods();
   }, []);
 
-  // Xác định loại phương thức thanh toán dựa vào ID
+  // Determine payment method type based on ID
   const getPaymentMethodType = (id: number): "card" | "paypal" | "bank" => {
     const method = paymentMethods.find(m => m.id === id);
-    if (!method) return "card"; // Mặc định là card
+    if (!method) return "card"; // Default to card
 
-    // Xác định loại dựa vào tên (trong thực tế có thể có trường type riêng)
+    // Determine type based on name (in a real application, there might be a separate type field)
     if (method.name?.toLowerCase().includes("card")) return "card";
     if (method.name?.toLowerCase().includes("paypal")) return "paypal";
     return "bank";
   };
 
-  // Handler khi thay đổi phương thức thanh toán
+  // Handler for payment method change
   const handlePaymentMethodChange = (id: number) => {
     const type = getPaymentMethodType(id);
     onChange(id, type);
   };
 
   if (loading) {
-    return <div>Đang tải phương thức thanh toán...</div>;
+    return <div>Loading payment methods...</div>;
   }
 
   return (
@@ -97,7 +97,7 @@ const PaymentMethodSelector = ({
         onValueChange={(value) => handlePaymentMethodChange(parseInt(value))}
       >
         {paymentMethods
-          .filter((method) => method.status) // Chỉ hiển thị các phương thức đang hoạt động
+          .filter((method) => method.status) // Only display active payment methods
           .map((method) => (
             <div key={method.id} className="flex items-center space-x-2">
               <RadioGroupItem

@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { getRandomImage } from "../../utils/random-image";
 
 /**
- * SellerShop - Trang cài đặt cửa hàng cho seller
- * Cho phép seller cập nhật thông tin cửa hàng, chính sách, và cài đặt
+ * SellerShop - Shop settings page for sellers
+ * Allows sellers to update shop information, policies, and settings
  */
 const SellerShop = () => {
   const [shop, setShop] = useState<Shop | null>(null);
@@ -14,12 +14,12 @@ const SellerShop = () => {
 
   useEffect(() => {
     // TODO: Fetch shop data from API
-    // Tạm thời sử dụng mock data
+    // Using mock data temporarily
     const mockShop: Shop = {
       id: "1",
-      name: "Shop Thời Trang ABC",
-      slug: "shop-thoi-trang-abc",
-      description: "Chuyên cung cấp thời trang nam nữ chất lượng cao với giá cả hợp lý. Cam kết hàng chính hãng 100%.",
+      name: "ABC Fashion Shop",
+      slug: "abc-fashion-shop",
+      description: "Specializing in high-quality men's and women's fashion at reasonable prices. Committed to 100% genuine products.",
       logo: getRandomImage(),
       banner: getRandomImage(),
       ownerId: "user1",
@@ -31,11 +31,11 @@ const SellerShop = () => {
       joinedAt: new Date("2023-01-15"),
       isActive: true,
       address: {
-        street: "123 Đường ABC",
-        city: "Hồ Chí Minh",
-        state: "TP.HCM",
+        street: "123 ABC Street",
+        city: "Ho Chi Minh City",
+        state: "HCMC",
         zipCode: "70000",
-        country: "Việt Nam",
+        country: "Vietnam",
         phone: "0901234567"
       },
       socialLinks: {
@@ -44,9 +44,9 @@ const SellerShop = () => {
         instagram: "https://instagram.com/shopabc"
       },
       policies: {
-        returnPolicy: "Đổi trả trong 7 ngày nếu sản phẩm lỗi",
-        shippingPolicy: "Miễn phí ship cho đơn hàng trên 500k",
-        privacyPolicy: "Bảo mật thông tin khách hàng 100%"
+        returnPolicy: "7-day return for defective products",
+        shippingPolicy: "Free shipping for orders over 500k VND",
+        privacyPolicy: "100% customer information privacy"
       }
     };
 
@@ -59,7 +59,7 @@ const SellerShop = () => {
     // TODO: Save shop data via API
     setTimeout(() => {
       setSaving(false);
-      alert("Đã lưu thành công!");
+      alert("Saved successfully!");
     }, 1000);
   };
 
@@ -111,7 +111,7 @@ const SellerShop = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
+        <div className="text-lg">Loading...</div>
       </div>
     );
   }
@@ -119,7 +119,7 @@ const SellerShop = () => {
   if (!shop) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Không thể tải thông tin cửa hàng</div>
+        <div className="text-lg">Unable to load shop information</div>
       </div>
     );
   }
@@ -130,15 +130,15 @@ const SellerShop = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Cài đặt cửa hàng</h1>
-            <p className="text-gray-600">Quản lý thông tin và cài đặt cửa hàng của bạn</p>
+            <h1 className="text-3xl font-bold text-gray-900">Shop Settings</h1>
+            <p className="text-gray-600">Manage your shop's information and settings</p>
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
             className="bgnewtext-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
-            {saving ? "Đang lưu..." : "Lưu thay đổi"}
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
 
@@ -154,7 +154,7 @@ const SellerShop = () => {
                     : "border-transparent text-gray-500 hover:text-gray-700"
                 }`}
               >
-                Thông tin cơ bản
+                Basic Information
               </button>
               <button
                 onClick={() => setActiveTab("address")}
@@ -164,7 +164,7 @@ const SellerShop = () => {
                     : "border-transparent text-gray-500 hover:text-gray-700"
                 }`}
               >
-                Địa chỉ
+                Street Address
               </button>
               <button
                 onClick={() => setActiveTab("social")}
@@ -174,7 +174,7 @@ const SellerShop = () => {
                     : "border-transparent text-gray-500 hover:text-gray-700"
                 }`}
               >
-                Mạng xã hội
+                Social Media
               </button>
               <button
                 onClick={() => setActiveTab("policies")}
@@ -184,7 +184,7 @@ const SellerShop = () => {
                     : "border-transparent text-gray-500 hover:text-gray-700"
                 }`}
               >
-                Chính sách
+                Policies
               </button>
             </nav>
           </div>
@@ -195,7 +195,7 @@ const SellerShop = () => {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tên cửa hàng
+                    Shop Name
                   </label>
                   <input
                     type="text"
@@ -222,7 +222,7 @@ const SellerShop = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mô tả cửa hàng
+                    Shop Description
                   </label>
                   <textarea
                     value={shop.description}
@@ -235,7 +235,7 @@ const SellerShop = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Logo cửa hàng
+                      Shop Logo
                     </label>
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
@@ -248,14 +248,14 @@ const SellerShop = () => {
                         )}
                       </div>
                       <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                        Thay đổi logo
+                        Change Logo
                       </button>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Banner cửa hàng
+                      Shop Banner
                     </label>
                     <div className="flex items-center gap-4">
                       <div className="w-24 h-16 bg-gray-200 rounded-lg overflow-hidden">
@@ -268,7 +268,7 @@ const SellerShop = () => {
                         )}
                       </div>
                       <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                        Thay đổi banner
+                        Change Banner
                       </button>
                     </div>
                   </div>
@@ -281,7 +281,7 @@ const SellerShop = () => {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Địa chỉ
+                    Address
                   </label>
                   <input
                     type="text"
@@ -294,7 +294,7 @@ const SellerShop = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Thành phố
+                      City
                     </label>
                     <input
                       type="text"
@@ -306,7 +306,7 @@ const SellerShop = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tỉnh/Thành phố
+                      State/Province
                     </label>
                     <input
                       type="text"
@@ -320,7 +320,7 @@ const SellerShop = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Mã bưu điện
+                      Zip Code
                     </label>
                     <input
                       type="text"
@@ -332,7 +332,7 @@ const SellerShop = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quốc gia
+                      Country
                     </label>
                     <input
                       type="text"
@@ -345,7 +345,7 @@ const SellerShop = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Số điện thoại
+                    Phone Number
                   </label>
                   <input
                     type="text"
@@ -419,7 +419,7 @@ const SellerShop = () => {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Chính sách đổi trả
+                    Return Policy
                   </label>
                   <textarea
                     value={shop.policies.returnPolicy}
@@ -431,7 +431,7 @@ const SellerShop = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Chính sách vận chuyển
+                    Shipping Policy
                   </label>
                   <textarea
                     value={shop.policies.shippingPolicy}
@@ -443,7 +443,7 @@ const SellerShop = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Chính sách bảo mật
+                    Privacy Policy
                   </label>
                   <textarea
                     value={shop.policies.privacyPolicy}

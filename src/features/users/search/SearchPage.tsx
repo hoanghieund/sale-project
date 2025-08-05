@@ -20,8 +20,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { productService } from "./services/productServices";
 
 /**
- * SearchPage - Trang hiển thị kết quả tìm kiếm sản phẩm
- * Hiển thị danh sách sản phẩm với bộ lọc và phân trang dựa trên từ khóa tìm kiếm
+ * SearchPage - Product Search Results Page
+ * Displays a list of products with filters and pagination based on search keywords
  */
 const SearchPage: React.FC = () => {
   const location = useLocation();
@@ -31,7 +31,7 @@ const SearchPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // State cho hệ thống lọc mới
+  // State for the new filter system
   const [filters, setFilters] = useState({
     currentPage: 0,
     pageSize: 20,
@@ -43,30 +43,30 @@ const SearchPage: React.FC = () => {
     priceTo: "",
   });
 
-  // Separate state cho price inputs để debounce
+  // Separate state for price inputs for debouncing
   const [priceInputs, setPriceInputs] = useState({
     priceFrom: "",
     priceTo: "",
   });
 
-  // Timer reference cho debounce
+  // Timer reference for debounce
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // State cho phân trang
+  // State for pagination
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [keyword, setKeyword] = useState("");
 
   /**
    * @function fetchProducts
-   * @description Lấy danh sách sản phẩm dựa trên filters và keyword.
-   * Cập nhật trạng thái loading, products, totalPages và error.
+   * @description Fetches the list of products based on filters and keyword.
+   * Updates the loading, products, totalPages, and error states.
    */
-  const fetchProducts = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // API call to fetch products based on filters and keyword
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // API call to fetch products based on filters and keyword
       const response = await productService.getProductsBySearchKeyword({
         keyword: keyword,
         currentPage: filters.currentPage,
@@ -82,16 +82,16 @@ const SearchPage: React.FC = () => {
       setTotalPages(response.totalPages);
       setTotalElements(response.totalElements);
     } catch (err) {
-      setError("Không thể tải sản phẩm. Vui lòng thử lại.");
-      console.error("Lỗi khi tải sản phẩm:", err);
+      setError("Could not load products. Please try again.");
+      console.error("Error loading products:", err);
     } finally {
       setLoading(false);
     }
   };
 
   /**
-   * Debounced function để cập nhật price filters
-   * Chờ 800ms sau khi người dùng ngừng nhập mới gọi API
+   * Debounced function to update price filters
+   * Waits 800ms after user stops typing before calling API
    */
   const debouncedUpdatePriceFilters = useCallback(
     (priceFrom: string, priceTo: string) => {
@@ -104,7 +104,7 @@ const SearchPage: React.FC = () => {
           ...prev,
           priceFrom,
           priceTo,
-          currentPage: 0, // Reset về trang đầu khi thay đổi bộ lọc
+          currentPage: 0, // Reset to first page when filters change
         }));
       }, 800); // Delay 800ms
     },
@@ -112,17 +112,20 @@ const SearchPage: React.FC = () => {
   );
 
   /**
-   * Xử lý thay đổi price input với debounce
+   * Handles price input changes with debounce
+   *
+   * Immediately updates the UI state
+   * Calls the debounced update for filters
    */
   const handlePriceInputChange = useCallback(
     (field: "priceFrom" | "priceTo", value: string) => {
-      // Cập nhật ngay lập tức UI state
+      // Immediately updates the UI state
       setPriceInputs(prev => ({
         ...prev,
         [field]: value,
       }));
 
-      // Gọi debounced update cho filters
+      // Calls the debounced update for filters
       if (field === "priceFrom") {
         debouncedUpdatePriceFilters(value, priceInputs.priceTo);
       } else {
@@ -132,31 +135,31 @@ const SearchPage: React.FC = () => {
     [debouncedUpdatePriceFilters, priceInputs.priceFrom, priceInputs.priceTo]
   );
 
-  // Effect để cập nhật keyword từ URL khi component mount hoặc URL thay đổi
+  // Effect to update keyword from URL when component mounts or URL changes
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const searchKeyword = queryParams.get("keyword") || "";
     setKeyword(searchKeyword);
 
-    // Reset filters khi keyword thay đổi
+    // Reset filters when keyword changes
     setFilters(prev => ({
       ...prev,
       currentPage: 0,
     }));
 
-    // Sync priceInputs với filters
+    // Sync priceInputs with filters
     setPriceInputs({
       priceFrom: "",
       priceTo: "",
     });
   }, [location.search]);
 
-  // Effect để gọi API khi filters thay đổi
+  // Effect to call API when filters change
   useEffect(() => {
     fetchProducts();
   }, [filters, keyword]);
 
-  // Cleanup effect để clear debounce timer
+  // Cleanup effect to clear debounce timer
   useEffect(() => {
     return () => {
       if (debounceTimer.current) {
@@ -172,14 +175,14 @@ const SearchPage: React.FC = () => {
         <div className="w-full">
           <Card className="w-full bg-white">
             <CardHeader>
-              <CardTitle>Kết quả tìm kiếm cho: "{keyword}"</CardTitle>
+              <CardTitle>Search Results for: "{keyword}"</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Bộ lọc sản phẩm */}
+              {/* Product Filters */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                {/* Lọc theo loại đặc biệt */}
+                {/* Filter by product type */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Loại sản phẩm</Label>
+                  <Label className="text-sm font-medium">Product Type</Label>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <Checkbox
@@ -194,7 +197,7 @@ const SearchPage: React.FC = () => {
                         }
                       />
                       <Label htmlFor="popular" className="text-sm">
-                        Phổ biến
+                        Popular
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -210,7 +213,7 @@ const SearchPage: React.FC = () => {
                         }
                       />
                       <Label htmlFor="latest" className="text-sm">
-                        Mới nhất
+                        Latest
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -226,16 +229,16 @@ const SearchPage: React.FC = () => {
                         }
                       />
                       <Label htmlFor="bestSell" className="text-sm">
-                        Bán chạy
+                        Best Selling
                       </Label>
                     </div>
                   </div>
                 </div>
 
-                {/* Lọc theo khoảng giá */}
+                {/* Filter by price range */}
                 <div className="space-y-3">
                   <Label className="text-sm font-medium">
-                    Khoảng giá (VNĐ)
+                    Price Range (VND)
                   </Label>
                   <div className="space-y-2">
                     <InputNumber
@@ -253,9 +256,9 @@ const SearchPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Sắp xếp theo giá (boolean): false = giảm dần, true = tăng dần */}
+                {/* Sort by price (boolean): false = descending, true = ascending */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Sắp xếp giá</Label>
+                  <Label className="text-sm font-medium">Sort by Price</Label>
                   <Select
                     value={String(filters.price)} // "true" | "false"
                     onValueChange={value => {
@@ -263,23 +266,23 @@ const SearchPage: React.FC = () => {
                       setFilters(prev => ({
                         ...prev,
                         price: mapped ? "true" : "false",
-                        currentPage: 0, // reset phân trang khi đổi sort
+                        currentPage: 0, // reset pagination when sorting changes
                       }));
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Chọn sắp xếp giá" />
+                      <SelectValue placeholder="Select price sort" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="true">Giá tăng dần</SelectItem>
-                      <SelectItem value="false">Giá giảm dần</SelectItem>
+                      <SelectItem value="true">Price Ascending</SelectItem>
+                      <SelectItem value="false">Price Descending</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                {/* Số sản phẩm trên trang */}
+                {/* Number of products per page */}
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Hiển thị</Label>
+                  <Label className="text-sm font-medium">Show</Label>
                   <Select
                     value={filters.pageSize.toString()}
                     onValueChange={value =>
@@ -294,9 +297,9 @@ const SearchPage: React.FC = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="12">12 sản phẩm</SelectItem>
-                      <SelectItem value="20">20 sản phẩm</SelectItem>
-                      <SelectItem value="40">40 sản phẩm</SelectItem>
+                      <SelectItem value="12">12 products</SelectItem>
+                      <SelectItem value="20">20 products</SelectItem>
+                      <SelectItem value="40">40 products</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -304,17 +307,16 @@ const SearchPage: React.FC = () => {
 
               <Separator />
 
-              {/* Thông tin kết quả */}
+              {/* Result Information */}
               <div className="text-sm text-muted-foreground mb-4">
-                Hiển thị {products.length} trong tổng số {totalElements} sản
-                phẩm
+                Showing {products.length} of {totalElements} products
               </div>
 
               {loading ? (
                 <LoadingSpinner />
               ) : (
                 <>
-                  {/* Lưới sản phẩm */}
+                  {/* Product Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     {products.length > 0 ? (
                       products.map(product => (
@@ -333,17 +335,17 @@ const SearchPage: React.FC = () => {
                     )}
                   </div>
 
-                  {/* Phân trang */}
+                  {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="mt-8">
                       <CustomPagination
-                        currentPage={filters.currentPage + 1} // API sử dụng base-0, UI sử dụng base-1
+                        currentPage={filters.currentPage + 1} // API uses 0-based, UI uses 1-based
                         totalPages={totalPages}
                         onPageChange={page => {
                           setFilters(prev => ({
                             ...prev,
                             currentPage: page - 1,
-                          })); // Chuyển về base-0 cho API
+                          })); // Convert to 0-based for API
                         }}
                         className="justify-center"
                       />

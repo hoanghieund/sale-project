@@ -3,18 +3,18 @@ import { Axios } from "@/api/Axios";
 
 export const productDetailService = {
   /**
-   * Lấy thông tin chi tiết sản phẩm theo ID
-   * @param productId ID của sản phẩm
-   * @returns Promise chứa thông tin sản phẩm
+   * Fetches product details by ID
+   * @param productId Product ID
+   * @returns Promise containing product information
    */
   getProductBySlug: async (slug: string) => {
     return Axios.get(`/api/public/product/slug/${slug}`);
   },
 
   /**
-   * Lấy danh sách đánh giá sản phẩm theo ID sản phẩm
-   * @param productId ID của sản phẩm
-   * @returns Promise chứa danh sách đánh giá
+   * Fetches product reviews by product ID
+   * @param productId Product ID
+   * @returns Promise containing a list of reviews
    */
   getReviewsByProductId: async (productId: number) => {
     return Axios.get(
@@ -23,10 +23,10 @@ export const productDetailService = {
   },
 
   /**
-   * Gửi đánh giá mới cho sản phẩm
-   * @param productId ID của sản phẩm
-   * @param reviewData Dữ liệu đánh giá (rating, comment)
-   * @returns Promise chứa kết quả gửi đánh giá
+   * Submits a new review for a product
+   * @param productId Product ID
+   * @param reviewData Review data (rating, comment)
+   * @returns Promise containing the review submission result
    */
   submitReview: async (
     productId: string,

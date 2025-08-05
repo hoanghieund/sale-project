@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
 
 /**
- * Header của trang Checkout: back + title
- * Giữ UI đơn giản, tách biệt để tái sử dụng/kiểm thử độc lập
+ * Checkout page header: back + title
+ * Keep UI simple and separate for reusability/independent testing
  */
 interface Props {
   onBack: () => void;

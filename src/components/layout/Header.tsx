@@ -35,6 +35,7 @@ import {
   Store,
   User,
   UserPlus,
+  X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -55,15 +56,15 @@ const Header = () => {
   const isRoleShop = !!user?.roles?.find(role => {
     return role.name === "ROLE_SHOP_MANAGER";
   });
-  const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State để lưu trữ dữ liệu danh mục nổi bật
-  const [allCategories, setAllCategories] = useState<Category[]>([]); // State để lưu trữ tất cả dữ liệu danh mục
+  const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State to store featured category data
+  const [allCategories, setAllCategories] = useState<Category[]>([]); // State to store all category data
 
-  // Lấy dữ liệu danh mục nổi bật từ API
+  // Fetch featured category data from API
   useEffect(() => {
     const fetchFeaturedCategories = async () => {
       try {
         const response = await categoryService.getSuggestCategory(0, 5);
-        // Ánh xạ dữ liệu API sang định dạng Category[]
+        // Map API data to Category[] format
         setFeaturedCategories(response);
       } catch (error) {
         console.error("Error fetching featured categories:", error);
@@ -72,7 +73,7 @@ const Header = () => {
     fetchFeaturedCategories();
   }, []);
 
-  // Lấy tất cả dữ liệu danh mục từ API
+  // Fetch all category data from API
   useEffect(() => {
     const fetchAllCategories = async () => {
       try {
@@ -148,7 +149,7 @@ const Header = () => {
                   </SheetHeader>
                   <MobileNavigation
                     onClose={() => setIsCategoryMenuOpen(false)}
-                    categories={allCategories} // Truyền tất cả danh mục
+                    categories={allCategories} // Pass all categories
                   />
                 </SheetContent>
               </Sheet>
@@ -189,6 +190,17 @@ const Header = () => {
                       <Search className="h-4 w-4" />
                     </Button>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full hover:bg-primary/10"
+                    onClick={() => {
+                      clearSearch();
+                      setIsSearchOpen(false);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </form>
               </div>
             )}
@@ -199,10 +211,10 @@ const Header = () => {
                 onSubmit={handleSearch}
                 className="flex items-center gap-2 flex-1"
               >
-                <div className="relative flex-1">
+                <div className="relative flex-1 max-w-[768px] mx-auto">
                   <Input
                     placeholder="Search for products..."
-                    className="w-full pr-10 rounded-full border-black border-2 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="w-full pr-10 rounded-full border-border border-2 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                   />
@@ -249,19 +261,19 @@ const Header = () => {
                       </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => navigate("/account/profile")}
                       >
                         <User className="mr-2 h-4 w-4" />
-                        Tài khoản
+                        Account
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => navigate("/account/orders")}
                       >
                         <History className="mr-2 h-4 w-4" />
-                        Lịch sử Đơn hàng
+                        Order History
                       </DropdownMenuItem>
                       {isRoleShop ? (
                         <>
@@ -269,7 +281,7 @@ const Header = () => {
                             onClick={() => navigate("/seller/dashboard")}
                           >
                             <Store className="mr-2 h-4 w-4" />
-                            Kênh người bán
+                            Seller Channel
                           </DropdownMenuItem>
                         </>
                       ) : (
@@ -278,7 +290,7 @@ const Header = () => {
                             onClick={() => navigate("/seller-registration")}
                           >
                             <ShoppingBag className="mr-2 h-4 w-4" />
-                            Đăng ký bán hàng
+                            Seller Registration
                           </DropdownMenuItem>
                         </>
                       )}
@@ -290,7 +302,7 @@ const Header = () => {
                         }}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
-                        Đăng xuất
+                        Log Out
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -348,19 +360,19 @@ const Header = () => {
                       <>
                         <NavigationMenuTrigger className="bg-transparent hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent/50 data-[active]:bg-accent/50 h-8 rounded-md px-2.5">
                           <Link
-                            to={`/category/${item.id}`} // Điều hướng đến trang category cha
+                            to={`/category/${item.id}`} // Navigate to parent category page
                           >
                             {item.name}
                           </Link>
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
                           <div className="grid gap-3 p-6 w-[700px] grid-cols-3">
-                            {/* Các link cho danh mục con */}
+                            {/* Links for subcategories */}
                             {item.child.map(child => (
                               <div key={child.id}>
                                 <NavigationMenuLink className="bg-card" asChild>
                                   <Link
-                                    to={`/category/${child.id}`} // Điều hướng đến trang category của danh mục con
+                                    to={`/category/${child.id}`} // Navigate to child category page
                                     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                                   >
                                     <div className="text-sm font-medium leading-none">
@@ -376,7 +388,7 @@ const Header = () => {
                     ) : (
                       <NavigationMenuLink asChild>
                         <Link
-                          to={`/category/${item.id}`} // Sử dụng id để tạo đường dẫn
+                          to={`/category/${item.id}`} // Use id to create path
                           className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
                         >
                           {item.name}
@@ -400,7 +412,7 @@ const MobileNavigation = ({
   categories,
 }: {
   onClose: () => void;
-  // `categories` có thể là danh mục nổi bật hoặc tất cả danh mục
+  // `categories` can be featured categories or all categories
   categories: Category[];
 }) => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -425,7 +437,7 @@ const MobileNavigation = ({
                 onClick={() => toggleExpanded(item.id.toString())} // Convert id to string
               >
                 <Link
-                  to={`/category/${item.id}`} // Điều hướng đến trang category cha
+                  to={`/category/${item.id}`} // Navigate to parent category page
                   onClick={onClose}
                 >
                   {item.name}
@@ -443,7 +455,7 @@ const MobileNavigation = ({
                   {item.child.map(child => (
                     <div key={child.id}>
                       <Link
-                        to={`/category/${child.id}`} // Sử dụng id để tạo đường dẫn
+                        to={`/category/${child.id}`} // Use id to create path
                         className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
                         onClick={onClose}
                       >
@@ -456,7 +468,7 @@ const MobileNavigation = ({
             </div>
           ) : (
             <Link
-              to={`/category/${item.id}`} // Sử dụng id để tạo đường dẫn
+              to={`/category/${item.id}`} // Use id to create path
               className="block py-2 text-sm font-medium hover:text-primary transition-colors"
               onClick={onClose}
             >

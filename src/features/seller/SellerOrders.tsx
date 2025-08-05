@@ -2,8 +2,8 @@ import { Order } from "@/types";
 import { useEffect, useState } from "react";
 
 /**
- * SellerOrders - Trang quản lý đơn hàng cho seller
- * Hiển thị danh sách đơn hàng và cho phép xử lý đơn hàng
+ * SellerOrders - Order management page for sellers
+ * Displays a list of orders and allows order processing
  */
 const SellerOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -50,17 +50,17 @@ const SellerOrders = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
-        return "Chờ xác nhận";
+        return "Pending Confirmation";
       case "confirmed":
-        return "Đã xác nhận";
+        return "Confirmed";
       case "processing":
-        return "Đang xử lý";
+        return "Processing";
       case "shipped":
-        return "Đã giao vận";
+        return "Shipped";
       case "delivered":
-        return "Đã giao hàng";
+        return "Delivered";
       case "cancelled":
-        return "Đã hủy";
+        return "Cancelled";
       default:
         return status;
     }
@@ -69,7 +69,7 @@ const SellerOrders = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Đang tải...</div>
+        <div className="text-lg">Loading...</div>
       </div>
     );
   }
@@ -79,8 +79,8 @@ const SellerOrders = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Quản lý đơn hàng</h1>
-          <p className="text-gray-600">Xử lý và theo dõi đơn hàng của khách hàng</p>
+          <h1 className="text-3xl font-bold text-gray-900">Order Management</h1>
+          <p className="text-gray-600">Process and track customer orders</p>
         </div>
 
         {/* Stats Cards */}
@@ -88,7 +88,7 @@ const SellerOrders = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Chờ xác nhận</p>
+                <p className="text-sm text-gray-600">Pending Confirmation</p>
                 <p className="text-2xl font-bold text-yellow-600">12</p>
               </div>
               <div className="text-3xl">⏳</div>
@@ -98,7 +98,7 @@ const SellerOrders = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Đang xử lý</p>
+                <p className="text-sm text-gray-600">Processing</p>
                 <p className="text-2xl font-bold text-blue-600">8</p>
               </div>
               <div className="text-3xl">📦</div>
@@ -108,7 +108,7 @@ const SellerOrders = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Đã giao vận</p>
+                <p className="text-sm text-gray-600">Shipped</p>
                 <p className="text-2xl font-bold text-purple-600">15</p>
               </div>
               <div className="text-3xl">🚚</div>
@@ -118,7 +118,7 @@ const SellerOrders = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Hoàn thành</p>
+                <p className="text-sm text-gray-600">Completed</p>
                 <p className="text-2xl font-bold text-green-600">156</p>
               </div>
               <div className="text-3xl">✅</div>
@@ -132,7 +132,7 @@ const SellerOrders = () => {
             <div className="flex-1">
               <input
                 type="text"
-                placeholder="Tìm kiếm đơn hàng..."
+                placeholder="Search orders..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -144,16 +144,16 @@ const SellerOrders = () => {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="all">Tất cả</option>
-                <option value="pending">Chờ xác nhận</option>
-                <option value="confirmed">Đã xác nhận</option>
-                <option value="processing">Đang xử lý</option>
-                <option value="shipped">Đã giao vận</option>
-                <option value="delivered">Đã giao hàng</option>
-                <option value="cancelled">Đã hủy</option>
+                <option value="all">All</option>
+                <option value="pending">Pending Confirmation</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
               </select>
               <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                Lọc
+                Filter
               </button>
             </div>
           </div>
@@ -166,22 +166,22 @@ const SellerOrders = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Mã đơn hàng
+                    Order Code
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Khách hàng
+                    Customer
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ngày đặt
+                    Order Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tổng tiền
+                    Total Amount
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trạng thái
+                    Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Thao tác
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -191,8 +191,8 @@ const SellerOrders = () => {
                     <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex flex-col items-center">
                         <div className="text-6xl mb-4">📋</div>
-                        <h3 className="text-lg font-medium mb-2">Chưa có đơn hàng nào</h3>
-                        <p className="text-gray-400">Đơn hàng sẽ xuất hiện ở đây khi có khách hàng đặt mua</p>
+                        <h3 className="text-lg font-medium mb-2">No orders yet</h3>
+                        <p className="text-gray-400">Orders will appear here when customers place orders</p>
                       </div>
                     </td>
                   </tr>
@@ -229,14 +229,14 @@ const SellerOrders = () => {
                             onClick={() => handleViewOrderDetail(order.id)}
                             className="text-new hover:text-blue-900"
                           >
-                            Xem
+                            View
                           </button>
                           {order.status === "pending" && (
                             <button
                               onClick={() => handleUpdateOrderStatus(order.id, "confirmed")}
                               className="text-green-600 hover:text-green-900"
                             >
-                              Xác nhận
+                              Confirm
                             </button>
                           )}
                           {order.status === "confirmed" && (
@@ -244,7 +244,7 @@ const SellerOrders = () => {
                               onClick={() => handleUpdateOrderStatus(order.id, "processing")}
                               className="text-purple-600 hover:text-purple-900"
                             >
-                              Xử lý
+                              Process
                             </button>
                           )}
                           {order.status === "processing" && (
@@ -252,7 +252,7 @@ const SellerOrders = () => {
                               onClick={() => handleUpdateOrderStatus(order.id, "shipped")}
                               className="text-indigo-600 hover:text-indigo-900"
                             >
-                              Giao vận
+                              Ship
                             </button>
                           )}
                         </div>
@@ -270,7 +270,7 @@ const SellerOrders = () => {
           <div className="flex justify-center mt-8">
             <nav className="flex items-center gap-2">
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
-                Trước
+                Previous
               </button>
               <button className="px-3 py-2 text-sm bgnewtext-white rounded-md">
                 1
@@ -282,7 +282,7 @@ const SellerOrders = () => {
                 3
               </button>
               <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
-                Sau
+                Next
               </button>
             </nav>
           </div>

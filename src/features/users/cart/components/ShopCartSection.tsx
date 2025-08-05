@@ -3,12 +3,12 @@ import CartItemCard from "./CartItemCard"; // Import CartItemCard
 
 /**
  * @interface ShopCartSectionProps
- * @description Định nghĩa các props cho component ShopCartSection.
- * @property {CartByShop} shopCart - Đối tượng giỏ hàng theo cửa hàng.
- * @property {(itemId: number) => void} removeFromCart - Hàm xử lý khi xóa sản phẩm khỏi giỏ hàng.
- * @property {(itemId: number, newQuantity: number) => void} updateQuantity - Hàm xử lý khi cập nhật số lượng sản phẩm.
- * @property {Set<string>} selectedItems - Tập hợp các ID sản phẩm được chọn.
- * @property {(productId: string, isSelected: boolean) => void} onSelectItem - Hàm xử lý khi chọn hoặc bỏ chọn một sản phẩm.
+ * @description Defines the props for the ShopCartSection component.
+ * @property {CartByShop} shopCart - The cart object by shop.
+ * @property {(itemId: number) => void} removeFromCart - Function to handle removing a product from the cart.
+ * @property {(itemId: number, newQuantity: number) => void} updateQuantity - Function to handle updating the product quantity.
+ * @property {Set<string>} selectedItems - Set of selected product IDs.
+ * @property {(productId: string, isSelected: boolean) => void} onSelectItem - Function to handle selecting or deselecting a product.
  */
 interface ShopCartSectionProps {
   shopCart: CartByShop;
@@ -20,11 +20,11 @@ interface ShopCartSectionProps {
 
 /**
  * @component ShopCartSection
- * @description Hiển thị danh sách các sản phẩm trong giỏ hàng theo từng cửa hàng.
- * @param {ShopCartSectionProps} props - Props cho component ShopCartSection.
- * @param {CartByShop} props.shopCart - Đối tượng giỏ hàng theo cửa hàng.
- * @param {function} props.removeFromCart - Hàm xử lý khi xóa sản phẩm khỏi giỏ hàng.
- * @param {function} props.updateQuantity - Hàm xử lý khi cập nhật số lượng sản phẩm.
+ * @description Displays the list of products in the cart by shop.
+ * @param {ShopCartSectionProps} props - Props for the ShopCartSection component.
+ * @param {CartByShop} props.shopCart - The cart object by shop.
+ * @param {function} props.removeFromCart - Function to handle removing a product from the cart.
+ * @param {function} props.updateQuantity - Function to handle updating the product quantity.
  */
 const ShopCartSection = ({ shopCart, removeFromCart, updateQuantity, selectedItems, onSelectItem }: ShopCartSectionProps) => {
   return (

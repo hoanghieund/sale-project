@@ -28,11 +28,11 @@ export default function VerifyAccount() {
   useEffect(() => {
     // Nếu không có token, hiển thị lỗi và dừng lại
     if (!token) {
-      setError("Không tìm thấy token xác minh. Vui lòng thử lại.");
+      setError("Token not found. Please try again.");
       setIsLoading(false);
       toast({
-        title: "Lỗi",
-        description: "Không tìm thấy token xác minh. Vui lòng thử lại.",
+        title: "Error",
+        description: "Token not found. Please try again.",
         variant: "destructive",
       });
       return;
@@ -45,9 +45,9 @@ export default function VerifyAccount() {
         await authService.verifyAccount(token);
         setIsVerified(true);
         toast({
-          title: "Thành công",
+          title: "Success",
           description:
-            "Xác minh tài khoản thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập.",
+            "Account verification successful! You will be redirected to the login page.",
         });
         // Chuyển hướng sau 3 giây
         setTimeout(() => {
@@ -57,11 +57,11 @@ export default function VerifyAccount() {
         // Xử lý lỗi từ API
         const errorMessage =
           err.response?.data?.message ||
-          "Đã xảy ra lỗi trong quá trình xác minh.";
+          "An error occurred during verification.";
         setError(errorMessage);
         toast({
-          title: "Lỗi",
-          description: `Xác minh thất bại: ${errorMessage}`,
+          title: "Error",
+          description: `Verification failed: ${errorMessage}`,
           variant: "destructive",
         });
       } finally {
@@ -75,32 +75,32 @@ export default function VerifyAccount() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl font-bold">Xác minh tài khoản</CardTitle>
+        <CardTitle className="text-2xl font-bold">Account Verification</CardTitle>
         {isLoading && (
-          <CardDescription>Đang xác minh tài khoản của bạn...</CardDescription>
+          <CardDescription>Verifying your account...</CardDescription>
         )}
         {!isLoading && isVerified && (
           <CardDescription className="text-green-600">
-            Xác minh thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập.
+            Verification successful! You will be redirected to the login page.
           </CardDescription>
         )}
         {!isLoading && error && (
           <CardDescription className="text-red-600">
-            Xác minh thất bại: {error}
+            Verification failed: {error}
           </CardDescription>
         )}
       </CardHeader>
       <CardContent>
         {!isLoading && !isVerified && !error && (
           <p className="text-center text-sm text-gray-500">
-            Vui lòng đợi trong khi chúng tôi xác minh tài khoản của bạn.
+            Please wait while we verify your account.
           </p>
         )}
       </CardContent>
       <CardFooter className="flex flex-col gap-4">
         {!isLoading && (isVerified || error) && (
           <Link to="/login" className="text-sm text-new hover:underline">
-            Quay lại đăng nhập
+            Back to Login
           </Link>
         )}
       </CardFooter>

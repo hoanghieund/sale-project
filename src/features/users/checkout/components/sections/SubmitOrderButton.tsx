@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
 
 /**
- * Nút submit cho order để tách UI/disabled state rõ ràng
+ * Submit button for order to clearly separate UI/disabled state
  */
 interface Props {
   isProcessing: boolean;

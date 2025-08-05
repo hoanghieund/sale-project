@@ -3,46 +3,46 @@ import { Address } from "@/types";
 
 export const addressService = {
   /**
-   * Lấy danh sách địa chỉ của người dùng.
-   * @param userId - ID của người dùng.
-   * @returns Promise với danh sách địa chỉ.
+   * Retrieves the list of addresses for a user.
+   * @param userId - User ID.
+   * @returns Promise with the list of addresses.
    */
   getAddresses: async (userId: number): Promise<Address[]> => {
     return await Axios.get(`/api/orderAddress/getAllByUser?userId=${userId}`);
   },
 
   /**
-   * Thêm địa chỉ mới cho người dùng.
-   * @param address - Địa chỉ mới cần thêm.
-   * @returns Promise với địa chỉ mới sau khi thêm.
+   * Adds a new address for the user.
+   * @param address - New address to add.
+   * @returns Promise with the new address after it's added.
    */
   addAddress: (address: Omit<Address, 'id'>) => {
     return Axios.post(`/api/orderAddress/createOrUpdate`, address);
   },
 
   /**
-   * Cập nhật thông tin địa chỉ.
-   * @param address - Địa chỉ cần cập nhật.
-   * @returns Promise với địa chỉ sau khi cập nhật.
+   * Updates address information.
+   * @param address - Address to update.
+   * @returns Promise with the address after it's updated.
    */
   updateAddress: (address: Address) => {
     return Axios.post(`/api/orderAddress/createOrUpdate`, address);
   },
 
   /**
-   * Xóa một địa chỉ.
-   * @param id - ID của địa chỉ cần xóa.
-   * @returns Promise khi xóa thành công.
+   * Deletes an address.
+   * @param id - ID of the address to delete.
+   * @returns Promise upon successful deletion.
    */
   deleteAddress: (id: number) => {
     return Axios.del(`/api/orderAddress/delete/${id}`);
   },
 
   /**
-   * Đặt địa chỉ mặc định.
-   * @param id - ID của địa chỉ cần đặt làm mặc định.
-   * @param userId - ID của người dùng.
-   * @returns Promise khi đặt mặc định thành công.
+   * Sets the default address.
+   * @param id - ID of the address to set as default.
+   * @param userId - User ID.
+   * @returns Promise upon successful default setting.
    */
   setDefaultAddress: (id: number, userId: number) => {
     return Axios.get(`/api/orderAddress/setDefaultAddress?id=${id}&userId=${userId}`);

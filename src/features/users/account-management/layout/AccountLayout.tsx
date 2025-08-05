@@ -6,9 +6,9 @@ import AccountSidebar from "../components/AccountSidebar";
 
 /**
  * @component AccountLayout
- * @description Layout chung cho các trang quản lý tài khoản người dùng.
- * Bao gồm một sidebar điều hướng và một vùng để hiển thị nội dung trang con.
- * Sử dụng SidebarProvider từ Shadcn UI để quản lý trạng thái sidebar.
+ * @description Common layout for user account management pages.
+ * Includes a navigation sidebar and an area to display sub-page content.
+ * Uses SidebarProvider from Shadcn UI to manage sidebar state.
  */
 const AccountLayout: React.FC = () => {
   return (
