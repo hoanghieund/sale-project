@@ -1,21 +1,26 @@
 import { Axios } from "../../../../api/Axios";
 
-/**
- * @function getProductsByShopId
- * @description Retrieves a list of products belonging to a shop by shopId.
- * @param payload - Object containing information for the API request.
- */
-export const getProductsByShopId = async (payload: {
-  id: number;
-  currentPage: number;
-  pageSize: number;
-  listIdChild: number[];
-  popular: boolean;
-  latest: boolean;
-  bestSell: boolean;
-  price: boolean;
-  priceFrom: number | string;
-  priceTo: number | string;
-}) => {
-  return Axios.get(`/api/public/products/by-collection/${payload.id}`);
+export const shopService = {
+  /**
+   * Retrieves a list of products by categoryId.
+   * @param payload - Object containing information for the API request.
+   */
+  getProductsByCategoryId: async (payload: {
+    id: number;
+    page: number;
+    size: number;
+  }) => {
+    return Axios.get(
+      `/api/public/products/by-collection/${payload.id}`,
+      payload
+    );
+  },
+
+  /**
+   * Retrieves a category by shopId.
+   * @param shopId - The ID of the shop to retrieve.
+   */
+  getCategoryByShopId: async (shopId: number) => {
+    return Axios.get(`/api/public/collection/by-shop/${shopId}`);
+  },
 };

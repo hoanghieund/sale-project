@@ -3,9 +3,8 @@ import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
 import { Category, Product, Shop } from "@/types";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProductsByShopId } from "./services/shopServices";
 // Import Breadcrumb from shadcn to replace manual breadcrumb
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,7 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
+import { shopService } from "./services/shopServices";
 // Tabs removed as no longer in use
 
 interface shopUi extends Shop {
@@ -37,116 +38,40 @@ const ShopPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
 
   // State for the new filtering system
   const [filters, setFilters] = useState({
     currentPage: 0,
     pageSize: 12,
-    listIdChild: [] as number[],
-    popular: false,
-    latest: false,
-    bestSell: false,
     price: true,
-    priceFrom: "",
-    priceTo: "",
   });
-
-  // Separate state for price inputs to debounce
-  const [priceInputs, setPriceInputs] = useState({
-    priceFrom: "",
-    priceTo: "",
-  });
-
-  // Timer reference for debounce
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // State for pagination
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
-  /**
-   * Debounced function to update price filters
-   * Waits 800ms after user stops typing before calling API
-   */
-  const debouncedUpdatePriceFilters = useCallback(
-    (priceFrom: string, priceTo: string) => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-
-      debounceTimer.current = setTimeout(() => {
-        setFilters(prev => ({
-          ...prev,
-          priceFrom,
-          priceTo,
-          currentPage: 0, // Reset to first page when filters change
-        }));
-      }, 800); // Delay 800ms
-    },
-    []
-  );
-
-  /**
-   * Handles price input changes with debounce
-   */
-  const handlePriceInputChange = useCallback(
-    (field: "priceFrom" | "priceTo", value: string) => {
-      // Immediately update UI state
-      setPriceInputs(prev => ({
-        ...prev,
-        [field]: value,
-      }));
-
-      // Call debounced update for filters
-      const newPriceFrom =
-        field === "priceFrom" ? value : priceInputs.priceFrom;
-      const newPriceTo = field === "priceTo" ? value : priceInputs.priceTo;
-      debouncedUpdatePriceFilters(newPriceFrom, newPriceTo);
-    },
-    [priceInputs, debouncedUpdatePriceFilters]
-  );
-
   // Function to fetch data with filters
-  const fetchShopData = async () => {
+  const fetchProductsByCategoryId = async (categoryId: number) => {
     setLoading(true);
     try {
-      // Normalize payload according to service interface:
-      // - 'price' must be a string (e.g., '', 'asc', 'desc'), not a boolean.
-      // - 'priceFrom'/'priceTo' allow string | number, keep as is.
-      // - listIdChild ensures it's number[].
       const payload = {
-        id: Number(shopId),
-        currentPage: filters.currentPage,
-        pageSize: filters.pageSize,
-        listIdChild: (filters.listIdChild || []).map(v => Number(v)),
-        popular: !!filters.popular,
-        latest: !!filters.latest,
-        bestSell: !!filters.bestSell,
-        price: filters.price,
-        priceFrom: filters.priceFrom,
-        priceTo: filters.priceTo,
+        id: Number(categoryId),
+        page: filters.currentPage,
+        size: filters.pageSize,
       };
 
-      const response = await getProductsByShopId(payload);
-
-      const products = response?.content || [];
-      const categories = response.categoryDtoList || [];
-      const shop = {
-        ...response.shop,
-        star: response.shopRating || 0,
-        totalQuantity: response?.productDTOPage?.totalElements || 0,
-      };
-
+      const responseProduct = await shopService.getProductsByCategoryId(
+        payload
+      );
+      const products = responseProduct?.content || [];
       setProducts(products);
-      setShop(shop);
-      setCategories(categories);
 
       // Update pagination information
-      setTotalPages(response.productDTOPage?.totalPages || 0);
-      setTotalElements(response.productDTOPage?.totalElements || 0);
+      setTotalPages(responseProduct?.totalPages || 0);
+      setTotalElements(responseProduct?.totalElements || 0);
     } catch (error) {
       console.error("Error loading shop data:", error);
-      setShop(null);
       setProducts([]);
       setTotalPages(0);
       setTotalElements(0);
@@ -155,29 +80,37 @@ const ShopPage = () => {
     }
   };
 
+  const fetchCategoryByShopId = async () => {
+    setLoading(true);
+    try {
+      const responseCategory = await shopService.getCategoryByShopId(
+        Number(shopId)
+      );
+      const categories = responseCategory || [];
+      const categoryId = responseCategory[0]?.id;
+      setCategories(categories);
+      setShop(responseCategory[0]?.shop);
+      setActiveCategoryId(categoryId);
+    } catch (error) {
+      console.error("Error loading shop data:", error);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Effect to fetch data when shopId or filters change
   useEffect(() => {
     if (shopId) {
-      fetchShopData();
+      fetchCategoryByShopId();
     }
   }, [shopId, filters]);
 
-  // Sync priceInputs with initial filters
   useEffect(() => {
-    setPriceInputs({
-      priceFrom: filters.priceFrom,
-      priceTo: filters.priceTo,
-    });
-  }, [filters.priceFrom, filters.priceTo]);
-
-  // Cleanup debounce timer when component unmounts
-  useEffect(() => {
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, []);
+    if (activeCategoryId) {
+      fetchProductsByCategoryId(activeCategoryId);
+    }
+  }, [activeCategoryId]);
 
   if (!shop) {
     return <EmptyStateDisplay />;
@@ -295,22 +228,23 @@ const ShopPage = () => {
         </Card>
 
         {/* LAYOUT CHÍNH: SIDEBAR + CONTENT */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-8">
+        <div className="flex flex-col lg:flex-row gap-6 mb-8 relative">
           {/* SIDEBAR BÊN TRÁI - BỘ LỌC */}
-          <div className="w-full lg:w-64 lg:flex-shrink-0 mb-6 lg:mb-0">
+          <div className="w-full lg:w-64 lg:flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-32 lg:h-[calc(100vh-8rem)]">
             <div className="px-4 py-2">
               <h3 className="text-lg font-semibold">Categories</h3>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-1">
               {/* Categories */}
-              <div className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer lg:border-r-2">
-                <p className="text-sm">All</p>
-              </div>
               {categories.length > 0 &&
                 categories.map((cat: Category) => (
                   <div
                     key={cat.id}
-                    className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer lg:border-r-2"
+                    onClick={() => setActiveCategoryId(cat.id)}
+                    className={cn(
+                      "flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer lg:border-r-2",
+                      activeCategoryId === cat.id && "bg-gray-50 border-black"
+                    )}
                   >
                     <p className="text-sm">{cat.name}</p>
                     <Badge variant="secondary" className="ml-2 text-xs">
