@@ -108,3 +108,5 @@ const SellerLayout: React.FC = () => {
     </SidebarProvider>
   );
 };
+
+export default SellerLayout;

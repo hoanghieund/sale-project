@@ -17,11 +17,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
@@ -75,8 +75,19 @@ const DragHandle = SortableHandle(() => (
   <GripVertical className="h-5 w-5 cursor-grab text-gray-500" />
 ));
 
+/**
+ * @interface SortableImageItemProps
+ * @description Props cho SortableImageItem.
+ * @property {string} image - URL của hình ảnh.
+ * @property {() => void} onRemove - Hàm callback khi xóa hình ảnh.
+ */
+interface SortableImageItemProps {
+  image: string;
+  onRemove: () => void;
+}
+
 // Sortable Item cho hình ảnh
-const SortableImageItem = SortableElement(({ image, onRemove }: { image: string, onRemove: () => void }) => (
+const SortableImageItem = SortableElement<SortableImageItemProps>(({ image, onRemove }) => (
   <div className="relative group">
     <img src={image} alt="Product preview" className="w-24 h-24 object-cover rounded-md" />
     <Button
@@ -94,8 +105,17 @@ const SortableImageItem = SortableElement(({ image, onRemove }: { image: string,
   </div>
 ));
 
+/**
+ * @interface SortableImageListProps
+ * @description Props cho SortableImageList.
+ * @property {React.ReactNode} children - Các phần tử con của danh sách hình ảnh.
+ */
+interface SortableImageListProps {
+  children: React.ReactNode;
+}
+
 // Sortable Container cho danh sách hình ảnh
-const SortableImageList = SortableContainer(({ children }: { children: React.ReactNode }) => {
+const SortableImageList = SortableContainer<SortableImageListProps>(({ children }) => {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
       {children}

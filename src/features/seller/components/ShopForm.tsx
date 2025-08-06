@@ -33,7 +33,7 @@ const shopSchema = z.object({
  * @typedef {z.infer<typeof shopSchema>} ShopFormData
  * @description Kiểu dữ liệu cho form gian hàng.
  */
-type ShopFormData = z.infer<typeof shopSchema>;
+export type ShopFormData = z.infer<typeof shopSchema>; // Thêm export ở đây
 
 /**
  * @interface ShopFormProps

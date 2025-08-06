@@ -42,7 +42,7 @@ const EditProductPage: React.FC = () => {
       setError(null);
       try {
         const [productData, categoriesData] = await Promise.all([
-          sellerAPI.getProductById(productId), // Cần thêm getProductById vào sellerAPI
+          sellerAPI.getProductById(productId),
           sellerAPI.getCategories(),
         ]);
 

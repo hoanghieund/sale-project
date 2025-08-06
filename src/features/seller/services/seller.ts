@@ -132,6 +132,17 @@ export const sellerAPI = {
   deleteProduct: async (id: string): Promise<void> => {
     await API.del(`/seller/products/${id}`);
   },
+
+  /**
+   * @method getProductById
+   * @description Lấy thông tin chi tiết của một sản phẩm theo ID.
+   * @param {string} id - ID của sản phẩm cần lấy.
+   * @returns {Promise<Product>} Thông tin sản phẩm.
+   */
+  getProductById: async (id: string): Promise<Product> => {
+    const response = await API.get(`/seller/products/${id}`);
+    return response.data;
+  },
   
   /**
    * @method getDashboardStats
