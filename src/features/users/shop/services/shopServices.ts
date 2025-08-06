@@ -17,7 +17,5 @@ export const getProductsByShopId = async (payload: {
   priceFrom: number | string;
   priceTo: number | string;
 }) => {
-  return Axios.get(
-    `/api/public/product/getProductByShop?shopId=${payload.id}&page=${payload.currentPage}&size=${payload.pageSize}&status=true&categoryChildId=${payload.listIdChild}&popular=${payload.popular}&latest=${payload.latest}&bestSell=${payload.bestSell}&price=${payload.price}&priceFrom=${payload.priceFrom}&priceTo=${payload.priceTo}`
-  );
+  return Axios.get(`/api/public/products/by-collection/${payload.id}`);
 };

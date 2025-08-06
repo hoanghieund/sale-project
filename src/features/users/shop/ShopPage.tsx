@@ -129,7 +129,7 @@ const ShopPage = () => {
 
       const response = await getProductsByShopId(payload);
 
-      const products = response.productDTOPage?.content || [];
+      const products = response?.content || [];
       const categories = response.categoryDtoList || [];
       const shop = {
         ...response.shop,

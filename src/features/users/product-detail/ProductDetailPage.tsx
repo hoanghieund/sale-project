@@ -79,13 +79,13 @@ const ProductDetailPage = () => {
       />
 
       <div className="container mx-auto px-4 pb-8 space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-5 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-12">
           <ProductImageCarousel
-            className="px-8 col-span-3"
+            className="px-8 col-span-1"
             images={product.imagesDTOList || []}
             productTitle={product.title}
           />
-          <ProductInfo className="col-span-2" product={product} />
+          <ProductInfo className="col-span-1" product={product} />
         </div>
 
         {/* Shop Info */}

@@ -9,14 +9,10 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog"; // Import Dialog components from shadcn/ui
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components from shadcn/ui
 import { cn } from "@/lib/utils";
 import { type Image as ProductImage } from "@/types"; // Ensure this path is correct for ProductDetailPage.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 /**
  * @typedef ProductImageCarouselProps
@@ -46,6 +42,13 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const [api, setApi] = useState<CarouselApi>();
   const [selectedImage, setSelectedImage] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(false); // State to manage dialog open/close status
+  const thumbnailsContainerRef = useRef<HTMLDivElement>(null); // Ref cho container thumbnails
+  const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([]); // Refs cho từng thumbnail
+
+  // Reset thumbnailRefs khi số lượng ảnh thay đổi
+  useEffect(() => {
+    thumbnailRefs.current = thumbnailRefs.current.slice(0, images?.length || 0);
+  }, [images?.length]);
 
   // Update selectedImage when carousel slides change
   useEffect(() => {
@@ -54,12 +57,43 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
     }
 
     api.on("select", () => {
-      setSelectedImage(api.selectedScrollSnap());
+      const index = api.selectedScrollSnap();
+      setSelectedImage(index);
+
+      // Tự động scroll thumbnail vào view
+      scrollThumbnailIntoView(index);
     });
   }, [api]);
 
+  // Hàm scroll thumbnail active vào vùng nhìn thấy được
+  const scrollThumbnailIntoView = (index: number) => {
+    if (!thumbnailsContainerRef.current || !thumbnailRefs.current[index])
+      return;
+
+    const container = thumbnailsContainerRef.current;
+    const thumbnail = thumbnailRefs.current[index];
+
+    if (thumbnail) {
+      // Tính toán vị trí để scroll thumbnail vào giữa container
+      const containerWidth = container.offsetWidth;
+      const thumbnailWidth = thumbnail.offsetWidth;
+      const containerScrollLeft = container.scrollLeft;
+      const thumbnailOffsetLeft = thumbnail.offsetLeft;
+
+      // Tính toán vị trí scroll để đưa thumbnail vào giữa container
+      const scrollPosition =
+        thumbnailOffsetLeft - containerWidth / 2 + thumbnailWidth / 2;
+
+      // Scroll với animation mượt mà
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <div className={cn("space-y-0 h-fit lg:sticky top-32",className)}>
+    <div className={cn("space-y-0 h-fit lg:sticky top-32", className)}>
       {/* Dialog to display large image when clicked */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         {/* Main carousel displaying large product images */}
@@ -101,7 +135,10 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
            * Carousel in DialogContent is initialized with startIndex to display
            * the previously selected image.
            */}
-          <Carousel className="w-full h-full" opts={{ startIndex: selectedImage }}>
+          <Carousel
+            className="w-full h-full"
+            opts={{ startIndex: selectedImage }}
+          >
             <CarouselContent className="h-full">
               {images?.map((img, index) => (
                 <CarouselItem key={index} className="h-full">
@@ -128,33 +165,63 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
       </Dialog>
 
       {/* Image Thumbnails - Display thumbnails for user selection */}
-      <div className="flex justify-center gap-2 mt-4">
-        {images?.map((img, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              setSelectedImage(index);
-              api?.scrollTo(index); // Scroll to the corresponding slide when thumbnail is clicked
-            }}
-            className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
-              selectedImage === index
-                ? "border-emerald-500"
-                : "border-transparent hover:border-gray-300"
-            }`}
-          >
-            {img.path ? (
-              <img
-                src={img.path}
-                alt={`${productTitle} Thumbnail ${index + 1}`}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                <span className="text-2xl text-gray-400">📦</span>
-              </div>
-            )}
-          </button>
-        ))}
+      <div className="relative mt-4">
+        {/* Thumbnails container với chiều cao cố định và scrollbar tùy chỉnh */}
+        <div
+          ref={thumbnailsContainerRef} /* Thêm ref cho container */
+          className="
+            flex gap-2 py-2 px-1 
+            overflow-x-auto max-w-full 
+            scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent 
+            scrollbar-thumb-rounded-full
+            snap-x snap-mandatory
+            pb-4 /* Thêm padding-bottom để tránh scrollbar che mất nội dung */
+          "
+          style={{
+            scrollbarWidth: "thin" /* Firefox */,
+            msOverflowStyle: "none" /* IE and Edge */,
+          }}
+        >
+          {/* Thêm div flex-shrink-0 bao quanh mỗi thumbnail để ngăn chúng bị co lại */}
+          {images?.map((img, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 snap-start"
+              ref={el =>
+                (thumbnailRefs.current[index] = el)
+              } /* Thêm ref cho từng thumbnail */
+            >
+              <button
+                onClick={() => {
+                  setSelectedImage(index);
+                  api?.scrollTo(index); // Scroll to the corresponding slide when thumbnail is clicked
+                }}
+                className={`
+                  w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden 
+                  border-2 transition-colors flex-shrink-0 
+                  ${
+                    selectedImage === index
+                      ? "border-emerald-500"
+                      : "border-transparent hover:border-gray-300"
+                  }
+                `}
+              >
+                {img.path ? (
+                  <img
+                    src={img.path}
+                    alt={`${productTitle} Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    loading="lazy" /* Lazy loading cho thumbnails */
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    <span className="text-2xl text-gray-400">📦</span>
+                  </div>
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

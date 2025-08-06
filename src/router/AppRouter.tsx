@@ -51,6 +51,17 @@ const CategoryPage = lazy(
 const ShopPage = lazy(() => import("@/features/users/shop/ShopPage"));
 const SearchPage = lazy(() => import("@/features/users/search/SearchPage"));
 
+// Import Seller Layout and Pages
+const SellerLayout = lazy(() => import("@/features/seller/layout/SellerLayout"));
+const DashboardPage = lazy(() => import("@/features/seller/pages/DashboardPage"));
+const ShopManagementPage = lazy(() => import("@/features/seller/pages/ShopManagementPage"));
+const CategoryManagementPage = lazy(() => import("@/features/seller/pages/CategoryManagementPage"));
+const ProductManagementPage = lazy(() => import("@/features/seller/pages/ProductManagementPage"));
+const CreateCategoryPage = lazy(() => import("@/features/seller/pages/CreateCategoryPage"));
+const EditCategoryPage = lazy(() => import("@/features/seller/pages/EditCategoryPage"));
+const CreateProductPage = lazy(() => import("@/features/seller/pages/CreateProductPage"));
+const EditProductPage = lazy(() => import("@/features/seller/pages/EditProductPage"));
+
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -104,6 +115,19 @@ const AppRouter = () => {
               </Route>
             </Route>{" "}
             {/* Đóng ActiveAccountRoute */}
+          </Route>
+
+          {/* Seller Routes */}
+          <Route path="/seller" element={<SellerLayout />}>
+            <Route index element={<DashboardPage />} /> {/* /seller */}
+            <Route path="dashboard" element={<DashboardPage />} /> {/* /seller/dashboard */}
+            <Route path="shop" element={<ShopManagementPage />} /> {/* /seller/shop */}
+            <Route path="categories" element={<CategoryManagementPage />} /> {/* /seller/categories */}
+            <Route path="categories/create" element={<CreateCategoryPage />} /> {/* /seller/categories/create */}
+            <Route path="categories/edit/:categoryId" element={<EditCategoryPage />} /> {/* /seller/categories/edit/:categoryId */}
+            <Route path="products" element={<ProductManagementPage />} /> {/* /seller/products */}
+            <Route path="products/create" element={<CreateProductPage />} />
+            <Route path="products/edit/:productId" element={<EditProductPage />} />
           </Route>
 
           {/* Auth Layout - Các trang không có header và footer */}
