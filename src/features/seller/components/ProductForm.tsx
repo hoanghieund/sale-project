@@ -26,8 +26,22 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Category, Product } from "@/types/seller";
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Upload, X } from "lucide-react";
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
 /**
  * @schema productSchema
@@ -71,57 +85,60 @@ interface ProductFormProps {
 }
 
 // Drag Handle cho SortableItem
-const DragHandle = SortableHandle(() => (
-  <GripVertical className="h-5 w-5 cursor-grab text-gray-500" />
-));
-
 /**
  * @interface SortableImageItemProps
  * @description Props cho SortableImageItem.
+ * @property {string} id - ID duy nhất của hình ảnh (sử dụng URL hình ảnh làm ID).
  * @property {string} image - URL của hình ảnh.
  * @property {() => void} onRemove - Hàm callback khi xóa hình ảnh.
  */
 interface SortableImageItemProps {
+  id: string;
   image: string;
   onRemove: () => void;
 }
 
-// Sortable Item cho hình ảnh
-const SortableImageItem = SortableElement<SortableImageItemProps>(({ image, onRemove }) => (
-  <div className="relative group">
-    <img src={image} alt="Product preview" className="w-24 h-24 object-cover rounded-md" />
-    <Button
-      type="button"
-      variant="destructive"
-      size="sm"
-      className="absolute -top-2 -right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-      onClick={onRemove}
-    >
-      <X className="h-3 w-3" />
-    </Button>
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-      <DragHandle />
-    </div>
-  </div>
-));
-
 /**
- * @interface SortableImageListProps
- * @description Props cho SortableImageList.
- * @property {React.ReactNode} children - Các phần tử con của danh sách hình ảnh.
+ * @function SortableImageItem
+ * @description Component hiển thị một hình ảnh có thể sắp xếp được.
+ * @param {SortableImageItemProps} props - Props của component.
  */
-interface SortableImageListProps {
-  children: React.ReactNode;
-}
+const SortableImageItem: React.FC<SortableImageItemProps> = ({ id, image, onRemove }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: id });
 
-// Sortable Container cho danh sách hình ảnh
-const SortableImageList = SortableContainer<SortableImageListProps>(({ children }) => {
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-      {children}
+    <div ref={setNodeRef} style={style} className="relative group">
+      <img src={image} alt="Product preview" className="w-24 h-24 object-cover rounded-md" />
+      <Button
+        type="button"
+        variant="destructive"
+        size="sm"
+        className="absolute -top-2 -right-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={onRemove}
+      >
+        <X className="h-3 w-3" />
+      </Button>
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-5 w-5 text-gray-500" />
+      </div>
     </div>
   );
-});
+};
 
 /**
  * @function ProductForm
@@ -131,6 +148,13 @@ const SortableImageList = SortableContainer<SortableImageListProps>(({ children 
  */
 export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, isLoading, categories }) => {
   const [imagePreviews, setImagePreviews] = useState<string[]>(initialData?.images || []);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -177,16 +201,23 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  /**
-   * @function onSortEnd
-   * @description Xử lý khi sắp xếp lại hình ảnh bằng kéo thả.
-   * @param {object} param - Đối tượng chứa oldIndex và newIndex.
-   * @param {number} param.oldIndex - Vị trí cũ của item.
-   * @param {number} param.newIndex - Vị trí mới của item.
-   */
-  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
-    setImagePreviews((prev) => arrayMoveImmutable(prev, oldIndex, newIndex));
-  };
+ /**
+  * @function handleDragEnd
+  * @description Xử lý khi kết thúc kéo thả để sắp xếp lại hình ảnh.
+  * @param {DndContext.active} active - Phần tử đang được kéo.
+  * @param {DndContext.over} over - Phần tử mà active được thả vào.
+  */
+ const handleDragEnd = (event: any) => {
+   const { active, over } = event;
+
+   if (active.id !== over.id) {
+     setImagePreviews((items) => {
+       const oldIndex = items.indexOf(active.id);
+       const newIndex = items.indexOf(over.id);
+       return arrayMoveImmutable(items, oldIndex, newIndex);
+     });
+   }
+ };
 
   const handleSubmit = (data: ProductFormData) => {
     onSubmit(data);
@@ -312,16 +343,27 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
               </div>
               {imagePreviews.length > 0 && (
                 <div className="mt-4">
-                  <SortableImageList axis="xy" onSortEnd={onSortEnd} useDragHandle>
-                    {imagePreviews.map((image, index) => (
-                      <SortableImageItem 
-                        key={`item-${image}`} 
-                        index={index} 
-                        image={image} 
-                        onRemove={() => handleRemoveImage(index)} 
-                      />
-                    ))}
-                  </SortableImageList>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={imagePreviews}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                        {imagePreviews.map((image, index) => (
+                          <SortableImageItem
+                            key={image}
+                            id={image} // Sử dụng URL hình ảnh làm ID
+                            image={image}
+                            onRemove={() => handleRemoveImage(index)}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 </div>
               )}
               <FormDescription className="mt-2">
