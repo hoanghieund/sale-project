@@ -3,7 +3,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 
 import { buttonVariants } from "@/components/ui/button";
-import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarTrigger } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
@@ -36,7 +36,7 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({ navLinks, classNam
   return (
     <Sidebar className={cn("hidden border-r bg-muted/40 md:block", className)}>
         <SidebarHeader>
-            <SidebarTrigger />
+           {/* Logo */}
         </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
