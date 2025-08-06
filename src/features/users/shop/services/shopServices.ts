@@ -9,6 +9,7 @@ export const shopService = {
     id: number;
     page: number;
     size: number;
+    sort: "asc" | "desc";
   }) => {
     return Axios.get(
       `/api/public/products/by-collection/${payload.id}`,
@@ -17,10 +18,10 @@ export const shopService = {
   },
 
   /**
-   * Retrieves a category by shopId.
+   * Retrieves shop information by shopId.
    * @param shopId - The ID of the shop to retrieve.
    */
-  getCategoryByShopId: async (shopId: number) => {
+  getShopInfo: async (shopId: number) => {
     return Axios.get(`/api/public/collection/by-shop/${shopId}`);
   },
 };

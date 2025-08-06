@@ -1,5 +1,5 @@
-import ShopForm from '@/features/seller/components/ShopForm';
 import React from 'react';
+import { ShopForm } from '../components/ShopForm';
 
 const CreateShopPage: React.FC = () => {
     return (

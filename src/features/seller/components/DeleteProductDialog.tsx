@@ -1,3 +1,9 @@
+/**
+ * @file Component DeleteProductDialog hiển thị hộp thoại xác nhận xóa sản phẩm.
+ * Cung cấp một giao diện người dùng để xác nhận hành động xóa và hiển thị thông tin sản phẩm sẽ bị xóa.
+ * Sử dụng shadcn/ui AlertDialog components.
+ */
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,28 +13,40 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import React from 'react';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Product } from "@/types/seller"; // Import Product interface
+import React from "react";
 
+/**
+ * @interface DeleteProductDialogProps
+ * @description Props cho component DeleteProductDialog.
+ * @property {boolean} isOpen - Trạng thái hiển thị của dialog.
+ * @property {() => void} onClose - Hàm xử lý khi đóng dialog.
+ * @property {() => void} onConfirm - Hàm xử lý khi xác nhận xóa.
+ * @property {Product} product - Đối tượng sản phẩm cần xóa.
+ * @property {boolean} isLoading - Trạng thái loading khi đang xử lý xóa.
+ */
 interface DeleteProductDialogProps {
-  isOpen: boolean; // Trạng thái mở/đóng của dialog
-  onClose: () => void; // Hàm xử lý khi đóng dialog
-  onConfirm: () => void; // Hàm xử lý khi xác nhận xóa
-  productName: string; // Tên sản phẩm cần xóa
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  product: Product;
+  isLoading: boolean;
 }
 
 /**
- * @component DeleteProductDialog
- * @description Component dialog xác nhận xóa sản phẩm.
- * Sử dụng shadcn-ui alert-dialog.
+ * @function DeleteProductDialog
+ * @description Component hộp thoại xác nhận xóa sản phẩm.
  * @param {DeleteProductDialogProps} props - Props của component.
- * @returns {JSX.Element}
+ * @returns {JSX.Element} Component DeleteProductDialog.
  */
 const DeleteProductDialog: React.FC<DeleteProductDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  productName,
+  product,
+  isLoading,
 }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -36,14 +54,23 @@ const DeleteProductDialog: React.FC<DeleteProductDialogProps> = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Xác nhận xóa sản phẩm</AlertDialogTitle>
           <AlertDialogDescription>
-            Bạn có chắc chắn muốn xóa sản phẩm <span className="font-semibold">{productName}</span> này không?
+            Bạn có chắc chắn muốn xóa sản phẩm "
+            <span className="font-semibold text-red-600">{product.name}</span>
+            " không?
+            <br />
             Hành động này không thể hoàn tác.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Hủy</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-            Xóa
+          <AlertDialogCancel asChild>
+            <Button variant="outline" onClick={onClose} disabled={isLoading}>
+              Hủy
+            </Button>
+          </AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button variant="destructive" onClick={onConfirm} disabled={isLoading}>
+              {isLoading ? "Đang xóa..." : "Xóa"}
+            </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

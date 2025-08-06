@@ -1,99 +1,142 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+/**
+ * @file Trang quản lý danh mục (Category Management Page) cho module Seller.
+ * Hiển thị danh sách các danh mục, cho phép tìm kiếm, tạo mới, chỉnh sửa và xóa danh mục.
+ * Sử dụng CategoryTable component để hiển thị dữ liệu.
+ */
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircleIcon } from 'lucide-react';
-
-import CategoryTable from '../components/CategoryTable';
-import DeleteCategoryDialog from '../components/DeleteCategoryDialog';
-
-// Định nghĩa kiểu dữ liệu cho Category
-interface Category {
-  id: string;
-  name: string;
-  description?: string;
-}
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CategoryTable } from "@/features/seller/components/CategoryTable";
+import DeleteCategoryDialog from "@/features/seller/components/DeleteCategoryDialog"; // Sẽ tạo sau
+import { sellerAPI } from "@/features/seller/services/seller";
+import { Category } from "@/types/seller";
+import { Plus } from "lucide-react";
+import React, { useEffect, useState } from "react"; // Thêm useState
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 /**
- * CategoryManagementPage component.
- * Trang Quản lý Danh mục Shop của kênh bán hàng.
- * @returns {JSX.Element} CategoryManagementPage component.
+ * @function CategoryManagementPage
+ * @description Component trang quản lý danh mục.
+ * @returns {JSX.Element} Trang quản lý danh mục.
  */
 const CategoryManagementPage: React.FC = () => {
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const [categories, setCategories] = useState<Category[]>([]); // State cho danh mục
+  const [loading, setLoading] = useState(true); // State cho trạng thái loading
+  const [error, setError] = useState<string | null>(null); // State cho lỗi
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
-  const [categories, setCategories] = useState<Category[]>([
-    { id: '1', name: 'Electronics', description: 'Thiết bị điện tử' },
-    { id: '2', name: 'Fashion', description: 'Thời trang' },
-    { id: '3', name: 'Home & Living', description: 'Đồ dùng gia đình' },
-  ]);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deletingCategoryId, setDeletingCategoryId] = useState<string | undefined>(
-    undefined
-  );
-  const [isLoading, setIsLoading] = useState(false); // Dùng để mô phỏng trạng thái loading
+  useEffect(() => {
+    /**
+     * @function fetchCategories
+     * @description Hàm lấy danh sách danh mục từ API.
+     */
+    const fetchCategories = async () => {
+      setLoading(true); // Bắt đầu loading
+      setError(null); // Xóa lỗi cũ
+      try {
+        const categoriesData = await sellerAPI.getCategories();
+        setCategories(categoriesData); // Cập nhật danh sách danh mục
+      } catch (err: any) {
+        setError(err.message || 'Lỗi khi tải danh mục.'); // Đặt thông báo lỗi
+        toast.error("Lỗi", { description: err.message || "Không thể tải danh mục sản phẩm." });
+      } finally {
+        setLoading(false); // Kết thúc loading
+      }
+    };
+
+    fetchCategories();
+  }, []); // Loại bỏ dispatch khỏi dependency array vì không cần nữa
 
   /**
-   * Điều hướng đến trang chỉnh sửa danh mục.
+   * @function handleEditCategory
+   * @description Xử lý khi người dùng click chỉnh sửa danh mục.
    * @param {Category} category - Danh mục cần chỉnh sửa.
    */
-  const handleEdit = (category: Category) => {
-    navigate(`/seller/categories/edit/${category.id}`); // Điều hướng đến trang chỉnh sửa
+  const handleEditCategory = (category: Category) => {
+    // Điều hướng đến trang chỉnh sửa danh mục
+    // navigate(`/seller/categories/edit/${category.id}`); // Cần inject navigate hook
+    console.log("Chỉnh sửa danh mục:", category);
   };
 
   /**
-   * Mở dialog xác nhận xóa danh mục.
-   * @param {string} categoryId - ID của danh mục cần xóa.
+   * @function handleDeleteCategory
+   * @description Mở dialog xác nhận xóa danh mục.
+   * @param {Category} category - Danh mục cần xóa.
    */
-  const handleDelete = (categoryId: string) => {
-    setDeletingCategoryId(categoryId);
-    setIsDeleteDialogOpen(true);
+  const handleDeleteCategory = (category: Category) => {
+    setCategoryToDelete(category);
+    setShowDeleteDialog(true);
   };
 
   /**
-   * Xử lý xác nhận xóa danh mục.
+   * @function confirmDeleteCategory
+   * @description Xử lý xóa danh mục sau khi xác nhận.
    */
-  const handleConfirmDelete = () => {
-    if (deletingCategoryId) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setCategories(
-          categories.filter((cat) => cat.id !== deletingCategoryId)
-        );
-        setIsLoading(false);
-        setIsDeleteDialogOpen(false);
-        setDeletingCategoryId(undefined);
-      }, 1000); // Mô phỏng API call
+  const confirmDeleteCategory = async () => {
+    if (categoryToDelete) {
+      setLoading(true); // Bắt đầu loading
+      try {
+        await sellerAPI.deleteCategory(categoryToDelete.id);
+        setCategories(categories.filter(cat => cat.id !== categoryToDelete.id)); // Cập nhật lại danh sách danh mục
+        toast.success("Thành công", { description: "Xóa danh mục thành công!" });
+      } catch (err: any) {
+        toast.error("Lỗi", { description: err.message || "Không thể xóa danh mục." });
+      } finally {
+        setLoading(false); // Kết thúc loading
+        setShowDeleteDialog(false);
+        setCategoryToDelete(null);
+      }
     }
   };
 
+  if (loading) { // Sử dụng state loading cục bộ
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 p-6">
+    <div className="container mx-auto p-4">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-2xl font-bold">Quản lý Danh mục</CardTitle>
-          {/* Nút "Thêm danh mục" điều hướng đến trang tạo mới */}
-          <Button onClick={() => navigate('/seller/categories/create')}>
-            <PlusCircleIcon className="mr-2 h-4 w-4" /> Thêm danh mục
-          </Button>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Quản lý Danh mục Sản phẩm</CardTitle>
+            <CardDescription>
+              Tạo, chỉnh sửa và sắp xếp các danh mục sản phẩm của bạn.
+            </CardDescription>
+          </div>
+          <Link to="/seller/categories/create">
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Thêm danh mục
+            </Button>
+          </Link>
         </CardHeader>
         <CardContent>
-          {/* Bảng hiển thị danh mục */}
           <CategoryTable
-            categories={categories}
-            onEdit={handleEdit} // Giữ lại hàm handleEdit để điều hướng
-            onDelete={handleDelete}
+            categories={categories} // Sử dụng state categories cục bộ
+            onEdit={handleEditCategory}
+            onDelete={handleDeleteCategory}
+            onCreateNew={() => console.log("Create New Category")} // Sẽ điều hướng sau
           />
         </CardContent>
       </Card>
 
-      <DeleteCategoryDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleConfirmDelete}
-        isLoading={isLoading}
-      />
+      {/* Delete Confirmation Dialog */}
+      {showDeleteDialog && categoryToDelete && (
+        <DeleteCategoryDialog
+          isOpen={showDeleteDialog}
+          onClose={() => setShowDeleteDialog(false)}
+          onConfirm={confirmDeleteCategory}
+          category={categoryToDelete}
+          isLoading={loading} // Sử dụng state loading cục bộ
+        />
+      )}
     </div>
   );
 };

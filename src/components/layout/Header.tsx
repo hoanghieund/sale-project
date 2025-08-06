@@ -279,9 +279,7 @@ const Header = () => {
                       </DropdownMenuItem>
                       {isRoleShop ? (
                         <>
-                          <DropdownMenuItem
-                            onClick={() => navigate("/seller/dashboard")}
-                          >
+                          <DropdownMenuItem onClick={() => navigate("/seller")}>
                             <Store className="mr-2 h-4 w-4" />
                             Seller Channel
                           </DropdownMenuItem>

@@ -9,7 +9,6 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
  */
 const ProtectedSellerRoute = () => {
   const { isAuthenticated, isLoading, user } = useUser();
-  console.log("🚀 ~ ProtectedSellerRoute ~ user:", user);
   const location = useLocation();
 
   const isSeller =

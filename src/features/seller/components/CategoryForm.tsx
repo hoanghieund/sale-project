@@ -1,82 +1,70 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+/**
+ * @file Component CategoryForm để tạo và chỉnh sửa danh mục sản phẩm.
+ * Sử dụng react-hook-form và zodResolver để quản lý form và validate dữ liệu.
+ */
 
-import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-// Định nghĩa schema validation cho form danh mục
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Tên danh mục phải có ít nhất 2 ký tự.',
-  }),
-  description: z.string().optional(),
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { Category } from "@/types/seller"; // Import Category interface
+
+/**
+ * @schema categorySchema
+ * @description Schema validation cho form danh mục sử dụng Zod.
+ */
+const categorySchema = z.object({
+  name: z.string().min(2, "Tên danh mục phải có ít nhất 2 ký tự").max(50, "Tên danh mục không quá 50 ký tự"),
+  description: z.string().max(200, "Mô tả không quá 200 ký tự").optional(),
+  isActive: z.boolean().default(true), // Trạng thái kích hoạt, mặc định là true
 });
 
 /**
- * @typedef {object} CategoryFormProps
- * @property {string} [categoryId] - ID của danh mục cần chỉnh sửa (tùy chọn).
- * @property {function} onSubmit - Hàm được gọi khi form được submit.
- * @property {boolean} isLoading - Trạng thái loading của form.
+ * @typedef {z.infer<typeof categorySchema>} CategoryFormData
+ * @description Kiểu dữ liệu cho form danh mục.
+ */
+type CategoryFormData = z.infer<typeof categorySchema>;
+
+/**
+ * @interface CategoryFormProps
+ * @description Props cho component CategoryForm.
+ * @property {Category} [initialData] - Dữ liệu danh mục ban đầu (dùng cho chỉnh sửa).
+ * @property {(data: CategoryFormData) => void} onSubmit - Hàm xử lý khi submit form.
+ * @property {boolean} [isLoading] - Trạng thái loading khi submit.
  */
 interface CategoryFormProps {
-  categoryId?: string;
-  onSubmit: (values: z.infer<typeof formSchema>) => void;
+  initialData?: Category;
+  onSubmit: (data: CategoryFormData) => void;
   isLoading: boolean;
 }
- 
- /**
-  * CategoryForm component
-  *
-  * Component này cung cấp một form để thêm mới hoặc chỉnh sửa thông tin danh mục.
-  * Sử dụng react-hook-form và shadcn-ui components.
-  *
-  * @param {CategoryFormProps} props - Props của component.
-  * @returns {JSX.Element}
-  */
- const CategoryForm: React.FC<CategoryFormProps> = ({
-   categoryId, // Thêm categoryId vào destructuring
-   onSubmit,
-   isLoading,
- }) => {
-   // Sử dụng useState để quản lý dữ liệu ban đầu của form
-   const [initialData, setInitialData] = React.useState<{ name: string; description?: string } | undefined>();
- 
-   const form = useForm<z.infer<typeof formSchema>>({
-     resolver: zodResolver(formSchema),
-     defaultValues: initialData || { name: '', description: '' },
-   });
- 
-   // Mô phỏng việc tải dữ liệu danh mục khi ở chế độ chỉnh sửa
-   React.useEffect(() => {
-     if (categoryId) {
-       // Trong thực tế, bạn sẽ gọi API để lấy dữ liệu danh mục dựa trên categoryId
-       // Ví dụ mô phỏng dữ liệu:
-       const dummyData = {
-         name: `Danh mục ${categoryId}`,
-         description: `Mô tả cho danh mục ${categoryId}`,
-       };
-       setInitialData(dummyData);
-       form.reset(dummyData); // Cập nhật form với dữ liệu đã tải
-     } else {
-       setInitialData({ name: '', description: '' }); // Đặt lại về trạng thái thêm mới
-       form.reset({ name: '', description: '' });
-     }
-   }, [categoryId, form]); // Thêm form vào dependency array
+
+/**
+ * @function CategoryForm
+ * @description Component form để tạo hoặc chỉnh sửa danh mục sản phẩm.
+ * @param {CategoryFormProps} props - Props của component.
+ * @returns {JSX.Element} Component CategoryForm.
+ */
+export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData, onSubmit, isLoading }) => {
+  // Khởi tạo form với react-hook-form và zodResolver
+  const form = useForm<CategoryFormData>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: {
+      name: initialData?.name || "",
+      description: initialData?.description || "",
+      isActive: initialData?.isActive ?? true, // Sử dụng ?? để đảm bảo giá trị mặc định nếu initialData.isActive là undefined
+    },
+  });
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Trường Tên danh mục */}
         <FormField
           control={form.control}
           name="name"
@@ -84,12 +72,17 @@ interface CategoryFormProps {
             <FormItem>
               <FormLabel>Tên danh mục</FormLabel>
               <FormControl>
-                <Input placeholder="Nhập tên danh mục" {...field} disabled={isLoading} />
+                <Input placeholder="Nhập tên danh mục" {...field} />
               </FormControl>
+              <FormDescription>
+                Tên hiển thị của danh mục sản phẩm.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* Trường Mô tả */}
         <FormField
           control={form.control}
           name="description"
@@ -97,22 +90,69 @@ interface CategoryFormProps {
             <FormItem>
               <FormLabel>Mô tả</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Nhập mô tả danh mục (tùy chọn)"
-                  {...field}
-                  disabled={isLoading}
+                <Textarea 
+                  placeholder="Nhập mô tả cho danh mục (tùy chọn)" 
+                  className="resize-none"
+                  rows={3}
+                  {...field} 
                 />
               </FormControl>
+              <FormDescription>
+                Mô tả ngắn gọn về danh mục này.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Đang xử lý...' : initialData ? 'Cập nhật' : 'Thêm mới'}
-        </Button>
+
+        {/* Trường Trạng thái kích hoạt */}
+        {initialData && initialData.isDefault ? (
+          // Không cho phép chỉnh sửa isActive cho danh mục "All"
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <FormLabel className="text-base">Trạng thái kích hoạt</FormLabel>
+              <FormDescription>
+                Danh mục "All" luôn được kích hoạt và không thể thay đổi.
+              </FormDescription>
+            </div>
+            <FormControl>
+              <Switch checked={true} disabled aria-readonly />
+            </FormControl>
+          </FormItem>
+        ) : (
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">Trạng thái kích hoạt</FormLabel>
+                  <FormDescription>
+                    Kích hoạt hoặc vô hiệu hóa danh mục này.
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        )}
+
+        {/* Nút Submit */}
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            Đặt lại
+          </Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Đang lưu..." : "Lưu"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
 };
-
-export default CategoryForm;

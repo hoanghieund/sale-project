@@ -2,7 +2,7 @@ import CustomPagination from "@/components/common/CustomPagination";
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
-import { Category, Product, Shop } from "@/types";
+import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 // Import Breadcrumb from shadcn to replace manual breadcrumb
@@ -23,9 +23,16 @@ import { Star } from "lucide-react";
 import { shopService } from "./services/shopServices";
 // Tabs removed as no longer in use
 
-interface shopUi extends Shop {
+interface shopUi {
+  shopName?: string;
+  banner?: string;
+  avatar?: string;
   star?: number;
+  totalProduct?: number;
+  collections?: { id: number; name: string; totalProduct: number }[];
 }
+
+const PAGE_SIZE = 12;
 
 /**
  * ShopPage - Shop Information Display Page
@@ -34,31 +41,35 @@ interface shopUi extends Shop {
 const ShopPage = () => {
   const { shopId } = useParams<{ shopId: string }>();
   const [shop, setShop] = useState<shopUi>({} as shopUi);
-  console.log("🚀 ~ ShopPage ~ shop:", shop);
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
+  const [sort, setSort] = useState("asc");
 
   // State for the new filtering system
-  const [filters, setFilters] = useState({
+  const [pagination, setPagination] = useState({
     currentPage: 0,
-    pageSize: 12,
-    price: true,
+    pageSize: PAGE_SIZE,
   });
 
   // State for pagination
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
-  // Function to fetch data with filters
-  const fetchProductsByCategoryId = async (categoryId: number) => {
+  // Function to fetch data with pagination
+  const fetchProductsByCategoryId = async (
+    categoryId: number,
+    sort: "asc" | "desc",
+    page: number,
+    size: number
+  ) => {
     setLoading(true);
     try {
       const payload = {
         id: Number(categoryId),
-        page: filters.currentPage,
-        size: filters.pageSize,
+        page: page,
+        size: size,
+        sort: sort,
       };
 
       const responseProduct = await shopService.getProductsByCategoryId(
@@ -80,35 +91,36 @@ const ShopPage = () => {
     }
   };
 
-  const fetchCategoryByShopId = async () => {
+  const fetchShopInfo = async () => {
     setLoading(true);
     try {
-      const responseCategory = await shopService.getCategoryByShopId(
-        Number(shopId)
-      );
-      const categories = responseCategory || [];
-      const categoryId = responseCategory[0]?.id;
-      setCategories(categories);
-      setShop(responseCategory[0]?.shop);
+      const responseShopInfo = await shopService.getShopInfo(Number(shopId));
+      const shopInfo = responseShopInfo;
+      const categoryId = responseShopInfo?.collections?.[0]?.id;
+      setShop(shopInfo);
       setActiveCategoryId(categoryId);
     } catch (error) {
       console.error("Error loading shop data:", error);
-      setCategories([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Effect to fetch data when shopId or filters change
+  // Effect to fetch data when shopId or pagination change
   useEffect(() => {
     if (shopId) {
-      fetchCategoryByShopId();
+      fetchShopInfo();
     }
-  }, [shopId, filters]);
+  }, [shopId]);
 
   useEffect(() => {
     if (activeCategoryId) {
-      fetchProductsByCategoryId(activeCategoryId);
+      setPagination(prev => ({
+        ...prev,
+        currentPage: 0,
+      }));
+      setSort("asc");
+      fetchProductsByCategoryId(activeCategoryId, "asc", 0, PAGE_SIZE);
     }
   }, [activeCategoryId]);
 
@@ -122,7 +134,7 @@ const ShopPage = () => {
         items={[
           { label: "Home", to: "/" },
           { label: "Shop" },
-          { label: shop.name },
+          { label: shop.shopName },
         ]}
       />
       {/* Shop Banner */}
@@ -158,10 +170,10 @@ const ShopPage = () => {
                 {/* Defensive src/alt */}
                 <AvatarImage
                   src={shop?.avatar?.trim() || ""}
-                  alt={shop?.name || "Shop"}
+                  alt={shop?.shopName || "Shop"}
                 />
                 <AvatarFallback className="text-2xl md:text-3xl">
-                  {shop?.name?.charAt(0)}
+                  {shop?.shopName?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
 
@@ -170,7 +182,7 @@ const ShopPage = () => {
                 {/* Shop Name */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle className="text-2xl md:text-3xl leading-none tracking-wide">
-                    {shop?.name}
+                    {shop?.shopName}
                   </CardTitle>
                   {/* Actions placed on the same line in wide viewports to save vertical space */}
                   <div className="hidden lg:flex items-center gap-2">
@@ -201,17 +213,7 @@ const ShopPage = () => {
                       Products
                     </div>
                     <div className="text-xl md:text-2xl font-bold text-primary leading-none">
-                      {shop?.totalQuantity}
-                    </div>
-                  </div>
-
-                  {/* Listing Date */}
-                  <div className="flex items-center gap-4">
-                    <div className="text-xs text-muted-foreground">
-                      Product Listing Date
-                    </div>
-                    <div className="text-xl md:text-2xl font-bold text-primary leading-none">
-                      {shop?.timeRequest}
+                      {shop?.totalProduct}
                     </div>
                   </div>
                 </div>
@@ -236,8 +238,8 @@ const ShopPage = () => {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-1">
               {/* Categories */}
-              {categories.length > 0 &&
-                categories.map((cat: Category) => (
+              {shop?.collections?.length > 0 &&
+                shop?.collections?.map((cat: Category) => (
                   <div
                     key={cat.id}
                     onClick={() => setActiveCategoryId(cat.id)}
@@ -265,21 +267,27 @@ const ShopPage = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-muted-foreground">Sort:</span>
                     <Select
-                      value={String(!!filters.price)}
+                      value={sort}
                       onValueChange={value => {
-                        setFilters(prev => ({
+                        setPagination(prev => ({
                           ...prev,
-                          price: value === "true",
                           currentPage: 0,
                         }));
+                        setSort(value as "asc" | "desc");
+                        fetchProductsByCategoryId(
+                          activeCategoryId,
+                          value as "asc" | "desc",
+                          0,
+                          PAGE_SIZE
+                        );
                       }}
                     >
                       <SelectTrigger className="w-[120px] sm:w-32">
                         <SelectValue placeholder="Custom" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="true">Low to High</SelectItem>
-                        <SelectItem value="false">High to Low</SelectItem>
+                        <SelectItem value="asc">Low to High</SelectItem>
+                        <SelectItem value="desc">High to Low</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -313,10 +321,10 @@ const ShopPage = () => {
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <CustomPagination
-                      currentPage={filters.currentPage + 1}
+                      currentPage={pagination.currentPage + 1}
                       totalPages={totalPages}
                       onPageChange={page => {
-                        setFilters(prev => ({
+                        setPagination(prev => ({
                           ...prev,
                           currentPage: page - 1,
                         }));
