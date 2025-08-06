@@ -92,7 +92,7 @@ const CartItemCard = ({
             <div>
               <h3 className="font-medium text-sm line-clamp-2">
                 <Link
-                  to={`/product/${item.productDTO?.id}`}
+                  to={`/product/${item.productDTO?.slug}`}
                   className="hover:text-primary"
                 >
                   {item.productDTO?.title}
