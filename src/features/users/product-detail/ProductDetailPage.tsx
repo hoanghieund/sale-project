@@ -67,13 +67,18 @@ const ProductDetailPage = () => {
         items={[
           { label: "Home", to: "/" },
           {
-            label: product.categoryDto?.parent?.name,
-            to: `/category/${product.categoryDto?.parent?.id}`,
+            label: product.collectionResponse?.categoryTree?.name,
+            to: `/category/${product.collectionResponse?.categoryTree?.id}`,
           },
-          {
-            label: product.categoryDto?.name,
-            to: `/category/${product.categoryDto?.id}`,
-          },
+          // Render category child breadcrumb only if it exists
+          ...(product.collectionResponse?.categoryTree?.child
+            ? [
+                {
+                  label: product.collectionResponse.categoryTree.child.name,
+                  to: `/category/${product.collectionResponse.categoryTree.child.id}`,
+                },
+              ]
+            : []),
           { label: product.title },
         ]}
       />

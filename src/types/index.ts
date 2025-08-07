@@ -43,13 +43,13 @@ export interface Product {
   star5?: number; // Số lượng đánh giá 5 sao
 
   // Thông tin liên kết
+  collectionResponse?: CollectionResponse; // Thông tin collection (optional khi populate)
   categoriesId?: number; // categories_id bigint(20)
   discountId?: number; // discount_id bigint(20)
   shopId?: number; // shop_id bigint(20)
 
   // Các đối tượng liên kết
   shop?: Shop; // Thông tin shop (optional khi populate)
-  categoryDto?: Category; // Thông tin category (optional khi populate)
   discount?: Discount; // Thông tin discount (optional khi populate)
 
   // Danh sách biến thể và hình ảnh
@@ -67,6 +67,20 @@ export interface Option {
   id: number; // bigint(20) trong SQL
   name: string; // name varchar(255)
   type: number;
+}
+
+// Category Tree Type - Dựa trên cấu trúc lồng nhau của danh mục
+export interface CategoryTree {
+  id: number;
+  name: string;
+  child: CategoryTree | null; // Có thể có các danh mục con hoặc null
+}
+
+// Collection Response Type - Dựa trên cấu trúc JSON người dùng cung cấp
+export interface CollectionResponse {
+  id: number;
+  name: string;
+  categoryTree: CategoryTree | null; // Có thể có categoryTree hoặc null
 }
 
 // Shop Types - Dựa trên tbl_shop

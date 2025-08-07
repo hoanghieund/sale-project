@@ -1,5 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { Star } from "lucide-react";
@@ -164,41 +166,41 @@ export const ProductReviews = ({
    * @param {React.FormEvent} e - The form event.
    * @returns {Promise<void>}
    */
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (rating === 0 || !comment.trim() || !productId) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Please select a star rating and enter review content.",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (rating === 0 || !comment.trim() || !productId) {
+      toast({
+        title: "Error",
+        description: "Please select a star rating and enter review content.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  //   setIsSubmitting(true);
-  //   try {
-  //     await productDetailService.submitReview(productId, {
-  //       star: rating,
-  //       content: comment.trim(),
-  //     });
-  //     toast({
-  //       title: "Success",
-  //       description: "Your review has been submitted successfully!",
-  //     });
-  //     setRating(0);
-  //     setComment("");
-  //     fetchReviews(); // Reload review list after successful submission
-  //   } catch (error) {
-  //     console.error("Error submitting review:", error);
-  //     toast({
-  //       title: "Error",
-  //       description: "Failed to submit review. Please try again.",
-  //       variant: "destructive",
-  //     });
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
+    setIsSubmitting(true);
+    try {
+      await productDetailService.submitReview(productId, {
+        star: rating,
+        content: comment.trim(),
+      });
+      toast({
+        title: "Success",
+        description: "Your review has been submitted successfully!",
+      });
+      setRating(0);
+      setComment("");
+      fetchReviews(); // Reload review list after successful submission
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      toast({
+        title: "Error",
+        description: "Failed to submit review. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -249,7 +251,7 @@ export const ProductReviews = ({
 
       {isAuthenticated && (
         <div className="w-full">
-          {/* <Card className="shadow-sm">
+          <Card className="shadow-sm">
             <CardHeader className="p-2">
               <CardTitle className="text-sm text-gray-800 dark:text-gray-200">
                 Write Your Review
@@ -297,7 +299,7 @@ export const ProductReviews = ({
                 </div>
               </form>
             </CardContent>
-          </Card> */}
+          </Card>
         </div>
       )}
     </div>
