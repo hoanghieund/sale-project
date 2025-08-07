@@ -55,9 +55,7 @@ export const cartService = {
       return processedItem;
     });
 
-    return Axios.post(`/api/cart/add-multiple`, {
-      cartItems: processedCartItems,
-    });
+    return Axios.post(`/api/cart/add-multiple`, processedCartItems);
   },
 
   /**
