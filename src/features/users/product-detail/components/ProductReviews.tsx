@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
+import { User } from "@/types";
 import { FileText, Star, Upload, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { productDetailService } from "../services/productDetailService";
@@ -13,32 +14,12 @@ interface Review {
   content: string;
   file: string | null;
   image: string | null;
-  userDTO: {
-    id: number;
-    username: string;
-    email: string;
-    password?: string;
-    phone: string | null;
-    avatar: string | null;
-    file: string | null;
-    address: string | null;
-    roles: { id: number; name: string }[];
-    roleId: number | null;
-    active: number;
-    dayOfBirth: string | null;
-    monthOfBirth: string | null;
-    yearOfBirth: string | null;
-    date: string | null;
-    gender: string | null;
-    shopName: string | null;
-    newAccount: boolean;
-  };
-  productDTO?: any; // TODO: Consider defining a more detailed interface for ProductDTO if widely used.
-  parent: any; // TODO: Consider defining a more detailed interface for Parent if applicable.
+  userDTO: User;
+  parent: Review;
   idParent: number | null;
   timeComment: string;
   totalLike: number | null;
-  child: Review[] | null; // Child reviews have the same structure as Review.
+  child: Review[] | null;
   active: number | null;
   star: number;
 }
@@ -440,6 +421,16 @@ export const ProductReviews = ({
                               src={URL.createObjectURL(file)}
                               alt={file.name}
                               className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : file.type.startsWith("video/") ? (
+                          <div className="aspect-square w-24 h-24 relative cursor-pointer group">
+                            <video
+                              src={URL.createObjectURL(file)}
+                              className="w-full h-full object-cover"
+                              controlsList="nodownload nofullscreen"
+                              preload="metadata"
+                              onClick={e => e.currentTarget.play()}
                             />
                           </div>
                         ) : (
