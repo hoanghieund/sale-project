@@ -79,7 +79,8 @@ const Register = () => {
       };
 
       await registerUser(registerData as any);
-      navigate(`/verify-email?email=${data.email}`);
+      // navigate(`/verify-email?email=${data.email}`);
+      navigate(`/login`);
     } catch (error) {
       console.error("Registration error:", error);
     }

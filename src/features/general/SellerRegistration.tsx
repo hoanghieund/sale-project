@@ -9,46 +9,46 @@ import { Link } from 'react-router-dom';
 /**
  * @component SellerRegistration
  * @description React component to display the seller registration page.
- * Bao gồm tiêu đề, danh sách chính sách, nút gửi và liên kết chính sách.
+ * Includes title, policy list, submit button and policy links.
  */
 const SellerRegistration: React.FC = () => {
   const {user} = useUser();
   const policies = [
-    'Chính sách chung về việc bán hàng và sử dụng nền tảng.',
-    'Tiêu chuẩn sản phẩm và yêu cầu chất lượng đối với các mặt hàng được bán.',
-    'Chính sách thanh toán, phí và quy trình tính toán hoa hồng.',
-    'Hỗ trợ đối tác, bao gồm tài liệu, đào tạo và các kênh liên lạc.',
-    'Quyền và nghĩa vụ của người bán khi tham gia nền tảng.',
+    'General policies for selling and using the platform.',
+    'Product standards and quality requirements for items being sold.',
+    'Payment policies, fees, and commission calculation process.',
+    'Partner support, including documentation, training, and communication channels.',
+    'Rights and obligations of sellers when joining the platform.',
   ];
   const { toast } = useToast();
 
-  // Hàm xử lý sự kiện nhấp nút "Gửi yêu cầu đăng ký"
+  // Function to handle the "Submit Registration Request" button click
   const handleClick = async () => {
-    // Lấy userId từ localStorage
+    // Get userId from localStorage
     const userId = user?.id;
 
-    // Kiểm tra xem userId có tồn tại không
+    // Check if userId exists
     if (!userId) {
       toast({
-        title: 'Lỗi',
-        description: 'Không tìm thấy ID người dùng. Vui lòng đăng nhập lại.',
+        title: 'Error',
+        description: 'User ID not found. Please log in again.',
         variant: 'destructive',
       });
       return;
     }
 
     try {
-      // Gọi API
+      // Call API
      const response =  await Axios.get(`/api/admin/approveOrCancelByUserId/${userId}`);
       toast({
-        title: 'Thành công',
-        description: 'Yêu cầu đăng ký của bạn đã được gửi thành công!',
+        title: 'Success',
+        description: 'Your registration request has been submitted successfully!',
       });
     } catch (error) {
-      console.error('Lỗi khi gọi API:', error);
+      console.error('Error calling API:', error);
       toast({
-        title: 'Lỗi',
-        description: error.response?.data?.message || 'Đã xảy ra lỗi khi gửi yêu cầu. Vui lòng thử lại sau.',
+        title: 'Error',
+        description: error.response?.data?.message || 'An error occurred while submitting your request. Please try again later.',
         variant: 'destructive',
       });
     }
@@ -58,16 +58,16 @@ const SellerRegistration: React.FC = () => {
     <div className="container mx-auto py-12 px-4">
       <Card className="max-w-3xl mx-auto p-8 shadow-lg rounded-lg">
         <CardHeader className="text-center mb-8">
-          {/* Tiêu đề trang đăng ký người bán */}
-          <CardTitle className="text-3xl font-bold text-gray-900">Đăng ký người bán</CardTitle>
+          {/* Seller registration page title */}
+          <CardTitle className="text-3xl font-bold text-gray-900">Seller Registration</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-gray-700 mb-6 text-lg">
-            Chào mừng bạn đến với trang đăng ký người bán. Vui lòng đọc kỹ các chính sách dưới đây trước khi gửi yêu cầu.
+            Welcome to the seller registration page. Please read the policies below carefully before submitting your request.
           </p>
 
           <ul className="list-disc list-inside space-y-4 mb-8 text-gray-800">
-            {/* Danh sách các chính sách người bán */}
+            {/* Seller policy list */}
             {policies.map((policy, index) => (
               <li key={index} className="text-base">
                 {policy}
@@ -76,19 +76,19 @@ const SellerRegistration: React.FC = () => {
           </ul>
 
           <div className="flex flex-col items-center space-y-4">
-            {/* Nút gửi yêu cầu đăng ký */}
+            {/* Submit registration request button */}
             <Button size="lg" className="w-full max-w-xs" onClick={handleClick}>
-              Gửi yêu cầu đăng ký
+              Submit Registration Request
             </Button>
-            {/* Liên kết đến các chính sách khác */}
+            {/* Links to other policies */}
             <p className="text-sm text-gray-600">
-              Bằng cách gửi yêu cầu, bạn đồng ý với{' '}
+              By submitting your request, you agree to our{' '}
               <Link to="/terms-of-service" className="text-blue-600 hover:underline">
-                Điều khoản dịch vụ
+                Terms of Service
               </Link>{' '}
-              và{' '}
+              and{' '}
               <Link to="/privacy-policy" className="text-blue-600 hover:underline">
-                Chính sách quyền riêng tư
+                Privacy Policy
               </Link>.
             </p>
           </div>
