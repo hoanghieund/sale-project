@@ -1,12 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input"; // Thêm import cho Input
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
-import { Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Star, X, Image as ImageIcon, FileText, Video, Upload } from "lucide-react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { productDetailService } from "../services/productDetailService";
 
 interface Review {
@@ -129,8 +131,11 @@ export const ProductReviews = ({
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // State để lưu trữ tệp đã chọn
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]); // State để lưu trữ các tệp đã chọn
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dragActive, setDragActive] = useState<boolean>(false);
+  const [errors, setErrors] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { isAuthenticated } = useUser(); // Use useUser hook
 
@@ -139,12 +144,83 @@ export const ProductReviews = ({
    * @param {React.ChangeEvent<HTMLInputElement>} e - The change event from the file input.
    */
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    } else {
-      setSelectedFile(null);
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      // Giới hạn tối đa 5 file
+      if (selectedFiles.length + filesArray.length <= 5) {
+        setSelectedFiles(prev => [...prev, ...filesArray]);
+        setErrors([]);
+      } else {
+        setErrors(["Maximum 5 files allowed."]);
+      }
     }
   };
+
+  const validateFile = (file: File): string | null => {
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxFileSize) {
+      return `File "${file.name}" is too large. Maximum size is ${maxFileSize / (1024 * 1024)}MB.`;
+    }
+    
+    const acceptedTypes = ['image/*', 'video/*'];
+    const isValidType = acceptedTypes.some(type => {
+      if (type.includes('*')) {
+        return file.type.startsWith(type.replace('*', ''));
+      }
+      return file.name.toLowerCase().endsWith(type);
+    });
+    
+    if (!isValidType) {
+      return `File "${file.name}" is not a supported format.`;
+    }
+    
+    return null;
+  };
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const filesArray = Array.from(e.dataTransfer.files);
+      const newErrors: string[] = [];
+      const validFiles: File[] = [];
+      
+      // Kiểm tra file validity
+      filesArray.forEach(file => {
+        const error = validateFile(file);
+        if (error) {
+          newErrors.push(error);
+        } else {
+          validFiles.push(file);
+        }
+      });
+
+      if (newErrors.length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+
+      // Giới hạn tối đa 5 file
+      if (selectedFiles.length + validFiles.length <= 5) {
+        setSelectedFiles(prev => [...prev, ...validFiles]);
+        setErrors([]);
+      } else {
+        setErrors(["Maximum 5 files allowed."]);
+      }
+    }
+  }, [selectedFiles.length]);
 
   /**
    * Fetches product reviews from the API.
@@ -197,9 +273,12 @@ export const ProductReviews = ({
       payload.append("star", rating.toString());
       payload.append("content", comment);
       payload.append("productId", productId.toString());
-      if (selectedFile) {
-        payload.append("file", selectedFile); // Thêm tệp vào payload nếu có
-      }
+      
+      // Append all selected files
+      selectedFiles.forEach(file => {
+        payload.append("file", file);
+      });
+      
       await productDetailService.submitReview(payload);
       toast({
         title: "Success",
@@ -207,7 +286,7 @@ export const ProductReviews = ({
       });
       setRating(0);
       setComment("");
-      setSelectedFile(null); // Reset tệp đã chọn sau khi gửi
+      setSelectedFiles([]); // Reset files after submission
       fetchReviews(); // Reload review list after successful submission
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -307,12 +386,92 @@ export const ProductReviews = ({
                   onChange={e => setComment(e.target.value)}
                   className="min-h-[50px] text-xs focus-visible:ring-offset-0 focus-visible:ring-blue-400"
                 />
-                {/* Input để tải lên tệp */}
-                <Input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="text-xs file:text-xs file:text-white file:bg-blue-600 file:hover:bg-blue-700 file:border-none file:py-1 file:px-2 file:rounded-md file:cursor-pointer"
-                />
+                
+                {/* Drag and Drop File Upload Area */}
+                <div
+                  className={`relative border-2 border-dashed rounded-lg p-4 transition-colors ${
+                    dragActive
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept="image/*,video/*"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  
+                  <div className="text-center space-y-2">
+                    <Upload className="w-6 h-6 mx-auto text-muted-foreground" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-foreground">
+                        Drop files here or click to browse
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Support images and videos up to 10MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* File Previews */}
+                {selectedFiles.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {selectedFiles.map((file, index) => (
+                      <div
+                        key={index}
+                        className="relative group border border-border rounded-md overflow-hidden bg-background"
+                      >
+                        {file.type.startsWith('image/') ? (
+                          <div className="aspect-square">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="aspect-square flex flex-col items-center justify-center p-2 bg-muted/30">
+                            <FileText className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-xs text-center mt-1 text-muted-foreground truncate w-full">
+                              {file.name}
+                            </span>
+                          </div>
+                        )}
+                        
+                        <button
+                          onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== index))}
+                          className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                        
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 truncate">
+                          {file.name}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Error Messages */}
+                {errors.length > 0 && (
+                  <div className="space-y-1">
+                    {errors.map((error, index) => (
+                      <p key={index} className="text-sm text-destructive">
+                        {error}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex justify-end pt-1">
                   <Button
                     type="submit"
