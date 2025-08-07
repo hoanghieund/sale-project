@@ -1,52 +1,56 @@
-import { Shop } from '@/types/seller'; // Import kiểu Shop
+import { Shop } from '@/features/seller/types'; // Import kiểu Shop
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { ShopForm } from '../components/ShopForm';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner'; // Import toast
+import { ShopForm, ShopFormData } from '../components/ShopForm';
+import { sellerAPI } from '../services/seller'; // Import sellerAPI
 
 const EditShopPage: React.FC = () => {
+    const navigate = useNavigate();
     // Lấy shopId từ URL params
     const { shopId } = useParams<{ shopId: string }>();
     const [shop, setShop] = useState<Shop | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    // Giả định hàm fetch shop theo ID
-    // Trong một ứng dụng thực tế, hàm này sẽ gọi API từ backend
-    const fetchShopById = async (id: string): Promise<Shop> => {
-        // Mô phỏng việc gọi API
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    id: id,
-                    name: `Shop Name ${id}`,
-                    description: `Description for Shop ${id}`,
-                    address: `Address for Shop ${id}`,
-                    logo: `https://example.com/logo-${id}.png`,
-                    banner: `https://example.com/banner-${id}.png`,
-                    userId: 'user123',
-                    isActive: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                });
-            }, 1000); // Giả lập độ trễ 1 giây
-        });
-    };
 
     useEffect(() => {
-        if (shopId) {
+        const fetchShop = async () => {
             setLoading(true);
-            fetchShopById(shopId)
-                .then(data => {
-                    setShop(data);
-                })
-                .catch(error => {
-                    console.error("Lỗi khi tải thông tin shop:", error);
-                    setShop(null); // Đặt shop về null nếu có lỗi
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+            try {
+                // Lấy thông tin shop từ sellerAPI
+                const data = await sellerAPI.getShop();
+                setShop(data);
+            } catch (error: any) {
+                console.error("Error loading shop info:", error);
+                toast.error("Error", { description: error.message || "Failed to load shop information." });
+                setShop(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchShop();
+    }, []);
+
+    /**
+     * @function handleSubmit
+     * @description Xử lý submit form cập nhật thông tin shop.
+     * @param {ShopFormData} data - Dữ liệu từ form ShopForm.
+     */
+    const handleSubmit = async (data: ShopFormData) => {
+        setLoading(true);
+        try {
+            // Cập nhật thông tin shop thông qua sellerAPI
+            const updatedShop = await sellerAPI.updateShop(data);
+            setShop(updatedShop);
+            toast.success("Success", { description: "Shop information updated successfully!" });
+            navigate("/seller/dashboard"); // Chuyển hướng về dashboard sau khi cập nhật
+        } catch (error: any) {
+            toast.error("Error", { description: error.message || "Failed to update shop information." });
+        } finally {
+            setLoading(false);
         }
-    }, [shopId]);
+    };
 
     if (loading) {
         return <p>Đang tải thông tin shop...</p>;
@@ -61,7 +65,7 @@ const EditShopPage: React.FC = () => {
             {/* Tiêu đề trang chỉnh sửa shop */}
             <h1>Chỉnh Sửa Shop</h1>
             {/* Render component ShopForm, truyền shop nếu có */}
-            {shop ? <ShopForm shop={shop} onSubmit={() => {}} isLoading={false} /> : <p>Không tìm thấy thông tin shop.</p>}
+            {shop ? <ShopForm shop={shop} onSubmit={handleSubmit} isLoading={loading} /> : <p>Không tìm thấy thông tin shop.</p>}
         </div>
     );
 };

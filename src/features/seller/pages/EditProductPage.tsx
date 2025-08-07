@@ -8,7 +8,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductForm } from "@/features/seller/components/ProductForm"; // Sẽ tạo sau
 import { sellerAPI } from "@/features/seller/services/seller";
-import { Category, Product } from "@/types/seller"; // Import Product và Category interface
+import { Category, Product } from "@/features/seller/types"; // Import Product và Category interface từ đúng đường dẫn
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";

@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Category, Product } from "@/types/seller";
+import { Category, Product } from "@/features/seller/types";
 import {
   closestCenter,
   DndContext,

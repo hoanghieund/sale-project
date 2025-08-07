@@ -3,9 +3,9 @@
  * Các hàm này sẽ tương tác với backend để quản lý gian hàng, danh mục, sản phẩm và lấy dữ liệu dashboard.
  */
 
-import { Axios as API } from '@/api/Axios'; // Import Axios instance đã được cấu hình
+import { sellerService } from './sellerService'; // Import sellerService đã được tạo
 
-import { Category, DashboardStats, Product, Shop } from '@/types/seller';
+import { Category, DashboardStats, Product, Shop } from '@/features/seller/types';
 
 /**
  * @namespace sellerAPI
@@ -18,8 +18,11 @@ export const sellerAPI = {
    * @returns {Promise<Shop>} Thông tin gian hàng.
    */
   getShop: async (): Promise<Shop> => {
-    const response = await API.get('/seller/shop');
-    return response.data;
+    const shop = await sellerService.getShop();
+    if (!shop) {
+      throw new Error("Shop not found");
+    }
+    return shop;
   },
 
   /**
@@ -29,8 +32,13 @@ export const sellerAPI = {
    * @returns {Promise<Shop>} Thông tin gian hàng đã được cập nhật.
    */
   updateShop: async (data: Partial<Omit<Shop, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'isActive'>>): Promise<Shop> => {
-    const response = await API.put('/seller/shop', data);
-    return response.data;
+    // Để đơn giản, giả định chúng ta luôn cập nhật shop hiện có
+    const currentShop = await sellerService.getShop();
+    if (!currentShop) {
+      throw new Error("Shop not found for update");
+    }
+    const updatedShop = { ...currentShop, ...data };
+    return sellerService.updateShop(updatedShop);
   },
   
   /**
@@ -39,8 +47,7 @@ export const sellerAPI = {
    * @returns {Promise<Category[]>} Danh sách các danh mục.
    */
   getCategories: async (): Promise<Category[]> => {
-    const response = await API.get('/seller/categories');
-    return response.data;
+    return sellerService.getCategories();
   },
 
   /**
@@ -50,8 +57,12 @@ export const sellerAPI = {
    * @returns {Promise<Category>} Thông tin danh mục.
    */
   getCategoryById: async (id: string): Promise<Category> => {
-    const response = await API.get(`/seller/categories/${id}`);
-    return response.data;
+    const categories = await sellerService.getCategories();
+    const category = categories.find(cat => cat.id === id);
+    if (!category) {
+      throw new Error(`Category with id ${id} not found.`);
+    }
+    return category;
   },
 
   /**
@@ -61,8 +72,7 @@ export const sellerAPI = {
    * @returns {Promise<Category>} Thông tin danh mục đã tạo.
    */
   createCategory: async (data: Omit<Category, 'id' | 'createdAt' | 'updatedAt' | 'isDefault'>): Promise<Category> => {
-    const response = await API.post('/seller/categories', data);
-    return response.data;
+    return sellerService.createCategory(data);
   },
 
   /**
@@ -73,8 +83,9 @@ export const sellerAPI = {
    * @returns {Promise<Category>} Thông tin danh mục đã được cập nhật.
    */
   updateCategory: async (id: string, data: Partial<Omit<Category, 'id' | 'shopId' | 'createdAt' | 'updatedAt' | 'isDefault'>>): Promise<Category> => {
-    const response = await API.put(`/seller/categories/${id}`, data);
-    return response.data;
+    const currentCategory = await sellerAPI.getCategoryById(id);
+    const updatedCategory = { ...currentCategory, ...data };
+    return sellerService.updateCategory(updatedCategory);
   },
 
   /**
@@ -84,7 +95,7 @@ export const sellerAPI = {
    * @returns {Promise<void>}
    */
   deleteCategory: async (id: string): Promise<void> => {
-    await API.del(`/seller/categories/${id}`);
+    await sellerService.deleteCategory(id);
   },
   
   /**
@@ -96,8 +107,16 @@ export const sellerAPI = {
    * @returns {Promise<Product[]>} Danh sách các sản phẩm.
    */
   getProducts: async (params?: { categoryId?: string; search?: string }): Promise<Product[]> => {
-    const response = await API.get('/seller/products', { params });
-    return response.data;
+    let products = await sellerService.getProducts(params?.categoryId);
+    if (params?.search) {
+      const searchTerm = params.search.toLowerCase();
+      products = products.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchTerm) ||
+          product.description.toLowerCase().includes(searchTerm)
+      );
+    }
+    return products;
   },
 
   /**
@@ -106,9 +125,8 @@ export const sellerAPI = {
    * @param {Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'isActive'>} data - Dữ liệu sản phẩm cần tạo (không bao gồm id, createdAt, updatedAt, isActive).
    * @returns {Promise<Product>} Thông tin sản phẩm đã tạo.
    */
-  createProduct: async (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'isActive'>): Promise<Product> => {
-    const response = await API.post('/seller/products', data);
-    return response.data;
+  createProduct: async (data: Omit<Product, 'id' | 'shopId' | 'createdAt' | 'updatedAt'>): Promise<Product> => {
+    return sellerService.createProduct(data);
   },
 
   /**
@@ -119,8 +137,9 @@ export const sellerAPI = {
    * @returns {Promise<Product>} Thông tin sản phẩm đã được cập nhật.
    */
   updateProduct: async (id: string, data: Partial<Omit<Product, 'id' | 'shopId' | 'createdAt' | 'updatedAt'>>): Promise<Product> => {
-    const response = await API.put(`/seller/products/${id}`, data);
-    return response.data;
+    const currentProduct = await sellerAPI.getProductById(id);
+    const updatedProduct = { ...currentProduct, ...data };
+    return sellerService.updateProduct(updatedProduct);
   },
 
   /**
@@ -130,7 +149,7 @@ export const sellerAPI = {
    * @returns {Promise<void>}
    */
   deleteProduct: async (id: string): Promise<void> => {
-    await API.del(`/seller/products/${id}`);
+    await sellerService.deleteProduct(id);
   },
 
   /**
@@ -140,8 +159,12 @@ export const sellerAPI = {
    * @returns {Promise<Product>} Thông tin sản phẩm.
    */
   getProductById: async (id: string): Promise<Product> => {
-    const response = await API.get(`/seller/products/${id}`);
-    return response.data;
+    const products = await sellerService.getProducts();
+    const product = products.find(p => p.id === id);
+    if (!product) {
+      throw new Error(`Product with id ${id} not found.`);
+    }
+    return product;
   },
   
   /**
@@ -150,7 +173,44 @@ export const sellerAPI = {
    * @returns {Promise<DashboardStats>} Các số liệu thống kê.
    */
   getDashboardStats: async (): Promise<DashboardStats> => {
-    const response = await API.get('/seller/dashboard/stats');
-    return response.data;
+    const products = await sellerService.getProducts();
+    const categories = await sellerService.getCategories();
+    const shop = await sellerService.getShop();
+
+    // Tính toán số liệu thống kê
+    const totalProducts = products.length;
+    const totalCategories = categories.length;
+    const outOfStockProducts = products.filter(product => product.stock === 0).length;
+    const estimatedRevenue = products.reduce((sum, product) => sum + product.price * product.stock, 0); // Giả định doanh thu từ tồn kho
+    const productViews = Math.floor(Math.random() * 10000); // Số liệu giả
+    const conversionRate = parseFloat((Math.random() * 10).toFixed(2)); // Số liệu giả
+    
+    // Sản phẩm bán chạy nhất (giả định dựa trên số lượng tồn kho)
+    const bestSellingProducts = [...products].sort((a, b) => a.stock - b.stock).slice(0, 5);
+
+    return {
+      totalProducts,
+      totalCategories,
+      outOfStockProducts,
+      estimatedRevenue,
+      productViews,
+      conversionRate,
+      bestSellingProducts: bestSellingProducts.map(p => ({
+        id: p.id,
+        name: p.name,
+        sales: Math.floor(Math.random() * (p.stock > 0 ? p.stock : 10)), // Giả định số lượng bán được
+      })),
+      latestProducts: [...products].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5),
+      popularCategories: [...categories].sort(() => 0.5 - Math.random()).slice(0, 5), // Giả định ngẫu nhiên
+      shopInfo: shop ? { name: shop.name, logo: shop.logo } : undefined,
+      revenueTrend: Array.from({ length: 7 }, (_, i) => ({
+        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        revenue: parseFloat((Math.random() * 1000).toFixed(2)),
+      })),
+      alerts: [
+        outOfStockProducts > 0 ? `You have ${outOfStockProducts} products out of stock!` : '',
+        'New order received! (Fake alert)',
+      ].filter(Boolean),
+    };
   },
 };
