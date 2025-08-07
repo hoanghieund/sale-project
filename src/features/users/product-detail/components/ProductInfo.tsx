@@ -285,9 +285,9 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
           </AccordionTrigger>
           {/* Optimize typography for description content, keep max-width none for full width */}
           <AccordionContent className="prose max-w-none prose-p:my-2 prose-ul:my-2 prose-li:my-1">
-            {product?.content ? (
+            {product?.description ? (
               <div className="text-foreground leading-normal text-sm">
-                {changeDescription(product?.content)}
+                {changeDescription(product?.description)}
               </div>
             ) : (
               <p className="text-foreground/50 italic">

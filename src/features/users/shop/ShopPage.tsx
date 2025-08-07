@@ -39,7 +39,7 @@ const PAGE_SIZE = 12;
  * Displays shop information and a list of shop products
  */
 const ShopPage = () => {
-  const { shopId } = useParams<{ shopId: string }>();
+  const { shopSlug } = useParams<{ shopSlug: string }>();
   const [shop, setShop] = useState<shopUi>({} as shopUi);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,12 +89,12 @@ const ShopPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   const fetchShopInfo = async () => {
     setLoading(true);
     try {
-      const responseShopInfo = await shopService.getShopInfo(Number(shopId));
+      const responseShopInfo = await shopService.getShopInfo(shopSlug);
       const shopInfo = responseShopInfo;
       const categoryId = responseShopInfo?.collections?.[0]?.id;
       setShop(shopInfo);
@@ -108,10 +108,10 @@ const ShopPage = () => {
 
   // Effect to fetch data when shopId or pagination change
   useEffect(() => {
-    if (shopId) {
+    if (shopSlug) {
       fetchShopInfo();
     }
-  }, [shopId]);
+  }, [shopSlug]);
 
   useEffect(() => {
     if (activeCategoryId) {

@@ -18,10 +18,10 @@ export const shopService = {
   },
 
   /**
-   * Retrieves shop information by shopId.
-   * @param shopId - The ID of the shop to retrieve.
+   * Retrieves shop information by slug.
+   * @param slug - The slug of the shop.
    */
-  getShopInfo: async (shopId: number) => {
-    return Axios.get(`/api/public/collection/by-shop/${shopId}`);
+  getShopInfo: async (slug: string) => {
+    return Axios.get(`/api/public/collection/by-shop/slug/${slug}`);
   },
 };

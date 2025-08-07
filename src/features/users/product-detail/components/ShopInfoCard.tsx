@@ -58,7 +58,7 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
           </div>
         </div>
         <Button asChild variant="outline">
-          <Link to={`/shop/${shop.id}`}>View Shop</Link>
+          <Link to={`/shop/${shop.slug}`}>View Shop</Link>
         </Button>
       </CardContent>
     </Card>

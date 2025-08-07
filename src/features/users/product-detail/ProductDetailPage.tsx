@@ -1,6 +1,4 @@
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
-import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
-import LoadingSpinner from "@/components/common/LoadingSpinner"; // General spinner for loading state
 import { Product, Shop } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -20,45 +18,32 @@ const ProductDetailPage = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [shop, setShop] = useState<Shop | null>(null);
-  const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    if (!slug) {
+      return;
+    }
+
+    try {
+      const productData: Product =
+        await productDetailService.getProductBySlug(slug);
+      setProduct(productData);
+
+      // Fetch shop information from API data
+      if (productData.shop) {
+        setShop(productData.shop);
+      }
+    } catch (err) {
+      console.error("Error loading data:", err);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      if (!slug) {
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const productData: Product =
-          await productDetailService.getProductBySlug(slug);
-        setProduct(productData);
-
-        // Fetch shop information from API data
-        if (productData.shop) {
-          setShop(productData.shop);
-        }
-      } catch (err) {
-        console.error("Error loading data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchData();
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  if (!product || !shop) {
-    return <EmptyStateDisplay />;
+  if (!product) {
+    return
   }
 
   return (
@@ -102,6 +87,7 @@ const ProductDetailPage = () => {
             averageRating={product.star || 0}
             totalReviews={product.totalReview || 0}
             productId={product.id}
+            reloadProduct={fetchData}
           />
         </div>
       </div>

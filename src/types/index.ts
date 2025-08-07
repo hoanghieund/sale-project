@@ -5,7 +5,6 @@ export interface Product {
   slug: string;
   title: string; // title trong SQL
   description?: string; // description text trong SQL
-  content?: string; // content text trong SQL
   status: boolean; // status tinyint(1)
   totalProduct?: number; // Tổng số lượng sản phẩm
   amount?: number; // Số lượng còn lại
@@ -86,6 +85,7 @@ export interface CollectionResponse {
 // Shop Types - Dựa trên tbl_shop
 export interface Shop {
   id: number; // bigint(20) trong SQL
+  slug?: string;
   name?: string; // name varchar(255)
   avatar?: string; // avatar varchar(255) - logo của shop
   banner?: string; // banner varchar(255) - hình nền của shop
