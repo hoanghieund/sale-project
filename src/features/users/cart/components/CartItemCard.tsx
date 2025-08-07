@@ -76,9 +76,7 @@ const CartItemCard = ({
           </div>
         )}
         {/* Product Image */}
-        <div
-          className={"w-20 h-full flex-shrink-0"}
-        >
+        <div className={"w-20 h-full flex-shrink-0"}>
           <img
             src={item.productDTO?.imagesDTOList?.[0]?.path}
             alt={item.productDTO?.title || "Product"}
@@ -121,60 +119,67 @@ const CartItemCard = ({
             {(() => {
               const getVariantName = (slug: string, id: number | undefined) => {
                 if (!id) return null;
-                const variantType = variantProduct.find(v => v.slug === slug);
+                const variantType = variantProduct.find(
+                  v => v.keyOption === slug
+                );
                 if (!variantType) return null;
                 const value = variantType.values.find(val => val.id === id);
                 return value ? value.name : null;
               };
 
+              // Xử lý các variant một cách động
               const variantsToDisplay = [];
-              const colorName = getVariantName("colorId", item.colorId);
-              if (colorName) {
-                const colorHex = getColorValue(colorName);
-                variantsToDisplay.push(
-                  <Badge
-                    variant="secondary"
-                    className="flex items-center gap-1"
-                  >
-                    Color:
-                    {colorHex && (
-                      <span
-                        style={{
-                          display: "inline-block",
-                          width: "12px",
-                          height: "12px",
-                          borderRadius: "50%",
-                          backgroundColor: colorHex,
-                          border: "1px solid #ccc",
-                        }}
-                      ></span>
-                    )}
-                  </Badge>
-                );
-              }
-              const fitName = getVariantName("fitId", item.fitId);
-              if (fitName) {
-                variantsToDisplay.push(
-                  <Badge variant="secondary">Fit: {fitName}</Badge>
-                );
-              }
-              const printLocationName = getVariantName(
-                "printLocationId",
-                item.printLocationId
+
+              // Duyệt qua tất cả các key trong item.variantValues
+              Object.entries(item.variantValues || {}).forEach(
+                ([key, value]) => {
+                  if (value) {
+                    // Chỉ xử lý nếu value không null/undefined
+                    const variantName = getVariantName(key, value);
+                    if (variantName) {
+                      // Xử lý riêng cho color để hiển thị màu
+                      if (key === "colorId") {
+                        const colorHex = getColorValue(variantName);
+                        variantsToDisplay.push(
+                          <Badge
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            Color:
+                            {colorHex && (
+                              <span
+                                style={{
+                                  display: "inline-block",
+                                  width: "12px",
+                                  height: "12px",
+                                  borderRadius: "50%",
+                                  backgroundColor: colorHex,
+                                  border: "1px solid #ccc",
+                                }}
+                              ></span>
+                            )}
+                          </Badge>
+                        );
+                      } else {
+                        // Xử lý cho các variant khác
+                        // Chuyển key thành label (ví dụ: "fitId" -> "Fit")
+                        const label = key
+                          .replace(/Id$/, "")
+                          .replace(/([A-Z])/g, " $1")
+                          .trim();
+                        const capitalizedLabel =
+                          label.charAt(0).toUpperCase() + label.slice(1);
+
+                        variantsToDisplay.push(
+                          <Badge variant="secondary">
+                            {capitalizedLabel}: {variantName}
+                          </Badge>
+                        );
+                      }
+                    }
+                  }
+                }
               );
-              if (printLocationName) {
-                variantsToDisplay.push(
-                  <Badge variant="secondary">
-                    Print Location: {printLocationName}
-                  </Badge>
-                );
-              }
-              const sizeName = getVariantName("sizeId", item.sizeId);
-              if (sizeName) {
-                variantsToDisplay.push(
-                  <Badge variant="secondary">Size: {sizeName}</Badge>
-                );
-              }
 
               return variantsToDisplay.length > 0 ? (
                 <>

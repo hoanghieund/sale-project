@@ -27,10 +27,7 @@ interface CartContextType {
   fetchCartData: () => Promise<void>;
   addToCart: (
     product: Product,
-    fitId: number,
-    printLocationId: number,
-    colorId: number,
-    sizeId: number,
+    variantValues: Record<string, number>,
     quantity: number
   ) => Promise<void>;
   removeFromCart: (itemId: number) => Promise<void>;
@@ -138,14 +135,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
     try {
       if (isAuthenticated) {
-        // User đã đăng nhập: 
+        // User đã đăng nhập:
         if (localItems.length > 0) {
           const cartItems = localItems.map(item => ({
             productDTO: { id: item.productDTO?.id },
-            fitId: item.fitId,
-            printLocationId: item.printLocationId,
-            colorId: item.colorId,
-            sizeId: item.sizeId,
+            variantValues: item.variantValues,
             quantity: item.quantity,
           }));
           await cartService.addMultipleToCart(cartItems);
@@ -189,10 +183,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
    */
   const addToCart = async (
     product: Product,
-    fitId: number,
-    printLocationId: number,
-    colorId: number,
-    sizeId: number,
+    variantValues: Record<string, number>,
     quantity: number
   ) => {
     try {
@@ -202,10 +193,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         // User đã đăng nhập: Gọi API service để thêm sản phẩm vào cart
         await cartService.addToCart(
           { id: product.id },
-          fitId,
-          printLocationId,
-          colorId,
-          sizeId,
+          variantValues,
           quantity
         );
       } else {
@@ -216,11 +204,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         const newCartItem: Cart = {
           id: Date.now(), // Sử dụng timestamp làm ID tạm thời
           quantity: quantity,
-          isReview: false, // Mặc định chưa review
-          fitId: fitId,
-          printLocationId: printLocationId,
-          colorId: colorId,
-          sizeId: sizeId,
+          isReview: false, // Mặc định chưa review,
+          variantValues: variantValues,
           // Mock shop object cho localStorage (sẽ được thay thế khi sync với API)
           shop: product.shop,
           // Lưu productId tạm trong productDTO để dễ identify
@@ -231,10 +216,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         const existingItemIndex = localItems.findIndex(
           item =>
             item.productDTO?.id === product.id &&
-            item.fitId === fitId &&
-            item.printLocationId === printLocationId &&
-            item.colorId === colorId &&
-            item.sizeId === sizeId
+            item.variantValues === variantValues
         );
 
         if (existingItemIndex >= 0) {

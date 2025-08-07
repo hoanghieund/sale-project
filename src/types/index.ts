@@ -66,6 +66,7 @@ export interface Option {
   id: number; // bigint(20) trong SQL
   name: string; // name varchar(255)
   type: number;
+  keyOption?: string;
 }
 
 // Category Tree Type - Dựa trên cấu trúc lồng nhau của danh mục
@@ -272,10 +273,7 @@ export interface Cart {
   // Các trường bổ sung từ API response
   cartIds?: number[] | null; // IDs của cart items
   name?: string | null; // Tên sản phẩm
-  fitId: number | null; // ID của fit
-  printLocationId: number | null; // ID của vị trí in
-  colorId: number | null; // ID của màu sắc
-  sizeId: number | null; // ID của kích thước
+  variantValues?: Record<string, number> | null; // Giá trị variant
   // Relations
   shop: Shop; // Thông tin shop
   productDTO?: Product; // Thông tin product từ API

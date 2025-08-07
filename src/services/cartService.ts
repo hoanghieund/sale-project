@@ -4,29 +4,28 @@ export const cartService = {
   /**
    * Thêm sản phẩm vào giỏ hàng
    * @param productDTO - Đối tượng chứa ID của sản phẩm
-   * @param fitId - ID của fit (nếu có)
-   * @param printLocationId - ID của vị trí in (nếu có)
-   * @param colorId - ID của màu sắc (nếu có)
-   * @param sizeId - ID của kích thước (nếu có)
+   * @param variantValues - Đối tượng chứa các giá trị variant (key-value pairs)
    * @param quantity - Số lượng sản phẩm muốn thêm
    * @returns Promise với thông tin giỏ hàng sau khi thêm
    */
   addToCart: (
     productDTO: { id: number },
-    fitId: number,
-    printLocationId: number,
-    colorId: number,
-    sizeId: number,
+    variantValues: Record<string, number>,
     quantity: number
   ) => {
-    return Axios.post(`/api/cart/add`, {
+    // Tạo payload cơ bản
+    const payload: any = {
       productDTO,
-      fitId,
-      printLocationId,
-      colorId,
-      sizeId,
       quantity,
+      optionIds: [] as number[],
+    };
+
+    // Thêm các key-value pairs từ variantValues vào payload như các trường riêng biệt
+    Object.entries(variantValues).forEach(([key, value]) => {
+      payload.optionIds.push(value);
     });
+
+    return Axios.post(`/api/cart/add`, payload);
   },
 
   /**
@@ -38,14 +37,27 @@ export const cartService = {
   addMultipleToCart: (
     cartItems: {
       productDTO: { id: number };
-      fitId: number;
-      printLocationId: number;
-      colorId: number;
-      sizeId: number;
+      variantValues: Record<string, number>;
       quantity: number;
     }[]
   ) => {
-    return Axios.post(`/api/cart/addMultiple`, cartItems);
+    // Xử lý variantValues cho từng cartItem
+    const processedCartItems = cartItems.map(item => {
+      const { variantValues, ...rest } = item;
+      const processedItem: any = { ...rest };
+      processedItem.optionIds = [] as number[];
+
+      // Thêm các key-value pairs từ variantValues vào processedItem như các trường riêng biệt
+      Object.entries(variantValues).forEach(([key, value]) => {
+        processedItem.optionIds.push(value);
+      });
+
+      return processedItem;
+    });
+
+    return Axios.post(`/api/cart/add-multiple`, {
+      cartItems: processedCartItems,
+    });
   },
 
   /**

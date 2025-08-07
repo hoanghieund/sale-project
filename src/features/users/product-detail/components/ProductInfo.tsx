@@ -106,10 +106,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
       // Use addToCart from CartProvider instead of calling API directly
       await addToCart(
         product,
-        selectedVariantValues.fitId,
-        selectedVariantValues.printLocationId,
-        selectedVariantValues.colorId,
-        selectedVariantValues.sizeId,
+        selectedVariantValues,
         quantity
       );
 
@@ -193,12 +190,12 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                       <ColorCircle
                         color={getColorValue(value.name)}
                         isSelected={
-                          selectedVariantValues[variant.slug] === value.id
+                          selectedVariantValues[variant.keyOption] === value.id
                         }
                         onClick={() => {
                           const newSelectedValues = {
                             ...selectedVariantValues,
-                            [variant.slug]: value.id,
+                            [variant.keyOption]: value.id,
                           };
                           setSelectedVariantValues(newSelectedValues);
                           setQuantity(1);
@@ -208,14 +205,14 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                       <Button
                         className="px-3"
                         variant={
-                          selectedVariantValues[variant.slug] === value.id
+                          selectedVariantValues[variant.keyOption] === value.id
                             ? "default"
                             : "outline"
                         }
                         onClick={() => {
                           const newSelectedValues = {
                             ...selectedVariantValues,
-                            [variant.slug]: value.id,
+                            [variant.keyOption]: value.id,
                           };
                           setSelectedVariantValues(newSelectedValues);
                           setQuantity(1);

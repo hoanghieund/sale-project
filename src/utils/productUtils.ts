@@ -47,7 +47,7 @@ export const getVariantSlug = (type: number): string => {
  * @function useVariantProduct
  * @description Hook để nhóm các tùy chọn sản phẩm thành các biến thể có cấu trúc.
  * @param {Product | undefined} product - Đối tượng sản phẩm.
- * @returns {Array<{ slug: string; name: string; values: Array<{ id: number; name: string }> }>} Mảng các nhóm biến thể.
+ * @returns {Array<{ keyOption: string; name: string; values: Array<{ id: number; name: string }> }>} Mảng các nhóm biến thể.
  */
 export const useVariantProduct = (product: Product | undefined) => {
   return useMemo(() => {
@@ -56,12 +56,23 @@ export const useVariantProduct = (product: Product | undefined) => {
 
     // Gom theo type, dùng Map để loại trùng theo name trong cùng type
     const grouped = options.reduce<
-      Record<number, Map<string, { id: number; name: string }>>
+      Record<
+        number,
+        {
+          keyOption?: string;
+          values: Map<string, { id: number; name: string }>;
+        }
+      >
     >((acc, cur) => {
-      if (!acc[cur.type]) acc[cur.type] = new Map();
+      if (!acc[cur.type]) {
+        acc[cur.type] = {
+          keyOption: cur.keyOption, // Lưu keyOption cho mỗi type
+          values: new Map(),
+        };
+      }
       // Ưu tiên id đầu tiên cho mỗi name duy nhất trong cùng type
-      if (!acc[cur.type].has(cur.name)) {
-        acc[cur.type].set(cur.name, { id: cur.id, name: cur.name });
+      if (!acc[cur.type].values.has(cur.name)) {
+        acc[cur.type].values.set(cur.name, { id: cur.id, name: cur.name });
       }
       return acc;
     }, {});
@@ -71,9 +82,9 @@ export const useVariantProduct = (product: Product | undefined) => {
       .map(k => Number(k))
       .sort((a, b) => a - b)
       .map(type => ({
-        slug: getVariantSlug(type), // sử dụng getVariantSlug để lấy slug nhóm
+        keyOption: grouped[type].keyOption || getVariantSlug(type), // Ưu tiên keyOption từ dữ liệu, fallback về getVariantSlug
         name: getVariantName(type), // sử dụng getVariantName để lấy label nhóm
-        values: Array.from(grouped[type].values()), // Map -> Array<{id, value}>
+        values: Array.from(grouped[type].values.values()), // Map -> Array<{id, value}>
       }));
 
     return result;
