@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input"; // Thêm import cho Input
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -128,9 +129,22 @@ export const ProductReviews = ({
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // State để lưu trữ tệp đã chọn
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { isAuthenticated } = useUser(); // Use useUser hook
+
+  /**
+   * Handles file selection for upload.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event from the file input.
+   */
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    } else {
+      setSelectedFile(null);
+    }
+  };
 
   /**
    * Fetches product reviews from the API.
@@ -179,16 +193,21 @@ export const ProductReviews = ({
 
     setIsSubmitting(true);
     try {
-      await productDetailService.submitReview(productId, {
-        star: rating,
-        content: comment.trim(),
-      });
+      const payload = new FormData();
+      payload.append("star", rating.toString());
+      payload.append("content", comment);
+      payload.append("productId", productId.toString());
+      if (selectedFile) {
+        payload.append("file", selectedFile); // Thêm tệp vào payload nếu có
+      }
+      await productDetailService.submitReview(payload);
       toast({
         title: "Success",
         description: "Your review has been submitted successfully!",
       });
       setRating(0);
       setComment("");
+      setSelectedFile(null); // Reset tệp đã chọn sau khi gửi
       fetchReviews(); // Reload review list after successful submission
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -287,6 +306,12 @@ export const ProductReviews = ({
                   value={comment}
                   onChange={e => setComment(e.target.value)}
                   className="min-h-[50px] text-xs focus-visible:ring-offset-0 focus-visible:ring-blue-400"
+                />
+                {/* Input để tải lên tệp */}
+                <Input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="text-xs file:text-xs file:text-white file:bg-blue-600 file:hover:bg-blue-700 file:border-none file:py-1 file:px-2 file:rounded-md file:cursor-pointer"
                 />
                 <div className="flex justify-end pt-1">
                   <Button

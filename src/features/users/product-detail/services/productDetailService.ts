@@ -28,10 +28,11 @@ export const productDetailService = {
    * @param reviewData Review data (rating, comment)
    * @returns Promise containing the review submission result
    */
-  submitReview: async (
-    productId: string,
-    reviewData: { star: number; content: string }
-  ) => {
-    return Axios.post(`/api/private/reviews/product/${productId}`, reviewData);
+  submitReview: async (payload: FormData) => {
+    return Axios.post(`/api/public/comment/create`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
 };

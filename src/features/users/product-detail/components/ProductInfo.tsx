@@ -397,18 +397,6 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                 <span className="text-foreground">{product?.timeCreate}</span>
               </div>
             )}
-            {product?.categoryDto && (
-              <div className="flex border-b border-border py-2">
-                <span className="font-medium text-foreground w-1/3">
-                  Category:
-                </span>
-                <span className="text-foreground">
-                  {product?.categoryDto.parent?.name &&
-                    `${product?.categoryDto.parent.name} > `}
-                  {product?.categoryDto.name}
-                </span>
-              </div>
-            )}
             {product?.totalReview !== undefined && (
               <div className="flex">
                 <span className="font-medium text-foreground w-1/3">
