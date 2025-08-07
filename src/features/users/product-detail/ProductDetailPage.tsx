@@ -25,8 +25,9 @@ const ProductDetailPage = () => {
     }
 
     try {
-      const productData: Product =
-        await productDetailService.getProductBySlug(slug);
+      const productData: Product = await productDetailService.getProductBySlug(
+        slug
+      );
       setProduct(productData);
 
       // Fetch shop information from API data
@@ -38,12 +39,11 @@ const ProductDetailPage = () => {
     }
   };
   useEffect(() => {
-
     fetchData();
   }, [slug]);
 
   if (!product) {
-    return
+    return;
   }
 
   return (

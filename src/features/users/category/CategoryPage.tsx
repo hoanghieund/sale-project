@@ -3,9 +3,10 @@ import CategoryCard from "@/components/common/CategoryCard";
 import CustomPagination from "@/components/common/CustomPagination";
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
-import InputNumber from "@/components/common/InputNumber";
+import InputDebounce from '@/components/common/InputDebounce';
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
+
 import {
   Card,
   CardContent,
@@ -13,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -26,7 +26,7 @@ import { Separator } from "@/components/ui/separator";
 import { categoryService } from "@/features/users/category/services/categoryServices";
 import { productService } from "@/features/users/category/services/productServices";
 import { Category, Product } from "@/types";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 /**
@@ -43,23 +43,10 @@ const CategoryPage = () => {
   // State for new filter system
   const [filters, setFilters] = useState({
     currentPage: 0,
-    pageSize: 20,
-    popular: false,
-    latest: false,
-    bestSell: false,
-    price: "",
-    priceFrom: "",
-    priceTo: "",
+    pageSize: 10,
+    sort: "asc", // "asc" or "desc"
+    keyword: "", // Search keyword
   });
-
-  // Separate state for price inputs for debounce
-  const [priceInputs, setPriceInputs] = useState({
-    priceFrom: "",
-    priceTo: "",
-  });
-
-  // Timer reference for debounce
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // State for pagination
   const [totalPages, setTotalPages] = useState(0);
@@ -90,73 +77,25 @@ const CategoryPage = () => {
   }, []);
 
   /**
-   * Debounced function to update price filters
-   * Waits 800ms after user stops typing before calling API
-   */
-  const debouncedUpdatePriceFilters = useCallback(
-    (priceFrom: string, priceTo: string) => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-
-      debounceTimer.current = setTimeout(() => {
-        setFilters(prev => ({
-          ...prev,
-          priceFrom,
-          priceTo,
-          currentPage: 0, // Reset to first page when changing filters
-        }));
-      }, 800); // Delay 800ms
-    },
-    []
-  );
-
-  /**
-   * Handles price input changes with debounce
-   */
-  const handlePriceInputChange = useCallback(
-    (field: "priceFrom" | "priceTo", value: string) => {
-      // Immediately update UI state
-      setPriceInputs(prev => ({
-        ...prev,
-        [field]: value,
-      }));
-
-      // Call debounced update for filters
-      const newPriceFrom =
-        field === "priceFrom" ? value : priceInputs.priceFrom;
-      const newPriceTo = field === "priceTo" ? value : priceInputs.priceTo;
-      debouncedUpdatePriceFilters(newPriceFrom, newPriceTo);
-    },
-    [priceInputs, debouncedUpdatePriceFilters]
-  );
-
-  /**
    * Fetches product data with filters
    */
-  const fetchProductData = async (
-    categoryParentId: number,
-    categoryChildId?: number
-  ) => {
+  const fetchProductData = async (categoryId: number) => {
     if (!categoryId) return;
 
     setLoading(true);
     try {
       // Standardize payload according to service interface
       const payload = {
-        categoryParentId,
-        categoryChildId,
         currentPage: filters.currentPage,
         pageSize: filters.pageSize,
-        popular: !!filters.popular,
-        latest: !!filters.latest,
-        bestSell: !!filters.bestSell,
-        price: filters.price,
-        priceFrom: filters.priceFrom,
-        priceTo: filters.priceTo,
+        sort: filters.sort as "asc" | "desc",
+        keyword: filters.keyword,
       };
 
-      const response = await productService.getProductsByCategoryId(payload);
+      const response = await productService.getProductsByCategoryId(
+        categoryId,
+        payload
+      );
 
       const products = response?.content || [];
 
@@ -187,26 +126,10 @@ const CategoryPage = () => {
     if (categoryId && categories.length === 1) {
       fetchProductData(Number(categoryId));
     } else if (categories.length === 2) {
-      fetchProductData(Number(categories[0].id), Number(categories[1].id));
+      fetchProductData( Number(categories[1].id));
     }
   }, [categoryId, categories, filters]);
 
-  // Sync priceInputs with initial filters
-  useEffect(() => {
-    setPriceInputs({
-      priceFrom: filters.priceFrom,
-      priceTo: filters.priceTo,
-    });
-  }, [filters.priceFrom, filters.priceTo]);
-
-  // Cleanup debounce timer when component unmounts
-  useEffect(() => {
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, []);
 
   const breadcrumbItems = useMemo(() => {
     if (categories.length === 1) {
@@ -266,100 +189,34 @@ const CategoryPage = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Filters */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-4 rounded-lg">
-              {/* Subcategories Filter */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Product Type</Label>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {/* Additional Filters - Popular, Latest, Best Sell */}
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="popular"
-                      checked={filters.popular}
-                      onCheckedChange={checked => {
-                        setFilters(prev => ({
-                          ...prev,
-                          popular: !!checked,
-                          currentPage: 0,
-                        }));
-                      }}
-                    />
-                    <Label
-                      htmlFor="popular"
-                      className="text-sm font-normal cursor-pointer"
-                    >
-                      Popular
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="latest"
-                      checked={filters.latest}
-                      onCheckedChange={checked => {
-                        setFilters(prev => ({
-                          ...prev,
-                          latest: !!checked,
-                          currentPage: 0,
-                        }));
-                      }}
-                    />
-                    <Label
-                      htmlFor="latest"
-                      className="text-sm font-normal cursor-pointer"
-                    >
-                      Latest
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="bestSell"
-                      checked={filters.bestSell}
-                      onCheckedChange={checked => {
-                        setFilters(prev => ({
-                          ...prev,
-                          bestSell: !!checked,
-                          currentPage: 0,
-                        }));
-                      }}
-                    />
-                    <Label
-                      htmlFor="bestSell"
-                      className="text-sm font-normal cursor-pointer"
-                    >
-                      Best Selling
-                    </Label>
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-col sm:flex-row justify-end gap-6">
+              {/* Keyword Search */}
+              <div className="flex items-center gap-2">
+                <Label className="text-sm font-medium">Search</Label>
 
-              {/* Price Range */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Price Range (VND)</Label>
-                <div className="space-y-2">
-                  <InputNumber
-                    value={Number(priceInputs.priceFrom)}
-                    onChange={value =>
-                      handlePriceInputChange("priceFrom", value.toString())
-                    }
-                  />
-                  <InputNumber
-                    value={Number(priceInputs.priceTo)}
-                    onChange={value =>
-                      handlePriceInputChange("priceTo", value.toString())
-                    }
-                  />
-                </div>
+                <InputDebounce
+                  type="text"
+                  placeholder="Enter keyword"
+                  value={filters.keyword}
+                  onDebounceChange={debouncedKeyword =>
+                    setFilters(prev => ({
+                      ...prev,
+                      keyword: debouncedKeyword,
+                      currentPage: 0,
+                    }))
+                  }
+                />
               </div>
 
               {/* Sort by Price */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Sort by Price</Label>
+              <div className="flex items-center gap-2">
+                <Label className="text-sm font-medium">Sort</Label>
                 <Select
-                  value={filters.price}
+                  value={filters.sort}
                   onValueChange={value => {
                     setFilters(prev => ({
                       ...prev,
-                      price: value,
+                      sort: value,
                       currentPage: 0,
                     }));
                   }}
@@ -368,35 +225,12 @@ const CategoryPage = () => {
                     <SelectValue placeholder="Select price sort" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="asc">Price: Low to High</SelectItem>
-                    <SelectItem value="desc">Price: High to Low</SelectItem>
+                    <SelectItem value="asc">Low to High</SelectItem>
+                    <SelectItem value="desc">High to Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Products per page */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Display</Label>
-                <Select
-                  value={filters.pageSize.toString()}
-                  onValueChange={value =>
-                    setFilters(prev => ({
-                      ...prev,
-                      pageSize: Number(value),
-                      currentPage: 0,
-                    }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="12">12 products</SelectItem>
-                    <SelectItem value="20">20 products</SelectItem>
-                    <SelectItem value="40">40 products</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
 
             <Separator />

@@ -2,16 +2,10 @@ import { Axios } from "@/api/Axios";
 
 // Interface for product filter parameters by category
 interface GetProductsByCategoryParams {
-  categoryParentId: number;
-  categoryChildId?: number;
+  sort : "asc" | "desc",
+  keyword : string,
   currentPage: number;
   pageSize: number;
-  popular?: boolean;
-  latest?: boolean;
-  bestSell?: boolean;
-  price?: string; // "asc" | "desc" | ""
-  priceFrom?: string | number;
-  priceTo?: string | number;
 }
 
 export const productService = {
@@ -20,18 +14,12 @@ export const productService = {
    * @param params - Product filter parameters.
    * @returns A Promise with paginated product data and category information.
    */
-  getProductsByCategoryId: (params: GetProductsByCategoryParams) => {
-    return Axios.get(`/api/public/product/getProductByManyThing`, {
-      categoryParentId: params.categoryParentId,
-      categoryChildId: params.categoryChildId,
+  getProductsByCategoryId: ( categoryId: number, params: GetProductsByCategoryParams) => {
+    return Axios.get(`/api/public/products/by-category/${categoryId}`, {
       page: params.currentPage,
       size: params.pageSize,
-      popular: params.popular,
-      latest: params.latest,
-      bestSell: params.bestSell,
-      price: params.price,
-      priceFrom: params.priceFrom,
-      priceTo: params.priceTo,
+      sort: params.sort,
+      keyword: params.keyword,
     });
   },
 
