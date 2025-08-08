@@ -64,7 +64,7 @@ export interface DashboardStats {
   totalCategories: number;
   outOfStockProducts: number;
   estimatedRevenue: number;
-  productViews: number;
+  totalViews: number; // Tổng lượt xem (đồng bộ với DashboardStatsComponent)
   conversionRate: number;
   bestSellingProducts: { id: string; name: string; sales: number }[];
   latestProducts: Product[];
@@ -72,4 +72,5 @@ export interface DashboardStats {
   shopInfo?: { name: string; logo?: string };
   revenueTrend: { date: string; revenue: number }[];
   alerts: string[];
+  topSellingProducts: Product[]; // Danh sách sản phẩm bán chạy nhất cho UI TopSellingProducts
 }

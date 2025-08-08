@@ -6,10 +6,17 @@
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { PageContainer } from "@/features/seller/components/PageContainer";
 import { ShopForm } from "@/features/seller/components/ShopForm";
 import { sellerAPI } from "@/features/seller/services/seller";
-import { Shop } from "@/types/seller";
+import { Shop } from "@/features/seller/types";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner"; // Giả định đã có sonner để hiển thị thông báo
 
@@ -36,11 +43,13 @@ const ShopManagementPage: React.FC = () => {
         const shopData = await sellerAPI.getShop();
         setShop(shopData);
       } catch (err: any) {
-        setError(err.message || 'Lỗi khi tải thông tin shop.');
+        setError(err.message || "Lỗi khi tải thông tin shop.");
         if (err.response && err.response.status === 404) {
           setShop(null); // Đặt shop là null để hiển thị form tạo
         } else {
-          toast.error("Lỗi", { description: err.message || "Không thể tải thông tin gian hàng." });
+          toast.error("Lỗi", {
+            description: err.message || "Không thể tải thông tin gian hàng.",
+          });
         }
       } finally {
         setLoading(false);
@@ -63,16 +72,22 @@ const ShopManagementPage: React.FC = () => {
       if (shop) {
         // Cập nhật shop hiện có
         updatedShop = await sellerAPI.updateShop(data);
-        toast.success("Thành công", { description: "Cập nhật thông tin gian hàng thành công!" });
+        toast.success("Thành công", {
+          description: "Cập nhật thông tin gian hàng thành công!",
+        });
       } else {
         // Tạo shop mới (dựa trên giả định API)
-        throw new Error("Chức năng tạo shop không được hỗ trợ trực tiếp từ đây.");
+        throw new Error(
+          "Chức năng tạo shop không được hỗ trợ trực tiếp từ đây."
+        );
       }
       setShop(updatedShop);
       setIsEditing(false); // Thoát chế độ chỉnh sửa sau khi lưu
     } catch (err: any) {
       setError(err.message || "Không thể lưu thông tin gian hàng.");
-      toast.error("Lỗi", { description: err.message || "Không thể lưu thông tin gian hàng." });
+      toast.error("Lỗi", {
+        description: err.message || "Không thể lưu thông tin gian hàng.",
+      });
     } finally {
       setLoading(false);
     }
@@ -89,26 +104,29 @@ const ShopManagementPage: React.FC = () => {
   // Nếu chưa có shop, hiển thị form tạo shop lần đầu
   if (!shop && !isEditing) {
     return (
-      <div className="container mx-auto p-4">
+      <PageContainer>
         <Card>
           <CardHeader>
             <CardTitle>Chào mừng đến với Kênh bán hàng!</CardTitle>
             <CardDescription>
-              Bạn chưa có gian hàng nào. Vui lòng tạo gian hàng đầu tiên của bạn để bắt đầu bán hàng.
+              Bạn chưa có gian hàng nào. Vui lòng tạo gian hàng đầu tiên của bạn
+              để bắt đầu bán hàng.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => setIsEditing(true)}>Tạo Gian hàng mới</Button>
+            <Button onClick={() => setIsEditing(true)}>
+              Tạo Gian hàng mới
+            </Button>
           </CardContent>
         </Card>
-      </div>
+      </PageContainer>
     );
   }
 
   // Nếu đang ở chế độ chỉnh sửa hoặc shop đã tồn tại
   if (isEditing || shop) {
     return (
-      <div className="container mx-auto p-4">
+      <PageContainer>
         <ShopForm
           shop={shop || undefined}
           onSubmit={handleCreateOrUpdateShop}
@@ -116,18 +134,22 @@ const ShopManagementPage: React.FC = () => {
         />
         {isEditing && ( // Chỉ hiển thị nút hủy khi đang chỉnh sửa
           <div className="flex justify-end mt-4">
-            <Button variant="outline" onClick={() => setIsEditing(false)} disabled={loading}>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditing(false)}
+              disabled={loading}
+            >
               Hủy chỉnh sửa
             </Button>
           </div>
         )}
-      </div>
+      </PageContainer>
     );
   }
 
   // Hiển thị thông tin shop
   return (
-    <div className="container mx-auto p-4">
+    <PageContainer>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
@@ -158,18 +180,26 @@ const ShopManagementPage: React.FC = () => {
           {shop?.logo && (
             <div>
               <p className="text-sm font-medium text-gray-500">Logo</p>
-              <img src={shop.logo} alt="Shop Logo" className="w-24 h-24 object-cover rounded-md mt-2" />
+              <img
+                src={shop.logo}
+                alt="Shop Logo"
+                className="w-24 h-24 object-cover rounded-md mt-2"
+              />
             </div>
           )}
           {shop?.banner && (
             <div>
               <p className="text-sm font-medium text-gray-500">Banner</p>
-              <img src={shop.banner} alt="Shop Banner" className="w-full h-32 object-cover rounded-md mt-2" />
+              <img
+                src={shop.banner}
+                alt="Shop Banner"
+                className="w-full h-32 object-cover rounded-md mt-2"
+              />
             </div>
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 

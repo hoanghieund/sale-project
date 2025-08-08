@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CategoryTable } from "@/features/seller/components/CategoryTable";
 import DeleteCategoryDialog from "@/features/seller/components/DeleteCategoryDialog"; // Sẽ tạo sau
 import { sellerAPI } from "@/features/seller/services/seller";
-import { Category } from "@/types/seller";
+import { PageContainer } from "@/features/seller/components/PageContainer";
+import { Category } from "@/features/seller/types";
 import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react"; // Thêm useState
 import { Link } from "react-router-dom";
@@ -101,7 +102,7 @@ const CategoryManagementPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <PageContainer>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
@@ -137,7 +138,7 @@ const CategoryManagementPage: React.FC = () => {
           isLoading={loading} // Sử dụng state loading cục bộ
         />
       )}
-    </div>
+    </PageContainer>
   );
 };
 

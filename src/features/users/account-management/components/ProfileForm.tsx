@@ -312,11 +312,9 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Shop Name (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Your shop name" {...field} />
+                {/* shopName là trường hệ thống - disable để tránh người dùng chỉnh sửa */}
+                <Input placeholder="Your shop name" {...field} disabled />
               </FormControl>
-              <FormDescription>
-                If you are a seller, this will be your shop name.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

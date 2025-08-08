@@ -7,9 +7,11 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardStatsComponent } from "@/features/seller/components/DashboardStats";
+import { DashboardCharts } from "@/features/seller/components/DashboardCharts";
 import { TopSellingProducts } from "@/features/seller/components/TopSellingProducts";
+import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
-import { DashboardStats } from "@/types/seller"; // Import DashboardStats interface
+import { DashboardStats } from "@/features/seller/types"; // Import DashboardStats interface
 import React, { useEffect, useState } from "react"; // Thêm useState
 import { toast } from "sonner";
 
@@ -55,38 +57,39 @@ const DashboardPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="container mx-auto p-4 text-center text-red-500">
+      <PageContainer className="text-center text-red-500">
         <p>{error}</p>
         <p>Vui lòng thử lại sau.</p>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Tổng quan Dashboard</CardTitle>
-          <CardDescription>
-            Các số liệu thống kê và hiệu suất kinh doanh của gian hàng.
-          </CardDescription>
-        </CardHeader>
-      </Card>
-      
+    <PageContainer>
       {stats ? (
         <>
+          {/* Hàng 1: Stats tổng quan (giữ gọn, dùng component sẵn có) */}
           <DashboardStatsComponent stats={stats} />
+
+          {/* Hàng 2: Biểu đồ doanh thu & top sản phẩm */}
+          <DashboardCharts stats={stats} />
+
+          {/* Hàng 3: Danh sách top sản phẩm chi tiết (bên cạnh charts bar đã tổng quan) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <TopSellingProducts products={stats.topSellingProducts} />
-            {/* Các component khác của dashboard có thể thêm vào đây */}
+            {/* Slot bên phải có thể thêm biểu đồ/summary khác sau */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Gợi ý</CardTitle>
+                <CardDescription>Thêm các widget khác ở đây khi cần</CardDescription>
+              </CardHeader>
+            </Card>
           </div>
         </>
       ) : (
-        <div className="text-center py-8 text-gray-500">
-          Không có dữ liệu dashboard để hiển thị.
-        </div>
+        <div className="text-center py-8 text-gray-500">Không có dữ liệu dashboard để hiển thị.</div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

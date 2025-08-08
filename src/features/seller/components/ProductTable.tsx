@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Category, Product } from "@/types/seller";
+import { Category, Product } from "@/features/seller/types";
 import { format } from "date-fns";
 import { Edit, Filter, MoreHorizontal, Trash2 } from "lucide-react";
 import React, { useState } from "react";

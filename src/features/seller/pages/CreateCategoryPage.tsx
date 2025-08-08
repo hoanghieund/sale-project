@@ -6,8 +6,9 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CategoryForm } from "@/features/seller/components/CategoryForm"; // Sẽ tạo sau
+import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
-import { Category } from "@/types/seller"; // Import Category interface
+import { Category } from "@/features/seller/types"; // Import Category interface từ seller types
 import React, { useState } from "react"; // Thêm useState
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -24,13 +25,14 @@ const CreateCategoryPage: React.FC = () => {
   /**
    * @function handleSubmit
    * @description Xử lý submit form tạo danh mục mới.
-   * @param {Omit<Category, 'id' | 'createdAt' | 'updatedAt' | 'isDefault'>} data - Dữ liệu danh mục từ form.
+   * @param {Pick<Category, 'name' | 'description'>} data - Dữ liệu danh mục từ form (chỉ bao gồm name, description).
    */
-  const handleSubmit = async (data: Omit<Category, 'id' | 'createdAt' | 'updatedAt' | 'isDefault' | 'isActive'>) => {
+  const handleSubmit = async (data: Pick<Category, 'name' | 'description'>) => {
     setIsLoading(true); // Bắt đầu loading
     try {
-      // Giả định `isActive` mặc định là true khi tạo mới
-      const newCategory = await sellerAPI.createCategory({ ...data, isActive: true });
+      // Lấy shop hiện tại để gắn shopId cho category mới (bắt buộc theo kiểu Category)
+      const shop = await sellerAPI.getShop();
+      await sellerAPI.createCategory({ ...data, shopId: shop.id });
       toast.success("Thành công", { description: "Tạo danh mục mới thành công!" });
       navigate("/seller/categories"); // Điều hướng về trang quản lý danh mục
     } catch (err: any) {
@@ -41,7 +43,7 @@ const CreateCategoryPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <PageContainer>
       <Card>
         <CardHeader>
           <CardTitle>Tạo Danh mục mới</CardTitle>
@@ -53,7 +55,7 @@ const CreateCategoryPage: React.FC = () => {
           <CategoryForm onSubmit={handleSubmit} isLoading={isLoading} /> {/* Sử dụng isLoading cục bộ */}
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 

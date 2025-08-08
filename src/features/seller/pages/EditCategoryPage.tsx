@@ -7,8 +7,9 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CategoryForm } from "@/features/seller/components/CategoryForm"; // Sẽ tạo sau
+import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
-import { Category } from "@/types/seller"; // Import Category interface
+import { Category } from "@/features/seller/types"; // Import Category interface
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -90,15 +91,15 @@ const EditCategoryPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="container mx-auto p-4 text-center text-red-500">
+      <PageContainer className="text-center text-red-500">
         <p>{error}</p>
         <p>Vui lòng thử lại sau.</p>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <PageContainer>
       <Card>
         <CardHeader>
           <CardTitle>Chỉnh sửa Danh mục</CardTitle>
@@ -114,7 +115,7 @@ const EditCategoryPage: React.FC = () => {
           />
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 

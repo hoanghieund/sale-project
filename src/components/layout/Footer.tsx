@@ -7,15 +7,15 @@ import { Link } from "react-router-dom";
 export const FOOTER_LINKS = {
   help: [
     // Giữ lại các trang chính có trong luồng nghiệp vụ
-    { label: 'About Us', href: '/about' },
-    { label: 'Contact Us', href: '/contact' },
-    { label: 'FAQs', href: '/faq' },
+    { label: "About Us", href: "/about" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "FAQs", href: "/faq" },
   ],
   policy: [
     // Đơn giản hóa các chính sách, chuyển hướng đến các trang có sẵn
-    { label: 'Shipping & Returns', href: '/about' },
-    { label: 'Privacy Policy', href: '/privacy-policy' },
-    { label: 'Terms of Service', href: '/terms-of-service' },
+    { label: "Shipping & Returns", href: "/about" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Terms of Service", href: "/terms-of-service" },
   ],
 };
 
@@ -113,13 +113,14 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Brand */}
             <div>
-              <Link to="/" className="inline-block mb-4">
-                <div className="text-2xl font-bold">
-                  <span>SHOP</span>
-                  <div className="text-xs text-white/70 font-normal tracking-widest">
-                    PREMIUM
-                  </div>
-                </div>
+              {/* Dùng logo từ public/logo.png để đồng bộ với Header */}
+              <Link to="/" className="inline-block mb-4" aria-label="Home">
+                {/* Tăng kích thước logo và thêm responsive tương tự Header */}
+                <img
+                  src="/logo.png"
+                  alt="Shop Logo"
+                  className="h-14 md:h-16 lg:h-20 w-auto"
+                />
               </Link>
               <p className="text-white/80 mb-4 leading-relaxed">
                 <strong>Shop</strong> is a premium online marketplace for
@@ -129,7 +130,8 @@ const Footer = () => {
               </p>
               <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-200">
                 <Mail className="h-4 w-4" />
-                <span>Email: support@shop.com</span>
+                {/* Cập nhật email liên hệ theo yêu cầu */}
+                <span>Email: contact.@gmail.com</span>
               </div>
             </div>
 
@@ -170,7 +172,7 @@ const Footer = () => {
 
           {/* Bottom Bar */}
           <div className="border-t border-white/20 mt-4 pt-4 flex flex-col md:flex-row justify-between items-center text-muted-foreground">
-            <p>&copy; 2025 Shop.</p>
+            <p>&copy; 2025 Eulotus.</p>
             <div className="flex gap-6 mt-4 md:mt-0">
               <Link
                 to="/privacy-policy"

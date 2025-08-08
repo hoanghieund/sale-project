@@ -17,7 +17,9 @@ const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
   return (
     <Link to={linkTo || `/category/${category.id}`}>
       <Card className="p-4 flex justify-center items-center h-full">
-        <h3 className="font-semibold text-lg text-foreground">{category.name}</h3>
+        <h3 className="font-semibold text-lg text-foreground uppercase">
+          {category.name}
+        </h3>
       </Card>
     </Link>
   );

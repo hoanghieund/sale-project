@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/types/seller"; // Import Product interface
+import { Product } from "@/features/seller/types"; // Import Product interface
 import React from "react";
 
 /**

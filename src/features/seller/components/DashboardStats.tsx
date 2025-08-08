@@ -6,7 +6,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DashboardStats } from "@/types/seller"; // Import interface DashboardStats
+import { DashboardStats } from "@/features/seller/types"; // Import interface DashboardStats
 import {
   AlertTriangle,
   DollarSign,

@@ -27,16 +27,22 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
       <CardContent className="flex items-center gap-4 pt-6">
         <Avatar className="w-20 h-20 border-2 border-input">
           <AvatarImage src={shop.avatar} alt={shop.name} />
-          <AvatarFallback className="text-xl font-bold">{shop.name.charAt(0)}</AvatarFallback>
+          <AvatarFallback className="text-xl font-bold">
+            {shop.name.charAt(0)}
+          </AvatarFallback>
         </Avatar>
         <div className="flex-1 space-y-1">
-          <Link to={`/shop/${shop.id}`} className="text-xl font-bold text-primary hover:underline">
+          <Link
+            to={`/shop/${shop.slug}`}
+            className="text-xl font-bold text-primary hover:underline"
+          >
             {shop.name}
           </Link>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
             {shop.totalQuantity !== undefined && (
               <p>
-                <span className="font-medium">Total Products:</span> {shop?.totalQuantity || 0}
+                <span className="font-medium">Total Products:</span>{" "}
+                {shop?.totalQuantity || 0}
               </p>
             )}
             {shop.totalPrice !== undefined && (

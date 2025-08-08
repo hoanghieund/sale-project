@@ -9,19 +9,108 @@ import React from 'react';
 const TermsOfService: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Điều khoản dịch vụ</h1>
-      <div className="space-y-4">
-        <p>
-          Chào mừng bạn đến với trang web của chúng tôi. Nếu bạn tiếp tục duyệt và sử dụng trang web này, bạn đồng ý tuân thủ và bị ràng buộc bởi các điều khoản và điều kiện sử dụng sau đây, cùng với chính sách bảo mật của chúng tôi, điều chỉnh mối quan hệ của chúng tôi với bạn liên quan đến trang web này. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản và điều kiện này, vui lòng không sử dụng trang web của chúng tôi.
-        </p>
-        <p>
-          Thuật ngữ 'chúng tôi' hoặc 'chúng ta' đề cập đến chủ sở hữu trang web. Thuật ngữ 'bạn' đề cập đến người dùng hoặc người xem trang web của chúng tôi. Việc sử dụng trang web này tuân theo các điều khoản sử dụng sau:
-        </p>
-        <ul className="list-disc list-inside space-y-2">
-            <li>Nội dung của các trang trên trang web này chỉ dành cho thông tin chung và mục đích sử dụng của bạn. Nội dung có thể thay đổi mà không cần thông báo trước.</li>
-            <li>Trang web này sử dụng cookie để theo dõi các tùy chọn duyệt web. Nếu bạn cho phép sử dụng cookie, các thông tin cá nhân sau đây có thể được chúng tôi lưu trữ để bên thứ ba sử dụng.</li>
-            <li>Cả chúng tôi và bất kỳ bên thứ ba nào đều không cung cấp bất kỳ bảo hành hoặc đảm bảo nào về tính chính xác, kịp thời, hiệu suất, đầy đủ hoặc phù hợp của thông tin và tài liệu được tìm thấy hoặc cung cấp trên trang web này cho bất kỳ mục đích cụ thể nào. Bạn thừa nhận rằng thông tin và tài liệu như vậy có thể chứa lỗi hoặc sai sót và chúng tôi rõ ràng loại trừ trách nhiệm pháp lý đối với bất kỳ lỗi hoặc sai sót nào như vậy trong phạm vi tối đa được pháp luật cho phép.</li>
-        </ul>
+      {/* Static Terms content - keep structure semantic and easy to scan */}
+      <h1 className="text-3xl font-bold mb-6">Terms of Service</h1>
+      <p className="text-sm text-gray-600 mb-8">
+        <span className="font-medium">Effective Date:</span> August 8, 2025
+        <span className="mx-2">•</span>
+        <span className="font-medium">Last Updated:</span> August 8, 2025
+      </p>
+      <div className="space-y-6">
+        <section>
+          <h2 className="text-xl font-semibold mb-2">1. Acceptance of Terms</h2>
+          <p>
+            By accessing or using eulotus.com (“Website,” “we,” “us,” or “our”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree, please do not use our Website.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">2. Eligibility</h2>
+          <p>
+            You must be at least 18 years old (or the legal age in your jurisdiction) to make a purchase. By using our Website, you confirm that you meet these requirements.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">3. Account Registration</h2>
+          <ul className="list-disc list-inside space-y-1">
+            <li>You may need to create an account to make purchases.</li>
+            <li>You are responsible for keeping your login credentials confidential.</li>
+            <li>We are not liable for any unauthorized use of your account.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">4. Products and Pricing</h2>
+          <ul className="list-disc list-inside space-y-1">
+            <li>All prices are displayed in [currency, e.g., USD].</li>
+            <li>Prices and product availability are subject to change without notice.</li>
+            <li>We reserve the right to refuse or cancel any order.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">5. Orders and Payment</h2>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Payments are processed through [Payment Gateway Name(s)].</li>
+            <li>You agree to provide accurate billing and shipping information.</li>
+            <li>Orders may be cancelled if fraudulent or incomplete information is detected.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">6. Shipping and Delivery</h2>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Delivery times are estimates only.</li>
+            <li>We are not responsible for delays caused by carriers or customs.</li>
+            <li>Shipping fees and taxes are displayed at checkout.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">7. Returns and Refunds</h2>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Please refer to our Return Policy at [Return Policy URL].</li>
+            <li>Products must be returned in original condition unless defective.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">8. Intellectual Property</h2>
+          <p>
+            All content on eulotus.com, including text, graphics, logos, and images, is our property or licensed to us. You may not use it without permission.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">9. Prohibited Activities</h2>
+          <p className="mb-2">You agree not to:</p>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Use the Website for unlawful purposes.</li>
+            <li>Interfere with its security or performance.</li>
+            <li>Misrepresent your identity or payment details.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">10. Limitation of Liability</h2>
+          <p>
+            To the maximum extent permitted by law, we are not liable for indirect, incidental, or consequential damages arising from your use of the Website.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">11. Governing Law</h2>
+          <p>
+            These Terms are governed by the laws of [Your Country], without regard to conflict of law principles.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">12. Changes to Terms</h2>
+          <p>
+            We may update these Terms from time to time. Changes will be posted on this page with the “Last Updated” date.
+          </p>
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold mb-2">13. Contact Us</h2>
+          <p className="mb-1">
+            If you have questions, contact us at:
+          </p>
+          <p>
+            📧 Email: <a href="mailto:support@eulotus.com" className="text-blue-600 hover:underline">support@eulotus.com</a><br />
+            📍 Address: [Your Business Address]
+          </p>
+        </section>
       </div>
     </div>
   );

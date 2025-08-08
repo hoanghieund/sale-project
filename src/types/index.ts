@@ -29,17 +29,7 @@ export interface Product {
 
   // Flags đặc biệt
   isNew?: boolean; // is_new tinyint(1)
-  isFlashSale?: boolean; // is_flash_sale tinyint(1)
-  isTrending?: boolean; // is_trending tinyint(1)
-  timeFlashSale?: string; // time_flash_sale date
   timeCreate?: string; // Ngày tạo sản phẩm dạng string
-
-  // Thông tin đánh giá chi tiết
-  star1?: number; // Số lượng đánh giá 1 sao
-  star2?: number; // Số lượng đánh giá 2 sao
-  star3?: number; // Số lượng đánh giá 3 sao
-  star4?: number; // Số lượng đánh giá 4 sao
-  star5?: number; // Số lượng đánh giá 5 sao
 
   // Thông tin liên kết
   collectionResponse?: CollectionResponse; // Thông tin collection (optional khi populate)

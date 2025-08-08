@@ -7,6 +7,7 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProductForm } from "@/features/seller/components/ProductForm"; // Sẽ tạo sau
+import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
 import { Category, Product } from "@/features/seller/types"; // Import Product và Category interface từ đúng đường dẫn
 import React, { useEffect, useState } from "react";
@@ -96,15 +97,15 @@ const EditProductPage: React.FC = () => {
 
   if (error) { // Hiển thị lỗi nếu có
     return (
-      <div className="container mx-auto p-4 text-center text-red-500">
+      <PageContainer className="text-center text-red-500">
         <p>{error}</p>
         <p>Vui lòng thử lại sau.</p>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <PageContainer>
       <Card>
         <CardHeader>
           <CardTitle>Chỉnh sửa Sản phẩm</CardTitle>
@@ -121,7 +122,7 @@ const EditProductPage: React.FC = () => {
           />
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 

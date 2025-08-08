@@ -32,7 +32,9 @@ const loginFormSchema = z.object({
     .string()
     .email({ message: "Invalid email" })
     .min(1, { message: "Email is required" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
   rememberMe: z.boolean().default(false),
 });
 
@@ -51,8 +53,8 @@ const Login = () => {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: "admin@cy.global.com",
-      password: "123456",
+      email: "",
+      password: "",
       rememberMe: false,
     },
   });
@@ -98,7 +100,7 @@ const Login = () => {
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <FormControl>
                         <Input
-                          placeholder="Enter your email"
+                          placeholder="user@eulotus.com"
                           className="pl-10"
                           {...field}
                           type="email"

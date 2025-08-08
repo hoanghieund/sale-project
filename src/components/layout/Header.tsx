@@ -123,10 +123,10 @@ const Header = () => {
           <div className="flex items-center justify-between py-2.5 md:pb-0 gap-8">
             {/* Logo */}
             <div className="flex items-center gap-4">
-              <Link to="/" className="flex items-center">
-                <div className="text-xl font-bold">
-                  <span>SHOP</span>
-                </div>
+              {/* Sử dụng logo từ public/logo.png để thống nhất branding */}
+              <Link to="/" className="flex items-center" aria-label="Home">
+                {/* Tăng kích thước logo và thêm responsive để hiển thị tốt trên màn hình lớn */}
+                <img src="/logo.png" alt="Shop Logo" className="h-14 w-auto" />
               </Link>
               {/* All Categories Button - Desktop */}
               <Sheet
@@ -351,14 +351,14 @@ const Header = () => {
           </div>
 
           {/* Bottom Row - Navigation */}
-          <nav className="hidden md:flex py-2 justify-center">
+          <nav className="hidden md:flex justify-center">
             <NavigationMenu>
               <NavigationMenuList className="gap-8">
                 {(featuredCategories || []).map(item => (
                   <NavigationMenuItem key={item.id}>
                     {item.child && item.child.length > 0 ? (
                       <>
-                        <NavigationMenuTrigger className="bg-transparent hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent/50 data-[active]:bg-accent/50 h-8 rounded-md px-2.5">
+                        <NavigationMenuTrigger className="bg-transparent hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent/50 data-[active]:bg-accent/50 h-8 rounded-md px-2.5 uppercase">
                           <Link
                             to={`/category/${item.id}`} // Navigate to parent category page
                           >
@@ -373,7 +373,7 @@ const Header = () => {
                                 <NavigationMenuLink className="bg-card" asChild>
                                   <Link
                                     to={`/category/${child.id}`} // Navigate to child category page
-                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                    className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
                                   >
                                     <div className="text-sm font-medium leading-none">
                                       {child.name}
@@ -389,7 +389,7 @@ const Header = () => {
                       <NavigationMenuLink asChild>
                         <Link
                           to={`/category/${item.id}`} // Use id to create path
-                          className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+                          className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 uppercase"
                         >
                           {item.name}
                         </Link>
@@ -433,7 +433,7 @@ const MobileNavigation = ({
             <div>
               <Button
                 variant="ghost"
-                className="w-full justify-between hover:bg-primary/5 rounded-md"
+                className="w-full justify-between hover:bg-primary/5 rounded-md uppercase"
                 onClick={() => toggleExpanded(item.id.toString())} // Convert id to string
               >
                 <Link
@@ -456,7 +456,7 @@ const MobileNavigation = ({
                     <div key={child.id}>
                       <Link
                         to={`/category/${child.id}`} // Use id to create path
-                        className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+                        className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors uppercase"
                         onClick={onClose}
                       >
                         {child.name}
@@ -469,7 +469,7 @@ const MobileNavigation = ({
           ) : (
             <Link
               to={`/category/${item.id}`} // Use id to create path
-              className="block py-2 text-sm font-medium hover:text-primary transition-colors"
+              className="block py-2 px-4 text-sm font-medium hover:text-primary transition-colors uppercase"
               onClick={onClose}
             >
               {item.name}

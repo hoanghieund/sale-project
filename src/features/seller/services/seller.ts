@@ -173,35 +173,51 @@ export const sellerAPI = {
    * @returns {Promise<DashboardStats>} Các số liệu thống kê.
    */
   getDashboardStats: async (): Promise<DashboardStats> => {
-    const products = await sellerService.getProducts();
+    const productsRaw = await sellerService.getProducts();
     const categories = await sellerService.getCategories();
     const shop = await sellerService.getShop();
 
-    // Tính toán số liệu thống kê
+    // Chuẩn hóa Date vì dữ liệu lấy từ localStorage là string
+    const products = productsRaw.map((p) => ({
+      ...p,
+      createdAt: new Date((p as any).createdAt),
+      updatedAt: new Date((p as any).updatedAt),
+    }));
+
+    // Tính toán số liệu thống kê cơ bản
     const totalProducts = products.length;
     const totalCategories = categories.length;
-    const outOfStockProducts = products.filter(product => product.stock === 0).length;
-    const estimatedRevenue = products.reduce((sum, product) => sum + product.price * product.stock, 0); // Giả định doanh thu từ tồn kho
-    const productViews = Math.floor(Math.random() * 10000); // Số liệu giả
-    const conversionRate = parseFloat((Math.random() * 10).toFixed(2)); // Số liệu giả
-    
-    // Sản phẩm bán chạy nhất (giả định dựa trên số lượng tồn kho)
-    const bestSellingProducts = [...products].sort((a, b) => a.stock - b.stock).slice(0, 5);
+    const outOfStockProducts = products.filter((product) => product.stock === 0).length;
+    const estimatedRevenue = products.reduce((sum, product) => sum + product.price * product.stock, 0);
+    const totalViews = Math.floor(Math.random() * 10000); // fake views
+    const conversionRate = parseFloat((Math.random() * 10).toFixed(2)); // fake conversion
+
+    // Giả lập số bán (sales) theo tồn kho để tạo leaderboard
+    const bestSellingProducts = products
+      .map((p) => ({ id: p.id, name: p.name, sales: Math.max(1, Math.floor(Math.random() * (p.stock > 0 ? p.stock : 10))) }))
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, 5);
+
+    // Top sản phẩm bán chạy nhất (trả về Product[]) dựa trên doanh thu ước tính
+    const topSellingProducts = [...products]
+      .sort((a, b) => b.price * b.stock - a.price * a.stock)
+      .slice(0, 5);
+
+    // Sản phẩm mới nhất theo createdAt
+    const latestProducts = [...products]
+      .sort((a, b) => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime())
+      .slice(0, 5);
 
     return {
       totalProducts,
       totalCategories,
       outOfStockProducts,
       estimatedRevenue,
-      productViews,
+      totalViews,
       conversionRate,
-      bestSellingProducts: bestSellingProducts.map(p => ({
-        id: p.id,
-        name: p.name,
-        sales: Math.floor(Math.random() * (p.stock > 0 ? p.stock : 10)), // Giả định số lượng bán được
-      })),
-      latestProducts: [...products].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 5),
-      popularCategories: [...categories].sort(() => 0.5 - Math.random()).slice(0, 5), // Giả định ngẫu nhiên
+      bestSellingProducts,
+      latestProducts,
+      popularCategories: [...categories].sort(() => 0.5 - Math.random()).slice(0, 5),
       shopInfo: shop ? { name: shop.name, logo: shop.logo } : undefined,
       revenueTrend: Array.from({ length: 7 }, (_, i) => ({
         date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -211,6 +227,7 @@ export const sellerAPI = {
         outOfStockProducts > 0 ? `You have ${outOfStockProducts} products out of stock!` : '',
         'New order received! (Fake alert)',
       ].filter(Boolean),
+      topSellingProducts,
     };
   },
 };

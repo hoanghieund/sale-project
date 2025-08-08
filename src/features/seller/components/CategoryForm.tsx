@@ -11,9 +11,8 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Category } from "@/types/seller"; // Import Category interface
+import { Category } from "@/features/seller/types"; // Import Category interface (đồng bộ seller types)
 
 /**
  * @schema categorySchema
@@ -22,7 +21,6 @@ import { Category } from "@/types/seller"; // Import Category interface
 const categorySchema = z.object({
   name: z.string().min(2, "Tên danh mục phải có ít nhất 2 ký tự").max(50, "Tên danh mục không quá 50 ký tự"),
   description: z.string().max(200, "Mô tả không quá 200 ký tự").optional(),
-  isActive: z.boolean().default(true), // Trạng thái kích hoạt, mặc định là true
 });
 
 /**
@@ -57,7 +55,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData, onSubmi
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
-      isActive: initialData?.isActive ?? true, // Sử dụng ?? để đảm bảo giá trị mặc định nếu initialData.isActive là undefined
     },
   });
 
@@ -105,43 +102,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData, onSubmi
           )}
         />
 
-        {/* Trường Trạng thái kích hoạt */}
-        {initialData && initialData.isDefault ? (
-          // Không cho phép chỉnh sửa isActive cho danh mục "All"
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-            <div className="space-y-0.5">
-              <FormLabel className="text-base">Trạng thái kích hoạt</FormLabel>
-              <FormDescription>
-                Danh mục "All" luôn được kích hoạt và không thể thay đổi.
-              </FormDescription>
-            </div>
-            <FormControl>
-              <Switch checked={true} disabled aria-readonly />
-            </FormControl>
-          </FormItem>
-        ) : (
-          <FormField
-            control={form.control}
-            name="isActive"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">Trạng thái kích hoạt</FormLabel>
-                  <FormDescription>
-                    Kích hoạt hoặc vô hiệu hóa danh mục này.
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        )}
+        {/* Trạng thái tạm ẩn: Category không có field isActive trong seller/types */}
 
         {/* Nút Submit */}
         <div className="flex justify-end space-x-2">

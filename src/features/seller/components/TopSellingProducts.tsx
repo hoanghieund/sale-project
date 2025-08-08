@@ -4,7 +4,7 @@
  */
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Product } from "@/types/seller"; // Import interface Product
+import { Product } from "@/features/seller/types"; // Import interface Product
 import React from "react";
 
 /**

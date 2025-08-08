@@ -1,17 +1,24 @@
 import { Award, Heart, Target, Users } from "lucide-react";
 
+/**
+ * Trang "Giới thiệu" cho Eulotus - sàn thương mại điện tử bán hàng
+ * - Mục tiêu: củng cố thương hiệu, minh bạch giá trị & sứ mệnh, tăng niềm tin người dùng
+ * - Lý do: nội dung cũ thuộc DoneKick (sneakers marketplace) không đúng với Eulotus
+ *
+ * About page for Eulotus - the e-commerce platform
+ * - Goal: strengthen brand trust by stating story, values and mission clearly
+ * - Note: replaces legacy DoneKick copy with Eulotus messaging
+ */
 const About = () => {
   return (
     <>
       {/* Hero Section */}
       <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            About DoneKick
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">About Eulotus</h1>
           <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
-            Your ultimate destination for authentic sneakers and premium
-            athletic footwear
+            An e-commerce platform that connects sellers and buyers, delivering safe,
+            fast, and transparent shopping experiences.
           </p>
         </div>
       </section>
@@ -23,25 +30,18 @@ const About = () => {
             <h2 className="text-3xl font-bold text-center mb-12">Our Story</h2>
             <div className="prose prose-lg mx-auto">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                <strong>DoneKick</strong> was born from a passion for authentic
-                sneakers and the culture that surrounds them. Founded in 2020,
-                we started as a small marketplace with a simple mission: to
-                connect sneaker enthusiasts with genuine, high-quality footwear
-                from trusted vendors around the world.
+                <strong>Eulotus</strong> was created to help businesses and individuals sell online
+                with ease. From a simple idea of transparently connecting sellers and buyers, we
+                have evolved into a full‑stack e‑commerce platform that supports the entire commerce journey.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                What began as a passion project has evolved into a comprehensive
-                platform where sneakerheads, athletes, and fashion enthusiasts
-                can discover, buy, and sell sought-after sneakers, new releases,
-                and limited edition footwear. Every product on our platform is
-                guaranteed to be 100% authentic or your money back.
+                On Eulotus, merchants can publish products, manage orders, integrate secure payments,
+                and track operations efficiently. Buyers can discover millions of items with clear
+                information, verified reviews, and caring post‑purchase support.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Today, DoneKick serves thousands of customers worldwide,
-                offering everything from classic Air Jordans to the latest Nike
-                releases, from vintage Adidas to exclusive collaborations. We're
-                not just a marketplace – we're a community of people who share a
-                love for great footwear and the stories they tell.
+                Today, Eulotus serves customers across Vietnam, focusing on convenient, fast shopping
+                with friendly and effective customer care.
               </p>
             </div>
           </div>
@@ -57,10 +57,10 @@ const About = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Award className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Authenticity</h3>
+              <h3 className="text-xl font-semibold mb-3">Trust & Transparency</h3>
               <p className="text-muted-foreground">
-                Every product is verified for authenticity by our expert team.
-                We guarantee 100% genuine products or your money back.
+                Clear product information, transparent policies, and secure payments.
+                Building trust is our top priority.
               </p>
             </div>
 
@@ -70,8 +70,7 @@ const About = () => {
               </div>
               <h3 className="text-xl font-semibold mb-3">Community</h3>
               <p className="text-muted-foreground">
-                We're building a global community of sneaker enthusiasts,
-                connecting buyers and sellers worldwide.
+                We connect sellers and buyers and foster a sustainable e‑commerce ecosystem.
               </p>
             </div>
 
@@ -79,10 +78,9 @@ const About = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Target className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Excellence</h3>
+              <h3 className="text-xl font-semibold mb-3">Efficiency</h3>
               <p className="text-muted-foreground">
-                We strive for excellence in every aspect of our service, from
-                product quality to customer experience.
+                We optimize the journey from listing to delivery to improve operations and experience.
               </p>
             </div>
 
@@ -90,10 +88,9 @@ const About = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Passion</h3>
+              <h3 className="text-xl font-semibold mb-3">Customer‑first</h3>
               <p className="text-muted-foreground">
-                Our love for sneakers and street culture drives everything we
-                do. It's not just business – it's personal.
+                We listen and act, providing fast and professional support in every situation.
               </p>
             </div>
           </div>
@@ -103,45 +100,33 @@ const About = () => {
       {/* Team Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Meet Our Team
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-12">The Eulotus Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">JD</span>
+                <span className="text-white text-2xl font-bold">MH</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">John Doe</h3>
+              <h3 className="text-xl font-semibold mb-2">Minh Hoang</h3>
               <p className="text-muted-foreground mb-2">Founder & CEO</p>
-              <p className="text-sm text-muted-foreground">
-                Sneaker enthusiast with 15+ years in the industry
-              </p>
+              <p className="text-sm text-muted-foreground">Product direction and growth strategy</p>
             </div>
 
             <div className="text-center">
               <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">JS</span>
+                <span className="text-white text-2xl font-bold">LA</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Jane Smith</h3>
-              <p className="text-muted-foreground mb-2">
-                Head of Authentication
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Expert authenticator with an eye for detail
-              </p>
+              <h3 className="text-xl font-semibold mb-2">Lan Anh</h3>
+              <p className="text-muted-foreground mb-2">Head of Merchant Success</p>
+              <p className="text-sm text-muted-foreground">Partnering with merchants for sustainable growth</p>
             </div>
 
             <div className="text-center">
               <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">MJ</span>
+                <span className="text-white text-2xl font-bold">QM</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Mike Johnson</h3>
-              <p className="text-muted-foreground mb-2">
-                Customer Experience Lead
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Dedicated to providing exceptional customer service
-              </p>
+              <h3 className="text-xl font-semibold mb-2">Quang Minh</h3>
+              <p className="text-muted-foreground mb-2">Head of Customer Experience</p>
+              <p className="text-sm text-muted-foreground">Elevating customer experience with fast, friendly support</p>
             </div>
           </div>
         </div>
@@ -150,25 +135,23 @@ const About = () => {
       {/* Stats Section */}
       <section className="py-16 bg-primary text-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            DoneKick by the Numbers
-          </h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Eulotus by the Numbers</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold mb-2">50K+</div>
-              <div className="text-white">Happy Customers</div>
+              <div className="text-4xl font-bold mb-2">500K+</div>
+              <div className="text-white">Trusted users</div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">100K+</div>
-              <div className="text-white">Products Sold</div>
+              <div className="text-4xl font-bold mb-2">1M+</div>
+              <div className="text-white">Products listed</div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-white">Trusted Vendors</div>
+              <div className="text-4xl font-bold mb-2">10K+</div>
+              <div className="text-white">Sellers</div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">99.9%</div>
-              <div className="text-white">Authenticity Rate</div>
+              <div className="text-4xl font-bold mb-2">99.95%</div>
+              <div className="text-white">System uptime</div>
             </div>
           </div>
         </div>
@@ -180,11 +163,9 @@ const About = () => {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              To create the world's most trusted marketplace for authentic
-              sneakers, where passion meets authenticity, and every step tells a
-              story. We're committed to building a community that celebrates
-              sneaker culture while ensuring every transaction is safe, secure,
-              and satisfying.
+              Build a trusted marketplace that connects sellers and buyers, ensures secure payments,
+              efficient logistics, and caring after‑sales service. We strive to deliver transparent,
+              convenient, and sustainable shopping for everyone.
             </p>
           </div>
         </div>

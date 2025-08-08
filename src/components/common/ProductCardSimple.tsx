@@ -61,9 +61,8 @@ const ProductCardSimple = ({
   const handleLikeProduct = async (productId: number) => {
     if (!isAuthenticated) {
       toast({
-        title: "Chưa đăng nhập",
-        description:
-          "Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích.",
+        title: "Not signed in",
+        description: "Please sign in to add this product to your wishlist.",
         variant: "destructive",
       });
       return;
@@ -73,25 +72,25 @@ const ProductCardSimple = ({
       if (likedProduct) {
         await productService.unlikeProduct(productId);
         toast({
-          title: "Thành công",
-          description: "Đã xóa sản phẩm khỏi danh sách yêu thích.",
+          title: "Success",
+          description: "Removed product from wishlist.",
         });
       } else {
         await productService.likeProduct(productId);
         toast({
-          title: "Thành công",
-          description: "Đã thêm sản phẩm vào danh sách yêu thích.",
+          title: "Success",
+          description: "Added product to wishlist.",
         });
       }
     } catch (error) {
       setLikedProduct(prev => !prev);
       toast({
-        title: "Lỗi",
+        title: "Error",
         description:
-          "Có lỗi xảy ra khi cập nhật danh sách yêu thích. Vui lòng thử lại.",
+          "An error occurred while updating your wishlist. Please try again.",
         variant: "destructive",
       });
-      console.error("Lỗi khi cập nhật danh sách yêu thích:", error);
+      console.error("Error updating wishlist:", error);
     }
   };
 
@@ -114,27 +113,9 @@ const ProductCardSimple = ({
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            {/* {product.discount?.discount_percent && (
-              <Badge
-                variant="destructive"
-                className="px-2 py-1 text-xs font-medium"
-              >
-                -{product.discount?.discount_percent}%
-              </Badge>
-            )} */}
             {product.isNew && (
               <Badge className="bg-primary text-primary-foreground px-2 py-1 text-xs font-medium">
-                Mới
-              </Badge>
-            )}
-            {product.isTrending && (
-              <Badge className="bg-secondary text-secondary-foreground px-2 py-1 text-xs font-medium">
-                Xu hướng
-              </Badge>
-            )}
-            {product.isFlashSale && (
-              <Badge className="bg-destructive text-destructive-foreground px-2 py-1 text-xs font-medium">
-                Flash Sale
+                New
               </Badge>
             )}
           </div>
@@ -266,7 +247,7 @@ const ProductCardSimple = ({
               </div>
               <span className="text-xs text-muted-foreground">•</span>
               <span className="text-xs text-muted-foreground">
-                Đã bán {product.totalProductSold || 0}
+                Sold {product.totalProductSold || 0}
               </span>
             </div>
           </Link>

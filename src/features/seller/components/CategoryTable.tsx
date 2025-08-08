@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Category } from "@/types/seller";
+import { Category } from "@/features/seller/types";
 import { Edit, GripVertical, MoreHorizontal, Plus, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 
@@ -105,7 +105,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
               <TableHead className="w-[50px]"></TableHead> {/* Cột kéo thả */}
               <TableHead>Tên danh mục</TableHead>
               <TableHead>Mô tả</TableHead>
-              <TableHead className="text-right">Trạng thái</TableHead>
+              <TableHead className="text-right">Loại</TableHead>
               <TableHead className="w-[100px] text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
@@ -127,9 +127,9 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                 </TableCell>
                 <TableCell>{category.description || "-"}</TableCell>
                 <TableCell className="text-right">
-                  {/* Badge trạng thái Kích hoạt/Vô hiệu hóa */}
-                  <Badge variant={category.isActive ? "default" : "secondary"}>
-                    {category.isActive ? "Kích hoạt" : "Vô hiệu hóa"}
+                  {/* Hiển thị loại danh mục dựa trên isDefault */}
+                  <Badge variant={category.isDefault ? "default" : "secondary"}>
+                    {category.isDefault ? "Mặc định" : "Thông thường"}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">

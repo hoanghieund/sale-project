@@ -104,11 +104,7 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
 
     try {
       // Use addToCart from CartProvider instead of calling API directly
-      await addToCart(
-        product,
-        selectedVariantValues,
-        quantity
-      );
+      await addToCart(product, selectedVariantValues, quantity);
 
       // Reset form after successful addition
       setQuantity(1);
@@ -145,13 +141,6 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
               <>
                 <span className="bg-new/10 text-new px-2 py-1 rounded-md text-sm font-medium">
                   New
-                </span>
-              </>
-            )}
-            {product?.isFlashSale && (
-              <>
-                <span className="bg-trending/10 text-trending px-2 py-1 rounded-md text-sm font-medium">
-                  Flash Sale
                 </span>
               </>
             )}
@@ -363,26 +352,6 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                 </span>
                 <span className="text-foreground">
                   {product?.isNew ? "Yes" : "No"}
-                </span>
-              </div>
-            )}
-            {product?.isFlashSale !== undefined && (
-              <div className="flex border-b border-border py-2">
-                <span className="font-medium text-foreground w-1/3">
-                  Flash Sale:
-                </span>
-                <span className="text-foreground">
-                  {product?.isFlashSale ? "Yes" : "No"}
-                </span>
-              </div>
-            )}
-            {product?.isTrending !== undefined && (
-              <div className="flex border-b border-border py-2">
-                <span className="font-medium text-foreground w-1/3">
-                  Trending:
-                </span>
-                <span className="text-foreground">
-                  {product?.isTrending ? "Yes" : "No"}
                 </span>
               </div>
             )}

@@ -6,7 +6,6 @@ import { Category, Product } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 // Import Breadcrumb from shadcn to replace manual breadcrumb
-import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -89,7 +88,7 @@ const ShopPage = () => {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   const fetchShopInfo = async () => {
     setLoading(true);
@@ -120,9 +119,25 @@ const ShopPage = () => {
         currentPage: 0,
       }));
       setSort("asc");
-      fetchProductsByCategoryId(activeCategoryId, "asc", 0, PAGE_SIZE);
+      // Không gọi API trực tiếp ở đây để tránh double fetch.
+      // Việc fetch sẽ được xử lý bởi effect phía dưới khi deps thay đổi.
     }
   }, [activeCategoryId]);
+
+  // Fetch dữ liệu khi thay đổi category | sort | trang
+  // Giải quyết lỗi: đổi trang không gọi API (phân trang không hoạt động)
+  useEffect(() => {
+    // Guard cho trường hợp chưa có category id hợp lệ
+    if (activeCategoryId === null || activeCategoryId === undefined) return;
+
+    // Gọi API theo base-0 của backend (currentPage là base-0)
+    fetchProductsByCategoryId(
+      activeCategoryId,
+      sort as "asc" | "desc",
+      pagination.currentPage,
+      pagination.pageSize
+    );
+  }, [activeCategoryId, sort, pagination.currentPage, pagination.pageSize]);
 
   if (!shop) {
     return <EmptyStateDisplay />;
@@ -130,13 +145,6 @@ const ShopPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <BreadcrumbNav
-        items={[
-          { label: "Home", to: "/" },
-          { label: "Shop" },
-          { label: shop.shopName },
-        ]}
-      />
       {/* Shop Banner */}
       {/* Dynamic shop banner based on shop.banner; fallbacks to placeholder if missing */}
       <div
@@ -274,12 +282,7 @@ const ShopPage = () => {
                           currentPage: 0,
                         }));
                         setSort(value as "asc" | "desc");
-                        fetchProductsByCategoryId(
-                          activeCategoryId,
-                          value as "asc" | "desc",
-                          0,
-                          PAGE_SIZE
-                        );
+                        // Không gọi API trực tiếp, đã có effect theo dõi deps để fetch.
                       }}
                     >
                       <SelectTrigger className="w-[120px] sm:w-32">
