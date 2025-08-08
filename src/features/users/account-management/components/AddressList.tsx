@@ -128,7 +128,7 @@ const AddressList: React.FC<AddressListProps> = ({
             <div
               key={address.id}
               className={cn(
-                "p-4 border rounded-lg shadow-sm bg-white flex flex-col md:flex-row justify-between items-start md:items-center",
+                "p-4 border rounded-lg shadow-sm bg-white flex flex-row justify-between items-start md:items-center",
                 address.isCurrent && "border-primary" // Đánh dấu địa chỉ mặc định
               )}
             >

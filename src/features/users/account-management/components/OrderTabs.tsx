@@ -12,12 +12,52 @@ const OrderTabs: React.FC = () => {
 
   return (
     <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid w-full grid-cols-5">
-        <TabsTrigger value="all">All</TabsTrigger>
-        <TabsTrigger value="pending_confirmation">Pending Confirmation</TabsTrigger>
-        <TabsTrigger value="awaiting_pickup">Awaiting Pickup</TabsTrigger>
-        <TabsTrigger value="in_delivery">In Delivery</TabsTrigger>
-        <TabsTrigger value="completed">Completed</TabsTrigger>
+      {/*
+       * Responsive TabsList (no-scroll):
+       * - xs: grid 2 cột, cho phép xuống dòng nhãn dài, giữ chiều cao đồng nhất
+       * - sm: grid 3 cột
+       * - md+: grid 5 cột như desktop
+       */}
+      <TabsList className="grid w-full grid-cols-2 gap-2 p-1 !h-auto sm:grid-cols-3 md:grid-cols-5">
+        <TabsTrigger
+          value="all"
+          className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
+        >
+          All
+        </TabsTrigger>
+        <TabsTrigger
+          value="pending_confirmation"
+          className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
+          aria-label="Pending Confirmation"
+        >
+          {/* Hiển thị nhãn rút gọn ở mobile để gọn gàng, nhãn đầy đủ ở sm+ */}
+          <span className="sm:hidden">Pending Conf.</span>
+          <span className="hidden sm:inline">Pending Confirmation</span>
+        </TabsTrigger>
+        <TabsTrigger
+          value="awaiting_pickup"
+          className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
+          aria-label="Awaiting Pickup"
+        >
+          <span className="sm:hidden">Pickup</span>
+          <span className="hidden sm:inline">Awaiting Pickup</span>
+        </TabsTrigger>
+        <TabsTrigger
+          value="in_delivery"
+          className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
+          aria-label="In Delivery"
+        >
+          <span className="sm:hidden">Delivery</span>
+          <span className="hidden sm:inline">In Delivery</span>
+        </TabsTrigger>
+        <TabsTrigger
+          value="completed"
+          className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
+          aria-label="Completed"
+        >
+          <span className="sm:hidden">Done</span>
+          <span className="hidden sm:inline">Completed</span>
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
         <OrderList status="all" />
