@@ -39,7 +39,9 @@ const ProductDetailPage = lazy(
 const Register = lazy(() => import("@/features/auth/Register"));
 const PrivacyPolicy = lazy(() => import("@/features/general/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("@/features/general/TermsOfService"));
-const ShippingReturns = lazy(() => import("@/features/general/ShippingReturns"));
+const ShippingReturns = lazy(
+  () => import("@/features/general/ShippingReturns")
+);
 const SellerRegistration = lazy(
   () => import("@/features/general/SellerRegistration")
 );
@@ -100,7 +102,7 @@ const AppRouter = () => {
             {/* Các trang công khai - không cần đăng nhập */}
             <Route path="/" element={<Home />} />
             <Route path="/product/:slug" element={<ProductDetailPage />} />
-            <Route path="/category/:categoryId" element={<CategoryPage />} />
+            <Route path="/category/:categorySlug" element={<CategoryPage />} />
             <Route path="/shop/:shopSlug" element={<ShopPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/about" element={<About />} />

@@ -2,8 +2,8 @@ import { Axios } from "@/api/Axios";
 
 // Interface for product filter parameters by category
 interface GetProductsByCategoryParams {
-  sort : "asc" | "desc",
-  keyword : string,
+  sort: "asc" | "desc";
+  keyword: string;
   currentPage: number;
   pageSize: number;
 }
@@ -14,8 +14,11 @@ export const productService = {
    * @param params - Product filter parameters.
    * @returns A Promise with paginated product data and category information.
    */
-  getProductsByCategoryId: ( categoryId: number, params: GetProductsByCategoryParams) => {
-    return Axios.get(`/api/public/products/by-category/${categoryId}`, {
+  getProductsByCategorySlug: (
+    slug: string,
+    params: GetProductsByCategoryParams
+  ) => {
+    return Axios.get(`/api/public/products/by-category/slug/${slug}`, {
       page: params.currentPage,
       size: params.pageSize,
       sort: params.sort,
@@ -30,11 +33,15 @@ export const productService = {
    * @param size - The number of products per page.
    * @returns A Promise with the list of products.
    */
-  getProductsByCategoryIdSimple: (categoryParentId: number, page: number, size: number) => {
+  getProductsByCategoryIdSimple: (
+    categoryParentId: number,
+    page: number,
+    size: number
+  ) => {
     return Axios.get(`/api/public/product/getProductByManyThing`, {
       categoryParentId,
       page,
-      size
+      size,
     });
   },
 };

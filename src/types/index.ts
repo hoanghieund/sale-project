@@ -62,6 +62,7 @@ export interface Option {
 // Category Tree Type - Dựa trên cấu trúc lồng nhau của danh mục
 export interface CategoryTree {
   id: number;
+  slug?: string;
   name: string;
   child: CategoryTree | null; // Có thể có các danh mục con hoặc null
 }
@@ -69,6 +70,7 @@ export interface CategoryTree {
 // Collection Response Type - Dựa trên cấu trúc JSON người dùng cung cấp
 export interface CollectionResponse {
   id: number;
+  slug?: string;
   name: string;
   categoryTree: CategoryTree | null; // Có thể có categoryTree hoặc null
 }
@@ -142,6 +144,7 @@ export interface RefreshToken {
 // Category Types - Dựa trên tbl_category
 export interface Category {
   id: number; // bigint(20) trong SQL
+  slug?: string;
   name?: string; // name varchar(255)
   icon?: string; // icon varchar(255)
   iconFile?: any; // File icon nếu có

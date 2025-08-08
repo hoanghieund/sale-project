@@ -365,7 +365,7 @@ const Header = () => {
                       <>
                         <NavigationMenuTrigger className="bg-transparent hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent/50 data-[active]:bg-accent/50 h-8 rounded-md px-2.5 uppercase">
                           <Link
-                            to={`/category/${item.id}`} // Navigate to parent category page
+                            to={`/category/${item.slug}`} // Navigate to parent category page
                           >
                             {item.name}
                           </Link>
@@ -377,7 +377,7 @@ const Header = () => {
                               <div key={child.id}>
                                 <NavigationMenuLink className="bg-card" asChild>
                                   <Link
-                                    to={`/category/${child.id}`} // Navigate to child category page
+                                    to={`/category/${child.slug}`} // Navigate to child category page
                                     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
                                   >
                                     <div className="text-sm font-medium leading-none">
@@ -393,7 +393,7 @@ const Header = () => {
                     ) : (
                       <NavigationMenuLink asChild>
                         <Link
-                          to={`/category/${item.id}`} // Use id to create path
+                          to={`/category/${item.slug}`} // Use id to create path
                           className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50 uppercase"
                         >
                           {item.name}
@@ -443,7 +443,7 @@ const MobileNavigation = ({
                 onClick={() => toggleExpanded(item.id.toString())} // Convert id to string
               >
                 <Link
-                  to={`/category/${item.id}`} // Navigate to parent category page
+                  to={`/category/${item.slug}`} // Navigate to parent category page
                   onClick={onClose}
                 >
                   {item.name}
@@ -462,7 +462,7 @@ const MobileNavigation = ({
                     <div key={child.id}>
                       {/* Subcategory link: đồng bộ hover với NavigationMenu */}
                       <Link
-                        to={`/category/${child.id}`} // Use id to create path
+                        to={`/category/${child.slug}`} // Use id to create path
                         className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
                         onClick={onClose}
                       >
@@ -477,7 +477,7 @@ const MobileNavigation = ({
             <>
               {/* Leaf category link: đồng bộ hover với NavigationMenu */}
               <Link
-                to={`/category/${item.id}`} // Use id to create path
+                to={`/category/${item.slug}`} // Use id to create path
                 className="block rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
                 onClick={onClose}
               >

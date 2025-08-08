@@ -3,7 +3,7 @@ import CategoryCard from "@/components/common/CategoryCard";
 import CustomPagination from "@/components/common/CustomPagination";
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
-import InputDebounce from '@/components/common/InputDebounce';
+import InputDebounce from "@/components/common/InputDebounce";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
 
@@ -34,7 +34,7 @@ import { useParams } from "react-router-dom";
  * Displays a list of subcategories and products with filters and pagination
  */
 const CategoryPage = () => {
-  const { categoryId } = useParams<{ categoryId: string }>();
+  const { categorySlug } = useParams<{ categorySlug: string }>();
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -54,17 +54,17 @@ const CategoryPage = () => {
 
   /**
    * Fetches category data and subcategories from the API.
-   * @param id - The id of the category to fetch.
+   * @param slug - The slug of the category to fetch.
    */
-  const fetchCategoryData = useCallback(async (id: string) => {
+  const fetchCategoryData = useCallback(async (slug: string) => {
     try {
       // Fetch category and subcategories
       const categoryResponse: Category[] =
-        await categoryService.getCategoryById(id);
+        await categoryService.getCategoryBySlug(slug);
       setCategories(categoryResponse);
       if (categoryResponse.length === 1) {
         const subCategoryResponse: Category[] =
-          await categoryService.getCategoryByParent(id);
+          await categoryService.getCategoryByParent(slug);
         setSubcategories(subCategoryResponse);
       } else {
         setSubcategories([]);
@@ -79,8 +79,8 @@ const CategoryPage = () => {
   /**
    * Fetches product data with filters
    */
-  const fetchProductData = async (categoryId: number) => {
-    if (!categoryId) return;
+  const fetchProductData = async (slug: string) => {
+    if (!slug) return;
 
     setLoading(true);
     try {
@@ -92,8 +92,8 @@ const CategoryPage = () => {
         keyword: filters.keyword,
       };
 
-      const response = await productService.getProductsByCategoryId(
-        categoryId,
+      const response = await productService.getProductsByCategorySlug(
+        slug,
         payload
       );
 
@@ -116,37 +116,36 @@ const CategoryPage = () => {
 
   // Effect to fetch category data when categoryId changes
   useEffect(() => {
-    if (categoryId) {
-      fetchCategoryData(categoryId);
+    if (categorySlug) {
+      fetchCategoryData(categorySlug);
     }
-  }, [categoryId, fetchCategoryData]);
+  }, [categorySlug, fetchCategoryData]);
 
   // Effect to fetch product data when categoryId or filters change
   useEffect(() => {
-    if (categoryId && categories.length === 1) {
-      fetchProductData(Number(categoryId));
+    if (categorySlug && categories.length === 1) {
+      fetchProductData(categorySlug);
     } else if (categories.length === 2) {
-      fetchProductData( Number(categories[1].id));
+      fetchProductData(categories[1].slug);
     }
-  }, [categoryId, categories, filters]);
-
+  }, [categorySlug, categories, filters]);
 
   const breadcrumbItems = useMemo(() => {
     if (categories.length === 1) {
       return [
         { label: "Home", to: "/" },
-        { label: categories[0].name, to: `/category/${categories[0].id}` },
+        { label: categories[0].name, to: `/category/${categories[0].slug}` },
       ];
     } else if (categories.length === 2) {
       return [
         { label: "Home", to: "/" },
-        { label: categories[0].name, to: `/category/${categories[0].id}` },
-        { label: categories[1].name, to: `/category/${categories[1].id}` },
+        { label: categories[0].name, to: `/category/${categories[0].slug}` },
+        { label: categories[1].name, to: `/category/${categories[1].slug}` },
       ];
     } else {
       return [{ label: "Home", to: "/" }, { label: "Category" }];
     }
-  }, [categoryId, categories]);
+  }, [categorySlug, categories]);
 
   return (
     <div className="bg-background min-h-screen">
@@ -167,7 +166,7 @@ const CategoryPage = () => {
                   <CategoryCard
                     key={subcategory.id}
                     category={subcategory}
-                    linkTo={`/category/${subcategory.id}`}
+                    linkTo={`/category/${subcategory.slug}`}
                   />
                 ))
               ) : (
@@ -230,7 +229,6 @@ const CategoryPage = () => {
                   </SelectContent>
                 </Select>
               </div>
-
             </div>
 
             <Separator />
