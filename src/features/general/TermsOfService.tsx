@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 /**
  * Component to display the Terms of Service page.
@@ -20,28 +20,42 @@ const TermsOfService: React.FC = () => {
         <section>
           <h2 className="text-xl font-semibold mb-2">1. Acceptance of Terms</h2>
           <p>
-            By accessing or using eulotus.com (“Website,” “we,” “us,” or “our”), you agree to be bound by these Terms of Service (“Terms”). If you do not agree, please do not use our Website.
+            By accessing or using eulotus.com (“Website,” “we,” “us,” or “our”),
+            you agree to be bound by these Terms of Service (“Terms”). If you do
+            not agree, please do not use our Website.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold mb-2">2. Eligibility</h2>
           <p>
-            You must be at least 18 years old (or the legal age in your jurisdiction) to make a purchase. By using our Website, you confirm that you meet these requirements.
+            You must be at least 18 years old (or the legal age in your
+            jurisdiction) to make a purchase. By using our Website, you confirm
+            that you meet these requirements.
           </p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold mb-2">3. Account Registration</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            3. Account Registration
+          </h2>
           <ul className="list-disc list-inside space-y-1">
             <li>You may need to create an account to make purchases.</li>
-            <li>You are responsible for keeping your login credentials confidential.</li>
+            <li>
+              You are responsible for keeping your login credentials
+              confidential.
+            </li>
             <li>We are not liable for any unauthorized use of your account.</li>
           </ul>
         </section>
         <section>
-          <h2 className="text-xl font-semibold mb-2">4. Products and Pricing</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            4. Products and Pricing
+          </h2>
           <ul className="list-disc list-inside space-y-1">
             <li>All prices are displayed in [currency, e.g., USD].</li>
-            <li>Prices and product availability are subject to change without notice.</li>
+            <li>
+              Prices and product availability are subject to change without
+              notice.
+            </li>
             <li>We reserve the right to refuse or cancel any order.</li>
           </ul>
         </section>
@@ -49,15 +63,24 @@ const TermsOfService: React.FC = () => {
           <h2 className="text-xl font-semibold mb-2">5. Orders and Payment</h2>
           <ul className="list-disc list-inside space-y-1">
             <li>Payments are processed through [Payment Gateway Name(s)].</li>
-            <li>You agree to provide accurate billing and shipping information.</li>
-            <li>Orders may be cancelled if fraudulent or incomplete information is detected.</li>
+            <li>
+              You agree to provide accurate billing and shipping information.
+            </li>
+            <li>
+              Orders may be cancelled if fraudulent or incomplete information is
+              detected.
+            </li>
           </ul>
         </section>
         <section>
-          <h2 className="text-xl font-semibold mb-2">6. Shipping and Delivery</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            6. Shipping and Delivery
+          </h2>
           <ul className="list-disc list-inside space-y-1">
             <li>Delivery times are estimates only.</li>
-            <li>We are not responsible for delays caused by carriers or customs.</li>
+            <li>
+              We are not responsible for delays caused by carriers or customs.
+            </li>
             <li>Shipping fees and taxes are displayed at checkout.</li>
           </ul>
         </section>
@@ -65,17 +88,25 @@ const TermsOfService: React.FC = () => {
           <h2 className="text-xl font-semibold mb-2">7. Returns and Refunds</h2>
           <ul className="list-disc list-inside space-y-1">
             <li>Please refer to our Return Policy at [Return Policy URL].</li>
-            <li>Products must be returned in original condition unless defective.</li>
+            <li>
+              Products must be returned in original condition unless defective.
+            </li>
           </ul>
         </section>
         <section>
-          <h2 className="text-xl font-semibold mb-2">8. Intellectual Property</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            8. Intellectual Property
+          </h2>
           <p>
-            All content on eulotus.com, including text, graphics, logos, and images, is our property or licensed to us. You may not use it without permission.
+            All content on eulotus.com, including text, graphics, logos, and
+            images, is our property or licensed to us. You may not use it
+            without permission.
           </p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold mb-2">9. Prohibited Activities</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            9. Prohibited Activities
+          </h2>
           <p className="mb-2">You agree not to:</p>
           <ul className="list-disc list-inside space-y-1">
             <li>Use the Website for unlawful purposes.</li>
@@ -84,31 +115,40 @@ const TermsOfService: React.FC = () => {
           </ul>
         </section>
         <section>
-          <h2 className="text-xl font-semibold mb-2">10. Limitation of Liability</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            10. Limitation of Liability
+          </h2>
           <p>
-            To the maximum extent permitted by law, we are not liable for indirect, incidental, or consequential damages arising from your use of the Website.
+            To the maximum extent permitted by law, we are not liable for
+            indirect, incidental, or consequential damages arising from your use
+            of the Website.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold mb-2">11. Governing Law</h2>
           <p>
-            These Terms are governed by the laws of [Your Country], without regard to conflict of law principles.
+            These Terms are governed by the laws of [Your Country], without
+            regard to conflict of law principles.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold mb-2">12. Changes to Terms</h2>
           <p>
-            We may update these Terms from time to time. Changes will be posted on this page with the “Last Updated” date.
+            We may update these Terms from time to time. Changes will be posted
+            on this page with the “Last Updated” date.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold mb-2">13. Contact Us</h2>
-          <p className="mb-1">
-            If you have questions, contact us at:
-          </p>
+          <p className="mb-1">If you have questions, contact us at:</p>
           <p>
-            📧 Email: <a href="mailto:support@eulotus.com" className="text-blue-600 hover:underline">support@eulotus.com</a><br />
-            📍 Address: [Your Business Address]
+            📧 Email:{" "}
+            <a
+              href="mailto:support@eulotus.com"
+              className="text-blue-600 hover:underline"
+            >
+              support@eulotus.com
+            </a>
           </p>
         </section>
       </div>
