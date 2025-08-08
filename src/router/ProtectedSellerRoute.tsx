@@ -29,7 +29,8 @@ const ProtectedSellerRoute = () => {
   }
 
   if (!isSeller) {
-    return <Navigate to="/seller-registration" />;
+    // return <Navigate to="/seller-registration" />;
+    return <Navigate to="/" />;
   }
 
   // Nếu đã xác thực, hiển thị các route con

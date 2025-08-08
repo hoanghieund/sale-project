@@ -286,12 +286,12 @@ const Header = () => {
                         </>
                       ) : (
                         <>
-                          <DropdownMenuItem
+                          {/* <DropdownMenuItem
                             onClick={() => navigate("/seller-registration")}
                           >
                             <ShoppingBag className="mr-2 h-4 w-4" />
                             Seller Registration
-                          </DropdownMenuItem>
+                          </DropdownMenuItem> */}
                         </>
                       )}
                       <DropdownMenuSeparator />
