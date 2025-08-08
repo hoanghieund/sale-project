@@ -14,9 +14,7 @@ const OrderTabs: React.FC = () => {
     <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid w-full grid-cols-5">
         <TabsTrigger value="all">All</TabsTrigger>
-        <TabsTrigger value="pending_confirmation">
-          Pending Confirmation
-        </TabsTrigger>
+        <TabsTrigger value="pending_confirmation">Pending Confirmation</TabsTrigger>
         <TabsTrigger value="awaiting_pickup">Awaiting Pickup</TabsTrigger>
         <TabsTrigger value="in_delivery">In Delivery</TabsTrigger>
         <TabsTrigger value="completed">Completed</TabsTrigger>
