@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -30,6 +31,9 @@ interface Review {
  * @param {Review} props.review - The review object to display.
  */
 const ReviewItem = ({ review }: { review: Review }) => {
+  // State để quản lý dialog xem media toàn màn hình
+  const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
+  const [isVideo, setIsVideo] = useState(false);
   return (
     <Card key={review.id} className="shadow-sm bg-white">
       <CardContent className="p-3">
@@ -74,13 +78,66 @@ const ReviewItem = ({ review }: { review: Review }) => {
             </p>
             {review.image && (
               <div className="flex gap-2 mt-2 overflow-x-auto pb-1">
-                <img
-                  src={review.image}
-                  alt={`Review image`}
-                  className="h-24 w-24 rounded-sm object-cover"
-                />
+                {review.image.split(",").map((media, index) => {
+                  // Kiểm tra nếu là video (định dạng mp4, mov, etc.)
+                  const isVideoFile = /\.(mp4|mov|avi|wmv|flv|mkv|webm)$/i.test(
+                    media
+                  );
+                  const trimmedMedia = media.trim();
+
+                  // Hàm mở dialog xem media toàn màn hình
+                  const openMediaDialog = () => {
+                    setSelectedMedia(trimmedMedia);
+                    setIsVideo(isVideoFile);
+                  };
+
+                  return isVideoFile ? (
+                    <video
+                      key={index}
+                      src={trimmedMedia}
+                      className="h-24 w-24 rounded-sm object-cover cursor-pointer"
+                      onClick={openMediaDialog}
+                    />
+                  ) : (
+                    <img
+                      key={index}
+                      src={trimmedMedia}
+                      alt={`Review image ${index + 1}`}
+                      className="h-24 w-24 rounded-sm object-cover cursor-pointer"
+                      loading="lazy"
+                      onClick={openMediaDialog}
+                    />
+                  );
+                })}
               </div>
             )}
+
+            {/* Dialog xem media toàn màn hình */}
+            <Dialog
+              open={!!selectedMedia}
+              onOpenChange={open => !open && setSelectedMedia(null)}
+            >
+              <DialogContent className="max-w-4xl w-fit p-0 overflow-hidden">
+                <div className="flex items-center justify-center w-full h-full max-h-[80vh]">
+                  {selectedMedia && isVideo ? (
+                    <video
+                      src={selectedMedia}
+                      className="max-w-full max-h-[80vh] object-contain"
+                      controls
+                      autoPlay
+                    />
+                  ) : (
+                    selectedMedia && (
+                      <img
+                        src={selectedMedia}
+                        alt="Full size image"
+                        className="max-w-full max-h-[80vh] object-contain"
+                      />
+                    )
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
             {review.child && review.child.length > 0 && (
               <div className="ml-8 mt-4 space-y-3">
                 {review.child.map(childReview => (
@@ -261,7 +318,7 @@ export const ProductReviews = ({
 
       // Append all selected files
       selectedFiles.forEach(file => {
-        payload.append("file", file);
+        payload.append("files", file);
       });
 
       await productDetailService.submitReview(payload);
