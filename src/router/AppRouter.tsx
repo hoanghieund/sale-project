@@ -39,6 +39,7 @@ const ProductDetailPage = lazy(
 const Register = lazy(() => import("@/features/auth/Register"));
 const PrivacyPolicy = lazy(() => import("@/features/general/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("@/features/general/TermsOfService"));
+const ShippingReturns = lazy(() => import("@/features/general/ShippingReturns"));
 const SellerRegistration = lazy(
   () => import("@/features/general/SellerRegistration")
 );
@@ -106,6 +107,7 @@ const AppRouter = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/shipping-returns" element={<ShippingReturns />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route
               path="/seller-registration"

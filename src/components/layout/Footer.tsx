@@ -13,7 +13,7 @@ export const FOOTER_LINKS = {
   ],
   policy: [
     // Đơn giản hóa các chính sách, chuyển hướng đến các trang có sẵn
-    { label: "Shipping & Returns", href: "/about" },
+    { label: "Shipping & Returns", href: "/shipping-returns" },
     { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Terms of Service", href: "/terms-of-service" },
   ],
@@ -123,15 +123,21 @@ const Footer = () => {
                 />
               </Link>
               <p className="text-white/80 mb-4 leading-relaxed">
-                <strong>Shop</strong> is a premium online marketplace for
-                high-quality products, offering exclusive collections and
-                limited editions. Our products are guaranteed to be 100%
-                authentic or your money back.
+                {/* Cập nhật mô tả thương hiệu để phản ánh Eulotus */}
+                <strong>Eulotus</strong> is a trusted e-commerce marketplace
+                connecting sellers and buyers with secure payments, efficient
+                logistics, and transparent shopping experiences.
               </p>
               <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-200">
                 <Mail className="h-4 w-4" />
                 {/* Cập nhật email liên hệ theo yêu cầu */}
-                <span>Email: contact.@gmail.com</span>
+                <span>Email:</span>
+                <a
+                  href="mailto:support@eulotus.com"
+                  className="underline underline-offset-4"
+                >
+                  support@eulotus.com
+                </a>
               </div>
             </div>
 
