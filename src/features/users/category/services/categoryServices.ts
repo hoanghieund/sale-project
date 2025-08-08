@@ -7,7 +7,7 @@ export const categoryService = {
    * @returns A Promise with category information and its subcategories.
    */
   getCategoryBySlug: (slug: string) => {
-    return Axios.get(`/api/public/category/getRootCategory/${slug}`);
+    return Axios.get(`/api/public/category/getRootCategory/slug/${slug}`);
   },
 
   /**
@@ -16,6 +16,6 @@ export const categoryService = {
    * @returns A Promise with subcategory information and its children.
    */
   getCategoryByParent: (slug: string) => {
-    return Axios.get(`/api/public/category/getCategoryByParent/${slug}`);
+    return Axios.get(`/api/public/category/getCategoryByParent/slug/${slug}`);
   },
 };
