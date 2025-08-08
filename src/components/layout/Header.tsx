@@ -129,7 +129,7 @@ const Header = () => {
                 <img
                   src="/logo.png"
                   alt="Shop Logo"
-                  className="h-14 md:h-16 lg:h-20 w-auto"
+                  className="h-14 md:h-16 lg:h-18 w-auto"
                 />
               </Link>
               {/* All Categories Button - Desktop */}
@@ -138,10 +138,11 @@ const Header = () => {
                 onOpenChange={setIsCategoryMenuOpen}
               >
                 <SheetTrigger asChild>
+                  {/* Đồng bộ hover với NavigationMenu (featuredCategories): dùng accent để nhất quán shadcn */}
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="rounded-full hover:bg-primary/10"
+                    className="rounded-full hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                   >
                     <Menu className="h-5 w-5" />{" "}
                     <span className="hidden md:inline">Categories</span>
@@ -162,7 +163,7 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full hover:bg-primary/10"
+                  className="rounded-full hover:bg-primary"
                   onClick={() => setIsSearchOpen(!isSearchOpen)}
                 >
                   <Search className="h-5 w-5" />
@@ -197,7 +198,7 @@ const Header = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full hover:bg-primary/10"
+                    className="rounded-full hover:bg-primary"
                     onClick={() => {
                       clearSearch();
                       setIsSearchOpen(false);
@@ -226,7 +227,7 @@ const Header = () => {
                     type="submit"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-0 top-0 h-full rounded-full hover:bg-primary/10"
+                    className="absolute right-0 top-0 h-full rounded-full hover:bg-primary"
                   >
                     <Search className="h-4 w-4" />
                   </Button>
@@ -240,7 +241,7 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative rounded-full hover:bg-primary/10"
+                  className="relative rounded-full hover:bg-primary"
                 >
                   <ShoppingBag className="h-5 w-5" />
                   {getCartItemsCount() > 0 && (
@@ -315,7 +316,7 @@ const Header = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="relative rounded-full hover:bg-primary/10"
+                      className="relative rounded-full hover:bg-primary"
                     >
                       <Heart className="h-5 w-5" />
                       {getWishlistCount() > 0 && (
@@ -335,7 +336,7 @@ const Header = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="rounded-full hover:bg-primary/10"
+                      className="rounded-full hover:bg-primary"
                     >
                       <LogIn className="h-5 w-5" />
                     </Button>
@@ -344,7 +345,7 @@ const Header = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="rounded-full hover:bg-primary/10"
+                      className="rounded-full hover:bg-primary"
                     >
                       <UserPlus className="h-5 w-5" />
                     </Button>
@@ -435,9 +436,10 @@ const MobileNavigation = ({
         <div key={item.id}>
           {item.child && item.child.length > 0 ? (
             <div>
+              {/* Đồng bộ hover với NavigationMenu: sử dụng accent cho hover/focus */}
               <Button
                 variant="ghost"
-                className="w-full justify-between hover:bg-primary/5 rounded-md uppercase"
+                className="w-full justify-between rounded-md uppercase hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                 onClick={() => toggleExpanded(item.id.toString())} // Convert id to string
               >
                 <Link
@@ -458,9 +460,10 @@ const MobileNavigation = ({
                 <div className="ml-4 mt-2 space-y-2 border-l-2 border-border pl-3 animate-in slide-in-from-top duration-200">
                   {item.child.map(child => (
                     <div key={child.id}>
+                      {/* Subcategory link: đồng bộ hover với NavigationMenu */}
                       <Link
                         to={`/category/${child.id}`} // Use id to create path
-                        className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors uppercase"
+                        className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
                         onClick={onClose}
                       >
                         {child.name}
@@ -471,13 +474,16 @@ const MobileNavigation = ({
               )}
             </div>
           ) : (
-            <Link
-              to={`/category/${item.id}`} // Use id to create path
-              className="block py-2 px-4 text-sm font-medium hover:text-primary transition-colors uppercase"
-              onClick={onClose}
-            >
-              {item.name}
-            </Link>
+            <>
+              {/* Leaf category link: đồng bộ hover với NavigationMenu */}
+              <Link
+                to={`/category/${item.id}`} // Use id to create path
+                className="block rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
+                onClick={onClose}
+              >
+                {item.name}
+              </Link>
+            </>
           )}
         </div>
       ))}
