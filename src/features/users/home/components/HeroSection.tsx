@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 /**
  * HeroSection Component
  * Displays the hero section of the homepage with a title, description, and call-to-action buttons.
@@ -19,14 +17,14 @@ const HeroSection = () => {
           Connecting buyers and sellers worldwide. Discover thousands of quality
           products, safe and convenient transactions.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/seller"
             className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-lg"
           >
             Sell with Us
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );
