@@ -54,11 +54,11 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
       setLoading(true);
       setError(null);
       try {
-        const fetchOrdersFunc = status === "all" ? orderService.getOrdersByUser : orderService.getOrdersByUserAndStatus;
-        const fetchedOrders = await fetchOrdersFunc(
-          user.id,
-          Number(status)
-        );
+        const fetchOrdersFunc =
+          status === "all"
+            ? orderService.getOrdersByUser
+            : orderService.getOrdersByUserAndStatus;
+        const fetchedOrders = await fetchOrdersFunc(user.id, Number(status));
         setOrders(fetchedOrders.content);
       } catch (err) {
         if (err instanceof AxiosError) {
@@ -76,18 +76,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
     };
 
     fetchOrders();
-  }, [user?.id , status]);
-
-  // Filter orders by status
-  const filteredOrders = orders.filter(order => {
-    if (status === "all") return true;
-    if (status === "pending_confirmation") return order.status === 0; // 0: Pending confirmation
-    if (status === "awaiting_pickup") return order.status === 1; // 1: Awaiting pickup
-    if (status === "in_delivery") return order.status === 2; // 2: In delivery
-    if (status === "completed") return order.status === 3; // 3: Completed
-    if (status === "cancelled") return order.status === 4; // 4: Canceled
-    return false;
-  });
+  }, [user?.id, status]);
 
   if (loading) {
     return (
@@ -117,12 +106,12 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
 
   return (
     <div className="mt-6 space-y-6">
-      {filteredOrders.length === 0 ? (
+      {orders.length === 0 ? (
         <p className="text-center text-gray-600 py-8 text-base">
           No orders found with this status.
         </p>
       ) : (
-        filteredOrders.map(order => (
+        orders.map(order => (
           <Card
             key={order.id}
             className="bg-white shadow-none rounded-lg overflow-hidden"
@@ -181,8 +170,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
                   </p>
                   <p className="text-xs text-gray-600 ml-4 flex items-center">
                     <MapPin className="h-3 w-3 mr-1" />{" "}
-                    {`${order.orderAddressDTO?.address}` ||
-                      "N/A"}
+                    {`${order.orderAddressDTO?.address}` || "N/A"}
                   </p>
                 </div>
                 <div className="space-y-1">
