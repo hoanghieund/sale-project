@@ -118,7 +118,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           // Ghi lỗi vào console nếu có lỗi trong quá trình tải
           console.error("Lỗi khi tải thông tin người dùng:", error);
           // Gửi action LOGIN_FAILURE nếu tải thất bại
-          dispatch({ type: "LOGIN_FAILURE", payload: "Tải thông tin người dùng thất bại" });
+          dispatch({
+            type: "LOGIN_FAILURE",
+            payload: "Tải thông tin người dùng thất bại",
+          });
         } finally {
           // Luôn gửi action FINISH_LOADING để đảm bảo isLoading được đặt lại thành false
           dispatch({ type: "FINISH_LOADING" });
@@ -276,13 +279,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-    /**
+  /**
    * Xóa thông báo lỗi
    */
   const clearError = () => {
     dispatch({ type: "CLEAR_ERROR" });
   };
-
 
   /**
    * Giá trị context được cung cấp cho các component con

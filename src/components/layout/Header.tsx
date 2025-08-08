@@ -126,7 +126,11 @@ const Header = () => {
               {/* Sử dụng logo từ public/logo.png để thống nhất branding */}
               <Link to="/" className="flex items-center" aria-label="Home">
                 {/* Tăng kích thước logo và thêm responsive để hiển thị tốt trên màn hình lớn */}
-                <img src="/logo.png" alt="Shop Logo" className="h-14 w-auto" />
+                <img
+                  src="/logo.png"
+                  alt="Shop Logo"
+                  className="h-14 md:h-16 lg:h-20 w-auto"
+                />
               </Link>
               {/* All Categories Button - Desktop */}
               <Sheet
