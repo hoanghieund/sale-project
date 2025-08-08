@@ -32,7 +32,12 @@ const ProductDetailPage = () => {
 
       // Fetch shop information from API data
       if (productData.shop) {
-        setShop(productData.shop);
+        setShop({
+          ...productData.shop,
+          totalProduct: productData.totalProduct,
+          totalProductSold: productData.totalProductSold,
+          totalReview: productData.totalReview,
+        });
       }
     } catch (err) {
       console.error("Error loading data:", err);

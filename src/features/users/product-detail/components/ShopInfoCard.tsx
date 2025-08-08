@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shop } from "@/types";
@@ -36,6 +37,36 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
           >
             {shop.name}
           </Link>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
+            {shop.totalProduct !== undefined && (
+              <p>
+                <span className="font-medium">Total Products:</span>{" "}
+                {shop?.totalProduct || 0}
+              </p>
+            )}
+            {shop.totalProductSold !== undefined && (
+              <p>
+                <span className="font-medium">Total Sold:</span>{" "}
+                {shop?.totalProductSold || 0}
+              </p>
+            )}
+            {shop.totalReview !== undefined && (
+              <p>
+                <span className="font-medium">Total Review:</span>{" "}
+                {shop?.totalReview || 0}
+              </p>
+            )}
+            {shop.status !== undefined && (
+              <Badge variant={shop.status ? "default" : "destructive"}>
+                {shop.status ? "Active" : "Paused"}
+              </Badge>
+            )}
+            {shop.timeRequest && (
+              <p className="text-xs text-muted-foreground">
+                Joined: {new Date(shop.timeRequest).toLocaleDateString("en-US")}
+              </p>
+            )}
+          </div>
         </div>
         <Button asChild variant="outline">
           <Link to={`/shop/${shop.slug}`}>View Shop</Link>
