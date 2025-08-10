@@ -31,13 +31,13 @@ import React, { useState } from "react";
  * @property {Category[]} categories - Danh sách các danh mục cần hiển thị.
  * @property {(category: Category) => void} onEdit - Hàm xử lý khi người dùng click chỉnh sửa danh mục.
  * @property {(category: Category) => void} onDelete - Hàm xử lý khi người dùng click xóa danh mục.
- * @property {() => void} onCreateNew - Hàm xử lý khi người dùng click tạo danh mục mới.
+ * @property {() => void} [onCreateNew] - Hàm xử lý khi người dùng click tạo danh mục mới (tùy chọn).
  */
 interface CategoryTableProps {
   categories: Category[];
   onEdit: (category: Category) => void;
   onDelete: (category: Category) => void;
-  onCreateNew: () => void;
+  onCreateNew?: () => void; // Làm cho prop này trở thành tùy chọn
 }
 
 /**
@@ -81,7 +81,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Thanh tìm kiếm và nút Thêm danh mục */}
+      {/* Thanh tìm kiếm */}
       <div className="flex justify-between items-center">
         <div className="flex-1 max-w-sm">
           <Input
@@ -91,10 +91,12 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
             className="h-9"
           />
         </div>
-        <Button onClick={onCreateNew}>
-          <Plus className="h-4 w-4 mr-2" />
-          Thêm danh mục
-        </Button>
+        {onCreateNew && (
+          <Button onClick={onCreateNew}>
+            <Plus className="h-4 w-4 mr-2" />
+            Thêm danh mục
+          </Button>
+        )}
       </div>
 
       {/* Bảng hiển thị danh mục */}

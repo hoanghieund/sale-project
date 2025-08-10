@@ -6,11 +6,17 @@
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { CategoryTable } from "@/features/seller/components/CategoryTable";
 import DeleteCategoryDialog from "@/features/seller/components/DeleteCategoryDialog"; // Sẽ tạo sau
-import { sellerAPI } from "@/features/seller/services/seller";
 import { PageContainer } from "@/features/seller/components/PageContainer";
+import { sellerAPI } from "@/features/seller/services/seller";
 import { Category } from "@/features/seller/types";
 import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react"; // Thêm useState
@@ -27,7 +33,9 @@ const CategoryManagementPage: React.FC = () => {
   const [loading, setLoading] = useState(true); // State cho trạng thái loading
   const [error, setError] = useState<string | null>(null); // State cho lỗi
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null
+  );
 
   useEffect(() => {
     /**
@@ -41,8 +49,10 @@ const CategoryManagementPage: React.FC = () => {
         const categoriesData = await sellerAPI.getCategories();
         setCategories(categoriesData); // Cập nhật danh sách danh mục
       } catch (err: any) {
-        setError(err.message || 'Lỗi khi tải danh mục.'); // Đặt thông báo lỗi
-        toast.error("Lỗi", { description: err.message || "Không thể tải danh mục sản phẩm." });
+        setError(err.message || "Lỗi khi tải danh mục."); // Đặt thông báo lỗi
+        toast.error("Lỗi", {
+          description: err.message || "Không thể tải danh mục sản phẩm.",
+        });
       } finally {
         setLoading(false); // Kết thúc loading
       }
@@ -82,9 +92,13 @@ const CategoryManagementPage: React.FC = () => {
       try {
         await sellerAPI.deleteCategory(categoryToDelete.id);
         setCategories(categories.filter(cat => cat.id !== categoryToDelete.id)); // Cập nhật lại danh sách danh mục
-        toast.success("Thành công", { description: "Xóa danh mục thành công!" });
+        toast.success("Thành công", {
+          description: "Xóa danh mục thành công!",
+        });
       } catch (err: any) {
-        toast.error("Lỗi", { description: err.message || "Không thể xóa danh mục." });
+        toast.error("Lỗi", {
+          description: err.message || "Không thể xóa danh mục.",
+        });
       } finally {
         setLoading(false); // Kết thúc loading
         setShowDeleteDialog(false);
@@ -93,7 +107,8 @@ const CategoryManagementPage: React.FC = () => {
     }
   };
 
-  if (loading) { // Sử dụng state loading cục bộ
+  if (loading) {
+    // Sử dụng state loading cục bộ
     return (
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
@@ -123,7 +138,6 @@ const CategoryManagementPage: React.FC = () => {
             categories={categories} // Sử dụng state categories cục bộ
             onEdit={handleEditCategory}
             onDelete={handleDeleteCategory}
-            onCreateNew={() => console.log("Create New Category")} // Sẽ điều hướng sau
           />
         </CardContent>
       </Card>

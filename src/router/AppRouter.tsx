@@ -83,6 +83,12 @@ const CreateProductPage = lazy(
 const EditProductPage = lazy(
   () => import("@/features/seller/pages/EditProductPage")
 );
+const OrderManagementPage = lazy(
+  () => import("@/features/seller/pages/OrderManagementPage")
+);
+const OrderDetailPage = lazy(
+  () => import("@/features/seller/pages/OrderDetailPage")
+);
 
 const AppRouter = () => {
   return (
@@ -169,6 +175,8 @@ const AppRouter = () => {
                 path="products/edit/:productId"
                 element={<EditProductPage />}
               />
+              <Route path="orders" element={<OrderManagementPage />} />
+              <Route path="orders/:orderId" element={<OrderDetailPage />} />
             </Route>
           </Route>
 

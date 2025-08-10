@@ -1,6 +1,13 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { SellerSidebar } from "@/features/seller/components/SellerSidebar"; // Sử dụng sidebar tùy chỉnh cho seller
-import { Home, LucideIcon, Package, ShoppingCart, Users } from "lucide-react"; // Ví dụ icons
+import {
+  Home,
+  LucideIcon,
+  Package,
+  ShoppingBag,
+  ShoppingCart,
+  Users,
+} from "lucide-react"; // Ví dụ icons
 import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom"; // Dùng router state để hiển thị header
 
@@ -47,6 +54,12 @@ const navLinks: NavLink[] = [
     title: "Quản lý Sản phẩm",
     href: "/seller/products",
     icon: Users,
+    variant: "ghost",
+  },
+  {
+    title: "Quản lý Đơn hàng",
+    href: "/seller/orders",
+    icon: ShoppingBag,
     variant: "ghost",
   },
 ];
