@@ -66,16 +66,16 @@ const ShopManagementPage = lazy(
   () => import("@/features/seller/pages/ShopManagementPage")
 );
 const CategoryManagementPage = lazy(
-  () => import("@/features/seller/pages/CategoryManagementPage")
+  () => import("@/features/seller/categories/pages/CategoryManagementPage")
 );
 const ProductManagementPage = lazy(
   () => import("@/features/seller/pages/ProductManagementPage")
 );
 const CreateCategoryPage = lazy(
-  () => import("@/features/seller/pages/CreateCategoryPage")
+  () => import("@/features/seller/categories/pages/CreateCategoryPage")
 );
 const EditCategoryPage = lazy(
-  () => import("@/features/seller/pages/EditCategoryPage")
+  () => import("@/features/seller/categories/pages/EditCategoryPage")
 );
 const CreateProductPage = lazy(
   () => import("@/features/seller/pages/CreateProductPage")

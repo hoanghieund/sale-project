@@ -5,9 +5,14 @@
  */
 
 import LoadingSpinner from "@/components/common/LoadingSpinner"; // Import LoadingSpinner
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ProductForm } from "@/features/seller/components/ProductForm"; // Sẽ tạo sau
-import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
 import { Category, Product } from "@/features/seller/types"; // Sửa đường dẫn đúng tới types của Seller
 import React, { useEffect, useState } from "react"; // Thêm useState, useEffect
@@ -37,8 +42,10 @@ const CreateProductPage: React.FC = () => {
         const categoriesData = await sellerAPI.getCategories();
         setCategories(categoriesData);
       } catch (err: any) {
-        setError(err.message || 'Lỗi khi tải danh mục.');
-        toast.error("Lỗi", { description: err.message || "Không thể tải danh mục sản phẩm." });
+        setError(err.message || "Lỗi khi tải danh mục.");
+        toast.error("Lỗi", {
+          description: err.message || "Không thể tải danh mục sản phẩm.",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -52,15 +59,21 @@ const CreateProductPage: React.FC = () => {
    * @description Xử lý submit form tạo sản phẩm mới.
    * @param {Omit<Product, 'id' | 'createdAt' | 'updatedAt'>} data - Dữ liệu sản phẩm từ form.
    */
-  const handleSubmit = async (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleSubmit = async (
+    data: Omit<Product, "id" | "createdAt" | "updatedAt">
+  ) => {
     setIsLoading(true);
     try {
       // TODO: Đồng bộ CreateProductPayload theo schema mới (ProductSku, v.v.). Tạm thời cast để không chặn UI task.
       const newProduct = await sellerAPI.createProduct(data as any);
-      toast.success("Thành công", { description: "Tạo sản phẩm mới thành công!" });
+      toast.success("Thành công", {
+        description: "Tạo sản phẩm mới thành công!",
+      });
       navigate("/seller/products");
     } catch (err: any) {
-      toast.error("Lỗi", { description: err.message || "Không thể tạo sản phẩm mới." });
+      toast.error("Lỗi", {
+        description: err.message || "Không thể tạo sản phẩm mới.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +88,7 @@ const CreateProductPage: React.FC = () => {
   }
 
   return (
-    <PageContainer>
+    <>
       <Card>
         <CardHeader>
           <CardTitle>Tạo Sản phẩm mới</CardTitle>
@@ -91,7 +104,7 @@ const CreateProductPage: React.FC = () => {
           />
         </CardContent>
       </Card>
-    </PageContainer>
+    </>
   );
 };
 

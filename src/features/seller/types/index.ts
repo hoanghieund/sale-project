@@ -3,6 +3,8 @@
  * Bao gồm các interface cho Shop, Category và Product dựa trên yêu cầu nghiệp vụ.
  */
 
+import { CollectionResponse } from "@/types";
+
 /**
  * @interface Shop
  * @description Định nghĩa cấu trúc dữ liệu cho một cửa hàng (Shop).
@@ -19,21 +21,6 @@ export interface Shop {
   isActive: boolean; // Trạng thái hoạt động của gian hàng
   createdAt: Date; // Thời gian tạo cửa hàng
   updatedAt: Date; // Thời gian cập nhật gần nhất của cửa hàng
-}
-
-/**
- * @interface Category
- * @description Định nghĩa cấu trúc dữ liệu cho một danh mục sản phẩm.
- * Mỗi cửa hàng có nhiều danh mục.
- */
-export interface Category {
-  id: string; // Mã định danh duy nhất của danh mục
-  name: string; // Tên danh mục
-  description?: string; // Mô tả danh mục (có thể có hoặc không)
-  shopId: string; // Mã định danh cửa hàng sở hữu danh mục (khóa ngoại)
-  isDefault: boolean; // True nếu đây là danh mục "All" mặc định
-  createdAt: Date; // Thời gian tạo danh mục
-  updatedAt: Date; // Thời gian cập nhật gần nhất của danh mục
 }
 
 /**
@@ -68,7 +55,7 @@ export interface DashboardStats {
   conversionRate: number;
   bestSellingProducts: { id: string; name: string; sales: number }[];
   latestProducts: Product[];
-  popularCategories: Category[];
+  popularCategories: CollectionResponse[];
   shopInfo?: { name: string; logo?: string };
   revenueTrend: { date: string; revenue: number }[];
   alerts: string[];

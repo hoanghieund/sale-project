@@ -5,9 +5,14 @@
  */
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ProductForm } from "@/features/seller/components/ProductForm"; // Sẽ tạo sau
-import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
 import { Category, Product } from "@/features/seller/types"; // Import Product và Category interface từ đúng đường dẫn
 import React, { useEffect, useState } from "react";
@@ -55,8 +60,13 @@ const EditProductPage: React.FC = () => {
           navigate("/seller/products");
         }
       } catch (err: any) {
-        setError(err.message || 'Lỗi khi tải thông tin sản phẩm hoặc danh mục.');
-        toast.error("Lỗi", { description: err.message || "Không thể tải thông tin sản phẩm hoặc danh mục." });
+        setError(
+          err.message || "Lỗi khi tải thông tin sản phẩm hoặc danh mục."
+        );
+        toast.error("Lỗi", {
+          description:
+            err.message || "Không thể tải thông tin sản phẩm hoặc danh mục.",
+        });
         navigate("/seller/products");
       } finally {
         setIsLoading(false);
@@ -78,16 +88,21 @@ const EditProductPage: React.FC = () => {
     try {
       const updatedProduct = await sellerAPI.updateProduct(productId, data);
       setCurrentProduct(updatedProduct); // Cập nhật lại sản phẩm hiện tại
-      toast.success("Thành công", { description: "Cập nhật sản phẩm thành công!" });
+      toast.success("Thành công", {
+        description: "Cập nhật sản phẩm thành công!",
+      });
       navigate("/seller/products"); // Điều hướng về trang quản lý sản phẩm
     } catch (err: any) {
-      toast.error("Lỗi", { description: err.message || "Không thể cập nhật sản phẩm." });
+      toast.error("Lỗi", {
+        description: err.message || "Không thể cập nhật sản phẩm.",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (isLoading || !currentProduct) { // Sử dụng isLoading cục bộ
+  if (isLoading || !currentProduct) {
+    // Sử dụng isLoading cục bộ
     return (
       <div className="flex items-center justify-center min-h-screen">
         <LoadingSpinner />
@@ -95,17 +110,18 @@ const EditProductPage: React.FC = () => {
     );
   }
 
-  if (error) { // Hiển thị lỗi nếu có
+  if (error) {
+    // Hiển thị lỗi nếu có
     return (
-      <PageContainer className="text-center text-red-500">
+      <div className="text-center text-red-500">
         <p>{error}</p>
         <p>Vui lòng thử lại sau.</p>
-      </PageContainer>
+      </div>
     );
   }
 
   return (
-    <PageContainer>
+    <>
       <Card>
         <CardHeader>
           <CardTitle>Chỉnh sửa Sản phẩm</CardTitle>
@@ -122,7 +138,7 @@ const EditProductPage: React.FC = () => {
           />
         </CardContent>
       </Card>
-    </PageContainer>
+    </>
   );
 };
 

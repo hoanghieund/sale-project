@@ -5,11 +5,15 @@
  */
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { DashboardStatsComponent } from "@/features/seller/components/DashboardStats";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { DashboardCharts } from "@/features/seller/components/DashboardCharts";
+import { DashboardStatsComponent } from "@/features/seller/components/DashboardStats";
 import { TopSellingProducts } from "@/features/seller/components/TopSellingProducts";
-import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
 import { DashboardStats } from "@/features/seller/types"; // Import DashboardStats interface
 import React, { useEffect, useState } from "react"; // Thêm useState
@@ -37,8 +41,10 @@ const DashboardPage: React.FC = () => {
         const statsData = await sellerAPI.getDashboardStats();
         setStats(statsData);
       } catch (err: any) {
-        setError(err.message || 'Lỗi khi tải số liệu dashboard.');
-        toast.error("Lỗi", { description: err.message || "Không thể tải số liệu dashboard." });
+        setError(err.message || "Lỗi khi tải số liệu dashboard.");
+        toast.error("Lỗi", {
+          description: err.message || "Không thể tải số liệu dashboard.",
+        });
       } finally {
         setLoading(false);
       }
@@ -57,15 +63,15 @@ const DashboardPage: React.FC = () => {
 
   if (error) {
     return (
-      <PageContainer className="text-center text-red-500">
+      <div className="text-center text-red-500">
         <p>{error}</p>
         <p>Vui lòng thử lại sau.</p>
-      </PageContainer>
+      </div>
     );
   }
 
   return (
-    <PageContainer>
+    <>
       {stats ? (
         <>
           {/* Hàng 1: Stats tổng quan (giữ gọn, dùng component sẵn có) */}
@@ -81,15 +87,19 @@ const DashboardPage: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Gợi ý</CardTitle>
-                <CardDescription>Thêm các widget khác ở đây khi cần</CardDescription>
+                <CardDescription>
+                  Thêm các widget khác ở đây khi cần
+                </CardDescription>
               </CardHeader>
             </Card>
           </div>
         </>
       ) : (
-        <div className="text-center py-8 text-gray-500">Không có dữ liệu dashboard để hiển thị.</div>
+        <div className="text-center py-8 text-gray-500">
+          Không có dữ liệu dashboard để hiển thị.
+        </div>
       )}
-    </PageContainer>
+    </>
   );
 };
 

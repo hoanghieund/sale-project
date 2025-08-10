@@ -4,14 +4,18 @@
  * Sử dụng CategoryForm component.
  */
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CategoryForm } from "@/features/seller/components/CategoryForm"; // Sẽ tạo sau
-import { PageContainer } from "@/features/seller/components/PageContainer";
-import { sellerAPI } from "@/features/seller/services/seller";
-import { Category } from "@/features/seller/types"; // Import Category interface từ seller types
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CategoryForm } from "@/features/seller/categories/components/CategoryForm"; // Sẽ tạo sau
 import React, { useState } from "react"; // Thêm useState
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { categoriesService } from "../services/categoriesService";
 
 /**
  * @function CreateCategoryPage
@@ -27,35 +31,43 @@ const CreateCategoryPage: React.FC = () => {
    * @description Xử lý submit form tạo danh mục mới.
    * @param {Pick<Category, 'name' | 'description'>} data - Dữ liệu danh mục từ form (chỉ bao gồm name, description).
    */
-  const handleSubmit = async (data: Pick<Category, 'name' | 'description'>) => {
+  const handleSubmit = async (data: {
+    name: string;
+    description?: string;
+    categoryId: string;
+  }) => {
     setIsLoading(true); // Bắt đầu loading
     try {
-      // Lấy shop hiện tại để gắn shopId cho category mới (bắt buộc theo kiểu Category)
-      const shop = await sellerAPI.getShop();
-      await sellerAPI.createCategory({ ...data, shopId: shop.id });
-      toast.success("Thành công", { description: "Tạo danh mục mới thành công!" });
+      await categoriesService.createCollection(data);
+      toast.success("Success", {
+        description: "Category created successfully!",
+      });
       navigate("/seller/categories"); // Điều hướng về trang quản lý danh mục
     } catch (err: any) {
-      toast.error("Lỗi", { description: err.message || "Không thể tạo danh mục mới." });
+      toast.error("Error", {
+        description: err.message || "Unable to create a new category.",
+      });
     } finally {
       setIsLoading(false); // Kết thúc loading
     }
   };
 
   return (
-    <PageContainer>
-      <Card>
+    <>
+      <Card className="bg-white">
         <CardHeader>
-          <CardTitle>Tạo Danh mục mới</CardTitle>
+          <CardTitle>Create Category</CardTitle>
           <CardDescription>
-            Điền thông tin để thêm một danh mục sản phẩm mới vào gian hàng của bạn.
+            Fill in the information to add a new product category to your
+            store.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CategoryForm onSubmit={handleSubmit} isLoading={isLoading} /> {/* Sử dụng isLoading cục bộ */}
+          <CategoryForm onSubmit={handleSubmit} isLoading={isLoading} />
+          {/* Sử dụng isLoading cục bộ */}
         </CardContent>
       </Card>
-    </PageContainer>
+    </>
   );
 };
 

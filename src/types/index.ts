@@ -154,11 +154,6 @@ export interface Category {
   parentId?: number; // parent_id bigint(20)
   parent?: Category; // Thông tin parent category (optional khi populate)
   child?: Category[]; // Thông tin child categories (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
 }
 
 // Address Types - Dựa trên tbl_address

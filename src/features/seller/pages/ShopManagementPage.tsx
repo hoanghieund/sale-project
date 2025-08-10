@@ -13,7 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { PageContainer } from "@/features/seller/components/PageContainer";
 import { ShopForm } from "@/features/seller/components/ShopForm";
 import { sellerAPI } from "@/features/seller/services/seller";
 import { Shop } from "@/features/seller/types";
@@ -104,7 +103,7 @@ const ShopManagementPage: React.FC = () => {
   // Nếu chưa có shop, hiển thị form tạo shop lần đầu
   if (!shop && !isEditing) {
     return (
-      <PageContainer>
+      <>
         <Card>
           <CardHeader>
             <CardTitle>Chào mừng đến với Kênh bán hàng!</CardTitle>
@@ -119,14 +118,14 @@ const ShopManagementPage: React.FC = () => {
             </Button>
           </CardContent>
         </Card>
-      </PageContainer>
+      </>
     );
   }
 
   // Nếu đang ở chế độ chỉnh sửa hoặc shop đã tồn tại
   if (isEditing || shop) {
     return (
-      <PageContainer>
+      <>
         <ShopForm
           shop={shop || undefined}
           onSubmit={handleCreateOrUpdateShop}
@@ -143,13 +142,13 @@ const ShopManagementPage: React.FC = () => {
             </Button>
           </div>
         )}
-      </PageContainer>
+      </>
     );
   }
 
   // Hiển thị thông tin shop
   return (
-    <PageContainer>
+    <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
@@ -199,7 +198,7 @@ const ShopManagementPage: React.FC = () => {
           )}
         </CardContent>
       </Card>
-    </PageContainer>
+    </>
   );
 };
 

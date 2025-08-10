@@ -6,10 +6,15 @@
 
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import DeleteProductDialog from "@/features/seller/components/DeleteProductDialog"; // Sẽ tạo sau
 import { ProductTable } from "@/features/seller/components/ProductTable"; // Sẽ tạo sau
-import { PageContainer } from "@/features/seller/components/PageContainer";
 import { sellerAPI } from "@/features/seller/services/seller";
 import { Category, Product } from "@/features/seller/types"; // Thêm Category
 import { Plus } from "lucide-react";
@@ -46,8 +51,11 @@ const ProductManagementPage: React.FC = () => {
         setProducts(productsData);
         setCategories(categoriesData);
       } catch (err: any) {
-        setError(err.message || 'Lỗi khi tải sản phẩm hoặc danh mục.');
-        toast.error("Lỗi", { description: err.message || "Không thể tải danh sách sản phẩm hoặc danh mục." });
+        setError(err.message || "Lỗi khi tải sản phẩm hoặc danh mục.");
+        toast.error("Lỗi", {
+          description:
+            err.message || "Không thể tải danh sách sản phẩm hoặc danh mục.",
+        });
       } finally {
         setLoading(false);
       }
@@ -87,9 +95,13 @@ const ProductManagementPage: React.FC = () => {
       try {
         await sellerAPI.deleteProduct(productToDelete.id);
         setProducts(products.filter(prod => prod.id !== productToDelete.id)); // Cập nhật lại danh sách sản phẩm
-        toast.success("Thành công", { description: "Xóa sản phẩm thành công!" });
+        toast.success("Thành công", {
+          description: "Xóa sản phẩm thành công!",
+        });
       } catch (err: any) {
-        toast.error("Lỗi", { description: err.message || "Không thể xóa sản phẩm." });
+        toast.error("Lỗi", {
+          description: err.message || "Không thể xóa sản phẩm.",
+        });
       } finally {
         setLoading(false);
         setShowDeleteDialog(false);
@@ -108,15 +120,15 @@ const ProductManagementPage: React.FC = () => {
 
   if (error) {
     return (
-      <PageContainer className="text-center text-red-500">
+      <div className="text-center text-red-500">
         <p>{error}</p>
         <p>Vui lòng thử lại sau.</p>
-      </PageContainer>
+      </div>
     );
   }
 
   return (
-    <PageContainer>
+    <>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
@@ -152,7 +164,7 @@ const ProductManagementPage: React.FC = () => {
           isLoading={loading}
         />
       )}
-    </PageContainer>
+    </>
   );
 };
 

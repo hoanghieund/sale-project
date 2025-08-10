@@ -4,12 +4,15 @@
  * Sử dụng CategoryForm component và lấy ID danh mục từ URL params.
  */
 
-import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CategoryForm } from "@/features/seller/components/CategoryForm"; // Sẽ tạo sau
-import { PageContainer } from "@/features/seller/components/PageContainer";
-import { sellerAPI } from "@/features/seller/services/seller";
-import { Category } from "@/features/seller/types"; // Import Category interface
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CategoryForm } from "@/features/seller/categories/components/CategoryForm"; // Sẽ tạo sau
+import { categoriesService } from "@/features/seller/categories/services/categoriesService";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -22,7 +25,7 @@ import { toast } from "sonner";
 const EditCategoryPage: React.FC = () => {
   const navigate = useNavigate();
   const { categoryId } = useParams<{ categoryId: string }>();
-  const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
+  const [currentCategory, setCurrentCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Quản lý trạng thái loading cục bộ
   const [error, setError] = useState<string | null>(null); // State cho lỗi
 
@@ -33,7 +36,7 @@ const EditCategoryPage: React.FC = () => {
      */
     const fetchCategory = async () => {
       if (!categoryId) {
-        toast.error("Lỗi", { description: "Không tìm thấy ID danh mục." });
+        toast.error("Error", { description: "Category ID not found." });
         navigate("/seller/categories");
         return;
       }
@@ -41,16 +44,20 @@ const EditCategoryPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const categoryData = await sellerAPI.getCategoryById(categoryId); // Gọi API lấy category theo ID
+        const categoryData = await categoriesService.getCollectionById(
+          categoryId
+        ); // Gọi API lấy category theo ID
         if (categoryData) {
           setCurrentCategory(categoryData);
         } else {
-          toast.error("Lỗi", { description: "Không tìm thấy danh mục này." });
+          toast.error("Error", { description: "This category was not found." });
           navigate("/seller/categories");
         }
       } catch (err: any) {
-        setError(err.message || 'Lỗi khi tải thông tin danh mục.');
-        toast.error("Lỗi", { description: err.message || "Không thể tải thông tin danh mục." });
+        setError(err.message || "Failed to load category information.");
+        toast.error("Error", {
+          description: err.message || "Unable to load category information.",
+        });
         navigate("/seller/categories");
       } finally {
         setIsLoading(false);
@@ -65,57 +72,56 @@ const EditCategoryPage: React.FC = () => {
    * @description Xử lý submit form chỉnh sửa danh mục.
    * @param {Partial<Category>} data - Dữ liệu danh mục từ form.
    */
-  const handleSubmit = async (data: Partial<Category>) => {
+  const handleSubmit = async (data: { name: string; categoryId: string }) => {
     if (!categoryId) return; // Đảm bảo có categoryId
 
     setIsLoading(true);
     try {
-      const updatedCategory = await sellerAPI.updateCategory(categoryId, data);
+      const updatedCategory = await categoriesService.updateCollection(
+        categoryId,
+        data
+      );
       setCurrentCategory(updatedCategory); // Cập nhật lại category hiện tại
-      toast.success("Thành công", { description: "Cập nhật danh mục thành công!" });
+      toast.success("Success", {
+        description: "Category updated successfully!",
+      });
       navigate("/seller/categories"); // Điều hướng về trang quản lý danh mục
     } catch (err: any) {
-      toast.error("Lỗi", { description: err.message || "Không thể cập nhật danh mục." });
+      toast.error("Error", {
+        description: err.message || "Unable to update category.",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (isLoading || !currentCategory) {
+  if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner />
+      <div className="text-center text-red-500">
+        <p>{error}</p>
+        <p>Please try again later.</p>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <PageContainer className="text-center text-red-500">
-        <p>{error}</p>
-        <p>Vui lòng thử lại sau.</p>
-      </PageContainer>
-    );
-  }
-
   return (
-    <PageContainer>
+    <>
       <Card>
         <CardHeader>
-          <CardTitle>Chỉnh sửa Danh mục</CardTitle>
+          <CardTitle>Edit Category</CardTitle>
           <CardDescription>
-            Cập nhật thông tin của danh mục sản phẩm hiện có.
+            Update information for the existing product category.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CategoryForm 
-            initialData={currentCategory} 
-            onSubmit={handleSubmit} 
-            isLoading={isLoading} 
+          <CategoryForm
+            initialData={currentCategory}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
           />
         </CardContent>
       </Card>
-    </PageContainer>
+    </>
   );
 };
 
