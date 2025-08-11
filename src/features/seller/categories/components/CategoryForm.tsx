@@ -4,10 +4,11 @@
  */
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import PlatformCategorySelect from "@/components/common/PlatformCategorySelect";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,15 +20,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { categoriesService } from "@/features/seller/categories/services/categoriesService";
-import { Category } from "@/types";
 
 /**
  * @schema categorySchema
@@ -80,59 +72,8 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
       categoryId: initialData?.categoryId ? String(initialData.categoryId) : "",
     },
   });
-
-  // State: danh sách danh mục cha để hiển thị trong Select
-  const [parentOptions, setParentOptions] = useState<Category[]>([]);
-  const [loadingParents, setLoadingParents] = useState(false);
-
-  // Fetch: tải danh mục để chọn làm danh mục cha
-  // NOTE: Khi module logger Winston sẵn sàng, thay console.error bằng logger thích hợp
-  useEffect(() => {
-    let mounted = true; // Tránh setState khi unmounted
-    const fetchParents = async () => {
-      setLoadingParents(true);
-      try {
-        const res: Category[] = await categoriesService.getTreeCategory(
-          0,
-          1000
-        );
-        if (mounted) setParentOptions(res);
-      } catch (err) {
-        console.error("Failed to load parent categories:", err);
-      } finally {
-        if (mounted) setLoadingParents(false);
-      }
-    };
-    fetchParents();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  /**
-   * @function renderCategoryOptions
-   * @description Render đệ quy danh sách danh mục (cha/con) thành các SelectItem có indent.
-   * Cho phép chọn được cả danh mục cha lẫn danh mục con (categoryId = id mục được chọn).
-   */
-  const renderCategoryOptions = (
-    cats: Category[],
-    depth = 0
-  ): JSX.Element[] => {
-    const prefix = depth > 0 ? `${"— ".repeat(depth)}` : ""; // tạo indent trực quan cho cấp con
-    return cats.flatMap(cat => {
-      const label = `${prefix}${cat.name ?? `Category #${cat.id}`}`;
-      const nodes: JSX.Element[] = [
-        <SelectItem key={`cat-${cat.id}`} value={String(cat.id)}>
-          {label}
-        </SelectItem>,
-      ];
-      // Nếu có con, tiếp tục render đệ quy các cấp con
-      if (cat.child && cat.child.length > 0) {
-        nodes.push(...renderCategoryOptions(cat.child, depth + 1));
-      }
-      return nodes;
-    });
-  };
+  // Platform category select has been extracted to a reusable component
+  // Logic fetch + recursive render now lives in PlatformCategorySelect
 
   return (
     <Form {...form}>
@@ -162,20 +103,12 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Platform category</FormLabel>
-              <Select
-                onValueChange={field.onChange}
+              {/* Sử dụng component tái sử dụng để chọn platform category */}
+              <PlatformCategorySelect
                 value={field.value}
-                disabled={loadingParents}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select platform category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {renderCategoryOptions(parentOptions)}
-                </SelectContent>
-              </Select>
+                onChange={field.onChange}
+                placeholder="Select platform category"
+              />
               <FormDescription>
                 Select a platform category (parent or child). categoryId will be
                 set based on your selection.

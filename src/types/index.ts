@@ -13,6 +13,10 @@ export interface Product {
   material?: string; // material varchar(255)
   origin?: string; // origin varchar(255)
   style?: string; // style varchar(255)
+  height?: number; // height float
+  width?: number; // width float
+  length?: number; // length float
+  weight?: number; // weight float
 
   // Thông tin đánh giá và tương tác
   star?: number; // star double - rating

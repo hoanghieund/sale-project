@@ -165,11 +165,12 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
       </Dialog>
 
       {/* Image Thumbnails - Display thumbnails for user selection */}
-      <div className="relative mt-4">
-        {/* Thumbnails container với chiều cao cố định và scrollbar tùy chỉnh */}
-        <div
-          ref={thumbnailsContainerRef} /* Thêm ref cho container */
-          className="
+      {images?.length > 1 && (
+        <div className="relative mt-4">
+          {/* Thumbnails container với chiều cao cố định và scrollbar tùy chỉnh */}
+          <div
+            ref={thumbnailsContainerRef} /* Thêm ref cho container */
+            className="
             flex gap-2 py-2 px-1 
             overflow-x-auto max-w-full 
             scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent 
@@ -177,26 +178,26 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             snap-x snap-mandatory
             pb-4 /* Thêm padding-bottom để tránh scrollbar che mất nội dung */
           "
-          style={{
-            scrollbarWidth: "thin" /* Firefox */,
-            msOverflowStyle: "none" /* IE and Edge */,
-          }}
-        >
-          {/* Thêm div flex-shrink-0 bao quanh mỗi thumbnail để ngăn chúng bị co lại */}
-          {images?.map((img, index) => (
-            <div
-              key={index}
-              className="flex-shrink-0 snap-start"
-              ref={el =>
-                (thumbnailRefs.current[index] = el)
-              } /* Thêm ref cho từng thumbnail */
-            >
-              <button
-                onClick={() => {
-                  setSelectedImage(index);
-                  api?.scrollTo(index); // Scroll to the corresponding slide when thumbnail is clicked
-                }}
-                className={`
+            style={{
+              scrollbarWidth: "thin" /* Firefox */,
+              msOverflowStyle: "none" /* IE and Edge */,
+            }}
+          >
+            {/* Thêm div flex-shrink-0 bao quanh mỗi thumbnail để ngăn chúng bị co lại */}
+            {images?.map((img, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 snap-start"
+                ref={el =>
+                  (thumbnailRefs.current[index] = el)
+                } /* Thêm ref cho từng thumbnail */
+              >
+                <button
+                  onClick={() => {
+                    setSelectedImage(index);
+                    api?.scrollTo(index); // Scroll to the corresponding slide when thumbnail is clicked
+                  }}
+                  className={`
                   w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden 
                   border-2 transition-colors flex-shrink-0 
                   ${
@@ -205,24 +206,25 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                       : "border-transparent hover:border-gray-300"
                   }
                 `}
-              >
-                {img.path ? (
-                  <img
-                    src={img.path}
-                    alt={`${productTitle} Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy" /* Lazy loading cho thumbnails */
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                    <span className="text-2xl text-gray-400">📦</span>
-                  </div>
-                )}
-              </button>
-            </div>
-          ))}
+                >
+                  {img.path ? (
+                    <img
+                      src={img.path}
+                      alt={`${productTitle} Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy" /* Lazy loading cho thumbnails */
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <span className="text-2xl text-gray-400">📦</span>
+                    </div>
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

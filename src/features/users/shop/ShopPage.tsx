@@ -201,7 +201,7 @@ const ShopPage = () => {
                 </div>
 
                 {/* Metrics area: highlighted, easy to scan */}
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   {/* Average Rating */}
                   <div className="flex items-center gap-4">
                     <div className="text-xs text-muted-foreground">Rating</div>
@@ -210,7 +210,17 @@ const ShopPage = () => {
                         <span className="text-base font-medium">
                           {shop.star || 0}
                         </span>
-                        <Star className="fill-yellow-400 text-yellow-400 w-4 h-4" />
+                        {/* Hiển thị 5 sao, sao tô đầy theo điểm số; sao rỗng vẫn giữ stroke vàng để đồng bộ brand */}
+                        {Array.from({ length: 5 }).map((_, idx) => (
+                          <Star
+                            key={idx}
+                            className={cn(
+                              "w-4 h-4 text-yellow-400",
+                              idx < Math.round(shop?.star || 0) &&
+                                "fill-yellow-400"
+                            )}
+                          />
+                        ))}
                       </div>
                     </div>
                   </div>

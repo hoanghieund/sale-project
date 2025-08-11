@@ -1,9 +1,3 @@
-/**
- * @file Trang chỉnh sửa sản phẩm (Edit Product Page) cho module Seller.
- * Cung cấp form để chủ shop chỉnh sửa thông tin của một sản phẩm hiện có.
- * Sử dụng ProductForm component và lấy ID sản phẩm từ URL params.
- */
-
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import {
   Card,
@@ -17,6 +11,7 @@ import { Category, Product } from "@/types";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { productService } from "../services/productService";
 
 /**
  * @function EditProductPage
@@ -47,8 +42,8 @@ const EditProductPage: React.FC = () => {
       setError(null);
       try {
         const [productData, categoriesData] = await Promise.all([
-          sellerAPI.getProductById(productId),
-          sellerAPI.getCategories(),
+          productService.getProductById(productId),
+          productService.getCategories(),
         ]);
 
         if (productData) {
@@ -85,7 +80,10 @@ const EditProductPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const updatedProduct = await sellerAPI.updateProduct(productId, data);
+      const updatedProduct = await productService.updateProduct(
+        productId,
+        data
+      );
       setCurrentProduct(updatedProduct); // Cập nhật lại sản phẩm hiện tại
       toast.success("Thành công", {
         description: "Cập nhật sản phẩm thành công!",

@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Category, Product } from "@/types";
+import { Product } from "@/types";
 import { formatCurrencyUSD, formatDate } from "@/utils/formatters"; // Chuẩn hóa định dạng tiền tệ + ngày tháng qua util
 import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import React from "react";
@@ -30,14 +30,12 @@ import React from "react";
  * @interface ProductTableProps
  * @description Props cho component ProductTable.
  * @property {Product[]} products - Danh sách các sản phẩm cần hiển thị.
- * @property {Category[]} categories - Danh sách các danh mục để lọc sản phẩm.
  * @property {(product: Product) => void} onEdit - Hàm xử lý khi người dùng click chỉnh sửa sản phẩm.
  * @property {(product: Product) => void} onDelete - Hàm xử lý khi người dùng click xóa sản phẩm.
  * @property {(product: Product, nextStatus: boolean) => void} [onToggleStatus] - Hàm đổi trạng thái hiển thị.
  */
 interface ProductTableProps {
   products: Product[];
-  categories: Category[];
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
   onToggleStatus?: (product: Product, nextStatus: boolean) => void;
@@ -51,12 +49,10 @@ interface ProductTableProps {
  */
 export const ProductTable: React.FC<ProductTableProps> = ({
   products,
-  categories,
   onEdit,
   onDelete,
   onToggleStatus,
 }) => {
-  console.log("🚀 ~ ProductTable ~ categories:", categories);
   /**
    * @function handleDelete
    * @description Xử lý logic khi người dùng muốn xóa một sản phẩm.
@@ -90,9 +86,15 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           <TableBody>
             {products.map(product => {
               // Map theo cấu trúc Product từ '@/types'
-              const categoryName =
-                categories.find(cat => cat.id === product.categoriesId)?.name ||
-                "N/A";
+              // Tạo tên danh mục an toàn: chỉ hiển thị child nếu tồn tại
+              const parentSlug = product.collectionResponse?.categoryTree?.slug;
+              const childSlug =
+                product.collectionResponse?.categoryTree?.child?.slug;
+              const categoryName = parentSlug
+                ? childSlug
+                  ? `${parentSlug} / ${childSlug}`
+                  : parentSlug
+                : "N/A";
               const imageSrc =
                 product.imagesDTOList && product.imagesDTOList.length > 0
                   ? product.imagesDTOList[0]?.path || "/placeholder.svg"

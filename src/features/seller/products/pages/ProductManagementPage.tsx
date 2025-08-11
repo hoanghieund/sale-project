@@ -19,8 +19,7 @@ import {
 import DeleteProductDialog from "@/features/seller/products/components/DeleteProductDialog";
 import { ProductTable } from "@/features/seller/products/components/ProductTable";
 import { productService } from "@/features/seller/products/services/productService";
-import { categoryService } from "@/services/categoryService";
-import { Category, Product } from "@/types";
+import { Product } from "@/types";
 import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -33,7 +32,6 @@ import { toast } from "sonner";
  */
 const ProductManagementPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
@@ -44,36 +42,6 @@ const ProductManagementPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-
-  // Fetch categories tree rồi flatten thành danh mục đơn giản (id, name)
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const treeResp = await categoryService.getAllCategory(0, 1000);
-        const list: Category[] = [];
-        // Flatten an toàn theo các key phổ biến (id, name, child)
-        const walk = (node: any) => {
-          if (!node) return;
-          if (Array.isArray(node)) {
-            node.forEach(walk);
-            return;
-          }
-          if (node.id && node.name)
-            list.push({ id: node.id, name: node.name } as Category);
-          if (node.child) walk(node.child);
-          if (node.children) walk(node.children);
-        };
-        console.log("🚀 ~ fetchCategories ~ list:", list);
-
-        walk(treeResp);
-        setCategories(list);
-      } catch (err: any) {
-        // Không chặn luồng nếu lỗi danh mục
-        console.warn("Lỗi tải danh mục:", err?.message || err);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   // Debounce searchTerm -> textSearch
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -112,8 +80,6 @@ const ProductManagementPage: React.FC = () => {
    * @param {Product} product - Sản phẩm cần chỉnh sửa.
    */
   const handleEditProduct = (product: Product) => {
-    // Điều hướng đến trang chỉnh sửa sản phẩm
-    // navigate(`/seller/products/edit/${product.id}`); // Cần inject navigate hook
     console.log("Chỉnh sửa sản phẩm:", product);
   };
 
@@ -246,7 +212,6 @@ const ProductManagementPage: React.FC = () => {
           ) : (
             <ProductTable
               products={products}
-              categories={categories} // Truyền categories cục bộ
               onEdit={handleEditProduct}
               onDelete={handleDeleteProduct}
               onToggleStatus={handleToggleStatus}
