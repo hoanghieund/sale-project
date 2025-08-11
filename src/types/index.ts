@@ -169,6 +169,7 @@ export interface DashboardStats {
   monthlyRevenue: number[]; // Tính theo tháng từ tbl_orders
   topProducts: Product[]; // Sản phẩm bán chạy từ tbl_product.total_product_sold
   recentOrders: Order[]; // Đơn hàng gần đây từ tbl_orders
+  revenueTrend: { date: string; revenue: number }[];
 }
 
 // Order Address Types - Dựa trên tbl_orders_address

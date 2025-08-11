@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Product } from "@/features/seller/types"; // Import interface Product
+import { Product } from "@/types"; // Import interface Product
 import React from "react";
 
 /**
@@ -65,17 +65,18 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
               <div className="flex-1 min-w-0">
                 {/* Tên sản phẩm */}
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {product.name}
+                  {product.title}
                 </p>
                 {/* Giá và số lượng bán ước tính */}
                 <p className="text-sm text-gray-500 truncate">
-                  {formatCurrency(product.price)} × {product.stock} sản phẩm
+                  {formatCurrency(product.price)} × {product.totalProductSold}{" "}
+                  sản phẩm
                 </p>
               </div>
               <div className="text-right">
                 {/* Tổng doanh thu ước tính của sản phẩm */}
                 <p className="text-sm font-medium text-gray-900">
-                  {formatCurrency(product.price * product.stock)}
+                  {formatCurrency(product.price * product.totalProductSold)}
                 </p>
                 <p className="text-xs text-gray-500">Doanh thu</p>
               </div>

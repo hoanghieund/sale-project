@@ -6,7 +6,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DashboardStats } from "@/features/seller/types"; // Import interface DashboardStats
+import { DashboardStats } from "@/types"; // Import interface DashboardStats
 import {
   AlertTriangle,
   DollarSign,
@@ -15,7 +15,7 @@ import {
   ShoppingCart,
   TrendingDown,
   TrendingUp,
-  Users
+  Users,
 } from "lucide-react";
 import React from "react";
 
@@ -34,7 +34,9 @@ interface DashboardStatsProps {
  * @param {DashboardStatsProps} props - Props của component.
  * @returns {JSX.Element} Component DashboardStats.
  */
-export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }) => {
+export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
+  stats,
+}) => {
   /**
    * @function formatCurrency
    * @description Định dạng giá trị số thành định dạng tiền tệ Việt Nam Đồng.
@@ -70,7 +72,7 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }
     },
     {
       title: "Tổng danh mục",
-      value: formatNumber(stats.totalCategories),
+      value: formatNumber(stats.topProducts.length),
       description: "Danh mục sản phẩm",
       icon: ShoppingCart,
       trend: "up",
@@ -78,7 +80,9 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }
     },
     {
       title: "Sản phẩm hết hàng",
-      value: formatNumber(stats.outOfStockProducts),
+      value: formatNumber(
+        stats.topProducts.filter(p => p.totalProduct === 0).length
+      ),
       description: "Cần nhập thêm",
       icon: AlertTriangle,
       trend: "down",
@@ -87,7 +91,12 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }
     },
     {
       title: "Doanh thu ước tính",
-      value: formatCurrency(stats.estimatedRevenue),
+      value: formatCurrency(
+        stats.topProducts.reduce(
+          (total, product) => total + product.price * product.totalProduct,
+          0
+        )
+      ),
       description: "Theo giá bán",
       icon: DollarSign,
       trend: "up",
@@ -95,7 +104,12 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }
     },
     {
       title: "Lượt xem",
-      value: formatNumber(stats.totalViews),
+      value: formatNumber(
+        stats.topProducts.reduce(
+          (total, product) => total + product.totalProduct,
+          0
+        )
+      ),
       description: "Tổng lượt xem",
       icon: Eye,
       trend: "up",
@@ -103,7 +117,10 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }
     },
     {
       title: "Tỷ lệ chuyển đổi",
-      value: `${stats.conversionRate}%`,
+      value: `${stats.topProducts.reduce(
+        (total, product) => total + product.totalProduct,
+        0
+      )}%`,
       description: "Tỷ lệ mua hàng",
       icon: Users,
       trend: "up",
@@ -116,9 +133,7 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }
       {statCards.map((stat, index) => (
         <Card key={index}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {stat.title}
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
             <stat.icon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -135,9 +150,11 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({ stats }
                   <TrendingDown className="h-3 w-3 text-red-500" />
                 )}
                 {/* Giá trị xu hướng */}
-                <span className={`text-xs ${
-                  stat.trend === "up" ? "text-green-500" : "text-red-500"
-                }`}>
+                <span
+                  className={`text-xs ${
+                    stat.trend === "up" ? "text-green-500" : "text-red-500"
+                  }`}
+                >
                   {stat.trendValue}
                 </span>
               </div>

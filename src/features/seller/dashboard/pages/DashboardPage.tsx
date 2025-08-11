@@ -14,10 +14,10 @@ import {
 import { DashboardCharts } from "@/features/seller/dashboard/components/DashboardCharts";
 import { DashboardStatsComponent } from "@/features/seller/dashboard/components/DashboardStats";
 import { TopSellingProducts } from "@/features/seller/dashboard/components/TopSellingProducts";
-import { sellerAPI } from "@/features/seller/services/seller";
 import { DashboardStats } from "@/types"; // Import DashboardStats interface
 import React, { useEffect, useState } from "react"; // Thêm useState
 import { toast } from "sonner";
+import { dashboardService } from "../services/dashboardService";
 
 /**
  * @function DashboardPage
@@ -38,7 +38,7 @@ const DashboardPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const statsData = await sellerAPI.getDashboardStats();
+        const statsData = await dashboardService.getDashboardStats();
         setStats(statsData);
       } catch (err: any) {
         setError(err.message || "Lỗi khi tải số liệu dashboard.");
