@@ -4,7 +4,6 @@
  * Sử dụng ProductTable component.
  */
 
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +15,7 @@ import {
 import DeleteProductDialog from "@/features/seller/components/DeleteProductDialog"; // Sẽ tạo sau
 import { ProductTable } from "@/features/seller/components/ProductTable"; // Sẽ tạo sau
 import { sellerAPI } from "@/features/seller/services/seller";
-import { Category, Product } from "@/features/seller/types"; // Thêm Category
+import { Category, Product } from "@/types";
 import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -110,28 +109,11 @@ const ProductManagementPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-red-500">
-        <p>{error}</p>
-        <p>Vui lòng thử lại sau.</p>
-      </div>
-    );
-  }
-
   return (
     <>
-      <Card>
+      <Card className="bg-white">
         <CardHeader className="flex flex-row items-center justify-between">
-          <div>
+          <div className="space-y-2">
             <CardTitle>Quản lý Sản phẩm</CardTitle>
             <CardDescription>
               Tạo, chỉnh sửa và quản lý các sản phẩm của bạn.

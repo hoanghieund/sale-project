@@ -67,15 +67,14 @@ const CategoryManagementPage: React.FC = () => {
   return (
     <>
       <Card className="bg-white">
-        <CardHeader className="relative">
-          <CardTitle>Category Management</CardTitle>
-          <CardDescription>
-            Create, edit and organize your product categories.
-          </CardDescription>
-          <Link
-            className="absolute top-4 right-6"
-            to="/seller/categories/create"
-          >
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div className="space-y-2">
+            <CardTitle>Category Management</CardTitle>
+            <CardDescription>
+              Create, edit and organize your product categories.
+            </CardDescription>
+          </div>
+          <Link to="/seller/categories/create">
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               Add category

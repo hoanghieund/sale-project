@@ -1,5 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SellerSidebar } from "@/features/seller/components/SellerSidebar"; // Sử dụng sidebar tùy chỉnh cho seller
+import { SellerSidebar } from "@/features/seller/components/SellerSidebar"; // Use custom sidebar for seller
 import {
   Home,
   LucideIcon,
@@ -7,17 +7,17 @@ import {
   ShoppingBag,
   ShoppingCart,
   Users,
-} from "lucide-react"; // Ví dụ icons
+} from "lucide-react"; // Example icons
 import React, { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom"; // Dùng router state để hiển thị header
+import { Outlet, useLocation } from "react-router-dom"; // Use router state to display header
 
 /**
- * Định nghĩa kiểu cho các liên kết điều hướng.
+ * Defines the type for navigation links.
  * @interface NavLink
- * @property {string} title - Tiêu đề của liên kết.
- * @property {string} href - Đường dẫn của liên kết.
- * @property {LucideIcon} icon - Icon của liên kết (từ lucide-react).
- * @property {"default" | "ghost"} variant - Kiểu hiển thị của liên kết (phải là "default" hoặc "ghost").
+ * @property {string} title - The link title.
+ * @property {string} href - The link path.
+ * @property {LucideIcon} icon - The link icon (from lucide-react).
+ * @property {"default" | "ghost"} variant - Display variant (must be "default" or "ghost").
  */
 interface NavLink {
   title: string;
@@ -28,7 +28,7 @@ interface NavLink {
 }
 
 /**
- * Danh sách các liên kết điều hướng cho Seller Dashboard.
+ * Navigation links for the Seller Dashboard.
  * @type {NavLink[]}
  */
 const navLinks: NavLink[] = [
@@ -39,36 +39,42 @@ const navLinks: NavLink[] = [
     variant: "default",
   },
   {
-    title: "Quản lý Shop",
+    title: "Shop Management",
     href: "/seller/shop",
     icon: ShoppingCart,
     variant: "ghost",
   },
   {
-    title: "Quản lý Danh mục",
+    title: "Category Management",
     href: "/seller/categories",
     icon: Package,
     variant: "ghost",
   },
   {
-    title: "Quản lý Sản phẩm",
+    title: "Product Management",
     href: "/seller/products",
     icon: Users,
     variant: "ghost",
   },
   {
-    title: "Quản lý Đơn hàng",
+    title: "Order Management",
     href: "/seller/orders",
     icon: ShoppingBag,
     variant: "ghost",
   },
 ];
 
+/**
+ * SellerLayout
+ * Sets up Seller dashboard layout with sidebar navigation and a top header.
+ * - Computes header title from the current route.
+ * - Uses shadcn/ui SidebarProvider for responsive layout.
+ */
 const SellerLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { pathname } = useLocation(); // Lấy path hiện tại từ router
+  const { pathname } = useLocation(); // Get current path from router
 
-  // Tính tiêu đề header theo router; Dashboard chỉ khớp đúng '/seller'
+  // Compute header title by route; Dashboard matches only '/seller' exactly
   const headerTitle = React.useMemo(() => {
     const active = navLinks.find(link =>
       link.href === "/seller"

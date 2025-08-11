@@ -1,15 +1,34 @@
-import { LucideIcon, Home, LogOut } from "lucide-react";
+import { Home, LogOut, LucideIcon } from "lucide-react";
 import * as React from "react";
 import { NavLink, useNavigate } from "react-router-dom"; // Dùng NavLink để set active theo router
 
-import { buttonVariants } from "@/components/ui/button";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarSeparator } from "@/components/ui/sidebar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useUser } from "@/hooks/use-user";
+import { cn } from "@/lib/utils";
 
 /**
  * @typedef {Object} NavLink
@@ -36,7 +55,10 @@ interface SellerSidebarProps {
  * @param {SellerSidebarProps} props - Props của component.
  * @returns {JSX.Element} SellerSidebar component.
  */
-export const SellerSidebar: React.FC<SellerSidebarProps> = ({ navLinks, className }) => {
+export const SellerSidebar: React.FC<SellerSidebarProps> = ({
+  navLinks,
+  className,
+}) => {
   const navigate = useNavigate();
   const { user, logout } = useUser();
 
@@ -56,14 +78,13 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({ navLinks, classNam
   }, [logout, navigate]);
   return (
     <Sidebar className={cn("hidden border-r bg-muted/40 md:block", className)}>
-        <SidebarHeader>
-           {/* Logo khu vực đầu sidebar */}
-           <div className="px-3 py-3">
-             <NavLink to="/" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "h-9 w-full justify-start ")}> 
-               <span className="text-base font-semibold leading-none line-clamp-1">Sale Project</span>
-             </NavLink>
-           </div>
-        </SidebarHeader>
+      <SidebarHeader>
+        {/* Logo khu vực đầu sidebar */}
+        <NavLink to="/" className="flex justify-center">
+          {/* Thay text logo bằng hình từ public/logo.png theo yêu cầu */}
+          <img src="/logo.png" alt="Eulotus logo" className="h-16 w-auto" />
+        </NavLink>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
@@ -78,9 +99,13 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({ navLinks, classNam
                   end={link.href === "/seller"} // Chỉ active đúng trang Dashboard, không active ở nested routes
                   className={({ isActive }) =>
                     cn(
-                      buttonVariants({ variant: isActive ? "default" : "ghost", size: "sm" }),
+                      buttonVariants({
+                        variant: isActive ? "default" : "ghost",
+                        size: "sm",
+                      }),
                       "h-9 w-full justify-start",
-                      isActive && "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+                      isActive &&
+                        "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                       "group-data-[collapsed]:justify-center"
                     )
                   }
@@ -89,9 +114,7 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({ navLinks, classNam
                     <TooltipTrigger asChild>
                       <link.icon className="h-4 w-4 mr-2" />
                     </TooltipTrigger>
-                    <TooltipContent side="right">
-                      {link.title}
-                    </TooltipContent>
+                    <TooltipContent side="right">{link.title}</TooltipContent>
                   </Tooltip>
                   <span className="group-data-[collapsed]:hidden">
                     {link.title}
@@ -114,24 +137,52 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({ navLinks, classNam
                 aria-label="User menu"
               >
                 <Avatar className="h-7 w-7 mr-2 group-data-[collapsed]:mr-0">
-                  <AvatarImage src={(user as any)?.avatar || undefined} alt={(user as any)?.username || (user as any)?.email || "user"} />
-                  <AvatarFallback>{(((user as any)?.username || (user as any)?.email || "U").charAt(0) || "U").toUpperCase()}</AvatarFallback>
+                  <AvatarImage
+                    src={(user as any)?.avatar || undefined}
+                    alt={
+                      (user as any)?.username || (user as any)?.email || "user"
+                    }
+                  />
+                  <AvatarFallback>
+                    {(
+                      (
+                        (user as any)?.username ||
+                        (user as any)?.email ||
+                        "U"
+                      ).charAt(0) || "U"
+                    ).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 text-left group-data-[collapsed]:hidden">
                   <div className="text-sm font-medium leading-none truncate">
-                    {(user as any)?.username || (user as any)?.shopName || (user as any)?.email || "Khách"}
+                    {(user as any)?.username ||
+                      (user as any)?.shopName ||
+                      (user as any)?.email ||
+                      "Khách"}
                   </div>
-                  {((user as any)?.email) && <div className="text-xs text-muted-foreground leading-none truncate">{(user as any)?.email}</div>}
+                  {(user as any)?.email && (
+                    <div className="text-xs text-muted-foreground leading-none truncate">
+                      {(user as any)?.email}
+                    </div>
+                  )}
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="top" align="start" sideOffset={6} className="w-56">
+            <DropdownMenuContent
+              side="top"
+              align="start"
+              sideOffset={6}
+              className="w-56"
+            >
               <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={goHome} className="cursor-pointer">
                 <Home className="h-4 w-4 mr-2" /> Trang chủ
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer text-destructive focus:text-destructive"
+              >
                 <LogOut className="h-4 w-4 mr-2" /> Đăng xuất
               </DropdownMenuItem>
             </DropdownMenuContent>

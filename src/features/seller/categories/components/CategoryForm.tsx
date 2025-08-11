@@ -143,12 +143,12 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category name</FormLabel>
+              <FormLabel>Shop category</FormLabel>
               <FormControl>
-                <Input placeholder="Enter category name" {...field} />
+                <Input placeholder="Enter shop category name" {...field} />
               </FormControl>
               <FormDescription>
-                Display name of the product category.
+                Display name of the shop category.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -161,7 +161,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           name="categoryId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
+              <FormLabel>Platform category</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 value={field.value}
@@ -169,7 +169,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Select platform category" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -177,8 +177,8 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                 </SelectContent>
               </Select>
               <FormDescription>
-                Select a parent or a child category. categoryId will be set
-                based on your selection.
+                Select a platform category (parent or child). categoryId will be
+                set based on your selection.
               </FormDescription>
               <FormMessage />
             </FormItem>

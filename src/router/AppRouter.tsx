@@ -69,7 +69,7 @@ const CategoryManagementPage = lazy(
   () => import("@/features/seller/categories/pages/CategoryManagementPage")
 );
 const ProductManagementPage = lazy(
-  () => import("@/features/seller/pages/ProductManagementPage")
+  () => import("@/features/seller/products/pages/ProductManagementPage")
 );
 const CreateCategoryPage = lazy(
   () => import("@/features/seller/categories/pages/CreateCategoryPage")
@@ -78,10 +78,10 @@ const EditCategoryPage = lazy(
   () => import("@/features/seller/categories/pages/EditCategoryPage")
 );
 const CreateProductPage = lazy(
-  () => import("@/features/seller/pages/CreateProductPage")
+  () => import("@/features/seller/products/pages/CreateProductPage")
 );
 const EditProductPage = lazy(
-  () => import("@/features/seller/pages/EditProductPage")
+  () => import("@/features/seller/products/pages/EditProductPage")
 );
 const OrderManagementPage = lazy(
   () => import("@/features/seller/orders/pages/OrderManagementPage")
