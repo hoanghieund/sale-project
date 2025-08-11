@@ -1,9 +1,10 @@
 /**
- * @file Trang quản lý gian hàng (Shop Management Page) cho module Seller.
- * Hiển thị thông tin gian hàng hiện tại và cho phép điều hướng đến trang chỉnh sửa.
- * Nếu chưa có shop, sẽ hiển thị form tạo shop lần đầu.
+ * @file Shop Management Page for Seller module.
+ * Displays current shop information and allows navigating to the edit page.
+ * If there is no shop, the initial shop creation form will be shown.
  */
 
+import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,9 +19,9 @@ import {
 } from "@/features/seller/shop/components/ShopForm";
 import { shopService } from "@/features/seller/shop/services/shopServices";
 import { Shop } from "@/types";
-import { formatDate } from "@/utils/formatters"; // Định dạng ngày cho timeRequest
+import { formatDate } from "@/utils/formatters"; // Format date for timeRequest
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner"; // Giả định đã có sonner để hiển thị thông báo
+import { toast } from "sonner"; // Assume sonner is available for notifications
 
 const ShopManagementPage: React.FC = () => {
   const [shop, setShop] = useState<Shop | null>(null);
@@ -34,9 +35,9 @@ const ShopManagementPage: React.FC = () => {
         const shopData = await shopService.getShop();
         setShop(shopData);
       } catch (err: any) {
-        // Ghi log lỗi tải shop và hiển thị thông báo thân thiện
-        toast.error("Lỗi", {
-          description: err?.message || "Không thể tải thông tin gian hàng.",
+        // Log error when loading shop and show a friendly message
+        toast.error("Error", {
+          description: err?.message || "Unable to load shop information.",
         });
         setShop(null);
       } finally {
@@ -49,34 +50,34 @@ const ShopManagementPage: React.FC = () => {
 
   /**
    * @function dataURLToFile
-   * @description Chuyển đổi chuỗi DataURL (base64) thành File để upload multipart/form-data.
-   * Lưu ý: Chỉ gọi khi chuỗi bắt đầu bằng "data:". Nếu là URL http(s) thì không chuyển đổi.
+   * @description Convert a DataURL (base64) string to a File for multipart/form-data upload.
+   * Note: Only call when the string starts with "data:". For http(s) URLs, do not convert.
    */
   const dataURLToFile = (dataUrl: string, filenamePrefix: string): File => {
-    // Trích xuất MIME và dữ liệu base64 từ DataURL
+    // Extract MIME and base64 data from DataURL
     const [header, base64] = dataUrl.split(",");
     const mimeMatch = header.match(/:(.*?);/);
     const mime = (mimeMatch && mimeMatch[1]) || "image/png";
 
-    // Giải mã base64 -> Uint8Array
+    // Decode base64 -> Uint8Array
     const binary = atob(base64 || "");
     const len = binary.length;
     const bytes = new Uint8Array(len);
     for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
 
-    // Suy luận phần mở rộng từ MIME
+    // Infer extension from MIME
     const ext = (mime.split("/")[1] || "png").split("+")[0];
     return new File([bytes], `${filenamePrefix}.${ext}`, { type: mime });
   };
 
   /**
    * @function handleSubmit
-   * @description Xử lý lưu thay đổi shop: chỉ cập nhật name, logo (ảnh đại diện) và banner theo yêu cầu.
+   * @description Handle saving shop changes: update name, logo (avatar), and banner as required.
    */
   const handleSubmit = async (data: ShopFormData) => {
     try {
       setLoading(true);
-      // Nếu logo/banner là DataURL (file mới chọn), chuyển sang File; nếu là URL cũ thì bỏ qua (không upload lại)
+      // If logo/banner is a DataURL (newly selected), convert to File; if it's an existing URL, skip re-upload
       const logoFile =
         data.logo && data.logo.startsWith("data:")
           ? dataURLToFile(data.logo, "logo")
@@ -86,9 +87,9 @@ const ShopManagementPage: React.FC = () => {
           ? dataURLToFile(data.banner, "banner")
           : undefined;
 
-      // Gọi service mới dùng multipart/form-data
+      // Call service using multipart/form-data
       const updated = await shopService.updateShop({
-        // Gửi kèm các trường text theo spec API: name, description, contactEmail, contactPhone
+        // Send text fields per API spec: name, description, contactEmail, contactPhone
         shop: {
           name: data.name,
           description: data.description || undefined,
@@ -100,10 +101,10 @@ const ShopManagementPage: React.FC = () => {
       });
       setShop(updated);
       setIsEditing(false);
-      toast.success("Đã lưu thông tin gian hàng");
+      toast.success("Shop information saved");
     } catch (err: any) {
-      toast.error("Lưu thất bại", {
-        description: err?.message || "Không thể cập nhật thông tin gian hàng.",
+      toast.error("Save failed", {
+        description: err?.message || "Unable to update shop information.",
       });
     } finally {
       setLoading(false);
@@ -111,10 +112,10 @@ const ShopManagementPage: React.FC = () => {
   };
 
   if (!shop) {
-    return <div>Shop not found</div>;
+    return <EmptyStateDisplay />;
   }
 
-  // Form chế độ tạo/chỉnh sửa: hiển thị khi đang chỉnh sửa hoặc chưa có shop
+  // Create/Edit mode: show form when editing or when there is no shop
   if (isEditing) {
     return (
       <ShopForm
@@ -125,64 +126,60 @@ const ShopManagementPage: React.FC = () => {
     );
   }
 
-  // Hiển thị thông tin shop
+  // Display shop information
   return (
     <Card className="bg-white">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="space-y-2">
-          <CardTitle>Thông tin Gian hàng của bạn</CardTitle>
-          <CardDescription>
-            Chỉ hiển thị Tên, Ảnh đại diện và Banner
-          </CardDescription>
+          <CardTitle>Your shop information</CardTitle>
+          <CardDescription>Showing only Name, Logo and Banner</CardDescription>
         </div>
-        <Button onClick={() => setIsEditing(true)}>Chỉnh sửa thông tin</Button>
+        <Button onClick={() => setIsEditing(true)}>Edit information</Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <p className="text-sm font-medium text-gray-500">Tên gian hàng</p>
+            <p className="text-sm font-medium text-gray-500">Shop name</p>
             <p className="text-lg font-semibold">{shop?.name}</p>
           </div>
-          {/* Slug (nếu có) */}
+          {/* Slug (if any) */}
           {shop?.slug && (
             <div>
               <p className="text-sm font-medium text-gray-500">Slug</p>
               <p className="text-base">{shop.slug}</p>
             </div>
           )}
-          {/* Trạng thái hoạt động */}
+          {/* Active status */}
           {typeof shop?.status !== "undefined" && (
             <div>
-              <p className="text-sm font-medium text-gray-500">Trạng thái</p>
+              <p className="text-sm font-medium text-gray-500">Status</p>
               <p className="text-base">{shop.status ? "Active" : "Inactive"}</p>
             </div>
           )}
-          {/* Thời gian yêu cầu (timeRequest) */}
+          {/* Request time (timeRequest) */}
           {shop?.timeRequest && (
             <div>
-              <p className="text-sm font-medium text-gray-500">
-                Thời gian yêu cầu
-              </p>
+              <p className="text-sm font-medium text-gray-500">Request time</p>
               <p className="text-base">{formatDate(shop.timeRequest)}</p>
             </div>
           )}
         </div>
 
-        {/* Mô tả shop (nếu có) */}
+        {/* Shop description (if any) */}
         {shop.description && (
           <div>
-            <p className="text-sm font-medium text-gray-500">Mô tả</p>
+            <p className="text-sm font-medium text-gray-500">Description</p>
             <p className="text-base whitespace-pre-line">{shop.description}</p>
           </div>
         )}
 
-        {/* Thông tin liên hệ (nếu có) */}
+        {/* Contact information (if any) */}
         {(shop.contactEmail || shop.contactPhone) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {shop.contactEmail && (
               <div>
                 <p className="text-sm font-medium text-gray-500">
-                  Email liên hệ
+                  Contact email
                 </p>
                 <a
                   href={`mailto:${shop.contactEmail}`}
@@ -195,7 +192,7 @@ const ShopManagementPage: React.FC = () => {
             {shop.contactPhone && (
               <div>
                 <p className="text-sm font-medium text-gray-500">
-                  Số điện thoại
+                  Phone number
                 </p>
                 <p className="text-base">{shop.contactPhone}</p>
               </div>
@@ -205,7 +202,7 @@ const ShopManagementPage: React.FC = () => {
 
         {shop?.avatar && (
           <div>
-            <p className="text-sm font-medium text-gray-500">Ảnh đại diện</p>
+            <p className="text-sm font-medium text-gray-500">Logo</p>
             <img
               src={shop.avatar}
               alt="Shop Logo"

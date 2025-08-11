@@ -1,10 +1,10 @@
 /**
  * @file Trang tạo sản phẩm mới (Create Product Page) cho module Seller.
- * Cung cấp form để chủ shop nhập thông tin và tạo một sản phẩm mới.
- * Sử dụng ProductForm component.
+ * Trang này hỗ trợ tạo sản phẩm hàng loạt bằng cách Upload file Excel.
+ * Lưu ý: Tạo từng sản phẩm đơn lẻ sẽ được xử lý trong bản cập nhật sau.
  */
 
-import LoadingSpinner from "@/components/common/LoadingSpinner"; // Import LoadingSpinner
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,11 +12,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ProductForm } from "@/features/seller/products/components/ProductForm"; // Sẽ tạo sau
-import { Category, Product } from "@/types";
-import React, { useEffect, useState } from "react"; // Thêm useState, useEffect
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { productService } from "@/features/seller/products/services/productService";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useMemo, useState } from "react"; // Thêm useState, useEffect
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import * as z from "zod";
 
 /**
  * @function CreateProductPage
@@ -25,82 +36,121 @@ import { toast } from "sonner";
  */
 const CreateProductPage: React.FC = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false); // Quản lý trạng thái loading cục bộ
-  const [categories, setCategories] = useState<Category[]>([]); // State cho danh mục sản phẩm
-  const [error, setError] = useState<string | null>(null); // State cho lỗi
+  const [submitting, setSubmitting] = useState(false); // Trạng thái submit upload Excel
+
+  // Schema cho upload Excel (tạo hàng loạt)
+  const excelSchema = useMemo(
+    () =>
+      z.object({
+        file: z
+          .any()
+          .refine(
+            file => file instanceof File || (file && file.length > 0),
+            "Vui lòng chọn tệp Excel"
+          ),
+        shopId: z.preprocess(
+          v => Number(v),
+          z.number().int().positive("shopId phải > 0")
+        ),
+        categoryId: z.preprocess(
+          v => Number(v),
+          z.number().int().positive("categoryId phải > 0")
+        ),
+      }),
+    []
+  );
+
+  type ExcelFormData = z.infer<typeof excelSchema>;
+  const excelForm = useForm<ExcelFormData>({
+    resolver: zodResolver(excelSchema),
+    defaultValues: { shopId: 1, categoryId: 1 } as any,
+  });
 
   useEffect(() => {
-    /**
-     * @function fetchCategories
-     * @description Hàm lấy danh sách danh mục từ API.
-     */
-    const fetchCategories = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const categoriesData = await sellerAPI.getCategories();
-        setCategories(categoriesData);
-      } catch (err: any) {
-        setError(err.message || "Lỗi khi tải danh mục.");
-        toast.error("Lỗi", {
-          description: err.message || "Không thể tải danh mục sản phẩm.",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCategories();
+    // Hiện không cần fetch dữ liệu khi trang chỉ upload Excel
   }, []);
 
   /**
-   * @function handleSubmit
-   * @description Xử lý submit form tạo sản phẩm mới.
-   * @param {Omit<Product, 'id' | 'createdAt' | 'updatedAt'>} data - Dữ liệu sản phẩm từ form.
+   * @function onSubmitExcel
+   * @description Upload Excel để tạo sản phẩm hàng loạt.
    */
-  const handleSubmit = async (
-    data: Omit<Product, "id" | "createdAt" | "updatedAt">
-  ) => {
-    setIsLoading(true);
+  const onSubmitExcel = async (values: ExcelFormData) => {
     try {
-      // TODO: Đồng bộ CreateProductPayload theo schema mới (ProductSku, v.v.). Tạm thời cast để không chặn UI task.
-      const newProduct = await sellerAPI.createProduct(data as any);
-      toast.success("Thành công", {
-        description: "Tạo sản phẩm mới thành công!",
-      });
-      navigate("/seller/products");
+      setSubmitting(true);
+      // Lấy file từ input (hỗ trợ File hoặc FileList)
+      const file: File = Array.isArray(values.file)
+        ? values.file[0]
+        : (values.file as any);
+
+      await productService.createProduct(
+        file,
+        values.shopId,
+        values.categoryId
+      );
+      toast.success("Upload Excel thành công");
+      navigate("/seller/products"); // Quay lại danh sách để xem kết quả
     } catch (err: any) {
       toast.error("Lỗi", {
-        description: err.message || "Không thể tạo sản phẩm mới.",
+        description: err?.message || "Không thể upload Excel.",
       });
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner />
-      </div>
-    );
-  }
 
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Tạo Sản phẩm mới</CardTitle>
+          <CardTitle>Tạo Sản phẩm bằng Excel</CardTitle>
           <CardDescription>
-            Điền thông tin để thêm một sản phẩm mới vào gian hàng của bạn.
+            Tải lên tệp Excel để tạo sản phẩm hàng loạt cho gian hàng của bạn.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ProductForm
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-            categories={categories} // Truyền danh sách categories cục bộ vào form
-          />
+          {/* Upload Excel tạo sản phẩm hàng loạt: dùng react-hook-form + shadcn form */}
+          <Form {...excelForm}>
+            <form
+              onSubmit={excelForm.handleSubmit(onSubmitExcel)}
+              className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end mb-6"
+            >
+              <FormField
+                control={excelForm.control}
+                name="file"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tệp Excel</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept=".xlsx,.xls"
+                        onChange={e => field.onChange(e.target.files?.[0])}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={excelForm.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category ID</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div>
+                <Button type="submit" variant="outline" disabled={submitting}>
+                  {submitting ? "Đang upload..." : "Upload Excel"}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </>

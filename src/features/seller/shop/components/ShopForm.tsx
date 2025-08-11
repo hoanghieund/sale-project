@@ -1,7 +1,7 @@
 /**
- * @file Component ShopForm để quản lý thông tin gian hàng.
- * Cho phép chủ shop xem và chỉnh sửa các thông tin cơ bản của gian hàng như tên, mô tả, địa chỉ, logo và banner.
- * Sử dụng react-hook-form và shadcn/ui components cho form.
+ * @file ShopForm component for managing shop information.
+ * Allows shop owners to view and edit basic shop info like name, description, contact, logo and banner.
+ * Uses react-hook-form and shadcn/ui components for the form.
  */
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,20 +27,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Dùng Textarea từ shadcn cho mô tả
+import { Textarea } from "@/components/ui/textarea"; // Use shadcn Textarea for description
 import { Shop } from "@/types";
 
 /**
  * @schema shopSchema
- * @description Schema validation cho form gian hàng sử dụng Zod.
+ * @description Schema validation for shop form using Zod.
  */
 const shopSchema = z.object({
-  // Mở rộng: thêm mô tả và thông tin liên hệ (email/phone)
-  name: z.string().min(2, "Tên shop phải có ít nhất 2 ký tự"),
+  // Extend: add description and contact info (email/phone)
+  name: z.string().min(2, "Shop name must be at least 2 characters"),
   description: z.string().optional().or(z.literal("")),
   contactEmail: z
     .string()
-    .email("Email không hợp lệ")
+    .email("Invalid email address")
     .optional()
     .or(z.literal("")),
   contactPhone: z.string().optional().or(z.literal("")),
@@ -50,16 +50,16 @@ const shopSchema = z.object({
 
 /**
  * @typedef {z.infer<typeof shopSchema>} ShopFormData
- * @description Kiểu dữ liệu cho form gian hàng.
+ * @description Data type for the shop form.
  */
 export type ShopFormData = z.infer<typeof shopSchema>; // Thêm export ở đây
 
 /**
  * @interface ShopFormProps
- * @description Props cho component ShopForm.
- * @property {Shop} [shop] - Dữ liệu gian hàng hiện có (nếu có).
- * @property {(data: ShopFormData) => void} onSubmit - Hàm xử lý khi submit form.
- * @property {boolean} [isLoading] - Trạng thái loading khi submit.
+ * @description Props for the ShopForm component.
+ * @property {Shop} [shop] - Existing shop data (if any).
+ * @property {(data: ShopFormData) => void} onSubmit - Submit handler for the form.
+ * @property {boolean} [isLoading] - Loading state while submitting.
  */
 interface ShopFormProps {
   shop?: Shop;
@@ -69,9 +69,9 @@ interface ShopFormProps {
 
 /**
  * @function ShopForm
- * @description Component form để chỉnh sửa thông tin gian hàng.
- * @param {ShopFormProps} props - Props của component.
- * @returns {JSX.Element} Component ShopForm.
+ * @description Form component to edit shop information.
+ * @param {ShopFormProps} props - Component props.
+ * @returns {JSX.Element} ShopForm component.
  */
 export const ShopForm: React.FC<ShopFormProps> = ({
   shop,
@@ -101,7 +101,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
   });
 
   /**
-   * Helper: chuyển File -> DataURL để lưu/preview đồng nhất với storage hiện tại
+   * Helper: convert File -> DataURL for consistent preview/storage handling
    */
   const fileToDataURL = (file: File) =>
     new Promise<string>((resolve, reject) => {
@@ -113,10 +113,10 @@ export const ShopForm: React.FC<ShopFormProps> = ({
 
   /**
    * @function handleLogoFilesChange
-   * @description Đồng bộ FileDropzone (logo) với preview dạng DataURL
+   * @description Sync FileDropzone (logo) with DataURL preview
    */
   const handleLogoFilesChange = async (files: File[]) => {
-    // Chỉ lấy 1 file đầu làm ảnh đại diện
+    // Only take the first file as logo/avatar
     const next = files.slice(0, 1);
     setLogoFiles(next);
     if (next[0]) {
@@ -124,7 +124,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
         const url = await fileToDataURL(next[0]);
         setLogoPreview(url);
       } catch {
-        // Giữ nguyên preview nếu đọc lỗi
+        // Keep existing preview if read fails
       }
     } else {
       setLogoPreview(null);
@@ -133,7 +133,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
 
   /**
    * @function handleBannerFilesChange
-   * @description Đồng bộ FileDropzone (banner) với preview dạng DataURL
+   * @description Sync FileDropzone (banner) with DataURL preview
    */
   const handleBannerFilesChange = async (files: File[]) => {
     const next = files.slice(0, 1);
@@ -143,7 +143,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
         const url = await fileToDataURL(next[0]);
         setBannerPreview(url);
       } catch {
-        // Bỏ qua lỗi đọc file
+        // Ignore file read error
       }
     } else {
       setBannerPreview(null);
@@ -152,7 +152,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
 
   /**
    * @function removeLogo
-   * @description Xóa hình ảnh logo đã chọn.
+   * @description Remove selected logo image.
    */
   const removeLogo = () => {
     setLogoPreview(null);
@@ -161,7 +161,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
 
   /**
    * @function removeBanner
-   * @description Xóa hình ảnh banner đã chọn.
+   * @description Remove selected banner image.
    */
   const removeBanner = () => {
     setBannerPreview(null);
@@ -170,24 +170,24 @@ export const ShopForm: React.FC<ShopFormProps> = ({
 
   /**
    * @function handleSubmit
-   * @description Xử lý submit form.
-   * Gộp dữ liệu form với URL logo/banner và gọi hàm onSubmit từ props.
-   * @param {ShopFormData} data - Dữ liệu từ form.
+   * @description Handle form submit.
+   * Merge form data with logo/banner URL and call onSubmit from props.
+   * @param {ShopFormData} data - Form data.
    */
   const handleSubmit = (data: ShopFormData) => {
     onSubmit({
       ...data,
-      logo: logoPreview || undefined, // Đảm bảo gửi undefined nếu không có ảnh
-      banner: bannerPreview || undefined, // Đảm bảo gửi undefined nếu không có ảnh
+      logo: logoPreview || undefined, // Ensure undefined if no image
+      banner: bannerPreview || undefined, // Ensure undefined if no image
     });
   };
 
   return (
     <Card className="bg-white">
       <CardHeader>
-        <CardTitle>Thông tin gian hàng</CardTitle>
+        <CardTitle>Shop information</CardTitle>
         <CardDescription>
-          Cập nhật thông tin cơ bản của gian hàng của bạn
+          Update your shop's basic information
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -196,30 +196,30 @@ export const ShopForm: React.FC<ShopFormProps> = ({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-6"
           >
-            {/* Trường Tên gian hàng */}
+            {/* Shop name field */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tên gian hàng</FormLabel>
+                  <FormLabel>Shop name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập tên gian hàng" {...field} />
+                    <Input placeholder="Enter shop name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Thông tin mô tả và liên hệ */}
+            {/* Description and contact information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Email liên hệ */}
+              {/* Contact email */}
               <FormField
                 control={form.control}
                 name="contactEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email liên hệ</FormLabel>
+                    <FormLabel>Contact email</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -232,15 +232,15 @@ export const ShopForm: React.FC<ShopFormProps> = ({
                 )}
               />
 
-              {/* Số điện thoại liên hệ */}
+              {/* Contact phone */}
               <FormField
                 control={form.control}
                 name="contactPhone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Số điện thoại</FormLabel>
+                    <FormLabel>Phone number</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nhập số điện thoại" {...field} />
+                      <Input placeholder="Enter phone number" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -248,17 +248,17 @@ export const ShopForm: React.FC<ShopFormProps> = ({
               />
             </div>
 
-            {/* Mô tả gian hàng */}
+            {/* Shop description */}
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mô tả</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
                       rows={4}
-                      placeholder="Mô tả ngắn về gian hàng"
+                      placeholder="Short description about your shop"
                       {...field}
                     />
                   </FormControl>
@@ -272,7 +272,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
               {/* Upload Logo */}
               <div>
                 <label className="text-sm font-medium mb-2 block">
-                  Ảnh đại diện
+                  Logo
                 </label>
                 <FileDropzone
                   files={logoFiles}
@@ -307,13 +307,13 @@ export const ShopForm: React.FC<ShopFormProps> = ({
               </div>
             </div>
 
-            {/* Nút Submit */}
+            {/* Submit buttons */}
             <div className="flex justify-end space-x-2">
               <Button type="button" variant="outline">
-                Hủy
+                Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+                {isLoading ? "Saving..." : "Save changes"}
               </Button>
             </div>
           </form>

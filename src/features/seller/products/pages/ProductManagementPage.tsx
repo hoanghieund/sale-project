@@ -1,5 +1,4 @@
 import CustomPagination from "@/components/common/CustomPagination";
-import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,14 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -30,13 +21,10 @@ import { ProductTable } from "@/features/seller/products/components/ProductTable
 import { productService } from "@/features/seller/products/services/productService";
 import { categoryService } from "@/services/categoryService";
 import { Category, Product } from "@/types";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import * as z from "zod";
 
 /**
  * @function ProductManagementPage
@@ -57,34 +45,6 @@ const ProductManagementPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
-  // Schema cho upload Excel
-  const excelSchema = useMemo(
-    () =>
-      z.object({
-        file: z
-          .any()
-          .refine(
-            file => file instanceof File || (file && file.length > 0),
-            "Vui lòng chọn tệp Excel"
-          ),
-        shopId: z.preprocess(
-          v => Number(v),
-          z.number().int().positive("shopId phải > 0")
-        ),
-        categoryId: z.preprocess(
-          v => Number(v),
-          z.number().int().positive("categoryId phải > 0")
-        ),
-      }),
-    []
-  );
-
-  type ExcelFormData = z.infer<typeof excelSchema>;
-  const form = useForm<ExcelFormData>({
-    resolver: zodResolver(excelSchema),
-    defaultValues: { shopId: 1, categoryId: 1 } as any,
-  });
-
   // Fetch categories tree rồi flatten thành danh mục đơn giản (id, name)
   useEffect(() => {
     const fetchCategories = async () => {
@@ -103,6 +63,8 @@ const ProductManagementPage: React.FC = () => {
           if (node.child) walk(node.child);
           if (node.children) walk(node.children);
         };
+        console.log("🚀 ~ fetchCategories ~ list:", list);
+
         walk(treeResp);
         setCategories(list);
       } catch (err: any) {
@@ -208,37 +170,6 @@ const ProductManagementPage: React.FC = () => {
     }
   };
 
-  /**
-   * @function onSubmitExcel
-   * @description Upload Excel tạo sản phẩm hàng loạt.
-   */
-  const onSubmitExcel = async (values: ExcelFormData) => {
-    try {
-      const file: File = Array.isArray(values.file)
-        ? values.file[0]
-        : (values.file as any);
-      await productService.createProduct(
-        file,
-        values.shopId,
-        values.categoryId
-      );
-      toast.success("Upload Excel thành công");
-      // Reload danh sách hiện tại
-      const res = await productService.getAllProductByShop({
-        page,
-        size,
-        textSearch: debouncedSearch || undefined,
-      });
-      setProducts(res.content || []);
-      setTotalPages(res.totalPages ?? 0);
-      setTotalElements(res.totalElements ?? 0);
-    } catch (err: any) {
-      toast.error("Lỗi", {
-        description: err?.message || "Không thể upload Excel.",
-      });
-    }
-  };
-
   return (
     <>
       <Card className="bg-white">
@@ -268,48 +199,6 @@ const ProductManagementPage: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Upload Excel tạo sản phẩm hàng loạt: dùng react-hook-form + shadcn form */}
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmitExcel)}
-              className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end"
-            >
-              <FormField
-                control={form.control}
-                name="file"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tệp Excel</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".xlsx,.xls"
-                        onChange={e => field.onChange(e.target.files?.[0])}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="categoryId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category ID</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" variant="outline">
-                Upload Excel
-              </Button>
-            </form>
-          </Form>
-
           {/* Toolbar: thông tin kết quả + chọn số sản phẩm/trang */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             {/* Thông tin tổng quan kết quả hiển thị */}
@@ -354,7 +243,7 @@ const ProductManagementPage: React.FC = () => {
           {/* Bảng sản phẩm / trạng thái tải / rỗng */}
           {loading ? (
             <LoadingSpinner />
-          ) : products && products.length > 0 ? (
+          ) : (
             <ProductTable
               products={products}
               categories={categories} // Truyền categories cục bộ
@@ -362,8 +251,6 @@ const ProductManagementPage: React.FC = () => {
               onDelete={handleDeleteProduct}
               onToggleStatus={handleToggleStatus}
             />
-          ) : (
-            <EmptyStateDisplay />
           )}
 
           {/* Phân trang: dùng CustomPagination (UI base-1, API base-0) */}
