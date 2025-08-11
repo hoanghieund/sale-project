@@ -71,7 +71,8 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <>
+    // Wrapper responsive: tạo khoảng cách dọc ổn định và tránh overflow ngang
+    <div className="space-y-6 sm:space-y-8 min-w-0">
       {stats ? (
         <>
           {/* Hàng 1: Stats tổng quan (giữ gọn, dùng component sẵn có) */}
@@ -81,17 +82,22 @@ const DashboardPage: React.FC = () => {
           <DashboardCharts stats={stats} />
 
           {/* Hàng 3: Danh sách top sản phẩm chi tiết (bên cạnh charts bar đã tổng quan) */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <TopSellingProducts products={stats.topSellingProducts} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+            {/* Bọc mỗi item bằng div min-w-0 để nội dung có thể co mà không tràn ngang */}
+            <div className="min-w-0">
+              <TopSellingProducts products={stats.topSellingProducts} />
+            </div>
             {/* Slot bên phải có thể thêm biểu đồ/summary khác sau */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Gợi ý</CardTitle>
-                <CardDescription>
-                  Thêm các widget khác ở đây khi cần
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <div className="min-w-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gợi ý</CardTitle>
+                  <CardDescription>
+                    Thêm các widget khác ở đây khi cần
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </div>
           </div>
         </>
       ) : (
@@ -99,7 +105,7 @@ const DashboardPage: React.FC = () => {
           Không có dữ liệu dashboard để hiển thị.
         </div>
       )}
-    </>
+    </div>
   );
 };
 

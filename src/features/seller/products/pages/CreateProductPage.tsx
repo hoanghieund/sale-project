@@ -113,6 +113,8 @@ const CreateProductPage: React.FC = () => {
 
   return (
     <>
+      {/* Container giữa màn hình để đọc tốt hơn trên mobile */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
       <Card className="bg-white">
         <CardHeader>
           <CardTitle>Tạo Sản phẩm bằng Excel</CardTitle>
@@ -217,8 +219,9 @@ const CreateProductPage: React.FC = () => {
                   </FormItem>
                 )}
               />
-              <div className="flex items-center justify-end gap-2 mt-4">
-                <Button type="submit" disabled={submitting}>
+              {/* Nhóm nút: xếp dọc trên mobile để tránh tràn */}
+              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 mt-4">
+                <Button type="submit" disabled={submitting} className="w-full sm:w-auto" aria-busy={submitting}>
                   {submitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -235,6 +238,7 @@ const CreateProductPage: React.FC = () => {
                   type="button"
                   variant="outline"
                   onClick={() => navigate("/seller/products")}
+                  className="w-full sm:w-auto"
                 >
                   Quay lại
                 </Button>
@@ -245,6 +249,7 @@ const CreateProductPage: React.FC = () => {
         </CardContent>
         <CardFooter className="justify-end" />
       </Card>
+      </div>
     </>
   );
 };

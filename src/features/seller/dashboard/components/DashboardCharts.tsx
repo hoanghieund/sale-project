@@ -41,14 +41,16 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ stats }) => {
   }));
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    // Responsive: 1 cột trên mobile, 2 cột từ lg trở lên để tận dụng không gian màn hình rộng
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Biểu đồ Doanh thu theo ngày */}
       <Card>
         <CardHeader>
           <CardTitle>Doanh thu theo ngày</CardTitle>
           <CardDescription>Xu hướng doanh thu 7 ngày gần nhất</CardDescription>
         </CardHeader>
-        <CardContent className="h-72">
+        {/* Responsive height: thấp hơn trên mobile để tránh scroll dọc quá nhiều */}
+        <CardContent className="min-w-0 h-64 sm:h-72 lg:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={trend}
@@ -80,7 +82,8 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ stats }) => {
           <CardTitle>Top sản phẩm theo doanh thu</CardTitle>
           <CardDescription>Ước tính: giá × tồn kho</CardDescription>
         </CardHeader>
-        <CardContent className="h-72">
+        {/* Responsive height + min-w-0 để tránh tràn ngang khi tên sản phẩm dài */}
+        <CardContent className="min-w-0 h-64 sm:h-72 lg:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={topRevenue}

@@ -114,13 +114,14 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Bảng hiển thị danh mục */}
-      <div className="rounded-md border">
-        <Table>
+      {/* Bảng hiển thị danh mục - bọc overflow để cuộn ngang trên mobile */}
+      <div className="rounded-md border overflow-x-auto">
+        <Table className="min-w-[560px]">
           <TableHeader>
             <TableRow>
               <TableHead>Category name</TableHead>
-              <TableHead className="text-right">Type</TableHead>
+              {/* Ẩn cột Type trên mobile để tiết kiệm không gian */}
+              <TableHead className="text-right hidden sm:table-cell">Type</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -128,7 +129,8 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
             {categories.length > 0 ? (
               categories.map(category => (
                 <TableRow key={category.id}>
-                  <TableCell className="font-medium">
+                  {/* Tên cắt ngắn trên mobile để tránh tràn */}
+                  <TableCell className="font-medium max-w-[220px] truncate sm:max-w-none">
                     {category.name}
                     {/* Badge "Mặc định" cho danh mục "All" */}
                     {category.isAll && (
@@ -137,7 +139,8 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                       </Badge>
                     )}
                   </TableCell>
-                  <TableCell className="text-right">
+                  {/* Ẩn Type trên mobile */}
+                  <TableCell className="text-right hidden sm:table-cell">
                     {/* Hiển thị loại danh mục dựa trên isDefault */}
                     <Badge variant={category.isAll ? "default" : "secondary"}>
                       {category.isAll ? "Default" : "Regular"}

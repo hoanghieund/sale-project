@@ -54,19 +54,22 @@ const CreateCategoryPage: React.FC = () => {
 
   return (
     <>
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle>Create Category</CardTitle>
-          <CardDescription>
-            Fill in the information to add a new product category to your
-            store.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <CategoryForm onSubmit={handleSubmit} isLoading={isLoading} />
-          {/* Sử dụng isLoading cục bộ */}
-        </CardContent>
-      </Card>
+      {/* Container canh giữa và giới hạn độ rộng giúp form dễ đọc trên mobile/tablet */}
+      <div className="max-w-2xl mx-auto p-4 sm:p-6">
+        <Card className="bg-white">
+          <CardHeader>
+            <CardTitle>Create Category</CardTitle>
+            <CardDescription>
+              Fill in the information to add a new product category to your
+              store.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CategoryForm onSubmit={handleSubmit} isLoading={isLoading} />
+            {/* Sử dụng isLoading cục bộ */}
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

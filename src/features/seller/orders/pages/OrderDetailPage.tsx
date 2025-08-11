@@ -197,7 +197,8 @@ const OrderDetailPage = () => {
 
   return (
     <div className="container mx-auto py-8 space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header: stack trên mobile, hai cột trên sm+ */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -206,9 +207,9 @@ const OrderDetailPage = () => {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Order details #{order?.code}</h1>
+          <h1 className="text-2xl font-bold break-words">Order details #{order?.code}</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           {renderStatusUpdateMenu()}
         </div>
       </div>
@@ -229,7 +230,8 @@ const OrderDetailPage = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            {/* Grid thông tin: 1 cột trên mobile, 2 cột từ sm+ */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
                   Order code

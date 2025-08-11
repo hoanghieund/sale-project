@@ -50,10 +50,15 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
         <CardTitle>Sản phẩm bán chạy nhất</CardTitle>
         <CardDescription>Top sản phẩm có doanh thu cao nhất</CardDescription>
       </CardHeader>
-      <CardContent>
+      {/* Giữ min-w-0 để tránh tràn ngang trên màn hình nhỏ */}
+      <CardContent className="min-w-0">
         <div className="space-y-4">
           {products.map((product, index) => (
-            <div key={product.id} className="flex items-center space-x-4">
+            // Stack theo cột trên mobile, chuyển thành hàng từ sm trở lên
+            <div
+              key={product.id}
+              className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0"
+            >
               <div className="flex-shrink-0">
                 {/* Số thứ tự sản phẩm */}
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">

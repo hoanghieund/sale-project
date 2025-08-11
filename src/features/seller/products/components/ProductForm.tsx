@@ -25,7 +25,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Category, Product } from "@/features/seller/types";
+// Sử dụng types chung toàn dự án để đồng bộ với cấu trúc SQL thực tế
+import { Category, Product } from "@/types";
 import {
   closestCenter,
   DndContext,
@@ -147,7 +148,12 @@ const SortableImageItem: React.FC<SortableImageItemProps> = ({ id, image, onRemo
  * @returns {JSX.Element} Component ProductForm.
  */
 export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, isLoading, categories }) => {
-  const [imagePreviews, setImagePreviews] = useState<string[]>(initialData?.images || []);
+  // Khởi tạo preview ảnh từ dữ liệu cũ (images hoặc imagesDTOList)
+  const [imagePreviews, setImagePreviews] = useState<string[]>(
+    ((initialData as any)?.images as string[]) ||
+      ((initialData as any)?.imagesDTOList?.map((img: any) => img?.path).filter(Boolean) as string[]) ||
+      []
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -159,13 +165,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      description: initialData?.description || "",
-      price: initialData?.price || 0,
-      stock: initialData?.stock || 0,
-      categoryId: initialData?.categoryId || (categories.length > 0 ? categories[0].id : ""),
-      images: initialData?.images || [],
-      isActive: initialData?.isActive ?? true,
+      // Map an toàn theo nhiều cấu trúc dữ liệu khác nhau
+      name: (initialData as any)?.name ?? (initialData as any)?.title ?? "",
+      description: (initialData as any)?.description ?? (initialData as any)?.content ?? "",
+      price: (initialData as any)?.price ?? 0,
+      stock: (initialData as any)?.stock ?? (initialData as any)?.totalProduct ?? 0,
+      categoryId: String(
+        (initialData as any)?.categoryId ?? (categories.length > 0 ? categories[0].id : "")
+      ),
+      images:
+        ((initialData as any)?.images as string[]) ||
+        ((initialData as any)?.imagesDTOList?.map((img: any) => img?.path).filter(Boolean) as string[]) ||
+        [],
+      isActive: (initialData as any)?.isActive ?? Boolean((initialData as any)?.status) ?? true,
     },
   });
 
@@ -314,7 +326,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
                     </FormControl>
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
+                        <SelectItem key={category.id} value={String(category.id)}>
                           {category.name}
                         </SelectItem>
                       ))}
@@ -394,12 +406,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
               )}
             />
 
-            {/* Nút Submit */}
-            <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={() => form.reset()}>
+            {/* Nút Submit: trên mobile xếp dọc để tránh tràn; màn hình lớn giữ hàng ngang */}
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => form.reset()}
+                className="w-full sm:w-auto"
+              >
                 Đặt lại
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading ? "Đang lưu..." : "Lưu"}
               </Button>
             </div>

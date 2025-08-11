@@ -118,11 +118,22 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           )}
         />
 
-        <div className="flex justify-end space-x-2">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
+        {/* Hàng nút: xếp dọc trên mobile, ngang trên sm+; nút full-width trên mobile để dễ bấm */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => form.reset()}
+            className="w-full sm:w-auto"
+          >
             Reset
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            aria-busy={isLoading}
+            className="w-full sm:w-auto"
+          >
             {isLoading ? "Saving..." : "Save"}
           </Button>
         </div>

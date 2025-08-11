@@ -5,7 +5,7 @@
  */
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -100,6 +100,20 @@ export const ShopForm: React.FC<ShopFormProps> = ({
     },
   });
 
+  // Responsive: theo dõi breakpoint md để điều chỉnh kích thước preview
+  // Sử dụng matchMedia để đồng bộ với Tailwind md (min-width: 768px)
+  const [isMdUp, setIsMdUp] = useState<boolean>(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setIsMdUp(mq.matches);
+    update(); // Khởi tạo theo kích thước hiện tại
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  // Kích thước thumbnail linh hoạt cho mobile/tablet/desktop
+  const logoThumb = isMdUp ? 320 : 200;
+  const bannerThumb = isMdUp ? 320 : 200;
+
   /**
    * Helper: convert File -> DataURL for consistent preview/storage handling
    */
@@ -183,14 +197,14 @@ export const ShopForm: React.FC<ShopFormProps> = ({
   };
 
   return (
-    <Card className="bg-white">
+    <Card className="bg-white max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle>Shop information</CardTitle>
+        <CardTitle className="text-xl sm:text-2xl">Shop information</CardTitle>
         <CardDescription>
           Update your shop's basic information
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-6">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -279,7 +293,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
                   onFilesChange={handleLogoFilesChange}
                   accept="image/*"
                   maxFiles={1}
-                  thumbSize={320}
+                  thumbSize={logoThumb}
                   thumbAlign="center"
                   // Hiển thị preview ban đầu từ URL hiện có hoặc preview state
                   initialPreviewUrl={logoPreview || undefined}
@@ -297,7 +311,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
                   onFilesChange={handleBannerFilesChange}
                   accept="image/*"
                   maxFiles={1}
-                  thumbSize={320}
+                  thumbSize={bannerThumb}
                   thumbAlign="center"
                   // Hiển thị preview ban đầu từ URL hiện có hoặc preview state
                   initialPreviewUrl={bannerPreview || undefined}
@@ -308,11 +322,11 @@ export const ShopForm: React.FC<ShopFormProps> = ({
             </div>
 
             {/* Submit buttons */}
-            <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+              <Button type="button" variant="outline" className="w-full sm:w-auto">
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading ? "Saving..." : "Save changes"}
               </Button>
             </div>

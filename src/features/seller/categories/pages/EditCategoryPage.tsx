@@ -115,21 +115,24 @@ const EditCategoryPage: React.FC = () => {
 
   return (
     <>
-      <Card className="bg-white">
-        <CardHeader>
-          <CardTitle>Edit Category</CardTitle>
-          <CardDescription>
-            Update information for the existing product category.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <CategoryForm
-            initialData={currentCategory}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
-        </CardContent>
-      </Card>
+      {/* Container canh giữa và giới hạn độ rộng để form dễ đọc trên mobile/tablet */}
+      <div className="max-w-2xl mx-auto p-4 sm:p-6">
+        <Card className="bg-white">
+          <CardHeader>
+            <CardTitle>Edit Category</CardTitle>
+            <CardDescription>
+              Update information for the existing product category.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CategoryForm
+              initialData={currentCategory}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+            />
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

@@ -52,6 +52,16 @@ const OrderTable: React.FC<OrderTableProps> = ({
   const [toDate, setToDate] = useState<string>("");
   // UI state for DateRange (shadcn Calendar)
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  // Responsive: số tháng hiển thị của Calendar theo breakpoint (mobile 1, desktop 2)
+  const [calendarMonths, setCalendarMonths] = useState<number>(2);
+  useEffect(() => {
+    // Theo dõi thay đổi kích thước màn hình để cập nhật số tháng
+    const mq = window.matchMedia("(max-width: 640px)");
+    const apply = () => setCalendarMonths(mq.matches ? 1 : 2);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -262,8 +272,9 @@ const OrderTable: React.FC<OrderTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Search bar + date range (shadcn) */}
+      {/* Responsive: cho phép wrap và full-width trên mobile */}
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-[220px]">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
@@ -285,7 +296,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
           <PopoverTrigger asChild>
             <Button
               variant="outline"
-              className="w-[260px] justify-start text-left font-normal"
+              className="w-full sm:w-[260px] justify-start text-left font-normal"
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {dateRange?.from ? (
@@ -304,7 +315,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent className="w-auto max-w-full p-0 overflow-x-auto" align="start">
             {/* shadcn Calendar supports range */}
             <Calendar
               mode="range"
@@ -315,13 +326,13 @@ const OrderTable: React.FC<OrderTableProps> = ({
                 setFromDate(range?.from ? toYMD(range.from) : "");
                 setToDate(range?.to ? toYMD(range.to) : "");
               }}
-              numberOfMonths={2}
+              numberOfMonths={calendarMonths}
               initialFocus
             />
           </PopoverContent>
         </Popover>
-        <Button onClick={handleSearch}>Search</Button>
-        <Button variant="outline" onClick={handleResetSearch}>
+        <Button className="w-full sm:w-auto" onClick={handleSearch}>Search</Button>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={handleResetSearch}>
           <X className="mr-2 h-4 w-4" /> Clear filters
         </Button>
       </div>
@@ -333,57 +344,60 @@ const OrderTable: React.FC<OrderTableProps> = ({
         </div>
       ) : (
         <div className="border rounded-md">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Order Code</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Order Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.map(order => (
-                <TableRow key={order.id}>
-                  <TableCell className="font-medium">{order.code}</TableCell>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">
-                        {order.orderAddressDTO?.fullName}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {order.phoneNumber}
-                      </p>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {formatDate(order.timeOrder)}
-                  </TableCell>
-                  <TableCell>{formatCurrencyUSD(order.totalPrice)}</TableCell>
-                  <TableCell>
-                    <OrderStatusBadge status={order.status} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end items-center space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleViewOrderDetail(order.id)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      {renderStatusUpdateMenu(order)}
-                    </div>
-                  </TableCell>
+          {/* Responsive: bật scroll ngang cho bảng ở màn hình nhỏ, tối thiểu 700px để đủ cột chính */}
+          <div className="w-full overflow-x-auto">
+            <Table className="min-w-[700px]">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Order Code</TableHead>
+                  <TableHead className="hidden sm:table-cell">Customer</TableHead>
+                  <TableHead className="hidden md:table-cell">Order Date</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {orders.map(order => (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium">{order.code}</TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      <div>
+                        <p className="font-medium">
+                          {order.orderAddressDTO?.fullName}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {order.phoneNumber}
+                        </p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      {formatDate(order.timeOrder)}
+                    </TableCell>
+                    <TableCell>{formatCurrencyUSD(order.totalPrice)}</TableCell>
+                    <TableCell>
+                      <OrderStatusBadge status={order.status} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewOrderDetail(order.id)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        {renderStatusUpdateMenu(order)}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
           {/* Pagination: use CustomPagination, base-1 for UI */}
           {totalPages > 1 && (
-            <div className="px-4 py-3 border-t flex items-center justify-between">
+            <div className="px-4 py-3 border-t flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-muted-foreground">
                 Showing {orders.length} / {totalElements} orders
               </p>

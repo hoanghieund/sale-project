@@ -67,7 +67,8 @@ const CategoryManagementPage: React.FC = () => {
   return (
     <>
       <Card className="bg-white">
-        <CardHeader className="flex flex-row items-center justify-between">
+        {/* Header responsive: xếp dọc trên mobile, ngang trên md+ */}
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2">
             <CardTitle>Category Management</CardTitle>
             <CardDescription>
@@ -75,7 +76,8 @@ const CategoryManagementPage: React.FC = () => {
             </CardDescription>
           </div>
           <Link to="/seller/categories/create">
-            <Button>
+            {/* Nút full-width trên mobile để dễ bấm */}
+            <Button className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Add category
             </Button>
@@ -87,8 +89,8 @@ const CategoryManagementPage: React.FC = () => {
             onDeleted={() => fetchCollections(page)} // Sau khi xóa, gọi lại API để cập nhật danh sách
           />
 
-          {/* Phân trang */}
-          <div className="mt-4">
+          {/* Phân trang: xếp dọc trên mobile, canh hàng ngang trên sm+ */}
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <CustomPagination
               currentPage={page + 1} // UI base-1
               totalPages={totalPages}
@@ -97,9 +99,7 @@ const CategoryManagementPage: React.FC = () => {
                 fetchCollections(page - 1);
               }}
             />
-            <div className="text-sm text-gray-600 mt-2">
-              Total: {totalElements} items
-            </div>
+            <div className="text-sm text-gray-600">Total: {totalElements} items</div>
           </div>
         </CardContent>
       </Card>

@@ -69,17 +69,17 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Bảng hiển thị sản phẩm */}
-      <div className="rounded-md border">
-        <Table>
+      <div className="w-full overflow-x-auto rounded-md border">
+        <Table className="min-w-[900px] md:min-w-0">
           <TableHeader>
             <TableRow>
               <TableHead>Hình ảnh</TableHead>
               <TableHead className="w-1/5">Tên sản phẩm</TableHead>
-              <TableHead>Danh mục</TableHead>
+              <TableHead className="hidden md:table-cell">Danh mục</TableHead>
               <TableHead>Giá</TableHead>
-              <TableHead>Kho</TableHead>
+              <TableHead className="hidden md:table-cell">Kho</TableHead>
               <TableHead>Trạng thái</TableHead>
-              <TableHead>Ngày tạo</TableHead>
+              <TableHead className="hidden md:table-cell">Ngày tạo</TableHead>
               <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
@@ -110,7 +110,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
               const createdAt = formatDate(product.timeCreate) || "-";
               return (
                 <TableRow key={product.id}>
-                  <TableCell>
+                  <TableCell className="w-16">
                     {/* Ảnh thumbnail: ưu tiên ảnh đầu tiên */}
                     <img
                       src={imageSrc}
@@ -118,17 +118,19 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                       className="w-12 h-12 object-cover rounded-md"
                     />
                   </TableCell>
-                  <TableCell className="font-medium">{product.title}</TableCell>
-                  <TableCell>{categoryName}</TableCell>
+                  <TableCell className="font-medium max-w-[160px] truncate md:max-w-none">
+                    {product.title}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">{categoryName}</TableCell>
                   {/* Định dạng giá bằng util chung để đảm bảo nhất quán toàn hệ thống */}
                   <TableCell>{formatCurrencyUSD(price)}</TableCell>
-                  <TableCell>{stock}</TableCell>
+                  <TableCell className="hidden md:table-cell">{stock}</TableCell>
                   <TableCell>
                     <Badge variant={isActive ? "default" : "secondary"}>
                       {isActive ? "Đang bán" : "Ngừng bán"}
                     </Badge>
                   </TableCell>
-                  <TableCell>{createdAt}</TableCell>
+                  <TableCell className="hidden md:table-cell">{createdAt}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

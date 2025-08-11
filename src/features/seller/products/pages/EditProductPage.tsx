@@ -119,22 +119,25 @@ const EditProductPage: React.FC = () => {
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Chỉnh sửa Sản phẩm</CardTitle>
-          <CardDescription>
-            Cập nhật thông tin của sản phẩm hiện có.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ProductForm
-            initialData={currentProduct}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-            categories={categories} // Truyền danh sách categories cục bộ vào form
-          />
-        </CardContent>
-      </Card>
+      {/* Container giữa màn hình để đọc tốt hơn trên mobile */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Chỉnh sửa Sản phẩm</CardTitle>
+            <CardDescription>
+              Cập nhật thông tin của sản phẩm hiện có.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProductForm
+              initialData={currentProduct}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+              categories={categories} // Truyền danh sách categories cục bộ vào form
+            />
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };

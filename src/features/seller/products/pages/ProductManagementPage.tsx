@@ -146,7 +146,8 @@ const ProductManagementPage: React.FC = () => {
               Tạo, chỉnh sửa và quản lý các sản phẩm của bạn.
             </CardDescription>
           </div>
-          <div className="flex gap-2 w-full md:w-auto">
+          {/* Hàng công cụ: trên mobile đảm bảo input co giãn và không tràn */}
+          <div className="flex gap-2 w-full md:w-auto min-w-0">
             <Input
               placeholder="Tìm kiếm theo tên..."
               value={searchTerm}
@@ -154,7 +155,7 @@ const ProductManagementPage: React.FC = () => {
                 setPage(0);
                 setSearchTerm(e.target.value);
               }}
-              className="h-9"
+              className="h-9 flex-1 min-w-0"
             />
             <Link to="/seller/products/create">
               <Button className="h-9">
@@ -184,7 +185,7 @@ const ProductManagementPage: React.FC = () => {
             </div>
 
             {/* Chọn số sản phẩm/trang */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
               <span className="text-sm text-muted-foreground">Hiển thị</span>
               <Select
                 value={String(size)}
