@@ -82,6 +82,9 @@ export interface Shop {
   timeRequest?: string; // time_request datetime
   totalPrice?: number; // Tổng số sản phẩm đã bán
   totalQuantity?: number; // Tổng số sản phẩm
+  totalProduct?: number; // Tổng số sản phẩm
+  totalProductSold?: number; // Tổng số sản phẩm đã bán
+  totalReview?: number; // Tổng số đánh giá
   description?: string;
   contactEmail?: string;
   contactPhone?: string;
