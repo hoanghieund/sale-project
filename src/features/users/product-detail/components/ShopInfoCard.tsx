@@ -44,7 +44,7 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
                 {shop?.totalProduct || 0}
               </p>
             )}
-            {shop.totalProductSold !== undefined && (
+            {/* {shop.totalProductSold !== undefined && (
               <p>
                 <span className="font-medium">Total Sold:</span>{" "}
                 {shop?.totalProductSold || 0}
@@ -55,7 +55,7 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
                 <span className="font-medium">Total Review:</span>{" "}
                 {shop?.totalReview || 0}
               </p>
-            )}
+            )} */}
             {shop.status !== undefined && (
               <Badge variant={shop.status ? "default" : "destructive"}>
                 {shop.status ? "Active" : "Paused"}
