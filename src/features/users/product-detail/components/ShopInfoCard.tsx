@@ -38,24 +38,18 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
             {shop.name}
           </Link>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
-            {shop.totalProduct !== undefined && (
+            {shop.totalProductInShop !== undefined && (
               <p>
                 <span className="font-medium">Total Products:</span>{" "}
-                {shop?.totalProduct || 0}
+                {shop?.totalProductInShop || 0}
               </p>
             )}
-            {/* {shop.totalProductSold !== undefined && (
-              <p>
-                <span className="font-medium">Total Sold:</span>{" "}
-                {shop?.totalProductSold || 0}
-              </p>
-            )}
-            {shop.totalReview !== undefined && (
+            {shop.totalReviewInShop !== undefined && (
               <p>
                 <span className="font-medium">Total Review:</span>{" "}
-                {shop?.totalReview || 0}
+                {shop?.totalReviewInShop || 0}
               </p>
-            )} */}
+            )}
             {shop.status !== undefined && (
               <Badge variant={shop.status ? "default" : "destructive"}>
                 {shop.status ? "Active" : "Paused"}

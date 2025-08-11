@@ -10,6 +10,12 @@ export default {
   ],
   prefix: "",
   theme: {
+    container: {
+      center: true,
+      screens: {
+        "2xl": "1600px",
+      },
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",

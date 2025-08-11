@@ -250,7 +250,7 @@ const ShopPage = () => {
         {/* LAYOUT CHÍNH: SIDEBAR + CONTENT */}
         <div className="flex flex-col lg:flex-row gap-6 mb-8 relative">
           {/* SIDEBAR BÊN TRÁI - BỘ LỌC */}
-          <div className="w-full lg:w-64 lg:flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-32 lg:h-[calc(100vh-8rem)]">
+          <div className="w-full lg:w-48 lg:flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-32 lg:h-[calc(100vh-8rem)]">
             <div className="px-4 py-2">
               <h3 className="text-lg font-semibold">Categories</h3>
             </div>
@@ -318,7 +318,7 @@ const ShopPage = () => {
               <LoadingSpinner />
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                   {products.map(product => (
                     <ProductCardSimple
                       key={product.id}

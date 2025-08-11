@@ -80,15 +80,12 @@ export interface Shop {
   banner?: string; // banner varchar(255) - hình nền của shop
   status?: boolean; // status tinyint(1)
   timeRequest?: string; // time_request datetime
-  totalPrice?: number; // Tổng số sản phẩm đã bán
-  totalQuantity?: number; // Tổng số sản phẩm
-  totalProduct?: number; // Tổng số sản phẩm
-  totalProductSold?: number; // Tổng số sản phẩm đã bán
-  totalReview?: number; // Tổng số đánh giá
   description?: string;
   contactEmail?: string;
   contactPhone?: string;
   user?: User;
+  totalProductInShop?: number;
+  totalReviewInShop?: number;
 }
 
 // Discount Types - Dựa trên tbl_discount

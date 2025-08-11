@@ -34,9 +34,6 @@ const ProductDetailPage = () => {
       if (productData.shop) {
         setShop({
           ...productData.shop,
-          totalProduct: productData.totalProduct,
-          totalProductSold: productData.totalProductSold,
-          totalReview: productData.totalReview,
         });
       }
     } catch (err) {

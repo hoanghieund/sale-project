@@ -5,12 +5,6 @@ interface GetProductsBySearchKeywordParams {
   keyword: string;
   currentPage: number;
   pageSize: number;
-  popular?: boolean;
-  latest?: boolean;
-  bestSell?: boolean;
-  price?: string; // true = tăng dần, false = giảm dần
-  priceFrom?: string | number;
-  priceTo?: string | number;
 }
 
 export const productService = {
@@ -20,16 +14,10 @@ export const productService = {
    * @returns Promise với dữ liệu phân trang sản phẩm
    */
   getProductsBySearchKeyword: (params: GetProductsBySearchKeywordParams) => {
-    return Axios.get(`/api/public/product/getProductByManyThing`, {
+    return Axios.get(`/api/public/product/getAll`, {
       keyword: params.keyword,
       page: params.currentPage,
       size: params.pageSize,
-      popular: params.popular,
-      latest: params.latest,
-      bestSell: params.bestSell,
-      price: params.price,
-      priceFrom: params.priceFrom,
-      priceTo: params.priceTo,
     });
   },
 };
