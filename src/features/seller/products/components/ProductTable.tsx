@@ -1,6 +1,7 @@
 /**
  * @file Component ProductTable hiển thị và quản lý danh sách sản phẩm.
- * Cung cấp chức năng tìm kiếm, lọc theo danh mục, chỉnh sửa, xóa sản phẩm.
+ * Chỉ render dữ liệu và cung cấp action (chỉnh sửa, xóa, đổi trạng thái).
+ * Tìm kiếm và phân trang được thực hiện ở trang cha (server-side) để đồng bộ API.
  * Sử dụng shadcn/ui components cho giao diện bảng và dropdown menu.
  */
 
@@ -12,14 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -28,10 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Category, Product } from "@/features/seller/types";
-import { format } from "date-fns";
-import { Edit, Filter, MoreHorizontal, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import { Category, Product } from "@/types";
+import { formatCurrencyUSD, formatDate } from "@/utils/formatters"; // Chuẩn hóa định dạng tiền tệ + ngày tháng qua util
+import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import React from "react";
 
 /**
  * @interface ProductTableProps
@@ -40,12 +33,14 @@ import React, { useState } from "react";
  * @property {Category[]} categories - Danh sách các danh mục để lọc sản phẩm.
  * @property {(product: Product) => void} onEdit - Hàm xử lý khi người dùng click chỉnh sửa sản phẩm.
  * @property {(product: Product) => void} onDelete - Hàm xử lý khi người dùng click xóa sản phẩm.
+ * @property {(product: Product, nextStatus: boolean) => void} [onToggleStatus] - Hàm đổi trạng thái hiển thị.
  */
 interface ProductTableProps {
   products: Product[];
   categories: Category[];
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
+  onToggleStatus?: (product: Product, nextStatus: boolean) => void;
 }
 
 /**
@@ -59,18 +54,9 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   categories,
   onEdit,
   onDelete,
+  onToggleStatus,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterCategory, setFilterCategory] = useState("all");
-
-  // Lọc sản phẩm dựa trên từ khóa tìm kiếm và danh mục
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === "all" || product.categoryId === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
-
+  console.log("🚀 ~ ProductTable ~ categories:", categories);
   /**
    * @function handleDelete
    * @description Xử lý logic khi người dùng muốn xóa một sản phẩm.
@@ -78,74 +64,69 @@ export const ProductTable: React.FC<ProductTableProps> = ({
    * @param {Product} product - Sản phẩm cần xóa.
    */
   const handleDelete = (product: Product) => {
-    if (confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${product.name}"?`)) {
+    // Confirm hiển thị theo title (theo '@/types')
+    if (confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${product.title}"?`)) {
       onDelete(product);
     }
   };
 
   return (
     <div className="space-y-4">
-      {/* Thanh tìm kiếm và lọc */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <Input
-          placeholder="Tìm kiếm sản phẩm theo tên hoặc mô tả..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="h-9 md:flex-1"
-        />
-        <Select value={filterCategory} onValueChange={setFilterCategory}>
-          <SelectTrigger className="w-[180px] h-9">
-            <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
-            <SelectValue placeholder="Lọc theo danh mục" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tất cả danh mục</SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       {/* Bảng hiển thị sản phẩm */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[80px]">Hình ảnh</TableHead>
-              <TableHead>Tên sản phẩm</TableHead>
+              <TableHead>Hình ảnh</TableHead>
+              <TableHead className="w-1/5">Tên sản phẩm</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Giá</TableHead>
               <TableHead>Kho</TableHead>
               <TableHead>Trạng thái</TableHead>
               <TableHead>Ngày tạo</TableHead>
-              <TableHead className="w-[100px] text-right">Hành động</TableHead>
+              <TableHead className="text-right">Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredProducts.map((product) => {
-              const categoryName = categories.find(cat => cat.id === product.categoryId)?.name || "N/A";
+            {products.map(product => {
+              // Map theo cấu trúc Product từ '@/types'
+              const categoryName =
+                categories.find(cat => cat.id === product.categoriesId)?.name ||
+                "N/A";
+              const imageSrc =
+                product.imagesDTOList && product.imagesDTOList.length > 0
+                  ? product.imagesDTOList[0]?.path || "/placeholder.svg"
+                  : "/placeholder.svg";
+              const price =
+                typeof product.price === "number" ? product.price : 0;
+              const stock =
+                typeof product.totalProduct === "number"
+                  ? product.totalProduct
+                  : 0;
+              const isActive = !!product.status; // status: boolean
+              // Định dạng ngày tạo an toàn qua util (fallback '-')
+              const createdAt = formatDate(product.timeCreate) || "-";
               return (
                 <TableRow key={product.id}>
                   <TableCell>
-                    <img 
-                      src={product.images[0] || "/placeholder.svg"} // Sử dụng ảnh đầu tiên hoặc ảnh placeholder
-                      alt={product.name}
+                    {/* Ảnh thumbnail: ưu tiên ảnh đầu tiên */}
+                    <img
+                      src={imageSrc}
+                      alt={product.title}
                       className="w-12 h-12 object-cover rounded-md"
                     />
                   </TableCell>
-                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell className="font-medium">{product.title}</TableCell>
                   <TableCell>{categoryName}</TableCell>
-                  <TableCell>{new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(product.price)}</TableCell>
-                  <TableCell>{product.stock}</TableCell>
+                  {/* Định dạng giá bằng util chung để đảm bảo nhất quán toàn hệ thống */}
+                  <TableCell>{formatCurrencyUSD(price)}</TableCell>
+                  <TableCell>{stock}</TableCell>
                   <TableCell>
-                    <Badge variant={product.isActive ? "default" : "secondary"}>
-                      {product.isActive ? "Đang bán" : "Ngừng bán"}
+                    <Badge variant={isActive ? "default" : "secondary"}>
+                      {isActive ? "Đang bán" : "Ngừng bán"}
                     </Badge>
                   </TableCell>
-                  <TableCell>{format(new Date(product.createdAt), "dd/MM/yyyy")}</TableCell>
+                  <TableCell>{createdAt}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -158,6 +139,15 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                           <Edit className="mr-2 h-4 w-4" />
                           Chỉnh sửa
                         </DropdownMenuItem>
+                        {typeof onToggleStatus === "function" && (
+                          <DropdownMenuItem
+                            onClick={() => onToggleStatus(product, !isActive)}
+                          >
+                            {isActive
+                              ? "Ẩn trên gian hàng"
+                              : "Hiển thị trên gian hàng"}
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuItem
                           onClick={() => handleDelete(product)}
                           className="text-red-600"
@@ -176,7 +166,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       </div>
 
       {/* Thông báo khi không tìm thấy sản phẩm */}
-      {filteredProducts.length === 0 && (
+      {products.length === 0 && (
         <div className="text-center py-8 text-gray-500">
           Không tìm thấy sản phẩm nào
         </div>

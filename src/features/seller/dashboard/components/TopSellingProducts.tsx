@@ -3,7 +3,13 @@
  * Sử dụng shadcn/ui Card components để trình bày thông tin sản phẩm.
  */
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Product } from "@/features/seller/types"; // Import interface Product
 import React from "react";
 
@@ -22,7 +28,9 @@ interface TopSellingProductsProps {
  * @param {TopSellingProductsProps} props - Props của component.
  * @returns {JSX.Element} Component TopSellingProducts.
  */
-export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({ products }) => {
+export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
+  products,
+}) => {
   /**
    * @function formatCurrency
    * @description Định dạng giá trị số thành định dạng tiền tệ Việt Nam Đồng.
@@ -40,9 +48,7 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({ products
     <Card>
       <CardHeader>
         <CardTitle>Sản phẩm bán chạy nhất</CardTitle>
-        <CardDescription>
-          Top sản phẩm có doanh thu cao nhất
-        </CardDescription>
+        <CardDescription>Top sản phẩm có doanh thu cao nhất</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -71,9 +77,7 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({ products
                 <p className="text-sm font-medium text-gray-900">
                   {formatCurrency(product.price * product.stock)}
                 </p>
-                <p className="text-xs text-gray-500">
-                  Doanh thu
-                </p>
+                <p className="text-xs text-gray-500">Doanh thu</p>
               </div>
             </div>
           ))}

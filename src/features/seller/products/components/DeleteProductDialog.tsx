@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/features/seller/types"; // Import Product interface
+import { Product } from "@/types"; // Đồng bộ kiểu Product toàn dự án
 import React from "react";
 
 /**
@@ -55,7 +55,8 @@ const DeleteProductDialog: React.FC<DeleteProductDialogProps> = ({
           <AlertDialogTitle>Xác nhận xóa sản phẩm</AlertDialogTitle>
           <AlertDialogDescription>
             Bạn có chắc chắn muốn xóa sản phẩm "
-            <span className="font-semibold text-red-600">{product.name}</span>
+            {/* Hiển thị theo trường 'title' chuẩn của Product */}
+            <span className="font-semibold text-red-600">{product.title}</span>
             " không?
             <br />
             Hành động này không thể hoàn tác.

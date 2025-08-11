@@ -7,17 +7,12 @@ export interface Product {
   description?: string; // description text trong SQL
   status: boolean; // status tinyint(1)
   totalProduct?: number; // Tổng số lượng sản phẩm
-  amount?: number; // Số lượng còn lại
 
   // Thông tin chi tiết sản phẩm
   brand?: string; // brand varchar(255)
   material?: string; // material varchar(255)
   origin?: string; // origin varchar(255)
   style?: string; // style varchar(255)
-  height?: number; // height float
-  width?: number; // width float
-  length?: number; // length float
-  weight?: number; // weight float
 
   // Thông tin đánh giá và tương tác
   star?: number; // star double - rating
@@ -33,9 +28,6 @@ export interface Product {
 
   // Thông tin liên kết
   collectionResponse?: CollectionResponse; // Thông tin collection (optional khi populate)
-  categoriesId?: number; // categories_id bigint(20)
-  discountId?: number; // discount_id bigint(20)
-  shopId?: number; // shop_id bigint(20)
 
   // Các đối tượng liên kết
   shop?: Shop; // Thông tin shop (optional khi populate)
@@ -84,9 +76,12 @@ export interface Shop {
   banner?: string; // banner varchar(255) - hình nền của shop
   status?: boolean; // status tinyint(1)
   timeRequest?: string; // time_request datetime
-  totalReview?: number; // Tổng số đánh giá
-  totalProductSold?: number; // Tổng số sản phẩm đã bán
-  totalProduct?: number; // Tổng số sản phẩm
+  totalPrice?: number; // Tổng số sản phẩm đã bán
+  totalQuantity?: number; // Tổng số sản phẩm
+  description?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  user?: User;
 }
 
 // Discount Types - Dựa trên tbl_discount
@@ -111,34 +106,6 @@ export interface Discount {
 export interface Role {
   id: number; // int(11) trong SQL
   name?: string; // name varchar(255), ví dụ: ROLE_USER, ROLE_ADMIN, ROLE_SHOP_MANAGER
-}
-
-// User Token Types - Dựa trên tbl_user_token
-export interface UserToken {
-  id: number; // bigint(20) trong SQL
-  token: string; // token varchar(255)
-  expiryDate: Date; // expiry_date datetime
-  userId?: number; // user_id bigint(20)
-  user?: User; // Thông tin user (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Refresh Token Types - Dựa trên tbl_refreshtoken
-export interface RefreshToken {
-  id: number; // bigint(20) trong SQL
-  expiryDate: Date; // expiry_date datetime
-  token: string; // token varchar(255)
-  userId?: number; // user_id bigint(20)
-  user?: User; // Thông tin user (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
 }
 
 // Category Types - Dựa trên tbl_category
@@ -192,19 +159,12 @@ export interface User {
   roles?: Role[]; // Thông tin roles (optional khi populate)
 }
 
-// User Role Types - Dựa trên user_roles table
-export interface UserRole {
-  userId: number; // user_id bigint(20)
-  roleId: number; // role_id int(11)
-  user?: User; // Thông tin user (optional khi populate)
-  role?: Role; // Thông tin role (optional khi populate)
-}
-
 // Dashboard Stats Types - Tính toán từ các bảng khác
 export interface DashboardStats {
   totalProducts: number; // Tính từ tbl_product
   totalOrders: number; // Tính từ tbl_orders
   totalRevenue: number; // Tính từ tbl_orders.total_price
+  topSellingProducts: Product[]; // Tính từ tbl_product.total_product_sold
   pendingOrders: number; // Tính từ tbl_orders với status = 0
   monthlyRevenue: number[]; // Tính theo tháng từ tbl_orders
   topProducts: Product[]; // Sản phẩm bán chạy từ tbl_product.total_product_sold
@@ -222,21 +182,6 @@ export interface OrderAddress {
   isCurrent: boolean;
   user: any; // Tạm thời là any
   userId: number | null; // Có thể null
-}
-
-// Payment Method Types - Dựa trên tbl_payment_method
-export interface PaymentMethod {
-  id: number; // bigint(20) trong SQL
-  name?: string; // name varchar(255)
-  status?: boolean; // status tinyint(1)
-}
-
-// Ship Types - Dựa trên tbl_ship
-export interface Ship {
-  id: number; // bigint(20) trong SQL
-  name?: string; // name varchar(255)
-  price?: number; // price double
-  status?: boolean; // status tinyint(1)
 }
 
 // Image Types - Dựa trên tbl_image
@@ -297,138 +242,4 @@ export enum OrderStatus {
   AWAITING_PICKUP = 1,
   IN_DELIVERY = 2,
   COMPLETED = 3,
-}
-
-// Interactive Types - Dựa trên tbl_interactive
-export interface Interactive {
-  id: number; // bigint(20) trong SQL
-  type?: string; // type varchar(255)
-  productId?: number; // product_id bigint(20)
-  userId?: number; // user_id bigint(20)
-  product?: Product; // Thông tin product (optional khi populate)
-  user?: User; // Thông tin user (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Feedback Types - Dựa trên tbl_feedback
-export interface Feedback {
-  id: number; // bigint(20) trong SQL
-  content?: string; // content text
-  star?: number; // star bigint(20)
-  productId?: number; // product_id bigint(20)
-  userId?: number; // user_id bigint(20)
-  product?: Product; // Thông tin product (optional khi populate)
-  user?: User; // Thông tin user (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Comment Types - Dựa trên tbl_comment
-export interface Comment {
-  id: number; // bigint(20) trong SQL
-  content?: string; // content text
-  productId?: number; // product_id bigint(20)
-  userId?: number; // user_id bigint(20)
-  product?: Product; // Thông tin product (optional khi populate)
-  user?: User; // Thông tin user (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Notification Types - Dựa trên tbl_notify
-export interface Notification {
-  id: number; // bigint(20) trong SQL
-  content?: string; // content text
-  title?: string; // title varchar(255)
-  type?: string; // type varchar(255)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Notification User Types - Dựa trên tbl_notify_user
-export interface NotificationUser {
-  id: number; // bigint(20) trong SQL
-  answer?: string; // answer text
-  isRead?: boolean; // is_read bit(1)
-  notifyId?: number; // notify_id bigint(20)
-  userId?: number; // user_id bigint(20)
-  notification?: Notification; // Thông tin notification (optional khi populate)
-  user?: User; // Thông tin user (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// Message Types - Dựa trên tbl_message
-export interface Message {
-  id: number; // bigint(20) trong SQL
-  content?: string; // content text
-  isRead?: boolean; // is_read bit(1)
-  receiverId?: number; // receiver_id bigint(20)
-  senderId?: number; // sender_id bigint(20)
-  receiver?: User; // Thông tin receiver (optional khi populate)
-  sender?: User; // Thông tin sender (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
-}
-
-// API Response Types
-export interface ApiResponse<T> {
-  data: T;
-  message: string;
-  success: boolean;
-  status?: number;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-  success: boolean;
-  message?: string;
-}
-
-// Filter Types cho frontend
-export interface ProductFilters {
-  categories?: number[];
-  brands?: string[];
-  priceRange?: [number, number];
-  inStock?: boolean;
-  onSale?: boolean;
-  rating?: number;
-  shopId?: number;
-}
-
-export interface SortOption {
-  value: string;
-  label: string;
-}
-
-// WishlistItem Types - Sử dụng trong WishlistContext
-export interface WishlistItem {
-  id: string;
-  product: Product;
-  addedAt: Date;
 }

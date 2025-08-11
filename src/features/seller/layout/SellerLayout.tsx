@@ -1,5 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { SellerSidebar } from "@/features/seller/components/SellerSidebar"; // Use custom sidebar for seller
+import { SellerSidebar } from "@/features/seller/layout/SellerSidebar"; // Use custom sidebar for seller
 import {
   Home,
   LucideIcon,

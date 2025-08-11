@@ -12,9 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ProductForm } from "@/features/seller/components/ProductForm"; // Sẽ tạo sau
-import { sellerAPI } from "@/features/seller/services/seller";
-import { Category, Product } from "@/features/seller/types"; // Import Product và Category interface từ đúng đường dẫn
+import { ProductForm } from "@/features/seller/products/components/ProductForm"; // Sẽ tạo sau
+import { Category, Product } from "@/types";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";

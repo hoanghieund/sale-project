@@ -11,11 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DashboardCharts } from "@/features/seller/components/DashboardCharts";
-import { DashboardStatsComponent } from "@/features/seller/components/DashboardStats";
-import { TopSellingProducts } from "@/features/seller/components/TopSellingProducts";
+import { DashboardCharts } from "@/features/seller/dashboard/components/DashboardCharts";
+import { DashboardStatsComponent } from "@/features/seller/dashboard/components/DashboardStats";
+import { TopSellingProducts } from "@/features/seller/dashboard/components/TopSellingProducts";
 import { sellerAPI } from "@/features/seller/services/seller";
-import { DashboardStats } from "@/features/seller/types"; // Import DashboardStats interface
+import { DashboardStats } from "@/types"; // Import DashboardStats interface
 import React, { useEffect, useState } from "react"; // Thêm useState
 import { toast } from "sonner";
 

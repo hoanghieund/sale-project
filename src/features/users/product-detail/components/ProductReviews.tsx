@@ -6,8 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { User } from "@/types";
-import { FileText, Star, Upload, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import FileDropzone from "@/components/common/FileDropzone";
 import { productDetailService } from "../services/productDetailService";
 
 interface Review {
@@ -168,101 +169,11 @@ export const ProductReviews = ({
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [comment, setComment] = useState("");
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]); // State to store selected files
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]); // State files chọn để upload
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [dragActive, setDragActive] = useState<boolean>(false);
-  const [errors, setErrors] = useState<string[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { isAuthenticated } = useUser(); // Use useUser hook
-
-  /**
-   * Handles file selection for upload.
-   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event from the file input.
-   */
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      // Limit to a maximum of 5 files
-      if (selectedFiles.length + filesArray.length <= 5) {
-        setSelectedFiles(prev => [...prev, ...filesArray]);
-        setErrors([]);
-      } else {
-        setErrors(["Maximum 5 files allowed."]);
-      }
-    }
-  };
-
-  const validateFile = (file: File): string | null => {
-    const maxFileSize = 10 * 1024 * 1024; // 10MB
-    if (file.size > maxFileSize) {
-      return `File "${file.name}" is too large. Maximum size is ${
-        maxFileSize / (1024 * 1024)
-      }MB.`;
-    }
-
-    const acceptedTypes = ["image/*", "video/*"];
-    const isValidType = acceptedTypes.some(type => {
-      if (type.includes("*")) {
-        return file.type.startsWith(type.replace("*", ""));
-      }
-      return file.name.toLowerCase().endsWith(type);
-    });
-
-    if (!isValidType) {
-      return `File "${file.name}" is not a supported format.`;
-    }
-
-    return null;
-  };
-
-  const handleDrag = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  }, []);
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setDragActive(false);
-
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const filesArray = Array.from(e.dataTransfer.files);
-        const newErrors: string[] = [];
-        const validFiles: File[] = [];
-
-        // Check file validity
-        filesArray.forEach(file => {
-          const error = validateFile(file);
-          if (error) {
-            newErrors.push(error);
-          } else {
-            validFiles.push(file);
-          }
-        });
-
-        if (newErrors.length > 0) {
-          setErrors(newErrors);
-          return;
-        }
-
-        // Limit to a maximum of 5 files
-        if (selectedFiles.length + validFiles.length <= 5) {
-          setSelectedFiles(prev => [...prev, ...validFiles]);
-          setErrors([]);
-        } else {
-          setErrors(["Maximum 5 files allowed."]);
-        }
-      }
-    },
-    [selectedFiles.length]
-  );
+  
 
   /**
    * Fetches product reviews from the API.
@@ -430,104 +341,16 @@ export const ProductReviews = ({
                   className="min-h-[80px] text-xs focus-visible:ring-offset-0 focus-visible:ring-blue-400"
                 />
 
-                {/* Drag and Drop File Upload Area */}
-                <div
-                  className={`relative border-2 border-dashed rounded-md p-2 transition-colors ${
-                    dragActive
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    accept="image/*,video/*"
-                    onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
+                {/* Drag & Drop + Preview (Reusable) */}
+                <FileDropzone
+                  files={selectedFiles}
+                  onFilesChange={setSelectedFiles}
+                  maxFiles={5}
+                  maxSizeMB={10}
+                  accept="image/*,video/*"
+                />
 
-                  <div className="text-center space-y-2">
-                    <Upload className="w-5 h-5 mx-auto text-muted-foreground" />
-                    <div className="space-y-0.5">
-                      <p className="text-xs font-medium text-foreground">
-                        Drop files here or click to browse
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">
-                        Support images and videos up to 10MB
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* File Previews */}
-                {selectedFiles.length > 0 && (
-                  <div className="flex">
-                    {selectedFiles.map((file, index) => (
-                      <div
-                        key={index}
-                        className="relative group border border-border rounded-sm overflow-hidden bg-background"
-                      >
-                        {file.type.startsWith("image/") ? (
-                          <div className="aspect-square w-24 h-24">
-                            <img
-                              src={URL.createObjectURL(file)}
-                              alt={file.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ) : file.type.startsWith("video/") ? (
-                          <div className="aspect-square w-24 h-24 relative cursor-pointer group">
-                            <video
-                              src={URL.createObjectURL(file)}
-                              className="w-full h-full object-cover"
-                              controlsList="nodownload nofullscreen"
-                              preload="metadata"
-                              onClick={e => e.currentTarget.play()}
-                            />
-                          </div>
-                        ) : (
-                          <div className="aspect-square flex flex-col items-center justify-center p-1.5 bg-muted/30">
-                            <FileText className="w-2.5 h-2.5 text-muted-foreground" />
-                            <span className="text-[9px] text-center mt-0.5 text-muted-foreground truncate w-full">
-                              {file.name}
-                            </span>
-                          </div>
-                        )}
-
-                        <button
-                          onClick={() =>
-                            setSelectedFiles(prev =>
-                              prev.filter((_, i) => i !== index)
-                            )
-                          }
-                          className="absolute top-1 right-1 p-0.5 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
-                        >
-                          <X className="w-1.5 h-1.5" />
-                        </button>
-
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[9px] p-0.5 truncate">
-                          {file.name}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Error Messages */}
-                {errors.length > 0 && (
-                  <div className="space-y-0.5">
-                    {errors.map((error, index) => (
-                      <p key={index} className="text-xs text-destructive">
-                        {error}
-                      </p>
-                    ))}
-                  </div>
-                )}
+                {/* Error messages được hiển thị trực tiếp trong FileDropzone */}
 
                 <div className="flex justify-end pt-1">
                   <Button

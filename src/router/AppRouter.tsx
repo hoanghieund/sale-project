@@ -60,10 +60,10 @@ const SellerLayout = lazy(
   () => import("@/features/seller/layout/SellerLayout")
 );
 const DashboardPage = lazy(
-  () => import("@/features/seller/pages/DashboardPage")
+  () => import("@/features/seller/dashboard/pages/DashboardPage")
 );
 const ShopManagementPage = lazy(
-  () => import("@/features/seller/pages/ShopManagementPage")
+  () => import("@/features/seller/shop/pages/ShopManagementPage")
 );
 const CategoryManagementPage = lazy(
   () => import("@/features/seller/categories/pages/CategoryManagementPage")

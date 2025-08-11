@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { Order, OrderStatus } from "@/types";
- import { formatCurrencyUSD } from "@/utils/formatters"; // format currency for display (USD)
+ import { formatCurrencyUSD, formatDate } from "@/utils/formatters"; // format currency for display (USD) + date formatter
 import {
   Calendar as CalendarIcon,
   ChevronDown,
@@ -291,12 +291,12 @@ const OrderTable: React.FC<OrderTableProps> = ({
               {dateRange?.from ? (
                 dateRange.to ? (
                   <span>
-                    {new Date(dateRange.from).toLocaleDateString("en-US")} -{" "}
-                    {new Date(dateRange.to).toLocaleDateString("en-US")}
+                    {formatDate(dateRange.from!)} -{" "}
+                    {formatDate(dateRange.to!)}
                   </span>
                 ) : (
                   <span>
-                    {new Date(dateRange.from).toLocaleDateString("en-US")}
+                    {formatDate(dateRange.from!)}
                   </span>
                 )
               ) : (
@@ -359,7 +359,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                     </div>
                   </TableCell>
                   <TableCell>
-                    {new Date(order.timeOrder).toLocaleDateString("en-US")}
+                    {formatDate(order.timeOrder)}
                   </TableCell>
                   <TableCell>{formatCurrencyUSD(order.totalPrice)}</TableCell>
                   <TableCell>
