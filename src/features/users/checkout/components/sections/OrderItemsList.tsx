@@ -1,4 +1,4 @@
-import CartItemCard from "@/features/users/cart/components/CartItemCard";
+import CartItemCard from "@/components/common/CartItemCard";
 import { Cart } from "@/types";
 
 /**
@@ -12,7 +12,7 @@ interface Props {
 const OrderItemsList = ({ items }: Props) => {
   return (
     <div className="space-y-4 mb-4">
-      {items.map((item) => (
+      {items.map(item => (
         <CartItemCard key={item.id} item={item} viewMode="compact" />
       ))}
     </div>

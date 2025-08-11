@@ -4,6 +4,7 @@
  * Sử dụng CategoryForm component và lấy ID danh mục từ URL params.
  */
 
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import {
   Card,
   CardContent,
@@ -95,6 +96,14 @@ const EditCategoryPage: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="text-center text-red-500">
@@ -106,7 +115,7 @@ const EditCategoryPage: React.FC = () => {
 
   return (
     <>
-      <Card>
+      <Card className="bg-white">
         <CardHeader>
           <CardTitle>Edit Category</CardTitle>
           <CardDescription>

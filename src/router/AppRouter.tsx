@@ -84,10 +84,10 @@ const EditProductPage = lazy(
   () => import("@/features/seller/pages/EditProductPage")
 );
 const OrderManagementPage = lazy(
-  () => import("@/features/seller/pages/OrderManagementPage")
+  () => import("@/features/seller/orders/pages/OrderManagementPage")
 );
 const OrderDetailPage = lazy(
-  () => import("@/features/seller/pages/OrderDetailPage")
+  () => import("@/features/seller/orders/pages/OrderDetailPage")
 );
 
 const AppRouter = () => {

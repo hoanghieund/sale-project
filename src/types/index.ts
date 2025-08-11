@@ -274,7 +274,7 @@ export interface Order {
   id: number;
   address: any; // Dựa trên API, có thể là null hoặc một đối tượng địa chỉ
   totalQuantity: number;
-  status: number; // 0: Chờ xác nhận, 1: Chờ lấy hàng, 2: Đang giao, 3: Hoàn thành, 4: Đã hủy
+  status: OrderStatus;
   totalPrice: number;
   shop: any; // Tạm thời là any, có thể định nghĩa interface Shop sau
   cartEntities: Cart[];
@@ -292,12 +292,11 @@ export interface Order {
 
 // Order Status enum
 export enum OrderStatus {
-  PENDING = 0,
-  CONFIRMED = 1,
-  PROCESSING = 2,
-  SHIPPED = 3,
-  DELIVERED = 4,
-  CANCELLED = 5,
+  ALL = "all",
+  PENDING_CONFIRMATION = 0,
+  AWAITING_PICKUP = 1,
+  IN_DELIVERY = 2,
+  COMPLETED = 3,
 }
 
 // Interactive Types - Dựa trên tbl_interactive

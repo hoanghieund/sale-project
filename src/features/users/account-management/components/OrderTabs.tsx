@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OrderList from "@/features/users/account-management/components/OrderList";
+import { OrderStatus } from "@/types";
 import React, { useState } from "react";
-
 /**
  * @function OrderTabs
  * @description Component displaying order status tabs and passing the selected status to OrderList.
@@ -60,19 +60,19 @@ const OrderTabs: React.FC = () => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
-        <OrderList status="all" />
+        <OrderList status={OrderStatus.ALL} />
       </TabsContent>
       <TabsContent value="pending_confirmation">
-        <OrderList status="0" />
+        <OrderList status={OrderStatus.PENDING_CONFIRMATION} />
       </TabsContent>
       <TabsContent value="awaiting_pickup">
-        <OrderList status="1" />
+        <OrderList status={OrderStatus.AWAITING_PICKUP} />
       </TabsContent>
       <TabsContent value="in_delivery">
-        <OrderList status="2" />
+        <OrderList status={OrderStatus.IN_DELIVERY} />
       </TabsContent>
       <TabsContent value="completed">
-        <OrderList status="3" />
+        <OrderList status={OrderStatus.COMPLETED} />
       </TabsContent>
     </Tabs>
   );

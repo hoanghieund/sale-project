@@ -186,9 +186,9 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                 </TableRow>
               ))
             ) : (
-              <div className="text-center py-8 text-gray-500">
-                No categories found
-              </div>
+              <TableRow className="text-center py-8 text-gray-500 w-full">
+                <TableCell colSpan={3}>No categories found</TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

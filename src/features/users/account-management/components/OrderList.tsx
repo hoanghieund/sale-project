@@ -1,4 +1,6 @@
 // src/features/users/account-management/components/OrderList.tsx
+import CartItemCard from "@/components/common/CartItemCard";
+import { OrderStatusBadge } from "@/components/common/OrderStatusBadge";
 import {
   Card,
   CardContent,
@@ -7,9 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import CartItemCard from "@/features/users/cart/components/CartItemCard";
 import { useUser } from "@/hooks/use-user";
-import { Order } from "@/types";
+import { Order, OrderStatus } from "@/types";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { AxiosError } from "axios";
 import {
@@ -29,7 +30,7 @@ import { orderService } from "../services/orderService";
  * @description Props for the OrderList component.
  */
 interface OrderListProps {
-  status: string;
+  status: OrderStatus;
 }
 
 /**
@@ -128,31 +129,8 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
                 </CardDescription>
               </div>
               <div className="text-right">
-                {order.status === 0 && (
-                  <span className="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
-                    Pending confirmation
-                  </span>
-                )}
-                {order.status === 1 && (
-                  <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 text-xs font-medium">
-                    Awaiting pickup
-                  </span>
-                )}
-                {order.status === 2 && (
-                  <span className="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs font-medium">
-                    In delivery
-                  </span>
-                )}
-                {order.status === 3 && (
-                  <span className="px-2 py-0.5 rounded-full bg-green-100 text-ring text-xs font-medium">
-                    Completed
-                  </span>
-                )}
-                {order.status === 4 && (
-                  <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-xs font-medium">
-                    Canceled
-                  </span>
-                )}
+                {/* Sử dụng OrderStatusBadge để thống nhất UI trạng thái đơn hàng */}
+                <OrderStatusBadge status={order.status} />
               </div>
             </CardHeader>
             <CardContent className="p-3 space-y-3">

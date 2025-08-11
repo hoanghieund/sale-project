@@ -1,5 +1,5 @@
+import CartItemCard from "@/components/common/CartItemCard"; // Import CartItemCard
 import { CartByShop } from "../types/cart-types";
-import CartItemCard from "./CartItemCard"; // Import CartItemCard
 
 /**
  * @interface ShopCartSectionProps
@@ -26,12 +26,16 @@ interface ShopCartSectionProps {
  * @param {function} props.removeFromCart - Function to handle removing a product from the cart.
  * @param {function} props.updateQuantity - Function to handle updating the product quantity.
  */
-const ShopCartSection = ({ shopCart, removeFromCart, updateQuantity, selectedItems, onSelectItem }: ShopCartSectionProps) => {
+const ShopCartSection = ({
+  shopCart,
+  removeFromCart,
+  updateQuantity,
+  selectedItems,
+  onSelectItem,
+}: ShopCartSectionProps) => {
   return (
     <div key={shopCart.id} className="space-y-4">
-      <h2 className="text-xl font-semibold mb-2">
-        Shop: {shopCart.shopName}
-      </h2>
+      <h2 className="text-xl font-semibold mb-2">Shop: {shopCart.shopName}</h2>
       {shopCart.cartDTOList.map(item => (
         <CartItemCard
           key={item.id}
