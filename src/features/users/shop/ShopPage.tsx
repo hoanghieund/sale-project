@@ -239,7 +239,7 @@ const ShopPage = () => {
       {/* Shop Banner */}
       {/* Dynamic shop banner based on shop.banner; fallbacks to placeholder if missing */}
       <div
-        className="relative h-96 bg-primary"
+        className="relative h-[350px] md:h-[500px] lg:h-[580px] bg-primary"
         style={{
           // Use cover background to display full width, maintain aspect ratio
           backgroundImage: `url(${shop?.banner?.trim()})`,
@@ -263,7 +263,7 @@ const ShopPage = () => {
             - Using colors/spacing from design-system: text-xl/lg, gap-4/6, rounded-lg, bg-muted, shadow-sm
           */}
           <CardHeader className="pb-4">
-            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               {/* Shop Avatar */}
               <Avatar className="w-24 h-24 md:w-28 md:h-28 border-4 border-white shadow-lg rounded-full">
                 {/* Defensive src/alt */}
