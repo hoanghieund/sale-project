@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select"; // Chọn groupBy
 import { DashboardCharts } from "@/features/seller/dashboard/components/DashboardCharts";
 import { DashboardStatsComponent } from "@/features/seller/dashboard/components/DashboardStats";
+import { TopSellingProducts } from "@/features/seller/dashboard/components/TopSellingProducts";
 import { DashboardStats, StatsGroupBy } from "@/types"; // Types
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner"; // dùng sonner chuẩn ESM
@@ -66,6 +67,8 @@ const DashboardPage: React.FC = () => {
   });
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     /**
@@ -73,6 +76,8 @@ const DashboardPage: React.FC = () => {
      * @description Gọi 2 API (overview + timeseries) và hợp nhất thành DashboardStats cho UI hiện tại.
      */
     const fetchStats = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const [overview, series] = await Promise.all([
           dashboardService.getOverviewStats(filters),
@@ -102,7 +107,10 @@ const DashboardPage: React.FC = () => {
         setStats(mapped);
       } catch (err: any) {
         const msg = err?.message || "Không thể tải số liệu dashboard.";
+        setError(msg);
         notifyError(msg);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -161,6 +169,11 @@ const DashboardPage: React.FC = () => {
 
           {/* Hàng 2: Biểu đồ doanh thu & top sản phẩm */}
           <DashboardCharts stats={stats} />
+
+          {/* Hàng 3: Danh sách top sản phẩm chi tiết */}
+          <div className="min-w-0">
+            <TopSellingProducts products={stats.topSellingProducts} />
+          </div>
         </>
       ) : (
         <div className="text-center py-8 text-gray-500">
