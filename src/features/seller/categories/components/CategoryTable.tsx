@@ -31,7 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CollectionResponse } from "@/types";
-import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit, MoreHorizontal } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Điều hướng tới trang sửa danh mục
 import { toast } from "sonner"; // Thông báo người dùng
@@ -121,7 +121,9 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
             <TableRow>
               <TableHead>Category name</TableHead>
               {/* Ẩn cột Type trên mobile để tiết kiệm không gian */}
-              <TableHead className="text-right hidden sm:table-cell">Type</TableHead>
+              <TableHead className="text-right hidden sm:table-cell">
+                Type
+              </TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -174,7 +176,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                           </DropdownMenuItem>
                         )}
                         {/* Nút Xóa: chỉ hiển thị khi KHÔNG phải mặc định */}
-                        {!category.isAll && (
+                        {/* {!category.isAll && (
                           <DropdownMenuItem
                             onClick={() => handleDelete(category)}
                             className="text-red-600"
@@ -182,7 +184,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                             <Trash2 className="mr-2 h-4 w-4" />
                             Delete
                           </DropdownMenuItem>
-                        )}
+                        )} */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
