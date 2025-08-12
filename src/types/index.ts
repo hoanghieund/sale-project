@@ -165,15 +165,26 @@ export interface User {
 
 // Dashboard Stats Types - Tính toán từ các bảng khác
 export interface DashboardStats {
-  totalProducts: number; // Tính từ tbl_product
-  totalOrders: number; // Tính từ tbl_orders
-  totalRevenue: number; // Tính từ tbl_orders.total_price
-  topSellingProducts: Product[]; // Tính từ tbl_product.total_product_sold
-  pendingOrders: number; // Tính từ tbl_orders với status = 0
-  monthlyRevenue: number[]; // Tính theo tháng từ tbl_orders
-  topProducts: Product[]; // Sản phẩm bán chạy từ tbl_product.total_product_sold
-  recentOrders: Order[]; // Đơn hàng gần đây từ tbl_orders
-  revenueTrend: { date: string; revenue: number }[];
+  // Core metrics directly from BE
+  totalProducts: number; // from overview.totalProducts
+  totalOrders: number; // from overview.totalOrdersPaid|totalOrders
+  totalRevenue: number; // from overview.totalRevenuePaid|totalRevenue
+  pendingOrders: number; // from overview.pendingOrders
+  revenueTrend: { date: string; revenue: number }[]; // from timeseries
+
+  // Optional aggregates provided by BE (if any)
+  totalItemsSold?: number; // from overview.totalItemsSold
+  averageOrderValue?: number; // from overview.averageOrderValue
+  conversionRate?: number; // from overview.conversionRate
+  totalCategories?: number; // from overview.totalCategories
+
+  // Optional lists from BE for UI (may be absent)
+  topSellingProducts?: Product[]; // from overview.topSellingProducts
+  topProducts?: Product[]; // from overview.topProducts
+  recentOrders?: Order[]; // from overview.recentOrders
+
+  // Legacy/unused locally computed metrics
+  monthlyRevenue?: number[]; // deprecated, keep optional for backward compatibility
 }
 
 // Stats API Types for Seller Dashboard

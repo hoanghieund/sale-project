@@ -6,12 +6,6 @@
  *  - GET /api/shop/stats/timeseries?fromDate&toDate&groupBy
  */
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input"; // Input date
 import { Label } from "@/components/ui/label"; // Nhãn control
 import {
@@ -23,7 +17,6 @@ import {
 } from "@/components/ui/select"; // Chọn groupBy
 import { DashboardCharts } from "@/features/seller/dashboard/components/DashboardCharts";
 import { DashboardStatsComponent } from "@/features/seller/dashboard/components/DashboardStats";
-import { TopSellingProducts } from "@/features/seller/dashboard/components/TopSellingProducts";
 import { DashboardStats, StatsGroupBy } from "@/types"; // Types
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner"; // dùng sonner chuẩn ESM
@@ -73,8 +66,6 @@ const DashboardPage: React.FC = () => {
   });
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     /**
@@ -82,8 +73,6 @@ const DashboardPage: React.FC = () => {
      * @description Gọi 2 API (overview + timeseries) và hợp nhất thành DashboardStats cho UI hiện tại.
      */
     const fetchStats = async () => {
-      setLoading(true);
-      setError(null);
       try {
         const [overview, series] = await Promise.all([
           dashboardService.getOverviewStats(filters),
@@ -94,8 +83,8 @@ const DashboardPage: React.FC = () => {
         // Ưu tiên các trường "Paid" từ backend mới; fallback về trường cũ nếu có
         const mapped: DashboardStats = {
           totalProducts: overview.totalProducts ?? 0,
-          totalOrders: (overview.totalOrdersPaid ?? overview.totalOrders) ?? 0,
-          totalRevenue: (overview.totalRevenuePaid ?? overview.totalRevenue) ?? 0,
+          totalOrders: overview.totalOrdersPaid ?? overview.totalOrders ?? 0,
+          totalRevenue: overview.totalRevenuePaid ?? overview.totalRevenue ?? 0,
           pendingOrders: overview.pendingOrders ?? 0,
           monthlyRevenue: [], // Không sử dụng hiện tại
           topProducts:
@@ -106,17 +95,14 @@ const DashboardPage: React.FC = () => {
           revenueTrend:
             series?.map(p => ({
               date: p.label ?? p.date,
-              revenue: (p.revenuePaid ?? p.revenue) ?? 0,
+              revenue: p.revenuePaid ?? p.revenue ?? 0,
             })) ?? [],
         };
 
         setStats(mapped);
       } catch (err: any) {
         const msg = err?.message || "Không thể tải số liệu dashboard.";
-        setError(msg);
         notifyError(msg);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -175,23 +161,6 @@ const DashboardPage: React.FC = () => {
 
           {/* Hàng 2: Biểu đồ doanh thu & top sản phẩm */}
           <DashboardCharts stats={stats} />
-
-          {/* Hàng 3: Danh sách top sản phẩm chi tiết */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
-            <div className="min-w-0">
-              <TopSellingProducts products={stats.topSellingProducts} />
-            </div>
-            <div className="min-w-0">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Gợi ý</CardTitle>
-                  <CardDescription>
-                    Thêm các widget khác ở đây khi cần
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </div>
-          </div>
         </>
       ) : (
         <div className="text-center py-8 text-gray-500">

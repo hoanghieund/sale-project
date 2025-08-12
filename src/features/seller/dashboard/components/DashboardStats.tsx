@@ -131,7 +131,7 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
   return (
     <div className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {statCards.map((stat, index) => (
-        <Card key={index}>
+        <Card className="bg-white" key={index}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
             <stat.icon className="h-4 w-4 text-muted-foreground" />

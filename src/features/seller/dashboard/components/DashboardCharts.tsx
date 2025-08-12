@@ -44,7 +44,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ stats }) => {
     // Responsive: 1 cột trên mobile, 2 cột từ lg trở lên để tận dụng không gian màn hình rộng
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Biểu đồ Doanh thu theo ngày */}
-      <Card>
+      <Card className="bg-white">
         <CardHeader>
           <CardTitle>Doanh thu theo ngày</CardTitle>
           <CardDescription>Xu hướng doanh thu 7 ngày gần nhất</CardDescription>
@@ -77,7 +77,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ stats }) => {
       </Card>
 
       {/* Biểu đồ doanh thu theo Top sản phẩm */}
-      <Card>
+      <Card className="bg-white">
         <CardHeader>
           <CardTitle>Top sản phẩm theo doanh thu</CardTitle>
           <CardDescription>Ước tính: giá × tồn kho</CardDescription>

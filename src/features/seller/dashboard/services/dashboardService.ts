@@ -18,13 +18,6 @@ export interface StatsParams {
 
 export const dashboardService = {
   /**
-   * Legacy (giữ để tránh vỡ code cũ). Nên thay bằng getOverviewStats + getTimeSeriesStats.
-   */
-  getDashboardStats: async () => {
-    return Axios.get("/api/dashboard/stats");
-  },
-
-  /**
    * Lấy thống kê tổng quan theo khoảng ngày và groupBy.
    * GET /api/shop/stats/overview?fromDate&toDate&groupBy
    */
