@@ -15,8 +15,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
  */
 const ShippingReturns = () => {
   // NOTE: Cập nhật ngày theo thời gian hiện tại của hệ thống/brand policy
-  const effectiveDate = "August 8, 2025";
-  const lastUpdatedDate = "August 8, 2025";
+  const effectiveDate = "August 12, 2025"; // ngày hiệu lực chính sách
+  const lastUpdatedDate = "August 12, 2025"; // ngày cập nhật gần nhất
+
+  // POLICY: Các tham số chính sách tập trung để dễ bảo trì/điều chỉnh
+  // - processingDays: thời gian xử lý đơn
+  // - standardDays, expressDays: khung thời gian giao hàng ước tính
+  // - freeShippingThreshold: ngưỡng miễn phí vận chuyển
+  // - returnWindowDays: thời hạn đổi trả
+  // - issueReportDays: thời hạn báo cáo mất/hư hỏng
+  // - refundDays: thời gian hoàn tiền ước tính
+  const POLICY = {
+    processingDays: "1–2",
+    standardDays: "3–7",
+    expressDays: "1–3",
+    freeShippingThreshold: "$75",
+    returnWindowDays: 14,
+    issueReportDays: 7,
+    refundDays: "5–7",
+  } as const;
 
   return (
     <div className="container mx-auto my-12">
@@ -41,7 +58,8 @@ const ShippingReturns = () => {
               <h3 className="font-medium">1. Processing Time</h3>
               <ul className="list-disc ml-6 space-y-1">
                 <li>
-                  Orders are processed within [X] business days after payment is
+                  {/* Sử dụng POLICY.processingDays để dễ thay đổi theo thực tế vận hành */}
+                  Orders are processed within {POLICY.processingDays} business days after payment is
                   confirmed (excluding weekends and holidays).
                 </li>
                 <li>
@@ -59,11 +77,13 @@ const ShippingReturns = () => {
               <ul className="list-disc ml-6 space-y-1">
                 <li>
                   <span className="font-medium">Standard Shipping:</span>{" "}
-                  Estimated delivery in [X–X] business days.
+                  {/* ước tính giao hàng chuẩn */}
+                  Estimated delivery in {POLICY.standardDays} business days.
                 </li>
                 <li>
                   <span className="font-medium">Express Shipping:</span>{" "}
-                  Estimated delivery in [X–X] business days.
+                  {/* ước tính giao hàng nhanh */}
+                  Estimated delivery in {POLICY.expressDays} business days.
                 </li>
               </ul>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -80,7 +100,7 @@ const ShippingReturns = () => {
                   destination, and selected shipping method.
                 </li>
                 <li>
-                  Free shipping may be available for orders over [X amount].
+                  Free shipping may be available for orders over {POLICY.freeShippingThreshold}.
                 </li>
               </ul>
             </div>
@@ -117,7 +137,7 @@ const ShippingReturns = () => {
               <h3 className="font-medium">7. Lost or Damaged Packages</h3>
               <p>
                 If your package is lost or arrives damaged, please contact us
-                within [X] days of delivery at{" "}
+                within {POLICY.issueReportDays} days of delivery at{" "}
                 <a
                   href="mailto:support@eulotus.com"
                   className="text-blue-600 hover:underline"
@@ -140,7 +160,7 @@ const ShippingReturns = () => {
 
             <div>
               <h3 className="font-medium">1. Eligibility for Returns</h3>
-              <p>We accept returns within [X] days of delivery if:</p>
+              <p>We accept returns within {POLICY.returnWindowDays} days of delivery if:</p>
               <ul className="list-disc ml-6 space-y-1">
                 <li>
                   The item is unused, in original packaging, and in the same
@@ -189,7 +209,7 @@ const ShippingReturns = () => {
               <h3 className="font-medium">4. Refunds</h3>
               <ul className="list-disc ml-6 space-y-1">
                 <li>
-                  Refunds are issued to your original payment method within [X]
+                  Refunds are issued to your original payment method within {POLICY.refundDays}
                   business days after we receive and inspect the returned item.
                 </li>
                 <li>Shipping fees are non-refundable.</li>
@@ -215,7 +235,7 @@ const ShippingReturns = () => {
               <h3 className="font-medium">6. Damaged or Defective Items</h3>
               <p>
                 If you receive a damaged or defective product, please contact us
-                within [X] days of delivery with photos for a replacement or
+                within {POLICY.issueReportDays} days of delivery with photos for a replacement or
                 refund.
               </p>
             </div>

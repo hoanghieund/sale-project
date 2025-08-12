@@ -1,155 +1,104 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Facebook, Instagram, Mail, Twitter } from "lucide-react";
-import { useState } from "react";
+import { Facebook, Instagram, Mail } from "lucide-react";
+// Pinterest icon sẽ được thay thế bằng một icon tương tự
 import { Link } from "react-router-dom";
-// Footer Links
+
+/**
+ * Footer links configuration - giữ nguyên các links hiện tại, chỉ tổ chức lại layout
+ */
 export const FOOTER_LINKS = {
-  help: [
-    // Giữ lại các trang chính có trong luồng nghiệp vụ
+  getToKnowUs: [
     { label: "About Us", href: "/about" },
     { label: "Contact Us", href: "/contact" },
+  ],
+  customerService: [
+    { label: "Help Center", href: "/help" },
     { label: "FAQs", href: "/faq" },
   ],
-  policy: [
-    // Đơn giản hóa các chính sách, chuyển hướng đến các trang có sẵn
+  ordersReturns: [
     { label: "Shipping & Returns", href: "/shipping-returns" },
     { label: "Privacy Policy", href: "/privacy-policy" },
-    { label: "Terms of Service", href: "/terms-of-service" },
   ],
+  quickLinks: [{ label: "Terms of Service", href: "/terms-of-service" }],
 };
 
 const Footer = () => {
-  const [email, setEmail] = useState("");
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      // Handle newsletter subscription
-      console.log("Newsletter subscription:", email);
-      setEmail("");
-      // Show success message
-    }
-  };
-
   return (
     <>
-      {/* Newsletter Section */}
-      <section className="bg-gradient-to-r from-primary/90 to-primary text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold tracking-wide">
-            SIGN UP TO OUR NEWSLETTER
-          </h2>
-          <p className="text-white/90 mb-2 max-w-lg mx-auto">
-            Subscribe to receive updates, access to exclusive deals, and more.
-          </p>
-          <form
-            onSubmit={handleNewsletterSubmit}
-            className="flex flex-col sm:flex-row max-w-md mx-auto gap-3"
-          >
-            <Input
-              type="email"
-              placeholder="Your email address"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="bg-white/90 text-black rounded-full border-transparent focus-visible:ring-offset-white"
-              required
-            />
-            <Button
-              type="submit"
-              variant="secondary"
-              className="rounded-full hover:bg-secondary/90 transition-colors duration-200"
-            >
-              Subscribe
-            </Button>
-          </form>
-          <div className="flex justify-center gap-4 mt-2">
-            <Link
-              to="https://www.instagram.com/shopofficial/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/20 rounded-full transition-colors duration-200"
-              >
-                <Instagram className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Link
-              to="https://www.facebook.com/shopofficial"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/20 rounded-full transition-colors duration-200"
-              >
-                <Facebook className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Link
-              to="https://www.twitter.com/shopofficial"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/20 rounded-full transition-colors duration-200"
-              >
-                <Twitter className="h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Main Footer */}
-      <footer className="bg-black text-white py-8">
+      <footer className="bg-white text-gray-800 py-8 border-t">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Brand */}
+          {/* 4-column grid layout như trong hình */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Get to Know Us */}
             <div>
-              {/* Dùng logo từ public/logo.png để đồng bộ với Header */}
-              <Link to="/" className="inline-block mb-4" aria-label="Home">
-                {/* Tăng kích thước logo và thêm responsive tương tự Header */}
-                <img
-                  src="/logo.png"
-                  alt="Shop Logo"
-                  className="h-14 md:h-16 lg:h-20 w-auto"
-                />
-              </Link>
-              <p className="text-white/80 mb-4 leading-relaxed">
-                {/* Cập nhật mô tả thương hiệu để phản ánh Eulotus */}
-                <strong>Eulotus</strong> is a trusted e-commerce marketplace
-                connecting sellers and buyers with secure payments, efficient
-                logistics, and transparent shopping experiences.
-              </p>
-              <div className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-200">
-                <Mail className="h-4 w-4" />
-                {/* Cập nhật email liên hệ theo yêu cầu */}
-                <span>Email:</span>
-                <a
-                  href="mailto:support@eulotus.com"
-                  className="underline underline-offset-4"
+              <h3 className="font-semibold mb-4 text-gray-900">
+                Get to Know Us
+              </h3>
+              <ul className="space-y-2 mb-6">
+                {FOOTER_LINKS.getToKnowUs.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      to={link.href}
+                      className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Social Media Icons */}
+              <div className="flex items-center gap-4 mb-2">
+                <Link
+                  to="https://www.instagram.com/eulotus"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
-                  support@eulotus.com
-                </a>
+                  <Instagram className="h-5 w-5" />
+                </Link>
+                <Link
+                  to="https://www.facebook.com/eulotus"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <Facebook className="h-5 w-5" />
+                </Link>
+                <Link
+                  to="https://www.pinterest.com/eulotus"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  {/* Sử dụng Mail icon thay cho Pinterest vì lucide-react không có Pinterest */}
+                  <Mail className="h-5 w-5" />
+                </Link>
+              </div>
+
+              {/* Logo */}
+              <div className="flex items-center">
+                <Link to="/" aria-label="Home">
+                  <img
+                    src="/logo.png"
+                    alt="Eulotus Logo"
+                    className="h-16 w-20"
+                  />
+                </Link>
               </div>
             </div>
 
-            {/* Help Links */}
+            {/* Customer Service */}
             <div>
-              <h3 className="font-semibold mb-3 text-white">HELP</h3>
-              <ul className="space-y-1.5 text-white/80">
-                {FOOTER_LINKS.help.map((link, index) => (
+              <h3 className="font-semibold mb-4 text-gray-900">
+                Customer Service
+              </h3>
+              <ul className="space-y-2">
+                {FOOTER_LINKS.customerService.map((link, index) => (
                   <li key={index}>
                     <Link
                       to={link.href}
-                      className="hover:text-accent transition-colors"
+                      className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                     >
                       {link.label}
                     </Link>
@@ -158,15 +107,17 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Policy Links */}
+            {/* Orders & Returns */}
             <div>
-              <h3 className="font-semibold mb-3 text-white">POLICY</h3>
-              <ul className="space-y-1.5 text-white/80">
-                {FOOTER_LINKS.policy.map((link, index) => (
+              <h3 className="font-semibold mb-4 text-gray-900">
+                Orders & Returns
+              </h3>
+              <ul className="space-y-2">
+                {FOOTER_LINKS.ordersReturns.map((link, index) => (
                   <li key={index}>
                     <Link
                       to={link.href}
-                      className="hover:text-accent transition-colors"
+                      className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                     >
                       {link.label}
                     </Link>
@@ -174,24 +125,22 @@ const Footer = () => {
                 ))}
               </ul>
             </div>
-          </div>
 
-          {/* Bottom Bar */}
-          <div className="border-t border-white/20 mt-4 pt-4 flex flex-col md:flex-row justify-between items-center text-muted-foreground">
-            <p>&copy; 2025 Eulotus.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link
-                to="/privacy-policy"
-                className="hover:text-primary transition-colors duration-200"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                to="/terms-of-service"
-                className="hover:text-primary transition-colors duration-200"
-              >
-                Terms of Service
-              </Link>
+            {/* Quick Links */}
+            <div>
+              <h3 className="font-semibold mb-4 text-gray-900">Quick Links</h3>
+              <ul className="space-y-2">
+                {FOOTER_LINKS.quickLinks.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      to={link.href}
+                      className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

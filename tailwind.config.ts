@@ -13,7 +13,7 @@ export default {
     container: {
       center: true,
       screens: {
-        "2xl": "1600px",
+        "2xl": "1720px",
       },
     },
     extend: {
