@@ -55,7 +55,6 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
     {
       title: "Total revenue",
       value: formatCurrencyUSD(stats.totalRevenue ?? 0),
-      description: "From backend",
       icon: DollarSign,
     },
     // Optional từ BE
@@ -74,7 +73,6 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
           {
             title: "Average order value",
             value: formatCurrencyUSD(stats.averageOrderValue),
-            description: "From backend",
             icon: DollarSign,
           },
         ]
@@ -84,31 +82,71 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
           {
             title: "Conversion rate",
             value: `${stats.conversionRate}%`,
-            description: "From backend",
             icon: ShoppingCart,
           },
         ]
       : []),
   ];
 
+  /**
+   * Chọn màu nhấn theo từng thẻ để làm nổi bật các mục quan trọng
+   * - Revenue: nhấn mạnh (viền trái + màu xanh lục)
+   * - Orders: icon xanh dương
+   * - Items sold: icon xanh lục
+   * - Conversion rate: cam
+   */
+  const getAccent = (title: string) => {
+    switch (title) {
+      case "Total revenue":
+        return {
+          ring: "border-l-4 border-emerald-600",
+          iconColor: "text-emerald-600",
+          valueColor: "text-emerald-600",
+        } as const;
+      case "Total orders":
+        return { iconColor: "text-blue-600" } as const;
+      case "Items sold":
+        return { iconColor: "text-emerald-600" } as const;
+      case "Conversion rate":
+        return {
+          iconColor: "text-orange-600",
+          valueColor: "text-orange-600",
+        } as const;
+      default:
+        return {} as const;
+    }
+  };
+
   return (
     <div className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {statCards.map((stat, index) => (
-        <Card className="bg-white" key={index}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-            <stat.icon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-            <div className="mt-2">
-              <p className="text-xs text-muted-foreground">
-                {stat.description}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+      {statCards.map((stat, index) => {
+        // Áp dụng màu nhấn theo từng thẻ
+        const accent = getAccent(stat.title);
+        return (
+          <Card
+            className={`bg-white shadow-sm hover:shadow-lg transition-shadow ${accent.ring ?? ""}`}
+            key={index}
+          >
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              {/* Icon trong vòng tròn nền để nhấn nhẹ */}
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <stat.icon
+                  className={`h-4 w-4 ${accent.iconColor ?? "text-muted-foreground"}`}
+                />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={`text-2xl font-bold ${accent.valueColor ?? ""}`}>
+                {stat.value}
+              </div>
+              <div className="mt-2">
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 };

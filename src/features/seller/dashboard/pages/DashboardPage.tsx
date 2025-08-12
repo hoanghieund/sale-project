@@ -10,7 +10,7 @@ import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { Button } from "@/components/ui/button"; // Nút trigger DateRange
 import { Calendar } from "@/components/ui/calendar"; // Calendar shadcn
-import { Label } from "@/components/ui/label"; // Nhãn control
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Bọc UI Filters
 import {
   Popover,
   PopoverContent,
@@ -173,70 +173,75 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8 min-w-0">
-      {/* Filters: date range & groupBy */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Date range: dùng shadcn Calendar + Popover, chiếm 2 cột trên desktop */}
-        <div className="md:col-span-2">
-          <Label>Date range</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="mt-2 w-full justify-start text-left font-normal"
+      {/* Filters: bọc trong Card để giao diện gọn gàng hơn, không đổi logic */}
+      <Card className="bg-white shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Date range: dùng shadcn Calendar + Popover, chiếm 2 cột trên desktop */}
+            <div className="md:col-span-1">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateRange?.from && dateRange?.to ? (
+                      <span>
+                        {filters.fromDate} → {filters.toDate}
+                      </span>
+                    ) : dateRange?.from ? (
+                      <span>{filters.fromDate}</span>
+                    ) : (
+                      <span className="text-muted-foreground">
+                        Pick a date range
+                      </span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="range"
+                    selected={dateRange}
+                    onSelect={range => {
+                      // Cập nhật UI + filters theo range chọn
+                      setDateRange(range);
+                      setFilters(s => ({
+                        ...s,
+                        fromDate: range?.from ? toYMD(range.from) : s.fromDate,
+                        toDate: range?.to ? toYMD(range.to) : s.toDate,
+                      }));
+                    }}
+                    numberOfMonths={calendarMonths}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="space-y-2">
+              <Select
+                value={filters.groupBy}
+                onValueChange={v =>
+                  setFilters(s => ({ ...s, groupBy: v as StatsGroupBy }))
+                }
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange?.from && dateRange?.to ? (
-                  <span>
-                    {filters.fromDate} → {filters.toDate}
-                  </span>
-                ) : dateRange?.from ? (
-                  <span>{filters.fromDate}</span>
-                ) : (
-                  <span className="text-muted-foreground">
-                    Pick a date range
-                  </span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="range"
-                selected={dateRange}
-                onSelect={range => {
-                  // Cập nhật UI + filters theo range chọn
-                  setDateRange(range);
-                  setFilters(s => ({
-                    ...s,
-                    fromDate: range?.from ? toYMD(range.from) : s.fromDate,
-                    toDate: range?.to ? toYMD(range.to) : s.toDate,
-                  }));
-                }}
-                numberOfMonths={calendarMonths}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div className="space-y-2">
-          <Label>Group by</Label>
-          <Select
-            value={filters.groupBy}
-            onValueChange={v =>
-              setFilters(s => ({ ...s, groupBy: v as StatsGroupBy }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select group" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="day">By day</SelectItem>
-              <SelectItem value="week">By week</SelectItem>
-              <SelectItem value="month">By month</SelectItem>
-              <SelectItem value="year">By year</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select group" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="day">By day</SelectItem>
+                  <SelectItem value="week">By week</SelectItem>
+                  <SelectItem value="month">By month</SelectItem>
+                  <SelectItem value="year">By year</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {loading ? (
         <LoadingSpinner />
