@@ -68,7 +68,7 @@ const CategoryManagementPage: React.FC = () => {
     <>
       <Card className="bg-white">
         {/* Header responsive: xếp dọc trên mobile, ngang trên md+ */}
-        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between flex-wrap">
           <div className="space-y-2">
             <CardTitle>Category Management</CardTitle>
             <CardDescription>
@@ -99,7 +99,9 @@ const CategoryManagementPage: React.FC = () => {
                 fetchCollections(page - 1);
               }}
             />
-            <div className="text-sm text-gray-600">Total: {totalElements} items</div>
+            <div className="text-sm text-gray-600">
+              Total: {totalElements} items
+            </div>
           </div>
         </CardContent>
       </Card>

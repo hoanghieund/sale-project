@@ -100,19 +100,19 @@ export const ShopForm: React.FC<ShopFormProps> = ({
     },
   });
 
-  // Responsive: theo dõi breakpoint md để điều chỉnh kích thước preview
-  // Sử dụng matchMedia để đồng bộ với Tailwind md (min-width: 768px)
-  const [isMdUp, setIsMdUp] = useState<boolean>(true);
+  // Responsive: theo dõi breakpoint lg để điều chỉnh kích thước preview
+  // Lưu ý: từ màn md có sidebar nên coi md giống mobile; chỉ tăng kích thước từ lg (min-width: 1024px)
+  const [isLgUp, setIsLgUp] = useState<boolean>(false);
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const update = () => setIsMdUp(mq.matches);
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsLgUp(mq.matches);
     update(); // Khởi tạo theo kích thước hiện tại
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
-  // Kích thước thumbnail linh hoạt cho mobile/tablet/desktop
-  const logoThumb = isMdUp ? 320 : 200;
-  const bannerThumb = isMdUp ? 320 : 200;
+  // Kích thước thumbnail: mobile/md dùng nhỏ, lg+ dùng lớn để phù hợp layout có sidebar ở md
+  const logoThumb = isLgUp ? 300 : 200;
+  const bannerThumb = isLgUp ? 300 : 200;
 
   /**
    * Helper: convert File -> DataURL for consistent preview/storage handling
@@ -224,7 +224,8 @@ export const ShopForm: React.FC<ShopFormProps> = ({
             />
 
             {/* Description and contact information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* md có sidebar nên vẫn 1 cột; chỉ tách 2 cột ở lg+ */}
               {/* Contact email */}
               <FormField
                 control={form.control}
@@ -280,7 +281,8 @@ export const ShopForm: React.FC<ShopFormProps> = ({
             />
 
             {/* Khu vực Upload Logo và Banner */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* giữ md như mobile, chỉ 2 cột từ lg */}
               {/* Upload Logo */}
               <div>
                 <label className="text-sm font-medium mb-2 block">Avatar</label>

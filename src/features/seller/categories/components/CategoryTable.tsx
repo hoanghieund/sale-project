@@ -201,6 +201,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
 
       {/* Dialog xác nhận xóa danh mục */}
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+        class{" "}
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm delete category</AlertDialogTitle>

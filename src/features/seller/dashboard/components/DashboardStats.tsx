@@ -118,7 +118,8 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
   };
 
   return (
-    <div className="grid gap-4 sm:gap-5 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    // Responsive: giữ 1 cột cho tới md; chỉ tách cột từ lg trở lên do có sidebar ở md
+    <div className="grid gap-4 lg:gap-6 grid-cols-1 lg:grid-cols-3">
       {statCards.map((stat, index) => {
         // Áp dụng màu nhấn theo từng thẻ
         const accent = getAccent(stat.title);

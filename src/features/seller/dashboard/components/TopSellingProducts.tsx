@@ -50,10 +50,10 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
         ) : (
           <div className="divide-y divide-gray-100">
             {products.map((product, index) => (
-              // Stack theo cột trên mobile, chuyển thành hàng từ sm trở lên
+              // Responsive: giữ layout dạng cột đến md; chỉ từ lg mới xếp hàng ngang
               <div
                 key={product.productId}
-                className="group py-3 flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0 rounded-md px-2 -mx-2 hover:bg-primary/5 transition-colors"
+                className="group py-3 flex flex-col lg:flex-row lg:items-center lg:space-x-4 space-y-2 lg:space-y-0 rounded-md px-2 lg:-mx-2 hover:bg-primary/5 transition-colors"
               >
                 <div className="flex-shrink-0">
                   {/* Số thứ tự sản phẩm */}
@@ -63,15 +63,15 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
                     </span>
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1">
                   {/* Tên sản phẩm */}
-                  <div className="flex items-center gap-2 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-gray-900 ">
                       {product.title}
                     </p>
                   </div>
                   {/* Items sold từ BE (unitsSold) */}
-                  <div className="mt-0.5 flex items-center text-xs text-muted-foreground">
+                  <div className="mt-0.5 flex items-center text-xs text-muted-foreground ">
                     <Package className="h-3 w-3 mr-1 text-emerald-600" />
                     <span className="truncate">
                       Sold:{" "}
@@ -81,10 +81,11 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
                     </span>
                   </div>
                 </div>
-                <div className="text-right">
+                {/* Cột doanh thu: bỏ mọi width cố định để không gây tràn; canh trái ở mobile/md, canh phải từ lg */}
+                <div className="text-left w-fit lg:text-right">
                   {/* Doanh thu đã thanh toán từ BE: revenuePaid */}
-                  <div className="flex items-center justify-end gap-1">
-                    <p className="text-sm font-semibold text-emerald-600">
+                  <div className="flex items-center justify-start lg:justify-end gap-1">
+                    <p className="text-sm font-semibold text-emerald-600 tabular-nums whitespace-nowrap">
                       {formatCurrencyUSD(Number(product.revenuePaid ?? 0))}
                     </p>
                   </div>

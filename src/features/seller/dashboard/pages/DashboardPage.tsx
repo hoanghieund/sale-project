@@ -86,11 +86,11 @@ const DashboardPage: React.FC = () => {
     from: new Date(sevenDaysAgo),
     to: new Date(today),
   });
-  // Responsive: số tháng hiển thị (mobile 1, desktop 2)
+  // Responsive: hiển thị 1 tháng dưới lg (<=1023px), 2 tháng từ lg (>=1024px)
   const [calendarMonths, setCalendarMonths] = useState<number>(2);
   useEffect(() => {
-    // Theo dõi breakpoint để đổi số tháng hiển thị của calendar
-    const mq = window.matchMedia("(max-width: 640px)");
+    // Duy trì trải nghiệm như mobile cho đến md; chỉ từ lg mới mở rộng 2 tháng
+    const mq = window.matchMedia("(max-width: 1023px)");
     const apply = () => setCalendarMonths(mq.matches ? 1 : 2);
     apply();
     mq.addEventListener("change", apply);
@@ -179,9 +179,9 @@ const DashboardPage: React.FC = () => {
           <CardTitle className="text-base">Filters</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Date range: dùng shadcn Calendar + Popover, chiếm 2 cột trên desktop */}
-            <div className="md:col-span-1">
+            <div className="lg:col-span-1">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -258,9 +258,7 @@ const DashboardPage: React.FC = () => {
           <DashboardCharts stats={stats} />
 
           {/* Hàng 3: Danh sách top sản phẩm chi tiết */}
-          <div className="min-w-0">
-            <TopSellingProducts products={stats.topSellingProducts ?? []} />
-          </div>
+          <TopSellingProducts products={stats.topSellingProducts ?? []} />
         </>
       ) : (
         <div className="text-center py-8 text-gray-500">
