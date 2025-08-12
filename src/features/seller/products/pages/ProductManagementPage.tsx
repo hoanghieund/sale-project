@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import DeleteProductDialog from "@/features/seller/products/components/DeleteProductDialog";
 import { ProductTable } from "@/features/seller/products/components/ProductTable";
 import { productService } from "@/features/seller/products/services/productService";
 import { Product } from "@/types";
@@ -27,19 +26,17 @@ import { toast } from "sonner";
 
 /**
  * @function ProductManagementPage
- * @description Component trang quản lý sản phẩm.
- * @returns {JSX.Element} Trang quản lý sản phẩm.
+ * @description Product management page component.
+ * @returns {JSX.Element} Product management page.
  */
 const ProductManagementPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
-  // Phân trang + tìm kiếm
-  const [page, setPage] = useState(0); // base-0 theo backend
+  // Pagination + search
+  const [page, setPage] = useState(0); // base-0 per backend
   const [size, setSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [totalPages, setTotalPages] = useState(0);
@@ -52,7 +49,7 @@ const ProductManagementPage: React.FC = () => {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // Fetch products theo page, size, debouncedSearch
+  // Fetch products by page, size, debouncedSearch
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -66,8 +63,8 @@ const ProductManagementPage: React.FC = () => {
         setTotalPages(res.totalPages ?? 0);
         setTotalElements(res.totalElements ?? 0);
       } catch (err: any) {
-        toast.error("Lỗi", {
-          description: err?.message || "Không thể tải danh sách sản phẩm.",
+        toast.error("Error", {
+          description: err?.message || "Failed to load products.",
         });
       } finally {
         setLoading(false);
@@ -75,54 +72,9 @@ const ProductManagementPage: React.FC = () => {
     };
     fetchProducts();
   }, [page, size, debouncedSearch]);
-
-  /**
-   * @function handleEditProduct
-   * @description Xử lý khi người dùng click chỉnh sửa sản phẩm.
-   * @param {Product} product - Sản phẩm cần chỉnh sửa.
-   */
-  const handleEditProduct = (product: Product) => {
-    navigate(`/seller/products/edit/${product.id}`);
-  };
-
-  /**
-   * @function handleDeleteProduct
-   * @description Mở dialog xác nhận xóa sản phẩm.
-   * @param {Product} product - Sản phẩm cần xóa.
-   */
-  const handleDeleteProduct = (product: Product) => {
-    setProductToDelete(product);
-    setShowDeleteDialog(true);
-  };
-
-  /**
-   * @function confirmDeleteProduct
-   * @description Xử lý xóa sản phẩm sau khi xác nhận.
-   */
-  const confirmDeleteProduct = async () => {
-    if (productToDelete) {
-      setLoading(true);
-      try {
-        await productService.deleteProduct(String(productToDelete.id));
-        setProducts(products.filter(prod => prod.id !== productToDelete.id)); // Cập nhật lại danh sách sản phẩm
-        toast.success("Thành công", {
-          description: "Xóa sản phẩm thành công!",
-        });
-      } catch (err: any) {
-        toast.error("Lỗi", {
-          description: err.message || "Không thể xóa sản phẩm.",
-        });
-      } finally {
-        setLoading(false);
-        setShowDeleteDialog(false);
-        setProductToDelete(null);
-      }
-    }
-  };
-
   /**
    * @function handleToggleStatus
-   * @description Gọi API đổi trạng thái hiển thị và cập nhật lại danh sách cục bộ.
+   * @description Call API to toggle visibility and update local list.
    */
   const handleToggleStatus = async (product: Product, nextStatus: boolean) => {
     try {
@@ -130,10 +82,10 @@ const ProductManagementPage: React.FC = () => {
       setProducts(prev =>
         prev.map(p => (p.id === product.id ? { ...p, status: nextStatus } : p))
       );
-      toast.success("Cập nhật trạng thái thành công");
+      toast.success("Status updated successfully");
     } catch (err: any) {
-      toast.error("Lỗi", {
-        description: err?.message || "Không thể cập nhật trạng thái.",
+      toast.error("Error", {
+        description: err?.message || "Failed to update status.",
       });
     }
   };
@@ -143,15 +95,15 @@ const ProductManagementPage: React.FC = () => {
       <Card className="bg-white">
         <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-2">
-            <CardTitle>Quản lý Sản phẩm</CardTitle>
+            <CardTitle>Product Management</CardTitle>
             <CardDescription>
-              Tạo, chỉnh sửa và quản lý các sản phẩm của bạn.
+              Create, edit, and manage your products.
             </CardDescription>
           </div>
-          {/* Hàng công cụ: trên mobile đảm bảo input co giãn và không tràn */}
+          {/* Toolbar: ensure input flexes on mobile to avoid overflow */}
           <div className="flex gap-2 w-full md:w-auto min-w-0">
             <Input
-              placeholder="Tìm kiếm theo tên..."
+              placeholder="Search by name..."
               value={searchTerm}
               onChange={e => {
                 setPage(0);
@@ -162,42 +114,42 @@ const ProductManagementPage: React.FC = () => {
             <Link to="/seller/products/create">
               <Button className="h-9">
                 <Plus className="h-4 w-4 mr-2" />
-                Thêm sản phẩm
+                Add product
               </Button>
             </Link>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Toolbar: thông tin kết quả + chọn số sản phẩm/trang */}
+          {/* Toolbar: result summary + page size selection */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            {/* Thông tin tổng quan kết quả hiển thị */}
+            {/* Display result summary */}
             <div className="text-sm text-muted-foreground">
               {totalElements > 0 ? (
                 <span>
-                  Hiển thị {page * size + 1}–
+                  Showing {page * size + 1}–
                   {Math.min(
                     page * size + (products?.length || 0),
                     totalElements
                   )}{" "}
-                  trong tổng {totalElements} sản phẩm
+                  of {totalElements} products
                 </span>
               ) : (
-                <span>Không có sản phẩm phù hợp</span>
+                <span>No matching products</span>
               )}
             </div>
 
-            {/* Chọn số sản phẩm/trang */}
+            {/* Select page size */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-              <span className="text-sm text-muted-foreground">Hiển thị</span>
+              <span className="text-sm text-muted-foreground">Show</span>
               <Select
                 value={String(size)}
                 onValueChange={val => {
-                  setPage(0); // reset về trang đầu khi đổi page size
+                  setPage(0); // reset to first page when page size changes
                   setSize(Number(val));
                 }}
               >
                 <SelectTrigger className="w-24 h-9">
-                  <SelectValue placeholder="Kích thước" />
+                  <SelectValue placeholder="Page size" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="10">10</SelectItem>
@@ -205,23 +157,21 @@ const ProductManagementPage: React.FC = () => {
                   <SelectItem value="40">40</SelectItem>
                 </SelectContent>
               </Select>
-              <span className="text-sm text-muted-foreground">mỗi trang</span>
+              <span className="text-sm text-muted-foreground">per page</span>
             </div>
           </div>
 
-          {/* Bảng sản phẩm / trạng thái tải / rỗng */}
+          {/* Product table / loading / empty */}
           {loading ? (
             <LoadingSpinner />
           ) : (
             <ProductTable
               products={products}
-              onEdit={handleEditProduct}
-              onDelete={handleDeleteProduct}
               onToggleStatus={handleToggleStatus}
             />
           )}
 
-          {/* Phân trang: dùng CustomPagination (UI base-1, API base-0) */}
+          {/* Pagination: CustomPagination (UI base-1, API base-0) */}
           <CustomPagination
             currentPage={page + 1}
             totalPages={totalPages}
@@ -230,17 +180,6 @@ const ProductManagementPage: React.FC = () => {
           />
         </CardContent>
       </Card>
-
-      {/* Delete Confirmation Dialog */}
-      {showDeleteDialog && productToDelete && (
-        <DeleteProductDialog
-          isOpen={showDeleteDialog}
-          onClose={() => setShowDeleteDialog(false)}
-          onConfirm={confirmDeleteProduct}
-          product={productToDelete}
-          isLoading={loading}
-        />
-      )}
     </>
   );
 };

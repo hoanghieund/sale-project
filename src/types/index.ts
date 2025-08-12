@@ -176,6 +176,45 @@ export interface DashboardStats {
   revenueTrend: { date: string; revenue: number }[];
 }
 
+// Stats API Types for Seller Dashboard
+// Nhóm thời gian cho API thống kê: day|week|month|year
+export type StatsGroupBy = "day" | "week" | "month" | "year";
+
+// Tổng quan thống kê trả về từ /api/shop/stats/overview
+export interface StatsOverview {
+  totalProducts?: number;
+  totalOrders?: number;
+  totalRevenue?: number;
+  pendingOrders?: number;
+  // Danh sách sản phẩm bán chạy/được quan tâm
+  topSellingProducts?: Product[];
+  topProducts?: Product[];
+  // Đơn hàng gần đây nếu backend có trả
+  recentOrders?: Order[];
+  // Trường từ backend (paid metrics)
+  totalRevenuePaid?: number;
+  totalOrdersPaid?: number;
+  totalItemsSold?: number;
+  averageOrderValue?: number;
+  conversionRate?: number;
+  totalCategories?: number;
+}
+
+// Điểm dữ liệu chuỗi thời gian từ /api/shop/stats/timeseries
+export interface TimeSeriesPoint {
+  // Nhãn bucket theo groupBy (ví dụ: 2025-08-01, 2025-W32, 2025-08, 2025)
+  date: string;
+  // Doanh thu tại bucket
+  revenue: number;
+  // Số đơn tại bucket (optional nếu backend có trả)
+  orders?: number;
+  // Trường tương thích với backend
+  label?: string;
+  revenuePaid?: number;
+  ordersPaid?: number;
+  itemsSold?: number;
+}
+
 // Order Address Types - Dựa trên tbl_orders_address
 export interface OrderAddress {
   id: number;

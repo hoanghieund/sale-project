@@ -283,7 +283,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Upload Logo */}
               <div>
-                <label className="text-sm font-medium mb-2 block">Logo</label>
+                <label className="text-sm font-medium mb-2 block">Avatar</label>
                 <FileDropzone
                   files={logoFiles}
                   onFilesChange={handleLogoFilesChange}

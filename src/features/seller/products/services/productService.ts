@@ -2,24 +2,24 @@ import { Axios } from "@/api/Axios";
 import { Product } from "@/types";
 
 /**
- * Các kiểu dữ liệu phục vụ cho service sản phẩm phía Seller
- * Giữ nhỏ gọn, tập trung đúng payload theo API thực tế backend.
+ * Data types for Seller product services.
+ * Keep it concise and focused on payloads that match the real backend API.
  */
 export interface UpdateProductMediaPayload {
-  /** JSON mô tả sản phẩm; bắt buộc có id để backend xác định record */
+  /** Product JSON; must include id for backend to identify the record */
   product: Partial<Product> & { id: number };
-  /** Ảnh chính mới (tuỳ chọn) */
+  /** New main image (optional) */
   newMainImage?: File | null;
-  /** Danh sách ảnh phụ thêm mới (tuỳ chọn) */
+  /** Additional sub images to add (optional) */
   addSubImages?: File[] | null;
-  /** Danh sách id ảnh cần xoá (tuỳ chọn) */
+  /** Image ids to remove (optional) */
   removeImageIds?: number[] | null;
 }
 
 export interface GetProductsByShopParams {
   page: number; // base-0
   size: number;
-  textSearch?: string; // tìm theo tên sản phẩm
+  textSearch?: string; // search by product name
 }
 
 export interface PageResult<T> {
@@ -30,10 +30,10 @@ export interface PageResult<T> {
   size?: number;
 }
 
-// Helper: build FormData an toàn, không đẩy field null/undefined
+// Helper: build FormData safely, avoid appending null/undefined fields
 function appendIfPresent(fd: FormData, key: string, value: any) {
   if (value === undefined || value === null) return;
-  // Với mảng số (ids) -> stringify để backend parse JSON
+  // For numeric arrays (ids) -> stringify so the backend can parse JSON
   if (Array.isArray(value) && typeof value[0] === "number") {
     fd.append(key, JSON.stringify(value));
     return;
@@ -62,33 +62,30 @@ export const productService = {
 
   /**
    * @method createProduct
-   * @description Tạo sản phẩm hàng loạt bằng Excel (admin endpoint).
-   * @param file File Excel (.xlsx)
-   * @param categoryId id category
-   * @param collectionId id collection
-   * @returns {Promise<string>} Thông điệp từ server (VD: "Import thành công 20 sản phẩm!")
+   * @description Create products in bulk via Excel (admin endpoint).
+   * @param file Excel file (.xlsx)
+   * @param collectionId collection id (optional)
+   * @returns {Promise<string>} Server message (e.g., "Imported 20 products successfully!")
    */
-  createProduct: async (
-    file: File,
-    categoryId: number,
-    collectionId: number
-  ) => {
-    // Gửi multipart/form-data theo spec: file, shopId, categoryId, collectionId
+  createProduct: async (file: File, collectionId?: number) => {
+    // Send multipart/form-data as per spec: file, shopId, categoryId, collectionId
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("categoryId", String(categoryId));
-    formData.append("collectionId", String(collectionId));
+    // Only append when collectionId is valid
+    if (typeof collectionId === "number" && !Number.isNaN(collectionId)) {
+      formData.append("collectionId", String(collectionId));
+    }
 
-    return Axios.post("/api/admin/uploadExcelProduct", formData, {
+    return Axios.post("/api/product/uploadExcelProduct", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
 
   /**
    * @method updateProduct
-   * @description Cập nhật sản phẩm (JSON + ảnh) theo form-data.
+   * @description Update product (JSON + images) via form-data.
    * @param payload UpdateProductMediaPayload
-   * @returns {Promise<Product>} Thông tin sản phẩm sau cập nhật
+   * @returns {Promise<Product>} Updated product info
    */
   updateProduct: async (
     productId: string,
@@ -96,10 +93,10 @@ export const productService = {
   ) => {
     const { product, newMainImage, addSubImages, removeImageIds } = payload;
     const formData = new FormData();
-    // Backend yêu cầu key "product" là JSON string
+    // Backend expects the key "product" to be a JSON string
     formData.append("product", JSON.stringify(product));
     appendIfPresent(formData, "newMainImage", newMainImage || null);
-    // Ảnh phụ có thể nhiều file – theo Postman: key "addSubImages" có thể lặp
+    // Sub images may include multiple files – the key "addSubImages" can repeat
     if (addSubImages && addSubImages.length) {
       addSubImages.forEach(file => formData.append("addSubImages", file));
     }
@@ -112,9 +109,9 @@ export const productService = {
 
   /**
    * @method changeProductStatus
-   * @description Thay đổi trạng thái hiển thị của sản phẩm trên trang người dùng.
-   * @param productId id sản phẩm
-   * @param status true=hiện, false=ẩn
+   * @description Change product visibility on the storefront.
+   * @param productId product id
+   * @param status true=visible, false=hidden
    */
   changeProductStatus: async (productId: number, status: boolean) => {
     return Axios.get("/api/product/changeProductStatus", { productId, status });
@@ -122,7 +119,7 @@ export const productService = {
 
   /**
    * @method getAllProductByShop
-   * @description Tìm và hiển thị sản phẩm theo shop hiện tại (theo token), hỗ trợ textSearch theo tên.
+   * @description Find and display products for the current shop (from token), supports textSearch by name.
    * @param params { page, size, textSearch }
    * @returns {Promise<PageResult<Product>>}
    */
