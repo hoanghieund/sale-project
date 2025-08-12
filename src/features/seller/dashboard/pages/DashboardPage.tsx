@@ -26,7 +26,7 @@ import { dashboardService } from "../services/dashboardService";
 // Thông báo lỗi chuẩn hoá
 const notifyError = (message: string) => {
   try {
-    toast.error("Lỗi", { description: message });
+    toast.error("Error", { description: message });
   } catch (_) {
     console.error("Dashboard error:", message);
   }
@@ -79,9 +79,14 @@ const DashboardPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const [overview, series] = await Promise.all([
+        const [overview, series, topProducts] = await Promise.all([
           dashboardService.getOverviewStats(filters),
           dashboardService.getTimeSeriesStats(filters),
+          dashboardService.getTopProductsStats({
+            fromDate: filters.fromDate,
+            toDate: filters.toDate,
+            limit: 10,
+          }),
         ]);
 
         // Map dữ liệu về DashboardStats để tái sử dụng UI cũ
@@ -91,11 +96,17 @@ const DashboardPage: React.FC = () => {
           totalOrders: overview.totalOrdersPaid ?? overview.totalOrders ?? 0,
           totalRevenue: overview.totalRevenuePaid ?? overview.totalRevenue ?? 0,
           pendingOrders: overview.pendingOrders ?? 0,
-          monthlyRevenue: [], // Không sử dụng hiện tại
-          topProducts:
-            overview.topProducts ?? overview.topSellingProducts ?? [],
+          // Chỉ sử dụng dữ liệu từ BE: ưu tiên API top-products cho danh sách bán chạy
+          topProducts: overview.topProducts ?? [],
           topSellingProducts:
-            overview.topSellingProducts ?? overview.topProducts ?? [],
+            (Array.isArray(topProducts) && topProducts.length > 0
+              ? topProducts
+              : overview.topSellingProducts ?? overview.topProducts ?? []),
+          // Các trường bổ sung từ BE nếu có
+          totalItemsSold: overview.totalItemsSold ?? undefined,
+          averageOrderValue: overview.averageOrderValue ?? undefined,
+          conversionRate: overview.conversionRate ?? undefined,
+          totalCategories: overview.totalCategories ?? undefined,
           recentOrders: overview.recentOrders ?? [],
           revenueTrend:
             series?.map(p => ({
@@ -106,7 +117,7 @@ const DashboardPage: React.FC = () => {
 
         setStats(mapped);
       } catch (err: any) {
-        const msg = err?.message || "Không thể tải số liệu dashboard.";
+        const msg = err?.message || "Failed to load dashboard stats.";
         setError(msg);
         notifyError(msg);
       } finally {
@@ -119,10 +130,10 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8 min-w-0">
-      {/* Bộ lọc thời gian & groupBy */}
+      {/* Filters: date range & groupBy */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <Label htmlFor="fromDate">Từ ngày</Label>
+          <Label htmlFor="fromDate">From date</Label>
           <Input
             id="fromDate"
             type="date"
@@ -133,7 +144,7 @@ const DashboardPage: React.FC = () => {
           />
         </div>
         <div>
-          <Label htmlFor="toDate">Đến ngày</Label>
+          <Label htmlFor="toDate">To date</Label>
           <Input
             id="toDate"
             type="date"
@@ -142,7 +153,7 @@ const DashboardPage: React.FC = () => {
           />
         </div>
         <div>
-          <Label>Nhóm theo</Label>
+          <Label>Group by</Label>
           <Select
             value={filters.groupBy}
             onValueChange={v =>
@@ -150,13 +161,13 @@ const DashboardPage: React.FC = () => {
             }
           >
             <SelectTrigger>
-              <SelectValue placeholder="Chọn nhóm" />
+              <SelectValue placeholder="Select group" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="day">Theo ngày</SelectItem>
-              <SelectItem value="week">Theo tuần</SelectItem>
-              <SelectItem value="month">Theo tháng</SelectItem>
-              <SelectItem value="year">Theo năm</SelectItem>
+              <SelectItem value="day">By day</SelectItem>
+              <SelectItem value="week">By week</SelectItem>
+              <SelectItem value="month">By month</SelectItem>
+              <SelectItem value="year">By year</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -172,12 +183,12 @@ const DashboardPage: React.FC = () => {
 
           {/* Hàng 3: Danh sách top sản phẩm chi tiết */}
           <div className="min-w-0">
-            <TopSellingProducts products={stats.topSellingProducts} />
+            <TopSellingProducts products={stats.topSellingProducts ?? []} />
           </div>
         </>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          Không có dữ liệu dashboard để hiển thị.
+          No dashboard data to display.
         </div>
       )}
     </div>

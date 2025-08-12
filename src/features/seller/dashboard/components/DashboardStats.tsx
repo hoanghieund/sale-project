@@ -4,18 +4,12 @@
  * Sử dụng shadcn/ui Card và Badge components.
  */
 
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardStats } from "@/types"; // Import interface DashboardStats
 import {
-  AlertTriangle,
   DollarSign,
-  Eye,
   Package,
   ShoppingCart,
-  TrendingDown,
-  TrendingUp,
-  Users,
 } from "lucide-react";
 import React from "react";
 
@@ -60,72 +54,73 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
     return new Intl.NumberFormat("vi-VN").format(value);
   };
 
-  // Mảng chứa cấu hình cho từng thẻ số liệu thống kê
+  // Mảng thẻ số liệu: chỉ dùng dữ liệu từ BE
   const statCards = [
     {
-      title: "Tổng sản phẩm",
+      title: "Total products",
       value: formatNumber(stats.totalProducts),
-      description: "Sản phẩm đang bán",
+      description: "Active products",
       icon: Package,
-      trend: "up", // Xu hướng (tăng/giảm)
-      trendValue: "+12%", // Giá trị xu hướng
     },
     {
-      title: "Tổng danh mục",
-      value: formatNumber(stats.topProducts.length),
-      description: "Danh mục sản phẩm",
+      title: "Total orders",
+      value: formatNumber(stats.totalOrders ?? 0),
+      description: "All orders",
       icon: ShoppingCart,
-      trend: "up",
-      trendValue: "+5%",
     },
     {
-      title: "Sản phẩm hết hàng",
-      value: formatNumber(
-        stats.topProducts.filter(p => p.totalProduct === 0).length
-      ),
-      description: "Cần nhập thêm",
-      icon: AlertTriangle,
-      trend: "down",
-      trendValue: "-8%",
-      isWarning: true, // Đánh dấu là cảnh báo
-    },
-    {
-      title: "Doanh thu ước tính",
-      value: formatCurrency(
-        stats.topProducts.reduce(
-          (total, product) => total + product.price * product.totalProduct,
-          0
-        )
-      ),
-      description: "Theo giá bán",
+      title: "Total revenue",
+      value: formatCurrency(stats.totalRevenue ?? 0),
+      description: "From backend",
       icon: DollarSign,
-      trend: "up",
-      trendValue: "+23%",
     },
     {
-      title: "Lượt xem",
-      value: formatNumber(
-        stats.topProducts.reduce(
-          (total, product) => total + product.totalProduct,
-          0
-        )
-      ),
-      description: "Tổng lượt xem",
-      icon: Eye,
-      trend: "up",
-      trendValue: "+15%",
+      title: "Pending orders",
+      value: formatNumber(stats.pendingOrders ?? 0),
+      description: "Awaiting confirmation",
+      icon: ShoppingCart,
     },
-    {
-      title: "Tỷ lệ chuyển đổi",
-      value: `${stats.topProducts.reduce(
-        (total, product) => total + product.totalProduct,
-        0
-      )}%`,
-      description: "Tỷ lệ mua hàng",
-      icon: Users,
-      trend: "up",
-      trendValue: "+3%",
-    },
+    // Optional từ BE
+    ...(typeof stats.totalItemsSold === "number"
+      ? [
+          {
+            title: "Items sold",
+            value: formatNumber(stats.totalItemsSold),
+            description: "Total items sold",
+            icon: Package,
+          },
+        ]
+      : []),
+    ...(typeof stats.averageOrderValue === "number"
+      ? [
+          {
+            title: "Average order value",
+            value: formatCurrency(stats.averageOrderValue),
+            description: "From backend",
+            icon: DollarSign,
+          },
+        ]
+      : []),
+    ...(typeof stats.conversionRate === "number"
+      ? [
+          {
+            title: "Conversion rate",
+            value: `${stats.conversionRate}%`,
+            description: "From backend",
+            icon: ShoppingCart,
+          },
+        ]
+      : []),
+    ...(typeof stats.totalCategories === "number"
+      ? [
+          {
+            title: "Total categories",
+            value: formatNumber(stats.totalCategories),
+            description: "Current categories",
+            icon: Package,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -138,33 +133,11 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stat.value}</div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="mt-2">
               <p className="text-xs text-muted-foreground">
                 {stat.description}
               </p>
-              <div className="flex items-center space-x-1">
-                {/* Icon xu hướng */}
-                {stat.trend === "up" ? (
-                  <TrendingUp className="h-3 w-3 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 text-red-500" />
-                )}
-                {/* Giá trị xu hướng */}
-                <span
-                  className={`text-xs ${
-                    stat.trend === "up" ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {stat.trendValue}
-                </span>
-              </div>
             </div>
-            {/* Hiển thị badge cảnh báo nếu có */}
-            {stat.isWarning && (
-              <Badge variant="destructive" className="mt-2">
-                Cảnh báo
-              </Badge>
-            )}
           </CardContent>
         </Card>
       ))}

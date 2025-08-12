@@ -22,34 +22,36 @@ import { DashboardStats, Product } from "@/types";
 
 /**
  * DashboardCharts
- * Hiển thị các biểu đồ chính trong trang Dashboard của Seller.
- * - Biểu đồ đường: Doanh thu theo ngày (revenueTrend)
- * - Biểu đồ cột: Doanh thu ước tính theo Top sản phẩm (topSellingProducts)
+ * Show main charts for Seller Dashboard.
+ * - Line: Daily revenue (revenueTrend)
+ * - Bar: Revenue by top products (topSellingProducts)
  */
 export interface DashboardChartsProps {
   stats: DashboardStats; // Dữ liệu tổng hợp từ API
 }
 
 export const DashboardCharts: React.FC<DashboardChartsProps> = ({ stats }) => {
-  // Chuẩn hoá dữ liệu để chắc chắn có mảng rỗng thay vì undefined
+  // Normalize data to arrays to avoid undefined
   const trend = stats.revenueTrend ?? [];
 
-  // Tính doanh thu ước tính cho top sản phẩm (price * stock)
-  const topRevenue = (stats.topProducts ?? []).map((p: Product) => ({
-    name: p.title,
-    revenue: Math.round(p.price * p.totalProduct),
-  }));
+  // Product revenue from backend data (sumPriceByOrders)
+  const topRevenue = (stats.topSellingProducts ?? [])
+    .filter((p: Product) => typeof p.sumPriceByOrders === "number")
+    .map((p: Product) => ({
+      name: p.title,
+      revenue: Math.round((p.sumPriceByOrders as number) || 0),
+    }));
 
   return (
     // Responsive: 1 cột trên mobile, 2 cột từ lg trở lên để tận dụng không gian màn hình rộng
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Biểu đồ Doanh thu theo ngày */}
+      {/* Daily revenue chart */}
       <Card className="bg-white">
         <CardHeader>
-          <CardTitle>Doanh thu theo ngày</CardTitle>
-          <CardDescription>Xu hướng doanh thu 7 ngày gần nhất</CardDescription>
+          <CardTitle>Daily revenue</CardTitle>
+          <CardDescription>Last 7 days trend</CardDescription>
         </CardHeader>
-        {/* Responsive height: thấp hơn trên mobile để tránh scroll dọc quá nhiều */}
+        {/* Responsive height: slightly lower on mobile to reduce vertical scroll */}
         <CardContent className="min-w-0 h-64 sm:h-72 lg:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -76,13 +78,13 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ stats }) => {
         </CardContent>
       </Card>
 
-      {/* Biểu đồ doanh thu theo Top sản phẩm */}
+      {/* Top products by revenue */}
       <Card className="bg-white">
         <CardHeader>
-          <CardTitle>Top sản phẩm theo doanh thu</CardTitle>
-          <CardDescription>Ước tính: giá × tồn kho</CardDescription>
+          <CardTitle>Top products by revenue</CardTitle>
+          <CardDescription>Backend revenue</CardDescription>
         </CardHeader>
-        {/* Responsive height + min-w-0 để tránh tràn ngang khi tên sản phẩm dài */}
+        {/* Responsive height + min-w-0 to avoid overflow with long product names */}
         <CardContent className="min-w-0 h-64 sm:h-72 lg:h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart

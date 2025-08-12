@@ -1,5 +1,5 @@
 import { Axios } from "@/api/Axios";
-import { StatsGroupBy, StatsOverview, TimeSeriesPoint } from "@/types";
+import { Product, StatsGroupBy, StatsOverview, TimeSeriesPoint } from "@/types";
 
 /**
  * Seller Dashboard Stats Service
@@ -14,6 +14,18 @@ export interface StatsParams {
   toDate: string;
   /** day|week|month|year */
   groupBy: StatsGroupBy;
+}
+
+/**
+ * Params cho API top-products (không cần groupBy)
+ */
+export interface TopProductsParams {
+  /** Định dạng YYYY-MM-DD */
+  fromDate: string;
+  /** Định dạng YYYY-MM-DD */
+  toDate: string;
+  /** Số lượng giới hạn sản phẩm trả về */
+  limit?: number;
 }
 
 export const dashboardService = {
@@ -33,5 +45,15 @@ export const dashboardService = {
     params: StatsParams
   ): Promise<TimeSeriesPoint[]> => {
     return Axios.get("/api/shop/stats/timeseries", params);
+  },
+
+  /**
+   * Lấy top sản phẩm bán chạy theo khoảng ngày, optional limit.
+   * GET /api/shop/stats/top-products?fromDate&toDate&limit
+   */
+  getTopProductsStats: async (
+    params: TopProductsParams
+  ): Promise<Product[]> => {
+    return Axios.get("/api/shop/stats/top-products", params);
   },
 };

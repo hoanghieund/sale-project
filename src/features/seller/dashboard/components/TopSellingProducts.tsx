@@ -47,8 +47,8 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
   return (
     <Card className="bg-white">
       <CardHeader>
-        <CardTitle>Sản phẩm bán chạy nhất</CardTitle>
-        <CardDescription>Top sản phẩm có doanh thu cao nhất</CardDescription>
+        <CardTitle>Top selling products</CardTitle>
+        <CardDescription>Highest revenue products</CardDescription>
       </CardHeader>
       {/* Giữ min-w-0 để tránh tràn ngang trên màn hình nhỏ */}
       <CardContent className="min-w-0">
@@ -72,18 +72,17 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
                 <p className="text-sm font-medium text-gray-900 truncate">
                   {product.title}
                 </p>
-                {/* Giá và số lượng bán ước tính */}
+                {/* Items sold from BE */}
                 <p className="text-sm text-gray-500 truncate">
-                  {formatCurrency(product.price)} × {product.totalProductSold}{" "}
-                  sản phẩm
+                  Sold: {typeof product.totalProductSold === "number" ? product.totalProductSold : 0}
                 </p>
               </div>
               <div className="text-right">
-                {/* Tổng doanh thu ước tính của sản phẩm */}
+                {/* Revenue from BE: sumPriceByOrders */}
                 <p className="text-sm font-medium text-gray-900">
-                  {formatCurrency(product.price * product.totalProductSold)}
+                  {formatCurrency(Number(product.sumPriceByOrders || 0))}
                 </p>
-                <p className="text-xs text-gray-500">Doanh thu</p>
+                <p className="text-xs text-gray-500">Revenue (BE)</p>
               </div>
             </div>
           ))}
