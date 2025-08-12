@@ -239,7 +239,7 @@ const ShopPage = () => {
       {/* Shop Banner */}
       {/* Dynamic shop banner based on shop.banner; fallbacks to placeholder if missing */}
       <div
-        className="relative h-80 bg-primary"
+        className="relative h-96 bg-primary"
         style={{
           // Use cover background to display full width, maintain aspect ratio
           backgroundImage: `url(${shop?.banner?.trim()})`,
