@@ -2,7 +2,7 @@ import CustomPagination from "@/components/common/CustomPagination";
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
-import { Category, Product } from "@/types";
+import { Product } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 // Import Breadcrumb from shadcn to replace manual breadcrumb
@@ -22,16 +22,28 @@ import { Star } from "lucide-react";
 import { shopService } from "./services/shopServices";
 // Tabs removed as no longer in use
 
+/**
+ * Mục collection trong Shop chỉ cần 3 trường tối giản cho sidebar
+ * Dùng type riêng để tránh nhầm lẫn với `Category` đầy đủ từ domain
+ */
+type ShopCollectionItem = {
+  id: string | number;
+  name: string;
+  totalProduct: number;
+};
+
 interface shopUi {
   shopName?: string;
   banner?: string;
   avatar?: string;
   star?: number;
   totalProduct?: number;
-  collections?: { id: number; name: string; totalProduct: number }[];
+  collections?: ShopCollectionItem[];
+  timeRequest?: string;
+  totalReview?: number;
 }
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 15;
 
 /**
  * ShopPage - Shop Information Display Page
@@ -42,7 +54,9 @@ const ShopPage = () => {
   const [shop, setShop] = useState<shopUi>({} as shopUi);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
+  const [activeCategoryId, setActiveCategoryId] = useState<
+    number | string | null
+  >(null);
   const [sort, setSort] = useState("asc");
 
   // State for the new filtering system
@@ -57,7 +71,7 @@ const ShopPage = () => {
 
   // Function to fetch data with pagination
   const fetchProductsByCategoryId = async (
-    categoryId: number,
+    categoryId: number | string,
     sort: "asc" | "desc",
     page: number,
     size: number
@@ -105,6 +119,40 @@ const ShopPage = () => {
     }
   };
 
+  // Function to fetch data with pagination
+  const fetchProductsByAll = async (
+    sort: "asc" | "desc",
+    page: number,
+    size: number
+  ) => {
+    setLoading(true);
+    try {
+      const payload = {
+        page: page,
+        size: size,
+        sort: sort,
+      };
+
+      const responseProduct = await shopService.getProductsByAll(
+        shopSlug,
+        payload
+      );
+      const products = responseProduct?.content || [];
+      setProducts(products);
+
+      // Update pagination information
+      setTotalPages(responseProduct?.totalPages || 0);
+      setTotalElements(responseProduct?.totalElements || 0);
+    } catch (error) {
+      console.error("Error loading shop data:", error);
+      setProducts([]);
+      setTotalPages(0);
+      setTotalElements(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Effect to fetch data when shopId or pagination change
   useEffect(() => {
     if (shopSlug) {
@@ -113,22 +161,25 @@ const ShopPage = () => {
   }, [shopSlug]);
 
   useEffect(() => {
-    if (activeCategoryId) {
-      setPagination(prev => ({
-        ...prev,
-        currentPage: 0,
-      }));
-      setSort("asc");
-      // Không gọi API trực tiếp ở đây để tránh double fetch.
-      // Việc fetch sẽ được xử lý bởi effect phía dưới khi deps thay đổi.
-    }
+    setPagination(prev => ({
+      ...prev,
+      currentPage: 0,
+    }));
+    setSort("asc");
   }, [activeCategoryId]);
 
   // Fetch dữ liệu khi thay đổi category | sort | trang
   // Giải quyết lỗi: đổi trang không gọi API (phân trang không hoạt động)
   useEffect(() => {
     // Guard cho trường hợp chưa có category id hợp lệ
-    if (activeCategoryId === null || activeCategoryId === undefined) return;
+    if (activeCategoryId === null || activeCategoryId === undefined) {
+      fetchProductsByAll(
+        sort as "asc" | "desc",
+        pagination.currentPage,
+        pagination.pageSize
+      );
+      return;
+    }
 
     // Gọi API theo base-0 của backend (currentPage là base-0)
     fetchProductsByCategoryId(
@@ -142,6 +193,17 @@ const ShopPage = () => {
   if (!shop) {
     return <EmptyStateDisplay />;
   }
+
+  // Build collections with an "All" item at the beginning immutably
+  // Avoid using Array.push here because it mutates and returns a number, not the array
+  const collections: ShopCollectionItem[] = [
+    {
+      id: "all",
+      name: "All",
+      totalProduct: shop?.totalProduct || 0,
+    },
+    ...(shop?.collections || []),
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -201,9 +263,9 @@ const ShopPage = () => {
                 </div>
 
                 {/* Metrics area: highlighted, easy to scan */}
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
                   {/* Average Rating */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
                     <div className="text-xs text-muted-foreground">Rating</div>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-0.5">
@@ -225,13 +287,29 @@ const ShopPage = () => {
                     </div>
                   </div>
 
+                  {/* Total Reviews */}
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-muted-foreground">Reviews</div>
+                    <div className="text-xl md:text-xl font-bold text-primary leading-none">
+                      {shop?.totalReview}
+                    </div>
+                  </div>
+
                   {/* Total products */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
                     <div className="text-xs text-muted-foreground">
                       Products
                     </div>
-                    <div className="text-xl md:text-2xl font-bold text-primary leading-none">
+                    <div className="text-xl md:text-xl font-bold text-primary leading-none">
                       {shop?.totalProduct}
+                    </div>
+                  </div>
+
+                  {/* Time since created */}
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-muted-foreground">Created</div>
+                    <div className="text-xl md:text-xl font-bold text-primary leading-none whitespace-nowrap">
+                      {shop?.timeRequest}
                     </div>
                   </div>
                 </div>
@@ -256,14 +334,20 @@ const ShopPage = () => {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-1">
               {/* Categories */}
-              {shop?.collections?.length > 0 &&
-                shop?.collections?.map((cat: Category) => (
+              {collections?.length > 0 &&
+                collections?.map((cat: ShopCollectionItem) => (
                   <div
                     key={cat.id}
-                    onClick={() => setActiveCategoryId(cat.id)}
+                    onClick={() =>
+                      setActiveCategoryId(
+                        typeof cat.id === "string" ? null : Number(cat.id)
+                      )
+                    }
                     className={cn(
                       "flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer lg:border-r-2",
-                      activeCategoryId === cat.id && "bg-gray-50 border-black"
+                      activeCategoryId ===
+                        (typeof cat.id === "string" ? null : Number(cat.id)) &&
+                        "bg-gray-50 border-black"
                     )}
                   >
                     <p className="text-sm">{cat.name}</p>

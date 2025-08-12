@@ -18,6 +18,21 @@ export const shopService = {
   },
 
   /**
+   * Retrieves a list of products by categoryId.
+   * @param payload - Object containing information for the API request.
+   */
+  getProductsByAll: async (
+    slug: string,
+    payload: {
+      page: number;
+      size: number;
+      sort: "asc" | "desc";
+    }
+  ) => {
+    return Axios.get(`/api/public/products/by-shop/slug/${slug}`, payload);
+  },
+
+  /**
    * Retrieves shop information by slug.
    * @param slug - The slug of the shop.
    */
