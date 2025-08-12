@@ -268,6 +268,7 @@ const ShopPage = () => {
               <Avatar className="w-24 h-24 md:w-28 md:h-28 border-4 border-white shadow-lg rounded-full">
                 {/* Defensive src/alt */}
                 <AvatarImage
+                  className="object-cover"
                   src={shop?.avatar?.trim() || ""}
                   alt={shop?.shopName || "Shop"}
                 />

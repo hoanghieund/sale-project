@@ -80,9 +80,6 @@ const EditCategoryPage = lazy(
 const CreateProductPage = lazy(
   () => import("@/features/seller/products/pages/CreateProductPage")
 );
-const EditProductPage = lazy(
-  () => import("@/features/seller/products/pages/EditProductPage")
-);
 const OrderManagementPage = lazy(
   () => import("@/features/seller/orders/pages/OrderManagementPage")
 );
@@ -171,10 +168,6 @@ const AppRouter = () => {
               <Route path="products" element={<ProductManagementPage />} />{" "}
               {/* /seller/products */}
               <Route path="products/create" element={<CreateProductPage />} />
-              <Route
-                path="products/edit/:productId"
-                element={<EditProductPage />}
-              />
               <Route path="orders" element={<OrderManagementPage />} />
               <Route path="orders/:orderId" element={<OrderDetailPage />} />
             </Route>

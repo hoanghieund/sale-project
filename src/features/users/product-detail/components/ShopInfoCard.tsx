@@ -25,7 +25,11 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
     <Card className="w-full">
       <CardContent className="flex items-center gap-4 pt-6">
         <Avatar className="w-20 h-20 border-2 border-input">
-          <AvatarImage src={shop.avatar} alt={shop.name} />
+          <AvatarImage
+            className="object-cover"
+            src={shop.avatar}
+            alt={shop.name}
+          />
           <AvatarFallback className="text-xl font-bold">
             {shop.name.charAt(0)}
           </AvatarFallback>
