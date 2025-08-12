@@ -6,11 +6,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardStats } from "@/types"; // Import interface DashboardStats
-import {
-  DollarSign,
-  Package,
-  ShoppingCart,
-} from "lucide-react";
+import { formatCurrencyUSD } from "@/utils/formatters";
+import { DollarSign, Package, ShoppingCart } from "lucide-react";
 import React from "react";
 
 /**
@@ -31,19 +28,6 @@ interface DashboardStatsProps {
 export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
   stats,
 }) => {
-  /**
-   * @function formatCurrency
-   * @description Định dạng giá trị số thành định dạng tiền tệ Việt Nam Đồng.
-   * @param {number} value - Giá trị số cần định dạng.
-   * @returns {string} Chuỗi tiền tệ đã định dạng.
-   */
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
-
   /**
    * @function formatNumber
    * @description Định dạng giá trị số thành chuỗi số có dấu phân cách hàng nghìn.
@@ -70,15 +54,9 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
     },
     {
       title: "Total revenue",
-      value: formatCurrency(stats.totalRevenue ?? 0),
+      value: formatCurrencyUSD(stats.totalRevenue ?? 0),
       description: "From backend",
       icon: DollarSign,
-    },
-    {
-      title: "Pending orders",
-      value: formatNumber(stats.pendingOrders ?? 0),
-      description: "Awaiting confirmation",
-      icon: ShoppingCart,
     },
     // Optional từ BE
     ...(typeof stats.totalItemsSold === "number"
@@ -95,7 +73,7 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
       ? [
           {
             title: "Average order value",
-            value: formatCurrency(stats.averageOrderValue),
+            value: formatCurrencyUSD(stats.averageOrderValue),
             description: "From backend",
             icon: DollarSign,
           },
@@ -108,16 +86,6 @@ export const DashboardStatsComponent: React.FC<DashboardStatsProps> = ({
             value: `${stats.conversionRate}%`,
             description: "From backend",
             icon: ShoppingCart,
-          },
-        ]
-      : []),
-    ...(typeof stats.totalCategories === "number"
-      ? [
-          {
-            title: "Total categories",
-            value: formatNumber(stats.totalCategories),
-            description: "Current categories",
-            icon: Package,
           },
         ]
       : []),

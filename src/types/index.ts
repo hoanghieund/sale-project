@@ -48,6 +48,14 @@ export interface Product {
   priceSale?: number; // Giá sau khi giảm giá
 }
 
+// Item Top-Selling trả về từ API /api/shop/stats/top-products
+export interface TopProductItem {
+  productId: number;
+  title: string;
+  unitsSold: number;
+  revenuePaid: number;
+}
+
 export interface Option {
   id: number; // bigint(20) trong SQL
   name: string; // name varchar(255)
@@ -163,13 +171,19 @@ export interface User {
   roles?: Role[]; // Thông tin roles (optional khi populate)
 }
 
+export interface TopProductItem {
+  productId: number;
+  title: string;
+  unitsSold: number; // số lượng bán ra
+  revenuePaid: number; // doanh thu đã thanh toán
+}
+
 // Dashboard Stats Types - Tính toán từ các bảng khác
 export interface DashboardStats {
   // Core metrics directly from BE
   totalProducts: number; // from overview.totalProducts
   totalOrders: number; // from overview.totalOrdersPaid|totalOrders
   totalRevenue: number; // from overview.totalRevenuePaid|totalRevenue
-  pendingOrders: number; // from overview.pendingOrders
   revenueTrend: { date: string; revenue: number }[]; // from timeseries
 
   // Optional aggregates provided by BE (if any)
@@ -179,7 +193,7 @@ export interface DashboardStats {
   totalCategories?: number; // from overview.totalCategories
 
   // Optional lists from BE for UI (may be absent)
-  topSellingProducts?: Product[]; // from overview.topSellingProducts
+  topSellingProducts?: TopProductItem[]; // from stats/top-products
   topProducts?: Product[]; // from overview.topProducts
   recentOrders?: Order[]; // from overview.recentOrders
 

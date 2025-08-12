@@ -6,8 +6,16 @@
  *  - GET /api/shop/stats/timeseries?fromDate&toDate&groupBy
  */
 
-import { Input } from "@/components/ui/input"; // Input date
+import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { Button } from "@/components/ui/button"; // Nút trigger DateRange
+import { Calendar } from "@/components/ui/calendar"; // Calendar shadcn
 import { Label } from "@/components/ui/label"; // Nhãn control
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"; // Popover bọc Calendar
 import {
   Select,
   SelectContent,
@@ -19,7 +27,9 @@ import { DashboardCharts } from "@/features/seller/dashboard/components/Dashboar
 import { DashboardStatsComponent } from "@/features/seller/dashboard/components/DashboardStats";
 import { TopSellingProducts } from "@/features/seller/dashboard/components/TopSellingProducts";
 import { DashboardStats, StatsGroupBy } from "@/types"; // Types
+import { Calendar as CalendarIcon } from "lucide-react"; // Icon lịch
 import React, { useEffect, useMemo, useState } from "react";
+import { DateRange } from "react-day-picker"; // Date range type
 import { toast } from "sonner"; // dùng sonner chuẩn ESM
 import { dashboardService } from "../services/dashboardService";
 
@@ -70,6 +80,40 @@ const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // UI state cho DateRange (shadcn Calendar)
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    // Sync ngay với giá trị khởi tạo của filters để hiển thị đúng trên nút
+    from: new Date(sevenDaysAgo),
+    to: new Date(today),
+  });
+  // Responsive: số tháng hiển thị (mobile 1, desktop 2)
+  const [calendarMonths, setCalendarMonths] = useState<number>(2);
+  useEffect(() => {
+    // Theo dõi breakpoint để đổi số tháng hiển thị của calendar
+    const mq = window.matchMedia("(max-width: 640px)");
+    const apply = () => setCalendarMonths(mq.matches ? 1 : 2);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  /**
+   * Helper: chuyển Date -> YYYY-MM-DD (local) an toàn timezone
+   * Tránh lệch ngày do UTC khi serialize ISO.
+   */
+  const toYMD = (d: Date) => {
+    const tz = d.getTimezoneOffset() * 60000; // ms offset
+    return new Date(d.getTime() - tz).toISOString().slice(0, 10);
+  };
+
+  // Sync UI calendar khi filters đổi (ví dụ: có reset ngoài)
+  useEffect(() => {
+    setDateRange({
+      from: filters.fromDate ? new Date(filters.fromDate) : undefined,
+      to: filters.toDate ? new Date(filters.toDate) : undefined,
+    });
+  }, [filters.fromDate, filters.toDate]);
+
   useEffect(() => {
     /**
      * @function fetchStats
@@ -95,13 +139,12 @@ const DashboardPage: React.FC = () => {
           totalProducts: overview.totalProducts ?? 0,
           totalOrders: overview.totalOrdersPaid ?? overview.totalOrders ?? 0,
           totalRevenue: overview.totalRevenuePaid ?? overview.totalRevenue ?? 0,
-          pendingOrders: overview.pendingOrders ?? 0,
           // Chỉ sử dụng dữ liệu từ BE: ưu tiên API top-products cho danh sách bán chạy
           topProducts: overview.topProducts ?? [],
           topSellingProducts:
-            (Array.isArray(topProducts) && topProducts.length > 0
+            Array.isArray(topProducts) && topProducts.length > 0
               ? topProducts
-              : overview.topSellingProducts ?? overview.topProducts ?? []),
+              : [],
           // Các trường bổ sung từ BE nếu có
           totalItemsSold: overview.totalItemsSold ?? undefined,
           averageOrderValue: overview.averageOrderValue ?? undefined,
@@ -132,27 +175,49 @@ const DashboardPage: React.FC = () => {
     <div className="space-y-6 sm:space-y-8 min-w-0">
       {/* Filters: date range & groupBy */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <Label htmlFor="fromDate">From date</Label>
-          <Input
-            id="fromDate"
-            type="date"
-            value={filters.fromDate}
-            onChange={e =>
-              setFilters(s => ({ ...s, fromDate: e.target.value }))
-            }
-          />
+        {/* Date range: dùng shadcn Calendar + Popover, chiếm 2 cột trên desktop */}
+        <div className="md:col-span-2">
+          <Label>Date range</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className="mt-2 w-full justify-start text-left font-normal"
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {dateRange?.from && dateRange?.to ? (
+                  <span>
+                    {filters.fromDate} → {filters.toDate}
+                  </span>
+                ) : dateRange?.from ? (
+                  <span>{filters.fromDate}</span>
+                ) : (
+                  <span className="text-muted-foreground">
+                    Pick a date range
+                  </span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="range"
+                selected={dateRange}
+                onSelect={range => {
+                  // Cập nhật UI + filters theo range chọn
+                  setDateRange(range);
+                  setFilters(s => ({
+                    ...s,
+                    fromDate: range?.from ? toYMD(range.from) : s.fromDate,
+                    toDate: range?.to ? toYMD(range.to) : s.toDate,
+                  }));
+                }}
+                numberOfMonths={calendarMonths}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
-        <div>
-          <Label htmlFor="toDate">To date</Label>
-          <Input
-            id="toDate"
-            type="date"
-            value={filters.toDate}
-            onChange={e => setFilters(s => ({ ...s, toDate: e.target.value }))}
-          />
-        </div>
-        <div>
+        <div className="space-y-2">
           <Label>Group by</Label>
           <Select
             value={filters.groupBy}
@@ -173,7 +238,13 @@ const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {stats ? (
+      {loading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <>
+          <EmptyStateDisplay />
+        </>
+      ) : stats ? (
         <>
           {/* Hàng 1: Stats tổng quan */}
           <DashboardStatsComponent stats={stats} />

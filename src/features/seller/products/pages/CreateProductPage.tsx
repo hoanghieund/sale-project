@@ -167,7 +167,10 @@ const CreateProductPage: React.FC = () => {
             <div className="flex justify-end">
               {/* Note: Place the sample at public/templates/product-import.xlsx */}
               <Button variant="outline" size="sm" asChild>
-                <a href="/templates/product-import.xlsx" download>
+                <a
+                  href="https://eu2.contabostorage.com/640a6ca02f434b49a6e50d30fe9a6cd9:bucket.team1/demo-excel-upload-product.xlsx"
+                  download
+                >
                   <Download className="mr-2 h-4 w-4" />
                   Download template
                 </a>

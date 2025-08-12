@@ -1,5 +1,5 @@
 import { Axios } from "@/api/Axios";
-import { Product, StatsGroupBy, StatsOverview, TimeSeriesPoint } from "@/types";
+import { StatsGroupBy, StatsOverview, TimeSeriesPoint, TopProductItem } from "@/types";
 
 /**
  * Seller Dashboard Stats Service
@@ -53,7 +53,7 @@ export const dashboardService = {
    */
   getTopProductsStats: async (
     params: TopProductsParams
-  ): Promise<Product[]> => {
+  ): Promise<TopProductItem[]> => {
     return Axios.get("/api/shop/stats/top-products", params);
   },
 };

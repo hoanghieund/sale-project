@@ -138,7 +138,7 @@ const Footer = () => {
               <div className="flex items-center">
                 <Link to="/" aria-label="Home">
                   <img
-                    src="logo.png"
+                    src="/logo.png"
                     alt="Eulotus Logo"
                     className="h-16 w-auto"
                   />

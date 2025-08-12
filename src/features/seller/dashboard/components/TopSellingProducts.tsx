@@ -10,16 +10,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Product } from "@/types"; // Import interface Product
+import { TopProductItem } from "@/types";
+import { formatCurrencyUSD } from "@/utils/formatters";
 import React from "react";
 
 /**
  * @interface TopSellingProductsProps
  * @description Props cho component TopSellingProducts.
- * @property {Product[]} products - Danh sách các sản phẩm bán chạy nhất.
+ * @property {TopProductItem[]} products - Danh sách các sản phẩm bán chạy nhất (đầu vào từ BE)
  */
 interface TopSellingProductsProps {
-  products: Product[];
+  products: TopProductItem[];
 }
 
 /**
@@ -31,19 +32,6 @@ interface TopSellingProductsProps {
 export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
   products,
 }) => {
-  /**
-   * @function formatCurrency
-   * @description Định dạng giá trị số thành định dạng tiền tệ Việt Nam Đồng.
-   * @param {number} value - Giá trị số cần định dạng.
-   * @returns {string} Chuỗi tiền tệ đã định dạng.
-   */
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(value);
-  };
-
   return (
     <Card className="bg-white">
       <CardHeader>
@@ -56,7 +44,7 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
           {products.map((product, index) => (
             // Stack theo cột trên mobile, chuyển thành hàng từ sm trở lên
             <div
-              key={product.id}
+              key={product.productId}
               className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0"
             >
               <div className="flex-shrink-0">
@@ -72,17 +60,20 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
                 <p className="text-sm font-medium text-gray-900 truncate">
                   {product.title}
                 </p>
-                {/* Items sold from BE */}
+                {/* Items sold từ BE (unitsSold) */}
                 <p className="text-sm text-gray-500 truncate">
-                  Sold: {typeof product.totalProductSold === "number" ? product.totalProductSold : 0}
+                  Sold:{" "}
+                  {typeof product.unitsSold === "number"
+                    ? product.unitsSold
+                    : 0}
                 </p>
               </div>
               <div className="text-right">
-                {/* Revenue from BE: sumPriceByOrders */}
+                {/* Doanh thu đã thanh toán từ BE: revenuePaid */}
                 <p className="text-sm font-medium text-gray-900">
-                  {formatCurrency(Number(product.sumPriceByOrders || 0))}
+                  {formatCurrencyUSD(Number(product.revenuePaid ?? 0))}
                 </p>
-                <p className="text-xs text-gray-500">Revenue (BE)</p>
+                <p className="text-xs text-gray-500">Revenue (paid)</p>
               </div>
             </div>
           ))}
