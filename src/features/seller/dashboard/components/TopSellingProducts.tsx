@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { TopProductItem } from "@/types";
 import { formatCurrencyUSD } from "@/utils/formatters";
-import { DollarSign, Package } from "lucide-react"; // Icon minh hoạ
+import { Package } from "lucide-react"; // Icon minh hoạ
 import React from "react";
 
 /**
@@ -84,7 +84,6 @@ export const TopSellingProducts: React.FC<TopSellingProductsProps> = ({
                 <div className="text-right">
                   {/* Doanh thu đã thanh toán từ BE: revenuePaid */}
                   <div className="flex items-center justify-end gap-1">
-                    <DollarSign className="h-4 w-4 text-emerald-600" />
                     <p className="text-sm font-semibold text-emerald-600">
                       {formatCurrencyUSD(Number(product.revenuePaid ?? 0))}
                     </p>
