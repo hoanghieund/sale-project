@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/table";
 import { Product } from "@/types";
 import { formatCurrencyUSD, formatDate } from "@/utils/formatters"; // Chuẩn hóa định dạng tiền tệ + ngày tháng qua util
-import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit, MoreHorizontal } from "lucide-react";
 import React from "react";
 
 /**
@@ -121,16 +121,22 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                   <TableCell className="font-medium max-w-[160px] truncate md:max-w-none">
                     {product.title}
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">{categoryName}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {categoryName}
+                  </TableCell>
                   {/* Định dạng giá bằng util chung để đảm bảo nhất quán toàn hệ thống */}
                   <TableCell>{formatCurrencyUSD(price)}</TableCell>
-                  <TableCell className="hidden md:table-cell">{stock}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {stock}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={isActive ? "default" : "secondary"}>
                       {isActive ? "Đang bán" : "Ngừng bán"}
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">{createdAt}</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {createdAt}
+                  </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -152,13 +158,13 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                               : "Hiển thị trên gian hàng"}
                           </DropdownMenuItem>
                         )}
-                        <DropdownMenuItem
+                        {/* <DropdownMenuItem
                           onClick={() => handleDelete(product)}
                           className="text-red-600"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Xóa
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

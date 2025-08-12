@@ -22,7 +22,7 @@ import { productService } from "@/features/seller/products/services/productServi
 import { Product } from "@/types";
 import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 /**
@@ -31,6 +31,8 @@ import { toast } from "sonner";
  * @returns {JSX.Element} Trang quản lý sản phẩm.
  */
 const ProductManagementPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -80,7 +82,7 @@ const ProductManagementPage: React.FC = () => {
    * @param {Product} product - Sản phẩm cần chỉnh sửa.
    */
   const handleEditProduct = (product: Product) => {
-    console.log("Chỉnh sửa sản phẩm:", product);
+    navigate(`/seller/products/edit/${product.id}`);
   };
 
   /**

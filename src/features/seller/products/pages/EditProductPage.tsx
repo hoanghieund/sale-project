@@ -43,7 +43,7 @@ const EditProductPage: React.FC = () => {
       try {
         const [productData, categoriesData] = await Promise.all([
           productService.getProductById(productId),
-          productService.getCategories(),
+          productService.getAllCategory(),
         ]);
 
         if (productData) {

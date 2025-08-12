@@ -6,15 +6,29 @@
  */
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { arrayMoveImmutable } from 'array-move';
+import { arrayMoveImmutable } from "array-move";
 import React, { useCallback, useState } from "react";
-import { useDropzone } from 'react-dropzone';
+import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -28,20 +42,20 @@ import { Textarea } from "@/components/ui/textarea";
 // Sử dụng types chung toàn dự án để đồng bộ với cấu trúc SQL thực tế
 import { Category, Product } from "@/types";
 import {
-  closestCenter,
   DndContext,
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Upload, X } from "lucide-react";
 
 /**
@@ -49,15 +63,22 @@ import { GripVertical, Upload, X } from "lucide-react";
  * @description Schema validation cho form sản phẩm sử dụng Zod.
  */
 const productSchema = z.object({
-  name: z.string().min(2, "Tên sản phẩm phải có ít nhất 2 ký tự").max(100, "Tên sản phẩm không quá 100 ký tự"),
+  name: z
+    .string()
+    .min(2, "Tên sản phẩm phải có ít nhất 2 ký tự")
+    .max(100, "Tên sản phẩm không quá 100 ký tự"),
   description: z.string().max(1000, "Mô tả không quá 1000 ký tự").optional(),
   price: z.preprocess(
-    (val) => Number(val),
+    val => Number(val),
     z.number().min(0, "Giá phải là số dương").max(1000000000, "Giá quá lớn")
   ),
   stock: z.preprocess(
-    (val) => Number(val),
-    z.number().int().min(0, "Tồn kho phải là số nguyên không âm").max(1000000, "Tồn kho quá lớn")
+    val => Number(val),
+    z
+      .number()
+      .int()
+      .min(0, "Tồn kho phải là số nguyên không âm")
+      .max(1000000, "Tồn kho quá lớn")
   ),
   categoryId: z.string().min(1, "Vui lòng chọn danh mục"),
   images: z.array(z.string()).optional(), // Mảng các URL hình ảnh
@@ -104,14 +125,13 @@ interface SortableImageItemProps {
  * @description Component hiển thị một hình ảnh có thể sắp xếp được.
  * @param {SortableImageItemProps} props - Props của component.
  */
-const SortableImageItem: React.FC<SortableImageItemProps> = ({ id, image, onRemove }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: id });
+const SortableImageItem: React.FC<SortableImageItemProps> = ({
+  id,
+  image,
+  onRemove,
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -120,7 +140,11 @@ const SortableImageItem: React.FC<SortableImageItemProps> = ({ id, image, onRemo
 
   return (
     <div ref={setNodeRef} style={style} className="relative group">
-      <img src={image} alt="Product preview" className="w-24 h-24 object-cover rounded-md" />
+      <img
+        src={image}
+        alt="Product preview"
+        className="w-24 h-24 object-cover rounded-md"
+      />
       <Button
         type="button"
         variant="destructive"
@@ -147,11 +171,18 @@ const SortableImageItem: React.FC<SortableImageItemProps> = ({ id, image, onRemo
  * @param {ProductFormProps} props - Props của component.
  * @returns {JSX.Element} Component ProductForm.
  */
-export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, isLoading, categories }) => {
+export const ProductForm: React.FC<ProductFormProps> = ({
+  initialData,
+  onSubmit,
+  isLoading,
+  categories,
+}) => {
   // Khởi tạo preview ảnh từ dữ liệu cũ (images hoặc imagesDTOList)
   const [imagePreviews, setImagePreviews] = useState<string[]>(
     ((initialData as any)?.images as string[]) ||
-      ((initialData as any)?.imagesDTOList?.map((img: any) => img?.path).filter(Boolean) as string[]) ||
+      ((initialData as any)?.imagesDTOList
+        ?.map((img: any) => img?.path)
+        .filter(Boolean) as string[]) ||
       []
   );
 
@@ -167,23 +198,33 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
     defaultValues: {
       // Map an toàn theo nhiều cấu trúc dữ liệu khác nhau
       name: (initialData as any)?.name ?? (initialData as any)?.title ?? "",
-      description: (initialData as any)?.description ?? (initialData as any)?.content ?? "",
+      description:
+        (initialData as any)?.description ??
+        (initialData as any)?.content ??
+        "",
       price: (initialData as any)?.price ?? 0,
-      stock: (initialData as any)?.stock ?? (initialData as any)?.totalProduct ?? 0,
+      stock:
+        (initialData as any)?.stock ?? (initialData as any)?.totalProduct ?? 0,
       categoryId: String(
-        (initialData as any)?.categoryId ?? (categories.length > 0 ? categories[0].id : "")
+        (initialData as any)?.categoryId ??
+          (categories.length > 0 ? categories[0].id : "")
       ),
       images:
         ((initialData as any)?.images as string[]) ||
-        ((initialData as any)?.imagesDTOList?.map((img: any) => img?.path).filter(Boolean) as string[]) ||
+        ((initialData as any)?.imagesDTOList
+          ?.map((img: any) => img?.path)
+          .filter(Boolean) as string[]) ||
         [],
-      isActive: (initialData as any)?.isActive ?? Boolean((initialData as any)?.status) ?? true,
+      isActive:
+        (initialData as any)?.isActive ??
+        Boolean((initialData as any)?.status) ??
+        true,
     },
   });
 
   // Cập nhật giá trị images trong form khi imagePreviews thay đổi
   React.useEffect(() => {
-    form.setValue('images', imagePreviews);
+    form.setValue("images", imagePreviews);
   }, [imagePreviews, form]);
 
   /**
@@ -193,16 +234,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
    * @param {File[]} acceptedFiles - Mảng các file được chấp nhận.
    */
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    acceptedFiles.forEach((file) => {
+    acceptedFiles.forEach(file => {
       const reader = new FileReader();
       reader.onload = () => {
-        setImagePreviews((prev) => [...prev, reader.result as string]);
+        setImagePreviews(prev => [...prev, reader.result as string]);
       };
       reader.readAsDataURL(file);
     });
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: { 'image/*': ['.jpeg', '.png', '.jpg', '.gif'] } });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [".jpeg", ".png", ".jpg", ".gif"] },
+  });
 
   /**
    * @function handleRemoveImage
@@ -210,26 +254,26 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
    * @param {number} index - Index của hình ảnh cần xóa.
    */
   const handleRemoveImage = (index: number) => {
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
- /**
-  * @function handleDragEnd
-  * @description Xử lý khi kết thúc kéo thả để sắp xếp lại hình ảnh.
-  * @param {DndContext.active} active - Phần tử đang được kéo.
-  * @param {DndContext.over} over - Phần tử mà active được thả vào.
-  */
- const handleDragEnd = (event: any) => {
-   const { active, over } = event;
+  /**
+   * @function handleDragEnd
+   * @description Xử lý khi kết thúc kéo thả để sắp xếp lại hình ảnh.
+   * @param {DndContext.active} active - Phần tử đang được kéo.
+   * @param {DndContext.over} over - Phần tử mà active được thả vào.
+   */
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
 
-   if (active.id !== over.id) {
-     setImagePreviews((items) => {
-       const oldIndex = items.indexOf(active.id);
-       const newIndex = items.indexOf(over.id);
-       return arrayMoveImmutable(items, oldIndex, newIndex);
-     });
-   }
- };
+    if (active.id !== over.id) {
+      setImagePreviews(items => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+        return arrayMoveImmutable(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   const handleSubmit = (data: ProductFormData) => {
     onSubmit(data);
@@ -238,14 +282,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{initialData ? "Chỉnh sửa Sản phẩm" : "Tạo Sản phẩm mới"}</CardTitle>
+        <CardTitle>
+          {initialData ? "Chỉnh sửa Sản phẩm" : "Tạo Sản phẩm mới"}
+        </CardTitle>
         <CardDescription>
           Điền thông tin chi tiết về sản phẩm của bạn.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
             {/* Trường Tên sản phẩm */}
             <FormField
               control={form.control}
@@ -269,11 +318,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
                 <FormItem>
                   <FormLabel>Mô tả</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Nhập mô tả chi tiết sản phẩm" 
+                    <Textarea
+                      placeholder="Nhập mô tả chi tiết sản phẩm"
                       className="resize-none"
                       rows={4}
-                      {...field} 
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -318,15 +367,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Danh mục</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Chọn danh mục sản phẩm" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={String(category.id)}>
+                      {categories.map(category => (
+                        <SelectItem
+                          key={category.id}
+                          value={String(category.id)}
+                        >
                           {category.name}
                         </SelectItem>
                       ))}
@@ -348,9 +403,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
                 <div className="text-center">
                   <Upload className="mx-auto h-12 w-12 text-gray-400" />
                   <p className="mt-1 text-sm text-gray-600">
-                    {isDragActive ? "Thả ảnh vào đây..." : "Kéo và thả ảnh vào đây, hoặc click để chọn ảnh"}
+                    {isDragActive
+                      ? "Thả ảnh vào đây..."
+                      : "Kéo và thả ảnh vào đây, hoặc click để chọn ảnh"}
                   </p>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF tối đa 10MB</p>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, GIF tối đa 10MB
+                  </p>
                 </div>
               </div>
               {imagePreviews.length > 0 && (
@@ -390,7 +449,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Trạng thái kích hoạt</FormLabel>
+                    <FormLabel className="text-base">
+                      Trạng thái kích hoạt
+                    </FormLabel>
                     <FormDescription>
                       Sản phẩm này có hiển thị trên gian hàng hay không.
                     </FormDescription>
@@ -416,7 +477,11 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit,
               >
                 Đặt lại
               </Button>
-              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full sm:w-auto"
+              >
                 {isLoading ? "Đang lưu..." : "Lưu"}
               </Button>
             </div>

@@ -56,24 +56,28 @@ export const productService = {
    * @description Get products information.
    * @returns {Promise<Product[]>} Products information.
    */
-  getProductById: async (id: string) => {
-    return Axios.get(`/api/products/${id}`);
+  getProductById: async (slug: string) => {
+    return Axios.get(`/api/public/product/slug/${slug}`);
   },
 
   /**
    * @method createProduct
    * @description Tạo sản phẩm hàng loạt bằng Excel (admin endpoint).
    * @param file File Excel (.xlsx)
-   * @param shopId id shop
    * @param categoryId id category
+   * @param collectionId id collection
    * @returns {Promise<string>} Thông điệp từ server (VD: "Import thành công 20 sản phẩm!")
    */
-  createProduct: async (file: File, shopId: number, categoryId: number) => {
+  createProduct: async (
+    file: File,
+    categoryId: number,
+    collectionId: number
+  ) => {
     // Gửi multipart/form-data theo spec: file, shopId, categoryId, collectionId
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("shopId", String(shopId));
     formData.append("categoryId", String(categoryId));
+    formData.append("collectionId", String(collectionId));
 
     return Axios.post("/api/admin/uploadExcelProduct", formData, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -86,7 +90,10 @@ export const productService = {
    * @param payload UpdateProductMediaPayload
    * @returns {Promise<Product>} Thông tin sản phẩm sau cập nhật
    */
-  updateProduct: async (payload: UpdateProductMediaPayload) => {
+  updateProduct: async (
+    productId: string,
+    payload: UpdateProductMediaPayload
+  ) => {
     const { product, newMainImage, addSubImages, removeImageIds } = payload;
     const formData = new FormData();
     // Backend yêu cầu key "product" là JSON string
@@ -98,7 +105,7 @@ export const productService = {
     }
     appendIfPresent(formData, "removeImageIds", removeImageIds || null);
 
-    return Axios.put(`/api/product/update/${product.id}`, formData, {
+    return Axios.put(`/api/product/update/${productId}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },

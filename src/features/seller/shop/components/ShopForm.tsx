@@ -197,12 +197,10 @@ export const ShopForm: React.FC<ShopFormProps> = ({
   };
 
   return (
-    <Card className="bg-white max-w-3xl mx-auto">
+    <Card className="bg-white">
       <CardHeader>
         <CardTitle className="text-xl sm:text-2xl">Shop information</CardTitle>
-        <CardDescription>
-          Update your shop's basic information
-        </CardDescription>
+        <CardDescription>Update your shop's basic information</CardDescription>
       </CardHeader>
       <CardContent className="p-4 sm:p-6">
         <Form {...form}>
@@ -285,9 +283,7 @@ export const ShopForm: React.FC<ShopFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Upload Logo */}
               <div>
-                <label className="text-sm font-medium mb-2 block">
-                  Logo
-                </label>
+                <label className="text-sm font-medium mb-2 block">Logo</label>
                 <FileDropzone
                   files={logoFiles}
                   onFilesChange={handleLogoFilesChange}
@@ -323,10 +319,11 @@ export const ShopForm: React.FC<ShopFormProps> = ({
 
             {/* Submit buttons */}
             <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
-              <Button type="button" variant="outline" className="w-full sm:w-auto">
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full sm:w-auto"
+              >
                 {isLoading ? "Saving..." : "Save changes"}
               </Button>
             </div>
