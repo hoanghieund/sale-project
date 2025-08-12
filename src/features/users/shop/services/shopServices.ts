@@ -10,6 +10,10 @@ export const shopService = {
     page: number;
     size: number;
     sort: "asc" | "desc";
+    /**
+     * Từ khóa tìm kiếm - backend yêu cầu key là `keywword` (giữ nguyên chính tả theo API)
+     */
+    keywword?: string;
   }) => {
     return Axios.get(
       `/api/public/products/by-collection/${payload.id}`,
@@ -27,6 +31,10 @@ export const shopService = {
       page: number;
       size: number;
       sort: "asc" | "desc";
+      /**
+       * Từ khóa tìm kiếm - backend yêu cầu key là `keywword` (giữ nguyên chính tả theo API)
+       */
+      keywword?: string;
     }
   ) => {
     return Axios.get(`/api/public/products/by-shop/slug/${slug}`, payload);

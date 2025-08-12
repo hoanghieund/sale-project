@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Star } from "lucide-react";
+import { Search, Star } from "lucide-react";
 import { shopService } from "./services/shopServices";
 // Tabs removed as no longer in use
 
@@ -58,6 +59,9 @@ const ShopPage = () => {
     number | string | null
   >(null);
   const [sort, setSort] = useState("asc");
+  // State tìm kiếm: tách UI input và giá trị áp dụng (keyword) để tránh gọi API mỗi ký tự
+  const [searchInput, setSearchInput] = useState("");
+  const [keyword, setKeyword] = useState<string | undefined>(undefined);
 
   // State for the new filtering system
   const [pagination, setPagination] = useState({
@@ -83,6 +87,7 @@ const ShopPage = () => {
         page: page,
         size: size,
         sort: sort,
+        keywword: keyword,
       };
 
       const responseProduct = await shopService.getProductsByCategoryId(
@@ -109,9 +114,7 @@ const ShopPage = () => {
     try {
       const responseShopInfo = await shopService.getShopInfo(shopSlug);
       const shopInfo = responseShopInfo;
-      const categoryId = responseShopInfo?.collections?.[0]?.id;
       setShop(shopInfo);
-      setActiveCategoryId(categoryId);
     } catch (error) {
       console.error("Error loading shop data:", error);
     } finally {
@@ -131,6 +134,8 @@ const ShopPage = () => {
         page: page,
         size: size,
         sort: sort,
+        // Truyền từ khóa tìm kiếm theo key backend yêu cầu (`keywword`)
+        keywword: keyword,
       };
 
       const responseProduct = await shopService.getProductsByAll(
@@ -160,13 +165,7 @@ const ShopPage = () => {
     }
   }, [shopSlug]);
 
-  useEffect(() => {
-    setPagination(prev => ({
-      ...prev,
-      currentPage: 0,
-    }));
-    setSort("asc");
-  }, [activeCategoryId]);
+  // Đã bỏ reset bằng effect để tránh double-fetch khi category thay đổi
 
   // Fetch dữ liệu khi thay đổi category | sort | trang
   // Giải quyết lỗi: đổi trang không gọi API (phân trang không hoạt động)
@@ -188,7 +187,37 @@ const ShopPage = () => {
       pagination.currentPage,
       pagination.pageSize
     );
-  }, [activeCategoryId, sort, pagination.currentPage, pagination.pageSize]);
+  }, [
+    activeCategoryId,
+    sort,
+    pagination.currentPage,
+    pagination.pageSize,
+    keyword,
+  ]);
+
+  /**
+   * Thực thi tìm kiếm khi người dùng nhấn Enter hoặc click nút Search
+   * - Reset về trang 0 để đảm bảo kết quả đúng ngữ cảnh
+   * - Áp dụng keyword đã được trim; nếu rỗng sẽ bỏ qua (undefined)
+   */
+  const handleSearch = () => {
+    setPagination(prev => ({ ...prev, currentPage: 0 }));
+    const value = searchInput.trim();
+    setKeyword(value || undefined);
+  };
+
+  /**
+   * Chọn category: gom tất cả cập nhật state vào 1 event để React batch và chỉ fetch 1 lần
+   * - Reset trang về 0, sort về asc
+   * - Clear searchInput và keyword trước khi effect fetch chạy
+   */
+  const handleSelectCategory = (id: number | null) => {
+    setActiveCategoryId(id);
+    setPagination(prev => ({ ...prev, currentPage: 0 }));
+    setSort("asc");
+    setSearchInput("");
+    setKeyword(undefined);
+  };
 
   if (!shop) {
     return <EmptyStateDisplay />;
@@ -255,11 +284,11 @@ const ShopPage = () => {
                     {shop?.shopName}
                   </CardTitle>
                   {/* Actions placed on the same line in wide viewports to save vertical space */}
-                  <div className="hidden lg:flex items-center gap-2">
+                  {/* <div className="hidden lg:flex items-center gap-2">
                     <Button variant="outline" className="h-9">
                       Chat now
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Metrics area: highlighted, easy to scan */}
@@ -269,9 +298,9 @@ const ShopPage = () => {
                     <div className="text-xs text-muted-foreground">Rating</div>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-0.5">
-                        <span className="text-base font-medium">
+                        {/* <span className="text-base font-medium">
                           {shop.star || 0}
-                        </span>
+                        </span> */}
                         {/* Hiển thị 5 sao, sao tô đầy theo điểm số; sao rỗng vẫn giữ stroke vàng để đồng bộ brand */}
                         {Array.from({ length: 5 }).map((_, idx) => (
                           <Star
@@ -290,7 +319,7 @@ const ShopPage = () => {
                   {/* Total Reviews */}
                   <div className="flex items-center gap-2">
                     <div className="text-xs text-muted-foreground">Reviews</div>
-                    <div className="text-xl md:text-xl font-bold text-primary leading-none">
+                    <div className="text-xs font-bold text-primary leading-none">
                       {shop?.totalReview}
                     </div>
                   </div>
@@ -300,7 +329,7 @@ const ShopPage = () => {
                     <div className="text-xs text-muted-foreground">
                       Products
                     </div>
-                    <div className="text-xl md:text-xl font-bold text-primary leading-none">
+                    <div className="text-xs font-bold text-primary leading-none">
                       {shop?.totalProduct}
                     </div>
                   </div>
@@ -308,7 +337,7 @@ const ShopPage = () => {
                   {/* Time since created */}
                   <div className="flex items-center gap-2">
                     <div className="text-xs text-muted-foreground">Created</div>
-                    <div className="text-xl md:text-xl font-bold text-primary leading-none whitespace-nowrap">
+                    <div className="text-xs font-bold text-primary leading-none whitespace-nowrap">
                       {shop?.timeRequest}
                     </div>
                   </div>
@@ -316,11 +345,11 @@ const ShopPage = () => {
               </div>
 
               {/* Right action group - displayed at the bottom on mobile */}
-              <div className="flex lg:hidden w-full">
+              {/* <div className="flex lg:hidden w-full">
                 <Button variant="outline" className="w-full">
                   Chat now
                 </Button>
-              </div>
+              </div> */}
             </div>
           </CardHeader>
         </Card>
@@ -339,7 +368,7 @@ const ShopPage = () => {
                   <div
                     key={cat.id}
                     onClick={() =>
-                      setActiveCategoryId(
+                      handleSelectCategory(
                         typeof cat.id === "string" ? null : Number(cat.id)
                       )
                     }
@@ -363,11 +392,21 @@ const ShopPage = () => {
           <div className="flex-1">
             {/* Header với sort và view options */}
             <div className="mb-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4 flex-wrap">
                 <h2 className="text-2xl font-bold">Featured items</h2>
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-4 justify-end">
+                  {/* Ô tìm kiếm theo yêu cầu: nhập từ khóa và click/Enter để tìm */}
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Sort:</span>
+                    <Input
+                      value={searchInput}
+                      onChange={e => setSearchInput(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") handleSearch();
+                      }}
+                      placeholder="Search products..."
+                      className="w-48 sm:w-64"
+                    />
+
                     <Select
                       value={sort}
                       onValueChange={value => {
@@ -387,6 +426,16 @@ const ShopPage = () => {
                         <SelectItem value="desc">High to Low</SelectItem>
                       </SelectContent>
                     </Select>
+
+                    {/* Nút tìm kiếm chỉ hiển thị icon để gọn UI */}
+                    <Button
+                      onClick={handleSearch}
+                      size="icon"
+                      aria-label="Search products"
+                      title="Search"
+                    >
+                      <Search className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </div>
