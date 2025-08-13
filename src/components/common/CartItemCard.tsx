@@ -58,6 +58,14 @@ const CartItemCard = ({
   const { productDTO } = item;
   const variantProduct = useVariantProduct(productDTO);
   const isCompactMode = viewMode === "compact";
+  // Chọn ảnh theo màu đã chọn trong cart: ưu tiên ảnh có optionId === colorId, fallback ảnh đầu tiên
+  const selectedColorId = item?.variantValues?.colorId; // colorId là khóa chuẩn theo getVariantSlug()
+  const allImages = productDTO?.imagesDTOList || [];
+  // Lọc toàn bộ ảnh theo optionId rồi lấy phần tử đầu tiên (nếu có nhiều hơn 1 ảnh trùng)
+  const colorMatchedImages = allImages.filter(
+    img => img?.optionId === selectedColorId
+  );
+  const imageProduct = colorMatchedImages[0]?.path || allImages[0]?.path; // fallback ảnh đầu tiên nếu không có ảnh theo màu
 
   return (
     <Card key={item.id} className={"p-2 bg-card/30"}>
@@ -78,7 +86,7 @@ const CartItemCard = ({
         {/* Product Image */}
         <div className={"w-20 h-full flex-shrink-0"}>
           <img
-            src={item.productDTO?.imagesDTOList?.[0]?.path}
+            src={imageProduct}
             alt={item.productDTO?.title || "Product"}
             className="w-full h-full object-cover rounded-md"
           />

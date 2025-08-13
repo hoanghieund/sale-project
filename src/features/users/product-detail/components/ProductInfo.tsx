@@ -33,9 +33,17 @@ import { useState } from "react";
  * @property {number | null} selectedSku - ID of the selected SKU.
  * @property {(skuId: number | null) => void} setSelectedSku - Callback to update the selected SKU.
  */
+/**
+ * @interface ProductInfoProps
+ * @description Props cho component ProductInfo, bổ sung callback để đồng bộ UI ảnh theo màu.
+ * @property {(colorId: number | null) => void} [onColorHover] - Gọi khi hover vào/ra một màu (null khi rời).
+ * @property {(colorId: number | null) => void} [onColorActiveChange] - Gọi khi chọn (click) một màu active.
+ */
 interface ProductInfoProps {
   product: Product;
   className?: string;
+  onColorHover?: (colorId: number | null) => void;
+  onColorActiveChange?: (colorId: number | null) => void;
 }
 
 /**
@@ -56,7 +64,6 @@ const changeDescription = (description: string) => {
   }
   return (
     <ul className="list-disc pl-5 space-y-1">
-      {" "}
       {/* Add Tailwind CSS classes for list-style and padding */}
       {items.map((item, index) => (
         <li key={index}>{item.trim()}</li> // Each item is an <li> tag
@@ -65,7 +72,13 @@ const changeDescription = (description: string) => {
   );
 };
 
-const ProductInfo = ({ product, className }: ProductInfoProps) => {
+// Hiển thị thông tin sản phẩm và phát sự kiện hover/chọn màu để parent cập nhật carousel
+const ProductInfo = ({
+  product,
+  className,
+  onColorHover,
+  onColorActiveChange,
+}: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);
   const { toast } = useToast();
   // Use custom hook to access Cart context
@@ -172,8 +185,20 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
               </h3>
               <div className="flex flex-wrap gap-2">
                 {variant.values?.map(value => (
-                  <div key={value.id}>
-                    {" "}
+                  <div
+                    key={value.id}
+                    // Phát sự kiện hover để ProductDetailPage lọc ảnh theo màu đang hover
+                    onMouseEnter={() => {
+                      if (variant.name.toLowerCase() === "color") {
+                        onColorHover?.(value.id);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (variant.name.toLowerCase() === "color") {
+                        onColorHover?.(null); // trở về màu active khi rời hover
+                      }
+                    }}
+                  >
                     {/* Wrap with div or Fragment */}
                     {variant.name.toLowerCase() === "color" ? (
                       <ColorCircle
@@ -188,6 +213,8 @@ const ProductInfo = ({ product, className }: ProductInfoProps) => {
                           };
                           setSelectedVariantValues(newSelectedValues);
                           setQuantity(1);
+                          // Khi chọn màu, thông báo parent để hiển thị ảnh theo màu active
+                          onColorActiveChange?.(value.id);
                         }}
                       />
                     ) : (

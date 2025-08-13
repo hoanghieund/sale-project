@@ -17,6 +17,8 @@ export const getVariantName = (type: number): string => {
       return "Color";
     case 4:
       return "Size";
+    case 5:
+      return "Color";
     default:
       return "Unknown";
   }
@@ -38,6 +40,8 @@ export const getVariantSlug = (type: number): string => {
       return "colorId";
     case 4:
       return "sizeId";
+    case 5:
+      return "colorId";
     default:
       return "Unknown";
   }

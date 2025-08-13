@@ -9,6 +9,15 @@
  * @returns {string | undefined} Giá trị hex của màu sắc hoặc undefined nếu không tìm thấy.
  */
 export const getColorValue = (colorName: string): string | undefined => {
+  // Nếu đầu vào là mã hex (#RGB | #RRGGBB) có hoặc không có '#', chuẩn hóa và trả về luôn
+  // Giữ nguyên comment cũ nếu còn hữu ích
+  const raw = (colorName || "").trim();
+  const hexMatch = raw.match(/^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/);
+  if (hexMatch) {
+    // Chuẩn hóa: thêm '#', đổi về UPPERCASE để đồng nhất
+    return `#${hexMatch[1]}`.toUpperCase();
+  }
+
   const colorMap: { [key: string]: string } = {
     "black": "#000000",
     "white": "#FFFFFF",
@@ -29,5 +38,6 @@ export const getColorValue = (colorName: string): string | undefined => {
     "yellow": "#DAA520",
     "orange": "#FF8C00"
   };
-  return colorMap[colorName.toLowerCase()];
+  // Nếu không phải hex, lấy từ bảng ánh xạ theo tên màu thường
+  return colorMap[raw.toLowerCase()];
 };

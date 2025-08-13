@@ -91,7 +91,7 @@ const Cart = () => {
               to make the spinner cover the entire content area.
           */}
           <div
-            className={`relative ${
+            className={`relative space-y-8 ${
               isLoading ? "opacity-50 pointer-events-none" : ""
             }`}
           >

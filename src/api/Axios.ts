@@ -10,6 +10,7 @@ export function getInstance() {
     baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
       "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": true,
     },
   });
   //hook interceptor cài ở đây
@@ -30,7 +31,10 @@ export function getInstance() {
   );
 
   let isRefreshing = false;
-  let failedQueue: Array<{ resolve: (value?: any) => void; reject: (reason?: any) => void }> = [];
+  let failedQueue: Array<{
+    resolve: (value?: any) => void;
+    reject: (reason?: any) => void;
+  }> = [];
 
   const processQueue = (error: any, token: string | null = null) => {
     failedQueue.forEach(promise => {
@@ -47,20 +51,22 @@ export function getInstance() {
     response => {
       return response.data;
     },
-    async (error) => {
+    async error => {
       const originalRequest = error.config;
 
       // Nếu lỗi là 401 và không phải là yêu cầu làm mới token
       if (error.response.status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
-          return new Promise(function(resolve, reject) {
+          return new Promise(function (resolve, reject) {
             failedQueue.push({ resolve, reject });
-          }).then(token => {
-            originalRequest.headers['Authorization'] = 'Bearer ' + token;
-            return axiosInstance(originalRequest);
-          }).catch(err => {
-            return Promise.reject(err);
-          });
+          })
+            .then(token => {
+              originalRequest.headers["Authorization"] = "Bearer " + token;
+              return axiosInstance(originalRequest);
+            })
+            .catch(err => {
+              return Promise.reject(err);
+            });
         }
 
         originalRequest._retry = true;
@@ -75,24 +81,30 @@ export function getInstance() {
               throw new Error("No refresh token available");
             }
 
-            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`, {
-              refreshToken: refreshToken
-            });
+            const response = await axios.post(
+              `${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`,
+              {
+                refreshToken: refreshToken,
+              }
+            );
 
             const { accessToken, newRefreshToken } = response.data;
 
             // Cập nhật token trong localStorage
-            const userData = JSON.parse(localStorage.getItem("userData") || '{}');
+            const userData = JSON.parse(
+              localStorage.getItem("userData") || "{}"
+            );
             userData.token = accessToken;
             userData.refreshToken = newRefreshToken; // Cập nhật refresh token mới nếu có
             localStorage.setItem("userData", JSON.stringify(userData));
 
             // Cập nhật token cho các yêu cầu đang chờ
-            axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
+            axiosInstance.defaults.headers.common["Authorization"] =
+              "Bearer " + accessToken;
             processQueue(null, accessToken);
-            
+
             // Thử lại yêu cầu ban đầu với token mới
-            originalRequest.headers['Authorization'] = 'Bearer ' + accessToken;
+            originalRequest.headers["Authorization"] = "Bearer " + accessToken;
             resolve(axiosInstance(originalRequest));
           } catch (err) {
             processQueue(err, null);

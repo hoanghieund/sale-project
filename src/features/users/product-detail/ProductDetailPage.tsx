@@ -1,6 +1,6 @@
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import { Product, Shop } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageCarousel from "./components/ProductImageCarousel";
 import ProductInfo from "./components/ProductInfo"; // Import the new component
@@ -18,6 +18,11 @@ const ProductDetailPage = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [shop, setShop] = useState<Shop | null>(null);
+  // Lưu trạng thái hover và màu đang active để điều khiển ảnh hiển thị ở carousel
+  // hoveredColorId: ưu tiên hiển thị ảnh theo màu đang hover
+  // activeColorId: hiển thị ảnh theo màu đang chọn khi không hover
+  const [hoveredColorId, setHoveredColorId] = useState<number | null>(null);
+  const [activeColorId, setActiveColorId] = useState<number | null>(null);
 
   const fetchData = async () => {
     if (!slug) {
@@ -42,10 +47,25 @@ const ProductDetailPage = () => {
   };
   useEffect(() => {
     fetchData();
+    // Reset trạng thái tương tác khi đổi sản phẩm
+    setHoveredColorId(null);
+    setActiveColorId(null);
   }, [slug]);
 
+  // Tính danh sách ảnh hiển thị cho carousel dựa trên màu (Hook luôn gọi không điều kiện)
+  // Ghi chú: Backend trả về imagesDTOList có thể chứa optionId (id màu). Kiểu Image chưa khai báo optionId nên dùng any an toàn.
+  const imagesToShow = useMemo(() => {
+    const list = product?.imagesDTOList || [];
+    const filterBy = hoveredColorId ?? activeColorId;
+    if (filterBy != null) {
+      const filtered = list.filter(img => img?.optionId === filterBy);
+      return filtered.length > 0 ? filtered : list; // fallback nếu không có ảnh theo màu
+    }
+    return list;
+  }, [product?.imagesDTOList, hoveredColorId, activeColorId]);
+
   if (!product) {
-    return;
+    return null; // Trả về null để tránh thay đổi thứ tự Hook giữa các lần render
   }
 
   return (
@@ -74,10 +94,17 @@ const ProductDetailPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-12">
           <ProductImageCarousel
             className="px-8 col-span-1"
-            images={product.imagesDTOList || []}
+            images={imagesToShow}
             productTitle={product.title}
           />
-          <ProductInfo className="col-span-1" product={product} />
+          <ProductInfo
+            className="col-span-1"
+            product={product}
+            // Khi hover vào/ra màu: cập nhật hoveredColorId để ưu tiên hiển thị ảnh theo màu đang hover
+            onColorHover={colorId => setHoveredColorId(colorId)}
+            // Khi click chọn màu: cập nhật activeColorId để hiển thị ảnh theo màu đang chọn khi không hover
+            onColorActiveChange={colorId => setActiveColorId(colorId)}
+          />
         </div>
 
         {/* Shop Info */}

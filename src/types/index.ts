@@ -258,13 +258,7 @@ export interface Image {
   id: number; // bigint(20) trong SQL
   path?: string; // path varchar(255)
   type?: number; // type int(11) - 0: thumbnail, 1: detail
-  productId?: number; // product_id bigint(20)
-  product?: Product; // Thông tin product (optional khi populate)
-  // Audit fields
-  createBy?: string; // create_by varchar(255)
-  createDate?: Date; // create_date datetime
-  modifierBy?: string; // modifier_by varchar(255)
-  modifierDate?: Date; // modifier_date datetime
+  optionId?: number; // option_id bigint(20)
 }
 
 //   Types - Dựa trên tbl_cart
