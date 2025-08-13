@@ -1,6 +1,6 @@
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import { Product, Shop } from "@/types";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageCarousel from "./components/ProductImageCarousel";
 import ProductInfo from "./components/ProductInfo"; // Import the new component
@@ -52,17 +52,8 @@ const ProductDetailPage = () => {
     setActiveColorId(null);
   }, [slug]);
 
-  // Tính danh sách ảnh hiển thị cho carousel dựa trên màu (Hook luôn gọi không điều kiện)
-  // Ghi chú: Backend trả về imagesDTOList có thể chứa optionId (id màu). Kiểu Image chưa khai báo optionId nên dùng any an toàn.
-  const imagesToShow = useMemo(() => {
-    const list = product?.imagesDTOList || [];
-    const filterBy = hoveredColorId ?? activeColorId;
-    if (filterBy != null) {
-      const filtered = list.filter(img => img?.optionId === filterBy);
-      return filtered.length > 0 ? filtered : list; // fallback nếu không có ảnh theo màu
-    }
-    return list;
-  }, [product?.imagesDTOList, hoveredColorId, activeColorId]);
+  // Hiển thị tất cả ảnh, chỉ điều khiển "focus" ảnh theo optionId khi hover/active màu.
+  // Lưu ý: Carousel sẽ tự setSelectedImage về ảnh đầu tiên có optionId khớp focusOptionId.
 
   if (!product) {
     return null; // Trả về null để tránh thay đổi thứ tự Hook giữa các lần render
@@ -94,7 +85,10 @@ const ProductDetailPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-12">
           <ProductImageCarousel
             className="px-8 col-span-1"
-            images={imagesToShow}
+            // Hiển thị tất cả ảnh, để carousel tự focus theo focusOptionId
+            images={product.imagesDTOList || []}
+            // Khi hover/active màu, focus vào ảnh đầu tiên có optionId khớp
+            focusOptionId={hoveredColorId ?? activeColorId ?? null}
             productTitle={product.title}
           />
           <ProductInfo

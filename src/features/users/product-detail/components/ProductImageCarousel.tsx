@@ -18,11 +18,13 @@ import React, { useEffect, useRef, useState } from "react";
  * @typedef ProductImageCarouselProps
  * @property {ProductImage[]} images - Array of image objects to display in the carousel.
  * @property {string} productTitle - Product title, used for image alt text.
+ * @property {number | null} [focusOptionId] - Khi thay đổi, carousel sẽ focus vào ảnh đầu tiên có optionId trùng khớp.
  */
 interface ProductImageCarouselProps {
   images: ProductImage[];
   productTitle: string;
   className?: string;
+  focusOptionId?: number | null;
 }
 
 /**
@@ -38,6 +40,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   images,
   productTitle,
   className,
+  focusOptionId,
 }) => {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -64,6 +67,17 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
       scrollThumbnailIntoView(index);
     });
   }, [api]);
+
+  // Khi focusOptionId thay đổi: tìm index ảnh có optionId tương ứng và focus vào nó
+  useEffect(() => {
+    if (focusOptionId == null) return; // không làm gì nếu không có giá trị
+    const idx = images?.findIndex((img: any) => (img as any)?.optionId === focusOptionId) ?? -1;
+    if (idx >= 0) {
+      setSelectedImage(idx);
+      api?.scrollTo(idx);
+      scrollThumbnailIntoView(idx);
+    }
+  }, [focusOptionId, images, api]);
 
   // Hàm scroll thumbnail active vào vùng nhìn thấy được
   const scrollThumbnailIntoView = (index: number) => {
