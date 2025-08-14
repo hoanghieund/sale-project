@@ -144,10 +144,10 @@ const TermsOfService: React.FC = () => {
           <p>
             📧 Email:{" "}
             <a
-              href="mailto:support@eulotus.com"
+              href="mailto:eulotus.com@gmail.com"
               className="text-blue-600 hover:underline"
             >
-              support@eulotus.com
+              eulotus.com@gmail.com
             </a>
           </p>
         </section>

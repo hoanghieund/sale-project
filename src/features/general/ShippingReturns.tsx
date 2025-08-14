@@ -3,7 +3,7 @@
  *
  * - Sử dụng shadcn UI Card để đồng bộ với hệ thống thiết kế
  * - Nội dung chuẩn hóa, có ngày hiệu lực/cập nhật
- * - Liên hệ theo brand email đã dùng trong footer (support@eulotus.com) và địa chỉ returns chuyên biệt khi cần
+ * - Liên hệ theo brand email đã dùng trong footer (eulotus.com@gmail.com) và địa chỉ returns chuyên biệt khi cần
  */
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -59,8 +59,9 @@ const ShippingReturns = () => {
               <ul className="list-disc ml-6 space-y-1">
                 <li>
                   {/* Sử dụng POLICY.processingDays để dễ thay đổi theo thực tế vận hành */}
-                  Orders are processed within {POLICY.processingDays} business days after payment is
-                  confirmed (excluding weekends and holidays).
+                  Orders are processed within {POLICY.processingDays} business
+                  days after payment is confirmed (excluding weekends and
+                  holidays).
                 </li>
                 <li>
                   During peak seasons or promotions, processing times may be
@@ -100,7 +101,8 @@ const ShippingReturns = () => {
                   destination, and selected shipping method.
                 </li>
                 <li>
-                  Free shipping may be available for orders over {POLICY.freeShippingThreshold}.
+                  Free shipping may be available for orders over{" "}
+                  {POLICY.freeShippingThreshold}.
                 </li>
               </ul>
             </div>
@@ -139,10 +141,10 @@ const ShippingReturns = () => {
                 If your package is lost or arrives damaged, please contact us
                 within {POLICY.issueReportDays} days of delivery at{" "}
                 <a
-                  href="mailto:support@eulotus.com"
+                  href="mailto:eulotus.com@gmail.com"
                   className="text-blue-600 hover:underline"
                 >
-                  support@eulotus.com
+                  eulotus.com@gmail.com
                 </a>{" "}
                 with your order number and photos of the damage.
               </p>
@@ -160,7 +162,10 @@ const ShippingReturns = () => {
 
             <div>
               <h3 className="font-medium">1. Eligibility for Returns</h3>
-              <p>We accept returns within {POLICY.returnWindowDays} days of delivery if:</p>
+              <p>
+                We accept returns within {POLICY.returnWindowDays} days of
+                delivery if:
+              </p>
               <ul className="list-disc ml-6 space-y-1">
                 <li>
                   The item is unused, in original packaging, and in the same
@@ -209,7 +214,8 @@ const ShippingReturns = () => {
               <h3 className="font-medium">4. Refunds</h3>
               <ul className="list-disc ml-6 space-y-1">
                 <li>
-                  Refunds are issued to your original payment method within {POLICY.refundDays}
+                  Refunds are issued to your original payment method within{" "}
+                  {POLICY.refundDays}
                   business days after we receive and inspect the returned item.
                 </li>
                 <li>Shipping fees are non-refundable.</li>
@@ -235,8 +241,8 @@ const ShippingReturns = () => {
               <h3 className="font-medium">6. Damaged or Defective Items</h3>
               <p>
                 If you receive a damaged or defective product, please contact us
-                within {POLICY.issueReportDays} days of delivery with photos for a replacement or
-                refund.
+                within {POLICY.issueReportDays} days of delivery with photos for
+                a replacement or refund.
               </p>
             </div>
           </section>

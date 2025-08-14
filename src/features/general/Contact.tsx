@@ -73,7 +73,7 @@ const Contact = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <Card>
+              <Card className="bg-white">
                 <CardHeader>
                   <CardTitle>Send us a message</CardTitle>
                   <CardDescription>
@@ -225,7 +225,7 @@ const Contact = () => {
               </div>
 
               <div className="space-y-6">
-                <Card>
+                <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
@@ -236,13 +236,13 @@ const Contact = () => {
                         <p className="text-muted-foreground mb-2">
                           For general inquiries and support
                         </p>
-                        <p className="font-medium">support@donekick.com</p>
+                        <p className="font-medium">eulotus.com@gmail.com</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
@@ -259,7 +259,7 @@ const Contact = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
@@ -282,7 +282,7 @@ const Contact = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">

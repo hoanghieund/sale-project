@@ -116,7 +116,7 @@ const About = () => {
               <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-2xl font-bold">MH</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Minh Hoang</h3>
+              <h3 className="text-xl font-semibold mb-2">Matthew Henderson</h3>
               <p className="text-muted-foreground mb-2">Founder & CEO</p>
               <p className="text-sm text-muted-foreground">
                 Product direction and growth strategy
@@ -127,7 +127,7 @@ const About = () => {
               <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-2xl font-bold">LA</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Lan Anh</h3>
+              <h3 className="text-xl font-semibold mb-2">Lauren Anderson</h3>
               <p className="text-muted-foreground mb-2">
                 Head of Merchant Success
               </p>
@@ -140,7 +140,7 @@ const About = () => {
               <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary/80 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white text-2xl font-bold">QM</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Quang Minh</h3>
+              <h3 className="text-xl font-semibold mb-2">Quentin Miller</h3>
               <p className="text-muted-foreground mb-2">
                 Head of Customer Experience
               </p>

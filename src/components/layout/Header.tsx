@@ -27,6 +27,7 @@ import { useCart } from "@/providers/cart-provider";
 import {
   ChevronDown,
   History,
+  LifeBuoy,
   LogIn,
   LogOut,
   Menu,
@@ -120,7 +121,57 @@ const Header = () => {
       >
         <div className="container mx-auto px-4">
           {/* Top Row */}
-          <div className="flex items-center justify-between py-2.5 md:pb-0 gap-8">
+          {/*
+            Top row hiển thị 2 nút hành động:
+            - Nếu user có role seller (ROLE_SHOP_MANAGER) thì nút 1 dẫn tới Seller Center (/seller)
+              ngược lại dẫn tới trang đăng ký người bán (/seller-registration).
+            - Nút 2 luôn dẫn tới Help Center (/help).
+            Lý do: tăng khả năng truy cập nhanh cho cả seller và user, giữ UI gọn nhẹ bằng ghost buttons.
+          */}
+          <div className="flex items-center justify-end gap-2 pt-2">
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="h-8 rounded-full px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+              aria-label={
+                isRoleShop ? "Go to Seller Center" : "Become a seller"
+              }
+            >
+              <Link to={isRoleShop ? "/seller" : "/seller-registration"}>
+                {isRoleShop ? (
+                  // Nút cho seller: vào kênh bán
+                  <span className="inline-flex items-center gap-2">
+                    <Store className="h-4 w-4" />
+                    <span className="hidden sm:inline">Seller Center</span>
+                  </span>
+                ) : (
+                  // Nút cho user: đăng ký người bán
+                  <span className="inline-flex items-center gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    <span className="hidden sm:inline">Become a seller</span>
+                  </span>
+                )}
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="h-8 rounded-full px-3 text-sm hover:bg-accent hover:text-accent-foreground"
+              aria-label="Help Center"
+            >
+              <Link to="/help">
+                <span className="inline-flex items-center gap-2">
+                  <LifeBuoy className="h-4 w-4" />
+                  <span className="hidden sm:inline">Help Center</span>
+                </span>
+              </Link>
+            </Button>
+          </div>
+
+          {/* Center Row */}
+          <div className="flex items-center justify-between py-2.5 md:py-0 gap-8">
             {/* Logo */}
             <div className="flex items-center gap-4">
               {/* Sử dụng logo từ public/logo.png để thống nhất branding */}

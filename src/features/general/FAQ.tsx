@@ -87,7 +87,7 @@ const faqData: FAQItem[] = [
     id: "11",
     question: "How do I contact customer support?",
     answer:
-      "You can reach our customer support team via email at support@donekick.com, phone at +1 (555) 123-KICK, or through our contact form. Our support hours are Monday-Friday 9 AM-6 PM EST, Saturday 10 AM-4 PM EST. We typically respond to emails within 24 hours.",
+      "You can reach our customer support team via email at eulotus.com@gmail.com, phone at +1 (555) 123-KICK, or through our contact form. Our support hours are Monday-Friday 9 AM-6 PM EST, Saturday 10 AM-4 PM EST. We typically respond to emails within 24 hours.",
     category: "Support",
   },
   {
@@ -202,7 +202,7 @@ const FAQ = () => {
             ) : (
               <div className="space-y-4">
                 {filteredFAQs.map(faq => (
-                  <Card key={faq.id}>
+                  <Card key={faq.id} className="bg-white">
                     <CardContent className="p-0">
                       <button
                         onClick={() => toggleExpanded(faq.id)}
