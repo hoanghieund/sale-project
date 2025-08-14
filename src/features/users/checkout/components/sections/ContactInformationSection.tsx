@@ -32,7 +32,7 @@ const ContactInformationSection = () => {
     const fetchAddresses = async () => {
       if (user?.id) {
         try {
-          const fetchedAddresses = await addressService.getAddresses(user.id);
+          const fetchedAddresses = await addressService.getAddresses();
           setAddresses(fetchedAddresses);
         } catch (error) {
           console.error("Failed to fetch addresses:", error);
@@ -49,13 +49,21 @@ const ContactInformationSection = () => {
    * @param address - Address object containing address information.
    */
   const applyAddressToForm = (address: Address) => {
-    // Gán firstName và lastName, sử dụng fullName nếu firstName/lastName không tồn tại
-    setValue("name", address.fullName, { shouldValidate: true });
-    setValue("address", address.address, { shouldValidate: true });
-    setValue("phone", address.phoneNumber, { shouldValidate: true });
+    // Gán các trường theo cấu trúc Address mới
+    setValue("firstName", address.firstName || "", { shouldValidate: true });
+    setValue("lastName", address.lastName || "", { shouldValidate: true });
+    setValue("companyName", address.companyName || "");
+    setValue("phoneNumber", address.phoneNumber || "", { shouldValidate: true });
+    setValue("email", address.email || "", { shouldValidate: true });
+    setValue("addressLine1", address.addressLine1 || "", { shouldValidate: true });
+    setValue("addressLine2", address.addressLine2 || "");
+    setValue("city", address.city || "", { shouldValidate: true });
+    setValue("state", address.state || "", { shouldValidate: true });
+    setValue("postalCode", address.postalCode || "", { shouldValidate: true });
+    setValue("country", address.country || "", { shouldValidate: true });
+    setValue("orderNotes", address.orderNotes || "");
     // Trigger validation after setting all fields
     trigger();
-    // Các trường city, state, zipCode, country không được cập nhật theo yêu cầu
   };
 
   /**
@@ -67,9 +75,18 @@ const ContactInformationSection = () => {
     setValue("selectedAddressId", addressId); // Cập nhật selectedAddressId qua react-hook-form
     if (addressId === "other") {
       // Xóa các trường form liên quan đến địa chỉ khi chọn "Other"
-      setValue("name", "", { shouldValidate: true });
-      setValue("address", "", { shouldValidate: true });
-      setValue("phone", "", { shouldValidate: true });
+      setValue("firstName", "", { shouldValidate: true });
+      setValue("lastName", "", { shouldValidate: true });
+      setValue("companyName", "");
+      setValue("phoneNumber", "", { shouldValidate: true });
+      setValue("email", "", { shouldValidate: true });
+      setValue("addressLine1", "", { shouldValidate: true });
+      setValue("addressLine2", "");
+      setValue("city", "", { shouldValidate: true });
+      setValue("state", "", { shouldValidate: true });
+      setValue("postalCode", "", { shouldValidate: true });
+      setValue("country", "", { shouldValidate: true });
+      setValue("orderNotes", "");
       trigger();
     } else {
       const address = addresses.find(addr => addr.id.toString() === addressId);
@@ -87,12 +104,16 @@ const ContactInformationSection = () => {
       // Tìm địa chỉ mặc định (isCurrent)
       const defaultAddress = addresses.find(addr => addr.isCurrent);
       if (defaultAddress) {
-        setValue("selectedAddressId", defaultAddress.id.toString(), { shouldValidate: true }); // Cập nhật qua react-hook-form
+        setValue("selectedAddressId", defaultAddress.id.toString(), {
+          shouldValidate: true,
+        }); // Cập nhật qua react-hook-form
         applyAddressToForm(defaultAddress);
         trigger();
       } else if (addresses.length > 0) {
         // Nếu không có địa chỉ mặc định, nhưng có địa chỉ, chọn địa chỉ đầu tiên
-        setValue("selectedAddressId", addresses[0].id.toString(), { shouldValidate: true }); // Cập nhật qua react-hook-form
+        setValue("selectedAddressId", addresses[0].id.toString(), {
+          shouldValidate: true,
+        }); // Cập nhật qua react-hook-form
         applyAddressToForm(addresses[0]);
         trigger();
       } else {
@@ -111,7 +132,9 @@ const ContactInformationSection = () => {
       <div className="space-y-4">
         {/* Dropdown to select a saved address */}
         <div className="col-span-full space-y-2">
-          <Label htmlFor="address-radio-group">Select an existing address</Label>
+          <Label htmlFor="address-radio-group">
+            Select an existing address
+          </Label>
           {/* Use register to let react-hook-form manage the RadioGroup value */}
           <RadioGroup
             onValueChange={handleAddressChange}
@@ -129,17 +152,52 @@ const ContactInformationSection = () => {
                   className="flex flex-col p-2 border rounded-md cursor-pointer hover:bg-muted/50 transition-colors duration-200 w-full"
                 >
                   <div className="flex items-center gap-1">
-                    <span className="font-semibold text-sm">Name:</span>
-                    <span className="text-sm text-muted-foreground">{address.fullName}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="font-semibold text-sm">Address:</span>
-                    <span className="text-sm text-muted-foreground">{address.address}</span>
+                    <span className="font-semibold text-sm">Recipient:</span>
+                    <span className="text-sm text-muted-foreground">
+                      {address.firstName} {address.lastName}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <span className="font-semibold text-sm">Phone:</span>
-                    <span className="text-sm text-muted-foreground">{address.phoneNumber}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {address.phoneNumber}
+                    </span>
                   </div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-semibold text-sm">Email:</span>
+                    <span className="text-sm text-muted-foreground">
+                      {address.email}
+                    </span>
+                  </div>
+                  {address.companyName && (
+                    <div className="flex items-center gap-1">
+                      <span className="font-semibold text-sm">Company:</span>
+                      <span className="text-sm text-muted-foreground">
+                        {address.companyName}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <span className="font-semibold text-sm">Address:</span>
+                    <span className="text-sm text-muted-foreground">
+                      {address.addressLine1}
+                      {address.addressLine2 && `, ${address.addressLine2}`}, {address.city}, {address.state}, {address.postalCode}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-semibold text-sm">Country:</span>
+                    <span className="text-sm text-muted-foreground">
+                      {address.country}
+                    </span>
+                  </div>
+                  {address.orderNotes && (
+                    <div className="flex items-center gap-1">
+                      <span className="font-semibold text-sm">Notes:</span>
+                      <span className="text-sm text-muted-foreground">
+                        {address.orderNotes}
+                      </span>
+                    </div>
+                  )}
                   {address.isCurrent && (
                     <div className="text-xs text-emerald-600 font-medium">
                       (Default)
@@ -151,7 +209,10 @@ const ContactInformationSection = () => {
             {/* Add "Other" option */}
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="other" id="address-other" />
-              <Label htmlFor="address-other" className="p-2 cursor-pointer hover:bg-muted/50 transition-colors duration-200 w-full border rounded-md">
+              <Label
+                htmlFor="address-other"
+                className="p-2 cursor-pointer hover:bg-muted/50 transition-colors duration-200 w-full border rounded-md"
+              >
                 Other (Enter new address details)
               </Label>
             </div>

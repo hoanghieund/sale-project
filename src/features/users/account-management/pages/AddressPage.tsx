@@ -23,7 +23,7 @@ import { addressService } from "../services/addressService";
  * Displays a list of addresses and allows adding, editing, and deleting addresses through AddressList and AddressForm.
  */
 const AddressPage: React.FC = () => {
-  const {user} = useUser();
+  const { user } = useUser();
   // State to manage the open/close state of the add address dialog
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   // State to store the list of addresses
@@ -41,7 +41,7 @@ const AddressPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await addressService.getAddresses(user.id);
+      const data = await addressService.getAddresses();
       setAddresses(data);
     } catch (err) {
       console.error("Error loading addresses:", err);
@@ -126,7 +126,7 @@ const AddressPage: React.FC = () => {
     setLoading(true);
     try {
       // Assuming there's an API call to set default address
-      await addressService.setDefaultAddress(id, user.id);
+      await addressService.setDefaultAddress(id);
       toast.success("Default address set successfully!");
       fetchAddresses(); // Re-fetch data after successfully setting default
     } catch (err) {
@@ -151,7 +151,7 @@ const AddressPage: React.FC = () => {
               Add New Address
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="max-h-[calc(100vh-10rem)] overflow-y-auto">
             {/* Bọc nội dung của DialogContent trong một div để đảm bảo chỉ có một phần tử con */}
             <DialogHeader>
               <DialogTitle>Add New Address</DialogTitle>
@@ -164,10 +164,13 @@ const AddressPage: React.FC = () => {
         </Dialog>
       </CardHeader>
       <CardContent>
-        { error && !loading ? (
-          <EmptyStateMessage icon="🛍️"  message={error} />
+        {error && !loading ? (
+          <EmptyStateMessage icon="🛍️" message={error} />
         ) : addresses.length === 0 ? (
-          <EmptyStateMessage icon="🛍️" message="You don't have any addresses yet. Add a new address!" />
+          <EmptyStateMessage
+            icon="🛍️"
+            message="You don't have any addresses yet. Add a new address!"
+          />
         ) : (
           <AddressList
             disabled={loading}

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Mail, MapPin, Phone, Send } from "lucide-react";
+import { Clock, Mail, MapPin, Send } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -313,27 +313,8 @@ const Contact = () => {
                           We'll respond within 24 hours
                         </p>
                         <p className="font-medium text-sm">
-                          support@eulotus.com
+                          eulotus.com@gmail.com
                         </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium mb-1 text-sm">
-                          Phone Support
-                        </h3>
-                        <p className="text-muted-foreground mb-1 text-xs">
-                          Call us during business hours
-                        </p>
-                        <p className="font-medium text-sm">+1 (555) 123-4567</p>
                       </div>
                     </div>
                   </CardContent>
@@ -352,13 +333,7 @@ const Contact = () => {
                         <p className="text-muted-foreground mb-1 text-xs">
                           Visit us at our headquarters
                         </p>
-                        <p className="font-medium text-sm">
-                          123 Sneaker Street
-                          <br />
-                          New York, NY 10001
-                          <br />
-                          United States
-                        </p>
+                        <p className="font-medium text-sm">Online</p>
                       </div>
                     </div>
                   </CardContent>
@@ -418,28 +393,30 @@ const Contact = () => {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-2">
+              <h3 className="font-medium mb-1 text-sm">
                 What is your return policy?
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 We offer 30-day returns for unworn items in original packaging.
                 See our Returns Policy page for full details.
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-2">
+              <h3 className="font-medium mb-1 text-sm">
                 How long does shipping take?
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Standard shipping takes 5-8 business days. Express shipping
                 options are available at checkout for faster delivery.
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-2">Can I become a vendor?</h3>
-              <p className="text-muted-foreground">
+              <h3 className="font-medium mb-1 text-sm">
+                Can I become a vendor?
+              </h3>
+              <p className="text-muted-foreground text-xs">
                 Yes! We're always looking for trusted vendors. Contact us with
                 "Become a Vendor" in the category to learn more about our
                 requirements.

@@ -4,11 +4,10 @@ import { Address } from "@/types";
 export const addressService = {
   /**
    * Retrieves the list of addresses for a user.
-   * @param userId - User ID.
    * @returns Promise with the list of addresses.
    */
-  getAddresses: async (userId: number): Promise<Address[]> => {
-    return await Axios.get(`/api/orderAddress/getAllByUser?userId=${userId}`);
+  getAddresses: async (): Promise<Address[]> => {
+    return await Axios.get(`/api/orderAddress/user`);
   },
 
   /**
@@ -16,8 +15,8 @@ export const addressService = {
    * @param address - New address to add.
    * @returns Promise with the new address after it's added.
    */
-  addAddress: (address: Omit<Address, 'id'>) => {
-    return Axios.post(`/api/orderAddress/createOrUpdate`, address);
+  addAddress: (address: Omit<Address, "id">) => {
+    return Axios.post(`/api/orderAddress`, address);
   },
 
   /**
@@ -26,7 +25,7 @@ export const addressService = {
    * @returns Promise with the address after it's updated.
    */
   updateAddress: (address: Address) => {
-    return Axios.post(`/api/orderAddress/createOrUpdate`, address);
+    return Axios.post(`/api/orderAddress`, address);
   },
 
   /**
@@ -35,16 +34,15 @@ export const addressService = {
    * @returns Promise upon successful deletion.
    */
   deleteAddress: (id: number) => {
-    return Axios.del(`/api/orderAddress/delete/${id}`);
+    return Axios.del(`/api/orderAddress/${id}`);
   },
 
   /**
    * Sets the default address.
    * @param id - ID of the address to set as default.
-   * @param userId - User ID.
    * @returns Promise upon successful default setting.
    */
-  setDefaultAddress: (id: number, userId: number) => {
-    return Axios.get(`/api/orderAddress/setDefaultAddress?id=${id}&userId=${userId}`);
+  setDefaultAddress: (id: number) => {
+    return Axios.get(`/api/orderAddress/${id}/default `);
   },
 };

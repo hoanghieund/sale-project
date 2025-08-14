@@ -1,7 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Shield, Eye, FileX, ArrowRight, XCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
@@ -13,7 +11,9 @@ const ProhibitedItems = () => {
     <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
       {/* Breadcrumb */}
       <nav className="text-sm">
-        <Link to="/" className="hover:text-primary">Home</Link>
+        <Link to="/" className="hover:text-primary">
+          Home
+        </Link>
         <span className="mx-2">»</span>
         <span>Prohibited Items</span>
       </nav>
@@ -29,134 +29,188 @@ const ProhibitedItems = () => {
       <div className="space-y-6">
         <div className="space-y-4 leading-relaxed">
           <p className="text-sm">
-            Eulotus.com prohibits the listing or sale of any item that is set forth in the list of prohibited items. 
-            If a vendor lists a prohibited item, it will be deemed to be a violation of our Terms of Service, regardless 
-            of whether the vendor acted intentionally or not. If Eulotus.com determines that a listing is in violation 
-            or is otherwise inappropriate, it may, at its discretion, remove the listing and cancel any related transactions 
-            up to and including termination or suspension.
+            Eulotus.com prohibits the listing or sale of any item that is set
+            forth in the list of prohibited items. If a vendor lists a
+            prohibited item, it will be deemed to be a violation of our Terms of
+            Service, regardless of whether the vendor acted intentionally or
+            not. If Eulotus.com determines that a listing is in violation or is
+            otherwise inappropriate, it may, at its discretion, remove the
+            listing and cancel any related transactions up to and including
+            termination or suspension.
           </p>
 
           {/* General Prohibited Activities */}
           <div>
             <p className="mb-4 font-medium">
-              "Eulotus.com may not be used in connection with any product, service, transaction, or activity that, in general:"
+              "Eulotus.com may not be used in connection with any product,
+              service, transaction, or activity that, in general:"
             </p>
-            
+
             <Card className="bg-transparent border-none shadow-none">
               <CardContent className="p-4">
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
-                    <XCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
-                    <span>Violates any law or government regulation, or promotes or facilitates such action by third parties;</span>
+                    <XCircle className="h-4 w-4  mt-0.5 flex-shrink-0" />
+                    <span>
+                      Violates any law or government regulation, or promotes or
+                      facilitates such action by third parties;
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <XCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-4 w-4  mt-0.5 flex-shrink-0" />
                     <span>Is fraudulent, deceptive, unfair, or predatory;</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <XCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
-                    <span>Causes or threatens to damage Eulotus.com's reputation;</span>
+                    <XCircle className="h-4 w-4  mt-0.5 flex-shrink-0" />
+                    <span>
+                      Causes or threatens to damage Eulotus.com's reputation;
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <XCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
-                    <span>Violates the terms of any bank, card, or electronic funds transfer network;</span>
+                    <XCircle className="h-4 w-4  mt-0.5 flex-shrink-0" />
+                    <span>
+                      Violates the terms of any bank, card, or electronic funds
+                      transfer network;
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <XCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
-                    <span>Results in or creates a significant risk of chargebacks, penalties, damages, or other harm or liability;</span>
+                    <XCircle className="h-4 w-4  mt-0.5 flex-shrink-0" />
+                    <span>
+                      Results in or creates a significant risk of chargebacks,
+                      penalties, damages, or other harm or liability;
+                    </span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
             <p className="mt-4 text-xs">
-              The list of prohibited items may be updated from time to time at Eulotus.com's discretion. Examples of items 
-              that fall under certain categories may also be expanded to provide better communication and context for our users.
+              The list of prohibited items may be updated from time to time at
+              Eulotus.com's discretion. Examples of items that fall under
+              certain categories may also be expanded to provide better
+              communication and context for our users.
             </p>
           </div>
 
           {/* Specific Prohibited Items */}
           <div className="mt-6">
             <p className="mb-4 font-medium text-sm">
-              The following items are examples of prohibited items, but this list is not exhaustive:
+              The following items are examples of prohibited items, but this
+              list is not exhaustive:
             </p>
 
             <Card className="bg-transparent border-none shadow-none">
               <CardContent className="p-4">
                 <ul className="space-y-4 text-sm">
                   <li>Anything is not a legal product.</li>
-                  
+
                   <li>
-                    Inflated prices where listings attempt to profit from tragedies and disasters 
-                    (such as "paradise fire," "coronavirus outbreak," etc.)
+                    Inflated prices where listings attempt to profit from
+                    tragedies and disasters (such as "paradise fire,"
+                    "coronavirus outbreak," etc.)
                   </li>
-                  
+
                   <li>
                     <strong>"Stolen goods:"</strong>
                     <ul className="mt-2 ml-4 space-y-1 text-xs">
                       <li>
-                        Note: If a purchased item is reported as stolen, a demand for return may be received from the victim 
-                        or another party, and the item may be confiscated.
+                        Note: If a purchased item is reported as stolen, a
+                        demand for return may be received from the victim or
+                        another party, and the item may be confiscated.
                       </li>
                     </ul>
                   </li>
-                  
+
                   <li>
-                    <strong>"Counterfeit goods or goods infringing on a third party's intellectual property rights:"</strong>
+                    <strong>
+                      "Counterfeit goods or goods infringing on a third party's
+                      intellectual property rights:"
+                    </strong>
                     <ul className="mt-2 ml-4 space-y-1 text-xs">
-                      <li>Listings of non-brand, non-genuine, imitation, fake, or replica.</li>
-                      <li>Items in violation of a copyright, including handmade or other items with copyrighted characters, brand logos, etc.</li>
+                      <li>
+                        Listings of non-brand, non-genuine, imitation, fake, or
+                        replica.
+                      </li>
+                      <li>
+                        Items in violation of a copyright, including handmade or
+                        other items with copyrighted characters, brand logos,
+                        etc.
+                      </li>
                       <li className="text-xs">
-                        Note: For brand-name products, serial numbers or receipts must be available when listing the item.
+                        Note: For brand-name products, serial numbers or
+                        receipts must be available when listing the item.
                       </li>
                     </ul>
                   </li>
-                  
-                  <li>Any item that contains a computer virus, malware, or spyware</li>
-                  
+
                   <li>
-                    <strong>Digital items: any items where the order is fulfilled electronically or requires a download, such as:</strong>
+                    Any item that contains a computer virus, malware, or spyware
+                  </li>
+
+                  <li>
+                    <strong>
+                      Digital items: any items where the order is fulfilled
+                      electronically or requires a download, such as:
+                    </strong>
                     <ul className="mt-2 ml-4 space-y-1 text-xs">
                       <li>Ebooks, PDF files, user-generated content (UGC).</li>
                     </ul>
                   </li>
-                  
+
                   <li>
                     <strong>Items not in your possession:</strong>
                     <ul className="mt-2 ml-4 space-y-1 text-xs">
                       <li>Coupons to purchase products</li>
                     </ul>
                   </li>
-                  
+
                   <li>
-                    <strong>Items that are a safety hazard include, but are not limited to, the following:</strong>
+                    <strong>
+                      Items that are a safety hazard include, but are not
+                      limited to, the following:
+                    </strong>
                     <ul className="mt-2 ml-4 space-y-1 text-xs">
-                      <li>Restricted from shipping in the mail or other delivery services</li>
-                      <li>Products that have been recalled by the Consumer Product Safety Commission may not be sold on the platform.</li>
+                      <li>
+                        Restricted from shipping in the mail or other delivery
+                        services
+                      </li>
+                      <li>
+                        Products that have been recalled by the Consumer Product
+                        Safety Commission may not be sold on the platform.
+                      </li>
                     </ul>
                   </li>
-                  
+
                   <li>
-                    Products designed to circumvent copyright protection techniques or otherwise facilitate the unlicensed use 
-                    of copyright materials (such as the "mod chips tutorial item" to break the encryption on game computers 
-                    to allow the playing of unlicensed game copies)
+                    Products designed to circumvent copyright protection
+                    techniques or otherwise facilitate the unlicensed use of
+                    copyright materials (such as the "mod chips tutorial item"
+                    to break the encryption on game computers to allow the
+                    playing of unlicensed game copies)
                   </li>
-                  
-                  <li>Age-restricted products or products that require legal approval, vendor/buyer registration, or licenses to be sold</li>
-                  
+
+                  <li>
+                    Age-restricted products or products that require legal
+                    approval, vendor/buyer registration, or licenses to be sold
+                  </li>
+
                   <li>
                     <strong>"Explicit items:"</strong>
                     <ul className="mt-2 ml-4 space-y-1">
                       <li>Pornographic or obscene materials</li>
-                      <li>Sexually related book items, such as sex toys and fetish items</li>
+                      <li>
+                        Sexually related book items, such as sex toys and fetish
+                        items
+                      </li>
                     </ul>
                   </li>
-                  
+
                   <li>
                     <strong>"Offensive listings:"</strong>
                     <ul className="mt-2 ml-4 space-y-1">
                       <li>
-                        Items, listings, photos, or content that promote or glorify hatred, violence, racism, or discrimination 
+                        Items, listings, photos, or content that promote or
+                        glorify hatred, violence, racism, or discrimination
                         aren't allowed (determined at our discretion).
                       </li>
                     </ul>

@@ -24,9 +24,17 @@ import { orderService } from "./services/orderService";
  */
 export interface CheckoutForm {
   email: string;
-  name: string;
-  phone: string;
-  address: string;
+  firstName: string;
+  lastName: string;
+  companyName?: string;
+  phoneNumber: string;
+  country: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  orderNotes?: string;
   selectedAddressId: string; // ID of the selected address, or 'other' if it's a different address
 }
 
@@ -111,9 +119,18 @@ const Checkout = () => {
             data.selectedAddressId === "other"
               ? null
               : Number(data.selectedAddressId),
-          fullName: data.name,
-          address: data.address,
-          phoneNumber: data.phone,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          companyName: data.companyName,
+          phoneNumber: data.phoneNumber,
+          email: data.email,
+          country: data.country,
+          addressLine1: data.addressLine1,
+          addressLine2: data.addressLine2,
+          city: data.city,
+          state: data.state,
+          postalCode: data.postalCode,
+          orderNotes: data.orderNotes,
         },
       });
 

@@ -67,19 +67,9 @@ const AddressList: React.FC<AddressListProps> = ({
   /**
    * @function handleFormSubmit
    * @description Handles form submission (update).
-   * @param {Omit<Address, 'id' | 'user' | 'provinceName' | 'districtName' | 'wardName' | 'shopIdDistrict'>} data Address data from the form.
+   * @param {Omit<Address, 'id'>} data Address data from the form.
    */
-  const handleFormSubmit = (
-    data: Omit<
-      Address,
-      | "id"
-      | "user"
-      | "provinceName"
-      | "districtName"
-      | "wardName"
-      | "shopIdDistrict"
-    >
-  ) => {
+  const handleFormSubmit = (data: Omit<Address, "id">) => {
     if (editingAddress) {
       // Update existing address
       const updatedAddress: Address = {
@@ -105,7 +95,7 @@ const AddressList: React.FC<AddressListProps> = ({
     <>
       {/* Dialog for Edit Address form */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="max-h-[calc(100vh-10rem)] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Address</DialogTitle>
           </DialogHeader>
@@ -133,25 +123,65 @@ const AddressList: React.FC<AddressListProps> = ({
               )}
             >
               <div className="flex-grow mb-4 md:mb-0">
-                {/* Recipient name and phone number */}
-                <p className="font-semibold text-lg text-gray-900">
-                  Full Name: {address.fullName}
+                {/* Recipient name and contact info */}
+                <p className="font-semibold text-lg">
+                  <span className="font-medium text-primary">Recipient:</span>{" "}
+                  {address.firstName} {address.lastName}
                 </p>
-                <p className="text-sm text-gray-600">
-                  Phone: {address.phoneNumber}
-                </p>
+                <div className="grid grid-cols-1 gap-x-4 gap-y-1 mt-1">
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Phone:</span>{" "}
+                    {address.phoneNumber}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium text-gray-700">Email:</span>{" "}
+                    {address.email}
+                  </p>
+                </div>
+
+                {/* Company name if available */}
+                {address.companyName && (
+                  <p className="text-sm mt-1">
+                    <span className="font-medium text-gray-700">Company:</span>{" "}
+                    {address.companyName}
+                  </p>
+                )}
+
                 {/* Detailed address */}
-                <p className="text-sm text-gray-600">
-                  Address: {address.address}
-                </p>
+                <div className="mt-2">
+                  <p className="text-sm font-medium text-gray-700">Address:</p>
+                  <div className="ml-2">
+                    <p className="text-sm">{address.addressLine1}</p>
+                    {address.addressLine2 && (
+                      <p className="text-sm">{address.addressLine2}</p>
+                    )}
+                    <p className="text-sm">
+                      {address.city}, {address.state} {address.postalCode}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium text-gray-700">
+                        Country:
+                      </span>{" "}
+                      {address.country}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Order notes if available */}
+                {address.orderNotes && (
+                  <p className="text-sm mt-1 italic">
+                    <span className="font-medium text-gray-700">Notes:</span>{" "}
+                    {address.orderNotes}
+                  </p>
+                )}
+
                 {/* Tags for default and pickup addresses */}
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-2">
                   {address.isCurrent && (
                     <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-full">
                       Default
                     </span>
                   )}
-                  {/* Using isShop property from Address to display this tag */}
                   {address.isShop && (
                     <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                       Pickup Address
@@ -160,7 +190,7 @@ const AddressList: React.FC<AddressListProps> = ({
                 </div>
               </div>
               {/* Action buttons */}
-              <div className="flex flex-col md:flex-row gap-2 flex-shrink-0">
+              <div className="flex flex-col gap-2 flex-shrink-0">
                 {!address.isCurrent && (
                   <Button
                     disabled={disabled}

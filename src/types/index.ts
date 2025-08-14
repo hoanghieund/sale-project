@@ -134,15 +134,23 @@ export interface Category {
 
 // Address Types - Dựa trên tbl_address
 export interface Address {
-  address: string;
-  fullName: string;
   id: number;
-  isCurrent: boolean;
-  isShop: boolean;
+  firstName: string;
+  lastName: string;
+  companyName?: string;
+  country: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
   phoneNumber: string;
-  shopIdDistrict: number;
-  user: User;
-  userId: number;
+  email: string;
+  orderNotes?: string;
+  isCurrent: boolean;
+  isShop?: boolean;
+  shopIdDistrict?: number;
+  userId?: number;
 }
 
 // User Types - Dựa trên tbl_user
