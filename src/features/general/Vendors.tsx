@@ -1,112 +1,181 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowRight, Shield, Filter, Grid, List, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+
+// Mock vendor data - theo mẫu bazatify.com
+const mockVendors = [
+  {
+    id: 1,
+    name: "Alpha Shop LLC",
+    location: "1817 Milo Ave, Redding, California, United States (US)",
+    avatar: "AS",
+    storeUrl: "/store/alpha-shop",
+  },
+  {
+    id: 2,
+    name: "DavidKornely",
+    location: "2410 Pine Terrace Dr, Kingwood, Texas, United States (US)",
+    avatar: "DK",
+    storeUrl: "/store/davidkornely",
+  },
+  {
+    id: 3,
+    name: "PatriciaMusburger",
+    location: "2410 Pine Terrace Dr, Kingwood, Texas, United States (US)",
+    avatar: "PM",
+    storeUrl: "/store/patriciamusburger",
+  },
+  {
+    id: 4,
+    name: "ElissaMaden",
+    location: "119a Hawkins Street, Plainville, Oklahoma, United States (US)",
+    avatar: "EM",
+    storeUrl: "/store/elissamaden",
+  },
+  {
+    id: 5,
+    name: "EnriqueSalas",
+    location: "124 Oakwell Farms Pkwy, San Antonio, Texas, United States (US)",
+    avatar: "ES",
+    storeUrl: "/store/enriquesalas",
+  },
+  {
+    id: 6,
+    name: "MelissaKimberlin",
+    location: "7211 Walnut Street, Dallas, Texas, United States (US)",
+    avatar: "MK",
+    storeUrl: "/store/melissakimberlin",
+  },
+];
 
 /**
- * Vendors directory page
- * Brief: Presents Eulotus vendor overview, selection criteria, and support contact.
+ * Vendors directory page - theo mẫu bazatify.com vendor-list
+ * Brief: Hiển thị danh sách vendors với filter, sort và pagination
  */
 const Vendors = () => {
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState('recent');
+
   return (
-    <div className="container mx-auto px-4 py-12 space-y-12">
-      {/* Hero: đồng nhất kiểu với SellerRegistration (badge + tiêu đề + mô tả) */}
-      <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="flex justify-center">
-            <Badge className="bg-blue-600 hover:bg-blue-700 text-white">Vendors</Badge>
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      {/* Breadcrumb */}
+      <nav className="text-sm text-muted-foreground">
+        <Link to="/" className="hover:text-primary">Home</Link>
+        <span className="mx-2">»</span>
+        <span>Vendor List</span>
+      </nav>
+
+      {/* Filter and Sort Controls */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <Button variant="outline" className="flex items-center gap-2">
+          <Filter className="h-4 w-4" />
+          Filter
+        </Button>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Sort by:</span>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recent">Most Recent</SelectItem>
+                <SelectItem value="popular">Most Popular</SelectItem>
+                <SelectItem value="random">Random</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Our Vendors</h1>
-          <p className="text-muted-foreground text-lg md:text-xl">
-            Discover trusted vendors on the Eulotus marketplace.
-          </p>
-          <div className="pt-2 flex justify-center">
-            <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-md text-sm inline-flex items-center">
-              <Shield className="mr-2 h-4 w-4" />
-              <span>Verified vendors and transparent policies</span>
-            </div>
+          
+          <div className="flex items-center gap-1">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
           </div>
         </div>
-      </section>
-
-      <div className="max-w-4xl mx-auto">
-        <Card className="bg-white border-border/60">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-gray-900">
-              About Eulotus Vendors
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6 text-gray-700 leading-relaxed">
-            <div>
-              <h3 className="font-semibold text-lg mb-3 text-gray-900">
-                Selection Criteria
-              </h3>
-              <ul className="space-y-2 ml-4">
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Verified product quality</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Professional customer service</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Reliable shipping and handling times</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Consistently positive buyer ratings</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-3 text-gray-900">
-                How It Works
-              </h3>
-              <p>
-                Every vendor on Eulotus is verified and reviewed before being allowed to sell.
-                We are committed to delivering the best shopping experience for our customers—
-                with authentic products, transparent policies, and responsive support.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-3 text-gray-900">
-                Support
-              </h3>
-              <p>
-                If you have questions about any vendor or need assistance, please contact us at{" "}
-                <a
-                  href="mailto:eulotus.com@gmail.com"
-                  className="text-primary hover:underline"
-                >
-                  eulotus.com@gmail.com
-                </a>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
-      {/* Bottom CTA: đồng nhất với SellerRegistration */}
-      <section className="bg-gradient-to-br from-blue-50 to-blue-100/30 rounded-lg p-8 text-center border border-blue-200/50 shadow-sm">
-        <Badge className="bg-blue-600 hover:bg-blue-700 text-white mb-4">Trusted Marketplace</Badge>
-        <h2 className="text-2xl md:text-3xl font-bold mb-4">Shop with confidence</h2>
-        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          All vendors are verified to ensure authenticity and service quality across the marketplace.
+      {/* Vendors Grid/List */}
+      <div className={`grid gap-6 ${
+        viewMode === 'grid' 
+          ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+          : 'grid-cols-1'
+      }`}>
+        {mockVendors.map((vendor) => (
+          <Card key={vendor.id} className="bg-white border-border/60 hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                {/* Vendor Avatar */}
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-semibold text-lg">{vendor.avatar}</span>
+                </div>
+                
+                {/* Vendor Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-lg mb-2 truncate">
+                    <Link 
+                      to={vendor.storeUrl} 
+                      className="text-primary hover:underline"
+                    >
+                      {vendor.name}
+                    </Link>
+                  </h3>
+                  <div className="flex items-start gap-1 text-sm text-muted-foreground mb-4">
+                    <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <span className="line-clamp-2">{vendor.location}</span>
+                  </div>
+                  <Button asChild variant="outline" size="sm">
+                    <Link to={vendor.storeUrl}>
+                      Visit Store
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center">
+        <nav className="flex items-center gap-2">
+          <span className="px-3 py-2 bg-primary text-primary-foreground rounded">1</span>
+          <Link to="/vendors?page=2" className="px-3 py-2 hover:bg-muted rounded">2</Link>
+          <Link to="/vendors?page=3" className="px-3 py-2 hover:bg-muted rounded">3</Link>
+          <span className="px-2">…</span>
+          <Link to="/vendors?page=9" className="px-3 py-2 hover:bg-muted rounded">9</Link>
+          <Link to="/vendors?page=2" className="px-3 py-2 hover:bg-muted rounded">Next →</Link>
+        </nav>
+      </div>
+
+      {/* Bottom info */}
+      <div className="text-center text-sm text-muted-foreground">
+        <p>
+          Questions about vendors? Contact us at{" "}
+          <a 
+            href="mailto:eulotus.com@gmail.com" 
+            className="text-primary hover:underline"
+          >
+            eulotus.com@gmail.com
+          </a>
         </p>
-        <div className="flex flex-col items-center gap-4">
-          <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white shadow-md px-8">
-            <Link to="/help">
-              Visit Help Center
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

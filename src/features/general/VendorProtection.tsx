@@ -1,132 +1,154 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Shield, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 /**
- * Vendor Protection Program page
- * Brief: Outlines vendor benefits, protection policies, support workflow, and contact.
+ * Vendor Protection Program page - theo mẫu bazatify.com
+ * Brief: Giải thích chương trình bảo vệ vendor khỏi claims và chargebacks
  */
 const VendorProtection = () => {
   return (
-    <div className="min-h-screen bg-background py-12">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Vendor Protection Program
-          </h1>
-          <p className="text-lg text-gray-600">
-            Supporting and protecting vendor interests on our platform
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      {/* Breadcrumb */}
+      <nav className="text-sm text-muted-foreground">
+        <Link to="/" className="hover:text-primary">Home</Link>
+        <span className="mx-2">»</span>
+        <span>Vendor Protection Program</span>
+      </nav>
+
+      {/* Main Heading */}
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Vendor Protection Program
+        </h1>
+      </div>
+
+      {/* Main Content - theo mẫu bazatify.com */}
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="space-y-6 text-gray-700 leading-relaxed">
+          <p className="text-lg">
+            "We understand how important security and peace of mind are in online business, so we created a Vendor Protection Program 
+            to help guard you from losing money to claims and chargebacks. Vendor Protection covers two particular types of buyer complaints:"
           </p>
-        </div>
-
-        <div className="space-y-6">
-          <Card className="bg-white">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-gray-900">
-                Vendor Benefits
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-gray-700 leading-relaxed">
-              <div>
-                <h3 className="font-semibold text-lg mb-3 text-gray-900">
-                  💰 Payment Assurance
-                </h3>
-                <p>
-                  We guarantee on-time, full payments for all successfully delivered orders.
-                  Automated payout systems ensure transparency.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-lg mb-3 text-gray-900">
-                  🛡️ Anti-fraud Protection
-                </h3>
-                <p>
-                  AI systems and experts monitor 24/7 to detect and prevent fraudulent
-                  activities, protecting vendor revenue.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-lg mb-3 text-gray-900">
-                  📊 Business Support
-                </h3>
-                <p>
-                  Access analytics tools, detailed reports, and strategic guidance to
-                  optimize your sales performance.
-                </p>
-              </div>
+          
+          <Card className="bg-green-50 border-green-200">
+            <CardContent className="p-6">
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <Shield className="h-6 w-6 text-green-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <strong className="text-green-900">"Unauthorized Transaction"</strong>
+                    <p className="text-green-800 mt-1">
+                      There's a transaction, but the accountholder claims that he or she didn't authorize payment.
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Shield className="h-6 w-6 text-green-600 mt-1 flex-shrink-0" />
+                  <div>
+                    <strong className="text-green-900">"Item Not Received"</strong>
+                    <p className="text-green-800 mt-1">
+                      A buyer pays for an item but claims he or she didn't receive it.
+                    </p>
+                  </div>
+                </li>
+              </ul>
             </CardContent>
           </Card>
 
-          <Card className="bg-white">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-gray-900">
-                Protection Policies
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-gray-700 leading-relaxed">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-base mb-2 text-gray-900">
-                    🏪 Store Protection
-                  </h4>
-                  <ul className="space-y-1 text-sm">
-                    <li>• Prevent unauthorized product copying</li>
-                    <li>• Protect brand identity and logos</li>
-                    <li>• Deter unfair competition</li>
-                  </ul>
-                </div>
-                
-                <div>
-                  <h4 className="font-semibold text-base mb-2 text-gray-900">
-                    💳 Revenue Protection
-                  </h4>
-                  <ul className="space-y-1 text-sm">
-                    <li>• Ensure timely payouts</li>
-                    <li>• Assist in dispute resolution</li>
-                    <li>• Insurance for high-value transactions</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Requirements */}
+          <div className="mt-8">
+            <p className="text-lg font-bold text-gray-900 mb-4">
+              <em>What are the requirements for Vendor Protection Program?</em>
+            </p>
+            
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-6">
+                <ul className="space-y-3 text-blue-800">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <span>The item must be shipped.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <span>Items are sent to the address on the Transaction Details page.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <span>You ship items on time and according to your item description.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <span>You must provide proof of delivery of the goods in the form of a shipping tracking code.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <span>
+                      If we request documentation or other relevant information, we ask that you respond promptly 
+                      (typically within three business days).
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
 
-          <Card className="bg-white">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold text-gray-900">
-                Support Workflow
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-gray-700 leading-relaxed">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary mb-2">1</div>
-                  <h4 className="font-semibold mb-2">Report</h4>
-                  <p className="text-sm">Submit issues via the system</p>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary mb-2">2</div>
-                  <h4 className="font-semibold mb-2">Review</h4>
-                  <p className="text-sm">Our experts investigate</p>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary mb-2">3</div>
-                  <h4 className="font-semibold mb-2">Action</h4>
-                  <p className="text-sm">Apply protection measures</p>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary mb-2">4</div>
-                  <h4 className="font-semibold mb-2">Follow-up</h4>
-                  <p className="text-sm">Continuous monitoring & support</p>
-                </div>
-              </div>
-              
-              <div className="mt-6">
-                <p><strong>Support contact:</strong></p>
-                <p>Email: <a href="mailto:eulotus.com@gmail.com" className="text-primary hover:underline">eulotus.com@gmail.com</a></p>
-                <p>Response time: Within 24 hours</p>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Valid Request */}
+          <div className="mt-8">
+            <p className="mb-6">
+              If your vendor protection request is valid we will pay the full amount of the order made to the vendor's wallet.
+            </p>
+          </div>
+
+          {/* What isn't covered */}
+          <div className="mt-8">
+            <p className="text-lg font-bold text-gray-900 mb-4">
+              <em>What isn't covered by Vendor Protection</em> <em>Program</em><em>"?"</em>
+            </p>
+            
+            <Card className="bg-red-50 border-red-200">
+              <CardContent className="p-6">
+                <ul className="space-y-4 text-red-800">
+                  <li className="flex items-start gap-3">
+                    <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <span>
+                      Claims, chargebacks, or reversals are filed because the item is significantly different from how it was 
+                      described (e.g., you described an item as "new" but sent a used one).
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <span>Illegal or counterfeit items.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <span>
+                      It involves an item that you deliver in person, including in connection with a payment made in your physical store.
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Contact */}
+          <div className="mt-8">
+            <p className="text-lg font-bold text-gray-900 mb-4">
+              <em>Contact us</em>
+            </p>
+            
+            <p>
+              Email:{" "}
+              <a 
+                href="mailto:eulotus.com@gmail.com" 
+                className="text-primary hover:underline font-medium"
+              >
+                eulotus.com@gmail.com
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>

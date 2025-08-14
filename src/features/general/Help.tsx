@@ -31,116 +31,143 @@ const SUPPORT_EMAIL = "eulotus.com@gmail.com"; // public contact only
 export default function Help() {
   return (
     <div className="container mx-auto px-4 py-12 space-y-12">
-      {/* Hero: đồng nhất với mẫu SellerRegistration (badge, tiêu đề, mô tả, hành động) */}
-      {/* Lý do: tạo nhận diện nhất quán cho các trang general */}
+      {/* Hero - theo mẫu bazatify.com Help Center */}
       <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="flex justify-center">
-            <Badge className="bg-blue-600 hover:bg-blue-700 text-white">Help Center</Badge>
-          </div>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Help & Support</h1>
-          <p className="text-muted-foreground text-lg md:text-xl">
-            Find answers to common questions or contact our team.
-          </p>
+        <div className="max-w-4xl mx-auto space-y-6">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">How can we help you?</h1>
+          <h2 className="text-lg text-muted-foreground font-medium">
+            Our crew of superheroes are standing by for Help & Support!
+          </h2>
 
-          {/* Quick search: giữ client-only, đồng nhất button/icon */}
-          <div className="flex items-center justify-center gap-2 pt-2">
-            <div className="flex w-full max-w-xl items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  className="w-full pl-9"
-                  placeholder="Search help topics (e.g., order, refund, shipping)"
-                  aria-label="Search help topics"
-                />
-              </div>
-              <Button type="button" variant="default" aria-label="Search help">
-                Search
+          {/* Search functionality */}
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                className="w-full pl-10 pr-4 py-3 text-lg"
+                placeholder="Search help topics"
+                aria-label="Search help topics"
+              />
+              <Button 
+                type="button" 
+                variant="default" 
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+                size="sm"
+              >
+                <Search className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          {/* Trust indicator giống mẫu */}
-          <div className="pt-4 flex justify-center">
-            <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-md text-sm inline-flex items-center">
-              <Shield className="mr-2 h-4 w-4" />
-              <span>Secure support, responsive within 1–2 business days</span>
+          {/* Popular sections */}
+          <div className="text-left max-w-2xl mx-auto">
+            <p className="text-sm text-muted-foreground mb-2">"Popular sections:"</p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="link" size="sm" className="h-auto p-0 text-blue-600">
+                How Do I Change My Shipping Address?
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Quick links to common topics */}
-      <section aria-labelledby="quick-links">
-        <h2 id="quick-links" className="sr-only">
-          Quick Links
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="bg-white border-border/60 transition-shadow hover:shadow-lg">
-            <CardHeader>
-              <CardTitle>Orders</CardTitle>
-              <CardDescription>
-                Tracking, status updates, and order issues.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link
-                to="/account/orders"
-                className="text-blue-600 hover:underline"
-              >
-                Go to Orders
+      {/* Buyer & Seller sections - theo mẫu bazatify.com */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Buyer Section */}
+        <Card className="bg-white border-border/60 shadow-sm">
+          <CardHeader className="text-center pb-4">
+            <div className="w-20 h-20 mx-auto mb-4 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Shield className="h-10 w-10 text-blue-600" />
+            </div>
+            <CardTitle className="text-xl">
+              <Link to="/help/buyer" className="text-blue-600 hover:underline">
+                Buyer
               </Link>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white border-border/60 transition-shadow hover:shadow-lg">
-            <CardHeader>
-              <CardTitle>Shipping & Returns</CardTitle>
-              <CardDescription>
-                Delivery times, returns, and exchanges policy.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link
-                to="/shipping-returns"
-                className="text-blue-600 hover:underline"
-              >
-                View Policy
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="#" className="text-blue-600 hover:underline">
+                  Shop with an expert
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="text-blue-600 hover:underline">
+                  How to Contact a Vendor
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="text-blue-600 hover:underline">
+                  How Do I Change My Shipping Address?
+                </Link>
+              </li>
+              <li>
+                <Link to="#" className="text-blue-600 hover:underline">
+                  Payment Options
+                </Link>
+              </li>
+              <li>
+                <Link to={`mailto:${SUPPORT_EMAIL}`} className="text-blue-600 hover:underline">
+                  How to Contact Eulotus Support
+                </Link>
+              </li>
+            </ul>
+            <div className="mt-4">
+              <Link to="/help/buyer" className="text-sm text-blue-600 hover:underline font-medium">
+                View More
               </Link>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card className="bg-white border-border/60 transition-shadow hover:shadow-lg">
-            <CardHeader>
-              <CardTitle>Payments & Refunds</CardTitle>
-              <CardDescription>
-                Payment methods, charges, and refund timelines.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <a href="#refunds" className="text-blue-600 hover:underline">
-                See FAQs
-              </a>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white border-border/60 transition-shadow hover:shadow-lg">
-            <CardHeader>
-              <CardTitle>Account & Security</CardTitle>
-              <CardDescription>
-                Profile, password, and notification settings.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link
-                to="/account/profile"
-                className="text-blue-600 hover:underline"
-              >
-                Manage Account
+        {/* Seller Section */}
+        <Card className="bg-white border-border/60 shadow-sm">
+          <CardHeader className="text-center pb-4">
+            <div className="w-20 h-20 mx-auto mb-4 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <LifeBuoy className="h-10 w-10 text-emerald-600" />
+            </div>
+            <CardTitle className="text-xl">
+              <Link to="/help/seller" className="text-emerald-600 hover:underline">
+                Seller
               </Link>
-            </CardContent>
-          </Card>
-        </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="#" className="text-emerald-600 hover:underline">
+                  Manage your account
+                </Link>
+              </li>
+              <li>
+                <Link to="/seller-registration" className="text-emerald-600 hover:underline">
+                  How to become a vendor
+                </Link>
+              </li>
+              <li>
+                <Link to="/vendor-protection" className="text-emerald-600 hover:underline">
+                  Vendor Protection Program
+                </Link>
+              </li>
+              <li>
+                <Link to="/marketplace-guidelines" className="text-emerald-600 hover:underline">
+                  Marketplace Guidelines
+                </Link>
+              </li>
+              <li>
+                <Link to={`mailto:${SUPPORT_EMAIL}`} className="text-emerald-600 hover:underline">
+                  Contact Seller Support
+                </Link>
+              </li>
+            </ul>
+            <div className="mt-4">
+              <Link to="/help/seller" className="text-sm text-emerald-600 hover:underline font-medium">
+                View More
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </section>
 
       <Separator />
@@ -215,57 +242,19 @@ export default function Help() {
         </Accordion>
       </section>
 
-      {/* Support section 3 cột: đồng bộ với mẫu SellerRegistration */}
-      <section className="grid gap-6 md:grid-cols-3">
-        <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-background to-blue-50/30 rounded-lg border border-blue-100/50 shadow-sm">
-          <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-            <Mail className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium">Need more information?</p>
-            <p className="text-sm text-muted-foreground mb-2">
-              We're here to help with any questions
-            </p>
-            <a
-              href={`mailto:${SUPPORT_EMAIL}`}
-              className="text-sm text-blue-600 hover:underline font-medium"
-            >
-              Email {SUPPORT_EMAIL}
+      {/* Contact support CTA */}
+      <section className="text-center">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold mb-4">Still need help?</h2>
+          <p className="text-muted-foreground mb-6">
+            Can't find what you're looking for? Our support team is here to help.
+          </p>
+          <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <a href={`mailto:${SUPPORT_EMAIL}`}>
+              <Mail className="mr-2 h-4 w-4" />
+              Contact Support
             </a>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-background to-emerald-50/30 rounded-lg border border-emerald-100/50 shadow-sm">
-          <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-            <LifeBuoy className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium">Support Center</p>
-            <p className="text-sm text-muted-foreground mb-2">
-              Dedicated support for all customers
-            </p>
-            <Link to="/help" className="text-sm text-emerald-600 hover:underline font-medium">
-              Visit Help Center
-            </Link>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-background to-orange-50/30 rounded-lg border border-orange-100/50 shadow-sm">
-          <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-            <MessageSquare className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium">Community</p>
-            <p className="text-sm text-muted-foreground mb-2">
-              Connect with other users and share tips
-            </p>
-            <a
-              href={`mailto:${SUPPORT_EMAIL}`}
-              className="text-sm text-orange-600 hover:underline font-medium"
-            >
-              Join Discussion
-            </a>
-          </div>
+          </Button>
         </div>
       </section>
 

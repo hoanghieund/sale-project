@@ -2,13 +2,13 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
- * Footer links configuration - tổ chức lại theo cấu trúc mẫu
+ * Footer links configuration - theo cấu trúc bazatify.com
+ * Chuẩn hóa cho Eulotus marketplace
  */
 export const FOOTER_LINKS = {
   getToKnowUs: [
     { label: "About Us", href: "/about" },
     { label: "Vendor List", href: "/vendors" },
-    { label: "FAQs", href: "/faq" },
   ],
   customerService: [
     { label: "Become a Vendor", href: "/seller-registration" },
@@ -18,16 +18,16 @@ export const FOOTER_LINKS = {
     { label: "Vendor Protection Program", href: "/vendor-protection" },
   ],
   ordersReturns: [
-    { label: "Returns & Refunds", href: "/shipping-returns" }, // Gộp với shipping-returns
+    { label: "Returns & Refunds", href: "/shipping-returns" },
     { label: "Shipping Policy", href: "/shipping-returns" },
     // { label: "Track Order", href: "/account/orders" },
     { label: "Contact Us", href: "/contact" },
   ],
   quickLinks: [
-    { label: "Legal", href: "/privacy-policy" }, // Gộp với privacy policy
+    { label: "Legal", href: "/privacy-policy" },
     { label: "Prohibited Items", href: "/prohibited-items" },
     { label: "Marketplace Guidelines", href: "/marketplace-guidelines" },
-    { label: "Intellectual Property Policy", href: "/terms-of-service" }, // Gộp với terms
+    { label: "Intellectual Property Policy", href: "/terms-of-service" },
   ],
 };
 
