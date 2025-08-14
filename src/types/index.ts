@@ -125,11 +125,8 @@ export interface Category {
   id: number; // bigint(20) trong SQL
   slug?: string;
   name?: string; // name varchar(255)
-  icon?: string; // icon varchar(255)
-  iconFile?: any; // File icon nếu có
   active?: boolean; // active tinyint(1)
   isShowSuggest?: boolean; // is_show_suggests tinyint(1)
-  totalProduct?: number; // total_product int(11)
   parentId?: number; // parent_id bigint(20)
   parent?: Category; // Thông tin parent category (optional khi populate)
   child?: Category[]; // Thông tin child categories (optional khi populate)

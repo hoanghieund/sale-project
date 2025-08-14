@@ -1,129 +1,214 @@
-import { Badge } from "@/components/ui/badge";
+/**
+ * Help page for users to find answers and contact support.
+ * - English content per project requirement
+ * - Uses shadcn components for consistent UI
+ * - Keep layout responsive and accessible
+ */
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Shield } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 
-/**
- * Vendors directory page
- * Brief: Presents Eulotus vendor overview, selection criteria, and support contact.
- */
-const Vendors = () => {
+// Brand support email (kept in sync with Footer/config)
+const SUPPORT_EMAIL = "eulotus.com@gmail.com"; // do not hardcode secrets; public contact only
+
+export default function Help() {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-      {/* Hero section refined */}
-      <section className="rounded-lg p-4 md:p-6 text-center">
-        <div className="space-y-4">
-          <div className="flex justify-center">
-            <Badge className="bg-blue-600 hover:bg-blue-700 text-white">
-              Vendors
-            </Badge>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            Our Vendors
-          </h1>
-          <p className="text-muted-foreground text-base md:text-lg">
-            Discover trusted vendors on the Eulotus marketplace.
-          </p>
-          <div className="pt-2 flex justify-center">
-            <div className="text-emerald-700 px-3 py-1.5 rounded-md text-xs inline-flex items-center">
-              <Shield className="mr-1.5 h-3.5 w-3.5" />
-              <span>Verified vendors and transparent policies</span>
-            </div>
-          </div>
+    <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+      {/* Hero section with quick search (non-indexed, client-only) */}
+      <header className="mb-8 md:mb-12 text-center">
+        <h1 className="text-3xl font-bold tracking-wide mb-2">
+          Help & Support
+        </h1>
+        <p className="text-muted-foreground">
+          Find answers to common questions or contact our team.
+        </p>
+        <div className="mt-6 flex items-center justify-center gap-2">
+          <Input
+            className="w-full max-w-xl"
+            placeholder="Search help topics (e.g., order, refund, shipping)"
+            aria-label="Search help topics"
+          />
+          <Button type="button" variant="default" aria-label="Search help">
+            Search
+          </Button>
+        </div>
+      </header>
+
+      {/* Quick links to common topics */}
+      <section aria-labelledby="quick-links" className="mb-10">
+        <h2 id="quick-links" className="sr-only">
+          Quick Links
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Card className="bg-white">
+            <CardHeader>
+              <CardTitle>Orders</CardTitle>
+              <CardDescription>
+                Tracking, status updates, and order issues.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link
+                to="/account/orders"
+                className="text-blue-600 hover:underline"
+              >
+                Go to Orders
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white">
+            <CardHeader>
+              <CardTitle>Shipping & Returns</CardTitle>
+              <CardDescription>
+                Delivery times, returns, and exchanges policy.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link
+                to="/shipping-returns"
+                className="text-blue-600 hover:underline"
+              >
+                View Policy
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white">
+            <CardHeader>
+              <CardTitle>Payments & Refunds</CardTitle>
+              <CardDescription>
+                Payment methods, charges, and refund timelines.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <a href="#refunds" className="text-blue-600 hover:underline">
+                See FAQs
+              </a>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white">
+            <CardHeader>
+              <CardTitle>Account & Security</CardTitle>
+              <CardDescription>
+                Profile, password, and notification settings.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <a href="#account" className="text-blue-600 hover:underline">
+                Manage Account
+              </a>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      <div>
-        <Card className="border-none shadow-none bg-transparent">
+      <Separator className="my-6" />
+
+      {/* FAQ accordion: keep content concise and skimmable */}
+      <section aria-labelledby="faq" className="mb-12">
+        <h2 id="faq" className="text-xl font-semibold mb-4">
+          Frequently Asked Questions
+        </h2>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="order-tracking">
+            <AccordionTrigger>How do I track my order?</AccordionTrigger>
+            <AccordionContent>
+              Once your order ships, we email you a tracking link. You can also
+              find it in the Orders page. If tracking is missing after 48 hours,
+              contact us at{" "}
+              <a
+                className="text-blue-600 hover:underline"
+                href={`mailto:${SUPPORT_EMAIL}`}
+              >
+                {SUPPORT_EMAIL}
+              </a>
+              .
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="returns">
+            <AccordionTrigger>What is your return policy?</AccordionTrigger>
+            <AccordionContent>
+              We accept returns within 14 days of delivery for eligible items in
+              original condition. For steps and exclusions, please see{" "}
+              <Link
+                className="text-blue-600 hover:underline"
+                to="/shipping-returns"
+              >
+                Shipping & Returns
+              </Link>
+              .
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="refunds" id="refunds">
+            <AccordionTrigger>When will I receive my refund?</AccordionTrigger>
+            <AccordionContent>
+              Refunds are issued to your original payment method within 5–10
+              business days after we receive and inspect the returned item.
+              Processing times may vary by bank.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="payments">
+            <AccordionTrigger>
+              Which payment methods are supported?
+            </AccordionTrigger>
+            <AccordionContent>
+              We support major credit/debit cards and popular digital wallets.
+              Availability can vary by region. If a payment fails, try another
+              method or contact your bank.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="account" id="account">
+            <AccordionTrigger>
+              How do I update my account details?
+            </AccordionTrigger>
+            <AccordionContent>
+              Go to your account settings to update profile information,
+              password, and addresses. For security, you may be asked to
+              re‑authenticate before saving changes.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+
+      {/* Contact support panel */}
+      <section aria-labelledby="contact" className="mb-4">
+        <Card className="bg-white">
           <CardHeader>
-            <CardTitle className="text-base md:text-lg font-semibold text-gray-900">
-              About Eulotus Vendors
-            </CardTitle>
+            <CardTitle id="contact">Still need help?</CardTitle>
+            <CardDescription>Our team is here to assist you.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 text-gray-700 leading-relaxed">
-            <div>
-              <h3 className="font-semibold text-sm md:text-base mb-2 text-gray-900">
-                Selection Criteria
-              </h3>
-              <ul className="space-y-2 ml-4">
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Verified product quality</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Professional customer service</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Reliable shipping and handling times</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                  <span>Consistently positive buyer ratings</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-sm md:text-base mb-2 text-gray-900">
-                How It Works
-              </h3>
-              <p>
-                Every vendor on Eulotus is verified and reviewed before being
-                allowed to sell. We are committed to delivering the best
-                shopping experience for our customers— with authentic products,
-                transparent policies, and responsive support.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-sm md:text-base mb-2 text-gray-900">
-                Support
-              </h3>
-              <p>
-                If you have questions about any vendor or need assistance,
-                please contact us at{" "}
-                <a
-                  href="mailto:eulotus.com@gmail.com"
-                  className="text-primary hover:underline"
-                >
-                  eulotus.com@gmail.com
-                </a>
-              </p>
-            </div>
+          <CardContent className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <Button asChild variant="default">
+              <a href={`mailto:${SUPPORT_EMAIL}`} aria-label="Email support">
+                Email {SUPPORT_EMAIL}
+              </a>
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              We typically respond within 1–2 business days.
+            </span>
           </CardContent>
         </Card>
-      </div>
-
-      {/* Bottom CTA refined */}
-      <section className="rounded-lg p-4 text-center">
-        <Badge className="bg-blue-600 hover:bg-blue-700 text-white mb-2">
-          Trusted Marketplace
-        </Badge>
-        <h2 className="text-xl md:text-2xl font-bold mb-3">
-          Shop with confidence
-        </h2>
-        <p className="text-muted-foreground mb-4 text-base max-w-2xl mx-auto">
-          All vendors are verified to ensure authenticity and service quality
-          across the marketplace.
-        </p>
-        <div className="flex flex-col items-center gap-3">
-          <Button
-            asChild
-            size="lg"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6"
-          >
-            <Link to="/help">
-              Visit Help Center
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
       </section>
     </div>
   );
-};
-
-export default Vendors;
+}
