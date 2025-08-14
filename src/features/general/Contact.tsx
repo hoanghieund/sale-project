@@ -61,12 +61,17 @@ const Contact = () => {
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="flex justify-center">
             <span className="inline-flex">
-              <span className="px-3 py-1 rounded-md text-xs font-medium bg-blue-600 text-white">Contact</span>
+              <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-blue-600 text-white">
+                Contact
+              </span>
             </span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Contact Us</h1>
-          <p className="text-muted-foreground text-lg md:text-xl">
-            We're here to help! Get in touch with our team for any questions or support.
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            Contact Us
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-base">
+            We're here to help! Get in touch with our team for any questions or
+            support.
           </p>
         </div>
       </section>
@@ -78,9 +83,9 @@ const Contact = () => {
             {/* Contact Form */}
             <div>
               <Card className="bg-white">
-                <CardHeader>
-                  <CardTitle>Send us a message</CardTitle>
-                  <CardDescription>
+                <CardHeader className="p-4">
+                  <CardTitle className="text-lg">Send us a message</CardTitle>
+                  <CardDescription className="text-xs">
                     Fill out the form below and we'll get back to you as soon as
                     possible.
                   </CardDescription>
@@ -101,25 +106,36 @@ const Contact = () => {
 
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
-                      <Label htmlFor="name">Full Name</Label>
+                      <Label htmlFor="name" className="text-sm">
+                        Full Name
+                      </Label>
                       <Input
                         id="name"
                         {...register("name", { required: "Name is required" })}
-                        className={errors.name ? "border-destructive" : ""}
+                        className={`${
+                          errors.name ? "border-destructive" : ""
+                        } py-1 text-sm`}
                         required
                         aria-required="true"
                         aria-invalid={!!errors.name}
-                        aria-describedby={errors.name ? "name-error" : undefined}
+                        aria-describedby={
+                          errors.name ? "name-error" : undefined
+                        }
                       />
                       {errors.name && (
-                        <p id="name-error" className="text-sm text-destructive mt-1">
+                        <p
+                          id="name-error"
+                          className="text-xs text-destructive mt-1"
+                        >
                           {errors.name.message}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <Label htmlFor="email">Email Address</Label>
+                      <Label htmlFor="email" className="text-sm">
+                        Email Address
+                      </Label>
                       <Input
                         id="email"
                         type="email"
@@ -130,85 +146,120 @@ const Contact = () => {
                             message: "Invalid email address",
                           },
                         })}
-                        className={errors.email ? "border-destructive" : ""}
+                        className={`${
+                          errors.email ? "border-destructive" : ""
+                        } py-1 text-sm`}
                         required
                         aria-required="true"
                         aria-invalid={!!errors.email}
-                        aria-describedby={errors.email ? "email-error" : undefined}
+                        aria-describedby={
+                          errors.email ? "email-error" : undefined
+                        }
                       />
                       {errors.email && (
-                        <p id="email-error" className="text-sm text-destructive mt-1">
+                        <p
+                          id="email-error"
+                          className="text-xs text-destructive mt-1"
+                        >
                           {errors.email.message}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <Label htmlFor="category">Category</Label>
-                      <Select
-                        {...register("category", {
-                          required: "Please select a category",
-                        })}
-                      >
-                        <SelectTrigger aria-label="Select a category">
+                      <Label htmlFor="category" className="text-sm">
+                        Category
+                      </Label>
+                      <Select required>
+                        <SelectTrigger
+                          id="category"
+                          className={`${
+                            errors.category ? "border-destructive" : ""
+                          } py-1 text-sm`}
+                          aria-invalid={!!errors.category}
+                          aria-describedby={
+                            errors.category ? "category-error" : undefined
+                          }
+                        >
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="general">
                             General Inquiry
                           </SelectItem>
-                          <SelectItem value="order">Order Support</SelectItem>
-                          <SelectItem value="authentication">
-                            Authentication Question
+                          <SelectItem value="support">
+                            Customer Support
+                          </SelectItem>
+                          <SelectItem value="billing">
+                            Billing Question
                           </SelectItem>
                           <SelectItem value="vendor">
-                            Become a Vendor
+                            Vendor Application
                           </SelectItem>
-                          <SelectItem value="technical">
-                            Technical Issue
-                          </SelectItem>
-                          <SelectItem value="feedback">Feedback</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
                       {errors.category && (
-                        <p className="text-sm text-destructive mt-1">
+                        <p className="text-xs text-destructive mt-1">
                           {errors.category.message}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <Label htmlFor="subject">Subject</Label>
+                      <Label htmlFor="subject" className="text-sm">
+                        Subject
+                      </Label>
                       <Input
                         id="subject"
-                        {...register("subject", { required: "Subject is required" })}
-                        className={errors.subject ? "border-destructive" : ""}
+                        {...register("subject", {
+                          required: "Subject is required",
+                        })}
+                        className={`${
+                          errors.subject ? "border-destructive" : ""
+                        } py-1 text-sm`}
                         required
                         aria-required="true"
                         aria-invalid={!!errors.subject}
-                        aria-describedby={errors.subject ? "subject-error" : undefined}
+                        aria-describedby={
+                          errors.subject ? "subject-error" : undefined
+                        }
                       />
                       {errors.subject && (
-                        <p id="subject-error" className="text-sm text-destructive mt-1">
+                        <p
+                          id="subject-error"
+                          className="text-xs text-destructive mt-1"
+                        >
                           {errors.subject.message}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <Label htmlFor="message">Message</Label>
+                      <Label htmlFor="message" className="text-sm">
+                        Message
+                      </Label>
                       <Textarea
                         id="message"
-                        {...register("message", { required: "Message is required" })}
-                        className={errors.message ? "border-destructive" : ""}
+                        {...register("message", {
+                          required: "Message is required",
+                        })}
+                        className={`${
+                          errors.message ? "border-destructive" : ""
+                        } py-1 text-sm`}
                         required
                         aria-required="true"
                         aria-invalid={!!errors.message}
-                        aria-describedby={errors.message ? "message-error" : undefined}
-                        rows={5}
+                        aria-describedby={
+                          errors.message ? "message-error" : undefined
+                        }
+                        rows={4}
                       />
                       {errors.message && (
-                        <p id="message-error" className="text-sm text-destructive mt-1">
+                        <p
+                          id="message-error"
+                          className="text-xs text-destructive mt-1"
+                        >
                           {errors.message.message}
                         </p>
                       )}
@@ -216,14 +267,17 @@ const Contact = () => {
 
                     <Button
                       type="submit"
-                      className="w-full"
                       disabled={isSubmitting}
+                      className="w-full py-1 text-sm"
                     >
                       {isSubmitting ? (
-                        "Sending..."
+                        <>
+                          <span className="mr-2 h-3 w-3 animate-spin">●</span>
+                          Sending...
+                        </>
                       ) : (
                         <>
-                          <Send className="h-4 w-4 mr-2" />
+                          <Send className="mr-2 h-3 w-3" />
                           Send Message
                         </>
                       )}
@@ -248,15 +302,19 @@ const Contact = () => {
                 <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Mail className="h-6 w-6 text-white" />
+                      <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Mail className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1">Email Support</h3>
-                        <p className="text-muted-foreground mb-2">
-                          For general inquiries and support
+                        <h3 className="font-medium mb-1 text-sm">
+                          Email Support
+                        </h3>
+                        <p className="text-muted-foreground mb-1 text-xs">
+                          We'll respond within 24 hours
                         </p>
-                        <p className="font-medium">eulotus.com@gmail.com</p>
+                        <p className="font-medium text-sm">
+                          support@eulotus.com
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -265,15 +323,17 @@ const Contact = () => {
                 <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-6 w-6 text-white" />
+                      <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Phone className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1">Phone Support</h3>
-                        <p className="text-muted-foreground mb-2">
-                          Speak directly with our team
+                        <h3 className="font-medium mb-1 text-sm">
+                          Phone Support
+                        </h3>
+                        <p className="text-muted-foreground mb-1 text-xs">
+                          Call us during business hours
                         </p>
-                        <p className="font-medium">+1 (555) 123-KICK</p>
+                        <p className="font-medium text-sm">+1 (555) 123-4567</p>
                       </div>
                     </div>
                   </CardContent>
@@ -282,15 +342,17 @@ const Contact = () => {
                 <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-6 w-6 text-white" />
+                      <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1">Office Address</h3>
-                        <p className="text-muted-foreground mb-2">
+                        <h3 className="font-medium mb-1 text-sm">
+                          Office Address
+                        </h3>
+                        <p className="text-muted-foreground mb-1 text-xs">
                           Visit us at our headquarters
                         </p>
-                        <p className="font-medium">
+                        <p className="font-medium text-sm">
                           123 Sneaker Street
                           <br />
                           New York, NY 10001
@@ -305,15 +367,17 @@ const Contact = () => {
                 <Card className="bg-white">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-6 w-6 text-white" />
+                      <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Clock className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-1">Business Hours</h3>
-                        <p className="text-muted-foreground mb-2">
+                        <h3 className="font-medium mb-1 text-sm">
+                          Business Hours
+                        </h3>
+                        <p className="text-muted-foreground mb-1 text-xs">
                           When you can reach us
                         </p>
-                        <div className="font-medium space-y-1">
+                        <div className="font-medium space-y-1 text-sm">
                           <p>Monday - Friday: 9:00 AM - 6:00 PM EST</p>
                           <p>Saturday: 10:00 AM - 4:00 PM EST</p>
                           <p>Sunday: Closed</p>
@@ -331,22 +395,22 @@ const Contact = () => {
       {/* FAQ Section */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
+          <div className="text-center mb-8">
+            <h2 className="text-xl font-bold mb-3">
               Frequently Asked Questions
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Quick answers to common questions. Can't find what you're looking
               for? Contact us!
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             <div>
-              <h3 className="font-semibold mb-2">
+              <h3 className="font-medium mb-1 text-sm">
                 How do I know if a product is authentic?
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-xs">
                 Every product on DoneKick goes through our rigorous
                 authentication process. We guarantee 100% authenticity or your
                 money back.

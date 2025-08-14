@@ -12,9 +12,7 @@ export default {
   theme: {
     container: {
       center: true,
-      screens: {
-        "2xl": "1720px",
-      },
+      padding: "2rem",
     },
     extend: {
       colors: {

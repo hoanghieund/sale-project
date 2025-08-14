@@ -1,10 +1,10 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 
 interface FAQItem {
   id: string;
@@ -137,20 +137,25 @@ const FAQ = () => {
     <div className="container mx-auto px-4 py-12 space-y-12">
       {/* Hero: đồng nhất với SellerRegistration (Badge + tiêu đề + mô tả) */}
       <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex justify-center">
-            <Badge className="bg-blue-600 hover:bg-blue-700 text-white">FAQ</Badge>
+            <Badge className="bg-blue-600 hover:bg-blue-700 text-white">
+              FAQ
+            </Badge>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Frequently Asked Questions</h1>
-          <p className="text-muted-foreground text-lg md:text-xl">
-            Find answers about shopping, shipping, returns, and more.
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+            Frequently Asked Questions
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto mb-6">
+            Find answers to common questions about authentication, shipping,
+            returns, and more.
           </p>
         </div>
       </section>
 
       {/* Search and Filter: giữ logic, chuẩn hoá khối */}
       <section className="bg-background rounded-lg border border-border/50 p-8 shadow-sm">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -158,7 +163,7 @@ const FAQ = () => {
                 placeholder="Search FAQs..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="pl-9 py-1 text-sm"
               />
             </div>
           </div>
@@ -180,7 +185,7 @@ const FAQ = () => {
 
       {/* FAQ Items */}
       <section>
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {filteredFAQs.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">
@@ -207,8 +212,10 @@ const FAQ = () => {
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-1">
-                          <h3 className="font-semibold">{faq.question}</h3>
-                          <span className="text-xs bg-muted px-2 py-1 rounded-full">
+                          <h3 className="font-medium text-sm">
+                            {faq.question}
+                          </h3>
+                          <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
                             {faq.category}
                           </span>
                         </div>
@@ -221,8 +228,8 @@ const FAQ = () => {
                     </button>
 
                     {expandedItems.includes(faq.id) && (
-                      <div className="px-6 pb-6">
-                        <p className="text-muted-foreground leading-relaxed">
+                      <div className="px-4 pb-4">
+                        <p className="text-muted-foreground text-sm leading-relaxed">
                           {faq.answer}
                         </p>
                       </div>
@@ -236,18 +243,25 @@ const FAQ = () => {
       </section>
 
       {/* Bottom CTA: đồng nhất với các trang general khác */}
-      <section className="bg-gradient-to-br from-blue-50 to-blue-100/30 rounded-lg p-8 text-center border border-blue-200/50 shadow-sm">
-        <Badge className="bg-blue-600 hover:bg-blue-700 text-white mb-4">Need more help?</Badge>
-        <h2 className="text-2xl md:text-3xl font-bold mb-4">Still have questions?</h2>
-        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          Can't find the answer you're looking for? Our customer support team is here to help.
+      <section className="bg-gradient-to-br from-blue-50 to-blue-100/30 rounded-lg p-6 text-center border border-blue-200/50">
+        <Badge className="bg-blue-600 hover:bg-blue-700 text-white mb-3 text-xs">
+          Need more help?
+        </Badge>
+        <h2 className="text-xl md:text-2xl font-bold mb-3">
+          Still have questions?
+        </h2>
+        <p className="text-muted-foreground mb-4 max-w-2xl mx-auto text-sm">
+          Can't find the answer you're looking for? Our customer support team is
+          here to help.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link to="/contact">
             <Button size="lg">Contact Support</Button>
           </Link>
           <Link to="/about">
-            <Button variant="outline" size="lg">Learn More About Us</Button>
+            <Button variant="outline" size="lg">
+              Learn More About Us
+            </Button>
           </Link>
         </div>
       </section>

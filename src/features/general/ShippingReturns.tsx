@@ -36,27 +36,27 @@ const ShippingReturns = () => {
   } as const;
 
   return (
-    <div className="container mx-auto my-12">
-      <Card className="bg-white border-none shadow-none">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold text-center">
+    <div className="max-w-6xl mx-auto px-4 py-6">
+      <Card className="bg-transparent border-none shadow-none">
+        <CardHeader className="px-0 pt-0">
+          <CardTitle className="text-2xl md:text-3xl font-bold text-center">
             Shipping & Returns
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-8">
+        <CardContent className="space-y-6 px-0">
           {/* Dates section for effective and last updated times */}
-          <div className="text-sm text-muted-foreground text-center space-y-1">
+          <div className="text-xs text-center space-y-1">
             <p>Effective Date: {effectiveDate}</p>
             <p>Last Updated: {lastUpdatedDate}</p>
           </div>
 
           {/* Shipping Policy */}
-          <section className="space-y-4">
-            <h2 className="text-xl font-semibold">Shipping Policy</h2>
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold">Shipping Policy</h2>
 
             <div>
-              <h3 className="font-medium">1. Processing Time</h3>
-              <ul className="list-disc ml-6 space-y-1">
+              <h3 className="font-medium text-sm">1. Processing Time</h3>
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   {/* Sử dụng POLICY.processingDays để dễ thay đổi theo thực tế vận hành */}
                   Orders are processed within {POLICY.processingDays} business
@@ -71,11 +71,11 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium">
+              <h3 className="font-medium text-sm">
                 2. Shipping Methods & Delivery Time
               </h3>
-              <p className="mb-2">We offer the following shipping options:</p>
-              <ul className="list-disc ml-6 space-y-1">
+              <p className="mb-2 text-sm">We offer the following shipping options:</p>
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   <span className="font-medium">Standard Shipping:</span>{" "}
                   {/* ước tính giao hàng chuẩn */}
@@ -87,15 +87,15 @@ const ShippingReturns = () => {
                   Estimated delivery in {POLICY.expressDays} business days.
                 </li>
               </ul>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-xs">
                 Delivery times are estimates and may vary depending on your
                 location and carrier delays.
               </p>
             </div>
 
             <div>
-              <h3 className="font-medium">3. Shipping Costs</h3>
-              <ul className="list-disc ml-6 space-y-1">
+              <h3 className="font-medium text-sm">3. Shipping Costs</h3>
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   Shipping costs are calculated at checkout based on weight,
                   destination, and selected shipping method.
@@ -108,27 +108,27 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium">4. Order Tracking</h3>
-              <p>
+              <h3 className="font-medium text-sm">4. Order Tracking</h3>
+              <p className="text-sm">
                 Once your order is shipped, you will receive a tracking number
                 via email.
               </p>
             </div>
 
             <div>
-              <h3 className="font-medium">5. Customs, Duties & Taxes</h3>
-              <ul className="list-disc ml-6 space-y-1">
+              <h3 className="font-medium text-sm">5. Customs, Duties & Taxes</h3>
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   International shipments may be subject to customs duties and
-                  taxes, which are the buyer’s responsibility.
+                  taxes, which are the buyer's responsibility.
                 </li>
                 <li>We are not responsible for delays caused by customs.</li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-medium">6. Incorrect Shipping Information</h3>
-              <p>
+              <h3 className="font-medium text-sm">6. Incorrect Shipping Information</h3>
+              <p className="text-sm">
                 Please ensure your shipping address is correct before placing
                 the order. We are not responsible for lost packages due to
                 incorrect addresses.
@@ -136,13 +136,13 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium">7. Lost or Damaged Packages</h3>
-              <p>
+              <h3 className="font-medium text-sm">7. Lost or Damaged Packages</h3>
+              <p className="text-sm">
                 If your package is lost or arrives damaged, please contact us
                 within {POLICY.issueReportDays} days of delivery at{" "}
                 <a
                   href="mailto:eulotus.com@gmail.com"
-                  className="text-blue-600 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   eulotus.com@gmail.com
                 </a>{" "}
@@ -152,21 +152,21 @@ const ShippingReturns = () => {
           </section>
 
           {/* Return & Refund Policy */}
-          <section className="space-y-4">
-            <h2 className="text-xl font-semibold">Return & Refund Policy</h2>
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold">Return & Refund Policy</h2>
 
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs">
               <p>Effective Date: {effectiveDate}</p>
               <p>Last Updated: {lastUpdatedDate}</p>
             </div>
 
             <div>
-              <h3 className="font-medium">1. Eligibility for Returns</h3>
-              <p>
+              <h3 className="font-medium text-sm">1. Eligibility for Returns</h3>
+              <p className="text-sm">
                 We accept returns within {POLICY.returnWindowDays} days of
                 delivery if:
               </p>
-              <ul className="list-disc ml-6 space-y-1">
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   The item is unused, in original packaging, and in the same
                   condition you received it.
@@ -176,24 +176,24 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium">2. Non-Returnable Items</h3>
-              <p>The following items cannot be returned:</p>
-              <ul className="list-disc ml-6 space-y-1">
+              <h3 className="font-medium text-sm">2. Non-Returnable Items</h3>
+              <p className="text-sm">The following items cannot be returned:</p>
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>Perishable goods (e.g., food, flowers).</li>
                 <li>Personalized or custom-made products.</li>
                 <li>Gift cards and downloadable digital products.</li>
-                <li>Items marked as “Final Sale.”</li>
+                <li>Items marked as "Final Sale."</li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-medium">3. Return Process</h3>
-              <ul className="list-disc ml-6 space-y-1">
+              <h3 className="font-medium text-sm">3. Return Process</h3>
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   Contact us at{" "}
                   <a
                     href="mailto:eulotus.com@gmail.com"
-                    className="text-blue-600 hover:underline"
+                    className="text-primary hover:underline"
                   >
                     eulotus.com@gmail.com
                   </a>{" "}
@@ -204,15 +204,15 @@ const ShippingReturns = () => {
                 </li>
                 <li>Ship the item back using a trackable method.</li>
               </ul>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-2 text-xs">
                 Note: Customers are responsible for return shipping costs unless
                 the item is defective or we made an error.
               </p>
             </div>
 
             <div>
-              <h3 className="font-medium">4. Refunds</h3>
-              <ul className="list-disc ml-6 space-y-1">
+              <h3 className="font-medium text-sm">4. Refunds</h3>
+              <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   Refunds are issued to your original payment method within{" "}
                   {POLICY.refundDays}
@@ -223,12 +223,12 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium">5. Exchanges</h3>
-              <p>
+              <h3 className="font-medium text-sm">5. Exchanges</h3>
+              <p className="text-sm">
                 If you need an exchange for a different size, color, or item, contact us at{" "}
                 <a
                   href="mailto:eulotus.com@gmail.com"
-                  className="text-blue-600 hover:underline"
+                  className="text-primary hover:underline"
                 >
                   eulotus.com@gmail.com
                 </a>
@@ -237,8 +237,8 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium">6. Damaged or Defective Items</h3>
-              <p>
+              <h3 className="font-medium text-sm">6. Damaged or Defective Items</h3>
+              <p className="text-sm">
                 If you receive a damaged or defective product, please contact us within {POLICY.issueReportDays} days of delivery with photos for a replacement or refund.
               </p>
             </div>

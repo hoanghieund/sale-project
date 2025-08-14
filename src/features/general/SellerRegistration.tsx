@@ -1,10 +1,4 @@
 import { Axios } from "@/api/Axios";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -320,10 +314,7 @@ const SellerRegistration: React.FC = () => {
 
         <div className="grid gap-6 md:grid-cols-2">
           {testimonials.map((testimonial, index) => (
-            <Card
-              key={index}
-              className="bg-white border-border/50 shadow-sm"
-            >
+            <Card key={index} className="bg-white border-border/50 shadow-sm">
               <CardContent className="p-6">
                 <div className="flex mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
@@ -596,34 +587,6 @@ const SellerRegistration: React.FC = () => {
       </section>
 
       <Separator />
-
-      {/* FAQ section with enhanced visuals */}
-      <section>
-        <div className="text-center space-y-2 mb-6">
-          <Badge className="bg-primary mb-2">FAQ</Badge>
-          <h3 className="text-2xl font-bold">Frequently Asked Questions</h3>
-          <p className="text-muted-foreground">
-            Common questions about selling on Eulotus
-          </p>
-        </div>
-
-        <Accordion type="single" collapsible className="max-w-3xl mx-auto">
-          {faqs.map((f, idx) => (
-            <AccordionItem
-              key={idx}
-              value={`item-${idx}`}
-              className="border-b border-border/50"
-            >
-              <AccordionTrigger className="text-left hover:text-primary">
-                {f.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground">
-                {f.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </section>
 
       {/* Support section with enhanced visuals */}
       <section className="grid gap-6 md:grid-cols-3">

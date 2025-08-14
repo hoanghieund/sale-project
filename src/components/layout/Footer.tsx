@@ -9,6 +9,7 @@ export const FOOTER_LINKS = {
   getToKnowUs: [
     { label: "About Us", href: "/about" },
     { label: "Vendor List", href: "/vendors" },
+    { label: "FAQs", href: "/faq" },
   ],
   customerService: [
     { label: "Become a Vendor", href: "/seller-registration" },
