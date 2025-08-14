@@ -56,19 +56,23 @@ const Contact = () => {
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Contact Us</h1>
-          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
-            We're here to help! Get in touch with our team for any questions or
-            support.
+      {/* Hero: đồng nhất với SellerRegistration (Badge + tiêu đề + mô tả) */}
+      <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex justify-center">
+            <span className="inline-flex">
+              <span className="px-3 py-1 rounded-md text-xs font-medium bg-blue-600 text-white">Contact</span>
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Contact Us</h1>
+          <p className="text-muted-foreground text-lg md:text-xl">
+            We're here to help! Get in touch with our team for any questions or support.
           </p>
         </div>
       </section>
 
       {/* Contact Information */}
-      <section className="py-16">
+      <section className="py-16" role="main" aria-label="Contact Eulotus">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
@@ -83,7 +87,11 @@ const Contact = () => {
                 </CardHeader>
                 <CardContent>
                   {isSubmitted && (
-                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div
+                      className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg"
+                      role="status"
+                      aria-live="polite"
+                    >
                       <p className="text-green-800 font-medium">
                         Thank you for your message! We'll get back to you within
                         24 hours.
@@ -98,9 +106,13 @@ const Contact = () => {
                         id="name"
                         {...register("name", { required: "Name is required" })}
                         className={errors.name ? "border-destructive" : ""}
+                        required
+                        aria-required="true"
+                        aria-invalid={!!errors.name}
+                        aria-describedby={errors.name ? "name-error" : undefined}
                       />
                       {errors.name && (
-                        <p className="text-sm text-destructive mt-1">
+                        <p id="name-error" className="text-sm text-destructive mt-1">
                           {errors.name.message}
                         </p>
                       )}
@@ -119,9 +131,13 @@ const Contact = () => {
                           },
                         })}
                         className={errors.email ? "border-destructive" : ""}
+                        required
+                        aria-required="true"
+                        aria-invalid={!!errors.email}
+                        aria-describedby={errors.email ? "email-error" : undefined}
                       />
                       {errors.email && (
-                        <p className="text-sm text-destructive mt-1">
+                        <p id="email-error" className="text-sm text-destructive mt-1">
                           {errors.email.message}
                         </p>
                       )}
@@ -134,7 +150,7 @@ const Contact = () => {
                           required: "Please select a category",
                         })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger aria-label="Select a category">
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -165,13 +181,15 @@ const Contact = () => {
                       <Label htmlFor="subject">Subject</Label>
                       <Input
                         id="subject"
-                        {...register("subject", {
-                          required: "Subject is required",
-                        })}
+                        {...register("subject", { required: "Subject is required" })}
                         className={errors.subject ? "border-destructive" : ""}
+                        required
+                        aria-required="true"
+                        aria-invalid={!!errors.subject}
+                        aria-describedby={errors.subject ? "subject-error" : undefined}
                       />
                       {errors.subject && (
-                        <p className="text-sm text-destructive mt-1">
+                        <p id="subject-error" className="text-sm text-destructive mt-1">
                           {errors.subject.message}
                         </p>
                       )}
@@ -181,14 +199,16 @@ const Contact = () => {
                       <Label htmlFor="message">Message</Label>
                       <Textarea
                         id="message"
-                        rows={5}
-                        {...register("message", {
-                          required: "Message is required",
-                        })}
+                        {...register("message", { required: "Message is required" })}
                         className={errors.message ? "border-destructive" : ""}
+                        required
+                        aria-required="true"
+                        aria-invalid={!!errors.message}
+                        aria-describedby={errors.message ? "message-error" : undefined}
+                        rows={5}
                       />
                       {errors.message && (
-                        <p className="text-sm text-destructive mt-1">
+                        <p id="message-error" className="text-sm text-destructive mt-1">
                           {errors.message.message}
                         </p>
                       )}

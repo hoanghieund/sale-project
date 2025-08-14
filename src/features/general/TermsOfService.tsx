@@ -8,10 +8,24 @@ import React from "react";
  */
 const TermsOfService: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-12 space-y-12" role="main" aria-label="Terms of Service">
+      {/* Hero: đồng nhất với SellerRegistration (Badge + tiêu đề + mô tả) */}
+      <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex justify-center">
+            <span className="inline-flex">
+              <span className="px-3 py-1 rounded-md text-xs font-medium bg-blue-600 text-white">Legal</span>
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Terms of Service</h1>
+          <p className="text-muted-foreground text-lg md:text-xl">
+            Please read these terms carefully before using our website.
+          </p>
+        </div>
+      </section>
+
       {/* Static Terms content - keep structure semantic and easy to scan */}
-      <h1 className="text-3xl font-bold mb-6">Terms of Service</h1>
-      <p className="text-sm text-gray-600 mb-8">
+      <p className="text-sm text-gray-600">
         <span className="font-medium">Effective Date:</span> August 8, 2025
         <span className="mx-2">•</span>
         <span className="font-medium">Last Updated:</span> August 8, 2025

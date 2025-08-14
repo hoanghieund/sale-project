@@ -26,6 +26,7 @@ import {
 import { useCart } from "@/providers/cart-provider";
 import {
   ChevronDown,
+  Handshake,
   History,
   LifeBuoy,
   LogIn,
@@ -148,7 +149,7 @@ const Header = () => {
                 ) : (
                   // Nút cho user: đăng ký người bán
                   <span className="inline-flex items-center gap-2">
-                    <UserPlus className="h-4 w-4" />
+                    <Handshake className="h-4 w-4" />
                     <span className="hidden sm:inline">Become a seller</span>
                   </span>
                 )}

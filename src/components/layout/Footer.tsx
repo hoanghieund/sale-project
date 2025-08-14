@@ -2,22 +2,33 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
- * Footer links configuration - giữ nguyên các links hiện tại, chỉ tổ chức lại layout
+ * Footer links configuration - tổ chức lại theo cấu trúc mẫu
  */
 export const FOOTER_LINKS = {
   getToKnowUs: [
     { label: "About Us", href: "/about" },
-    { label: "Contact Us", href: "/contact" },
-  ],
-  customerService: [
-    { label: "Help Center", href: "/help" },
+    { label: "Vendor List", href: "/vendors" },
     { label: "FAQs", href: "/faq" },
   ],
-  ordersReturns: [
-    { label: "Shipping & Returns", href: "/shipping-returns" },
-    { label: "Privacy Policy", href: "/privacy-policy" },
+  customerService: [
+    { label: "Become a Vendor", href: "/seller-registration" },
+    { label: "Help Center", href: "/help" },
+    { label: "Buyer Protection", href: "/buyer-protection" },
+    { label: "Authenticate", href: "/authenticate" },
+    { label: "Vendor Protection Program", href: "/vendor-protection" },
   ],
-  quickLinks: [{ label: "Terms of Service", href: "/terms-of-service" }],
+  ordersReturns: [
+    { label: "Returns & Refunds", href: "/shipping-returns" }, // Gộp với shipping-returns
+    { label: "Shipping Policy", href: "/shipping-returns" },
+    { label: "Track Order", href: "/account/orders" },
+    { label: "Contact Us", href: "/contact" },
+  ],
+  quickLinks: [
+    { label: "Legal", href: "/privacy-policy" }, // Gộp với privacy policy
+    { label: "Prohibited Items", href: "/prohibited-items" },
+    { label: "Marketplace Guidelines", href: "/marketplace-guidelines" },
+    { label: "Intellectual Property Policy", href: "/terms-of-service" }, // Gộp với terms
+  ],
 };
 
 const Footer = () => {

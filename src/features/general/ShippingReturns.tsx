@@ -192,10 +192,10 @@ const ShippingReturns = () => {
                 <li>
                   Contact us at{" "}
                   <a
-                    href="mailto:returns@eulotus.com"
+                    href="mailto:eulotus.com@gmail.com"
                     className="text-blue-600 hover:underline"
                   >
-                    returns@eulotus.com
+                    eulotus.com@gmail.com
                   </a>{" "}
                   with your order number and reason for return.
                 </li>
@@ -225,13 +225,12 @@ const ShippingReturns = () => {
             <div>
               <h3 className="font-medium">5. Exchanges</h3>
               <p>
-                If you need an exchange for a different size, color, or item,
-                contact us at{" "}
+                If you need an exchange for a different size, color, or item, contact us at{" "}
                 <a
-                  href="mailto:returns@eulotus.com"
+                  href="mailto:eulotus.com@gmail.com"
                   className="text-blue-600 hover:underline"
                 >
-                  returns@eulotus.com
+                  eulotus.com@gmail.com
                 </a>
                 . Exchanges are processed once we receive the original item.
               </p>
@@ -240,9 +239,7 @@ const ShippingReturns = () => {
             <div>
               <h3 className="font-medium">6. Damaged or Defective Items</h3>
               <p>
-                If you receive a damaged or defective product, please contact us
-                within {POLICY.issueReportDays} days of delivery with photos for
-                a replacement or refund.
+                If you receive a damaged or defective product, please contact us within {POLICY.issueReportDays} days of delivery with photos for a replacement or refund.
               </p>
             </div>
           </section>

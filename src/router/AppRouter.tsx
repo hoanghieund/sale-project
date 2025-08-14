@@ -49,6 +49,22 @@ const SellerRegistration = lazy(
 const VerifyEmail = lazy(() => import("@/features/auth/VerifyEmail"));
 const VerifyAccount = lazy(() => import("@/features/auth/VerifyAccount"));
 
+// Footer pages - Các trang từ menu footer
+const Vendors = lazy(() => import("@/features/general/Vendors"));
+const BuyerProtection = lazy(
+  () => import("@/features/general/BuyerProtection")
+);
+const Authenticate = lazy(() => import("@/features/general/Authenticate"));
+const VendorProtection = lazy(
+  () => import("@/features/general/VendorProtection")
+);
+const ProhibitedItems = lazy(
+  () => import("@/features/general/ProhibitedItems")
+);
+const MarketplaceGuidelines = lazy(
+  () => import("@/features/general/MarketplaceGuidelines")
+);
+
 // C2C Marketplace pages
 const CategoryPage = lazy(
   () => import("@/features/users/category/CategoryPage")
@@ -119,6 +135,16 @@ const AppRouter = () => {
             <Route
               path="/seller-registration"
               element={<SellerRegistration />}
+            />
+            {/* Footer pages - Các trang từ menu footer */}
+            <Route path="/vendors" element={<Vendors />} />
+            <Route path="/buyer-protection" element={<BuyerProtection />} />
+            <Route path="/authenticate" element={<Authenticate />} />
+            <Route path="/vendor-protection" element={<VendorProtection />} />
+            <Route path="/prohibited-items" element={<ProhibitedItems />} />
+            <Route
+              path="/marketplace-guidelines"
+              element={<MarketplaceGuidelines />}
             />
             <Route path="/cart" element={<Cart />} />
             <Route path="*" element={<NotFound />} />

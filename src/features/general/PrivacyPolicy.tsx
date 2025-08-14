@@ -120,7 +120,7 @@ const PrivacyPolicy = () => {
 
           {/* 11. Contact Us */}
           <h3 className="text-xl font-semibold">11. Contact Us</h3>
-          <p>📧 Email: privacy@eulotus.com</p>
+          <p>📧 Email: eulotus.com@gmail.com</p>
         </CardContent>
       </Card>
     </div>

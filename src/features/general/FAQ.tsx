@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 interface FAQItem {
   id: string;
@@ -87,7 +88,7 @@ const faqData: FAQItem[] = [
     id: "11",
     question: "How do I contact customer support?",
     answer:
-      "You can reach our customer support team via email at eulotus.com@gmail.com, phone at +1 (555) 123-KICK, or through our contact form. Our support hours are Monday-Friday 9 AM-6 PM EST, Saturday 10 AM-4 PM EST. We typically respond to emails within 24 hours.",
+      "You can reach our customer support team via email at eulotus.com@gmail.com. We typically respond to emails within 24 hours.",
     category: "Support",
   },
   {
@@ -133,135 +134,124 @@ const FAQ = () => {
   };
 
   return (
-    <>
-      {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Frequently Asked Questions
-          </h1>
-          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
-            Find answers to common questions about shopping, shipping, returns,
-            and more.
+    <div className="container mx-auto px-4 py-12 space-y-12">
+      {/* Hero: đồng nhất với SellerRegistration (Badge + tiêu đề + mô tả) */}
+      <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex justify-center">
+            <Badge className="bg-blue-600 hover:bg-blue-700 text-white">FAQ</Badge>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Frequently Asked Questions</h1>
+          <p className="text-muted-foreground text-lg md:text-xl">
+            Find answers about shopping, shipping, returns, and more.
           </p>
         </div>
       </section>
 
-      {/* Search and Filter */}
-      <section className="py-8 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search FAQs..."
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+      {/* Search and Filter: giữ logic, chuẩn hoá khối */}
+      <section className="bg-background rounded-lg border border-border/50 p-8 shadow-sm">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search FAQs..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
             </div>
+          </div>
 
-            <div className="flex flex-wrap gap-2">
-              {categories.map(category => (
-                <Button
-                  key={category}
-                  variant={
-                    selectedCategory === category ? "default" : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-2">
+            {categories.map(category => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </Button>
+            ))}
           </div>
         </div>
       </section>
 
       {/* FAQ Items */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            {filteredFAQs.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground mb-4">
-                  No FAQs found matching your search criteria.
-                </p>
-                <Button
-                  onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory("All");
-                  }}
-                >
-                  Clear Filters
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredFAQs.map(faq => (
-                  <Card key={faq.id} className="bg-white">
-                    <CardContent className="p-0">
-                      <button
-                        onClick={() => toggleExpanded(faq.id)}
-                        className="w-full p-6 text-left flex items-center justify-between hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-1">
-                            <h3 className="font-semibold">{faq.question}</h3>
-                            <span className="text-xs bg-muted px-2 py-1 rounded-full">
-                              {faq.category}
-                            </span>
-                          </div>
-                        </div>
-                        {expandedItems.includes(faq.id) ? (
-                          <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                        )}
-                      </button>
-
-                      {expandedItems.includes(faq.id) && (
-                        <div className="px-6 pb-6">
-                          <p className="text-muted-foreground leading-relaxed">
-                            {faq.answer}
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact CTA */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4">Still have questions?</h2>
-            <p className="text-muted-foreground mb-6">
-              Can't find the answer you're looking for? Our customer support
-              team is here to help.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact">
-                <Button size="lg">Contact Support</Button>
-              </Link>
-              <Link to="/about">
-                <Button variant="outline" size="lg">
-                  Learn More About Us
-                </Button>
-              </Link>
+      <section>
+        <div className="max-w-4xl mx-auto">
+          {filteredFAQs.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground mb-4">
+                No FAQs found matching your search criteria.
+              </p>
+              <Button
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory("All");
+                }}
+              >
+                Clear Filters
+              </Button>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredFAQs.map(faq => (
+                <Card key={faq.id} className="bg-white border-border/60">
+                  <CardContent className="p-0">
+                    {/* Toggle câu hỏi/đáp án: giữ logic cũ */}
+                    <button
+                      onClick={() => toggleExpanded(faq.id)}
+                      className="w-full p-6 text-left flex items-center justify-between hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1">
+                          <h3 className="font-semibold">{faq.question}</h3>
+                          <span className="text-xs bg-muted px-2 py-1 rounded-full">
+                            {faq.category}
+                          </span>
+                        </div>
+                      </div>
+                      {expandedItems.includes(faq.id) ? (
+                        <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </button>
+
+                    {expandedItems.includes(faq.id) && (
+                      <div className="px-6 pb-6">
+                        <p className="text-muted-foreground leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
-    </>
+
+      {/* Bottom CTA: đồng nhất với các trang general khác */}
+      <section className="bg-gradient-to-br from-blue-50 to-blue-100/30 rounded-lg p-8 text-center border border-blue-200/50 shadow-sm">
+        <Badge className="bg-blue-600 hover:bg-blue-700 text-white mb-4">Need more help?</Badge>
+        <h2 className="text-2xl md:text-3xl font-bold mb-4">Still have questions?</h2>
+        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          Can't find the answer you're looking for? Our customer support team is here to help.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link to="/contact">
+            <Button size="lg">Contact Support</Button>
+          </Link>
+          <Link to="/about">
+            <Button variant="outline" size="lg">Learn More About Us</Button>
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 };
 

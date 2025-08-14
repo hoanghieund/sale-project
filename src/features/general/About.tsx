@@ -12,19 +12,23 @@ import { Award, Heart, Target, Users } from "lucide-react";
 const About = () => {
   return (
     <>
-      {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-primary to-primary/80 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">About Eulotus</h1>
-          <p className="text-xl md:text-2xl text-white max-w-3xl mx-auto">
-            An e-commerce platform that connects sellers and buyers, delivering
-            safe, fast, and transparent shopping experiences.
+      {/* Hero: đồng nhất với SellerRegistration (Badge + tiêu đề + mô tả) */}
+      <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex justify-center">
+            <span className="inline-flex">
+              <span className="px-3 py-1 rounded-md text-xs font-medium bg-blue-600 text-white">About</span>
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">About Eulotus</h1>
+          <p className="text-muted-foreground text-lg md:text-xl">
+            An e-commerce platform that connects sellers and buyers for safe, fast, and transparent shopping.
           </p>
         </div>
       </section>
 
       {/* Our Story */}
-      <section className="py-16">
+      <section className="py-16" role="main" aria-label="About Eulotus - Our Story">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">Our Story</h2>
