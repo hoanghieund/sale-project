@@ -20,7 +20,7 @@ export const FOOTER_LINKS = {
   ordersReturns: [
     { label: "Returns & Refunds", href: "/shipping-returns" }, // Gộp với shipping-returns
     { label: "Shipping Policy", href: "/shipping-returns" },
-    { label: "Track Order", href: "/account/orders" },
+    // { label: "Track Order", href: "/account/orders" },
     { label: "Contact Us", href: "/contact" },
   ],
   quickLinks: [

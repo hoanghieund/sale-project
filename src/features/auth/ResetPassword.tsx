@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { authService } from "@/services/authService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
 /**
@@ -79,6 +79,11 @@ const ResetPassword = () => {
   return (
     <div className="bg-card rounded-lg p-6 border border-muted">
       <CardHeader className="space-y-1">
+        {/* Logo dẫn về trang chủ */}
+        <Link to="/" aria-label="Go to homepage">
+          {/* Tăng kích thước logo để dễ nhìn hơn */}
+          <img src="/logo.png" alt="Eulotus logo" className="mx-auto h-14 w-auto mb-2" />
+        </Link>
         <CardTitle className="text-2xl text-center">Reset Password</CardTitle>
         <CardDescription className="text-center">
           Please enter your new password.

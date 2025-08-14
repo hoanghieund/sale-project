@@ -75,6 +75,11 @@ export default function VerifyAccount() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1 text-center">
+        {/* Logo dẫn về trang chủ */}
+        <Link to="/" aria-label="Go to homepage">
+          {/* Tăng kích thước logo để dễ nhìn hơn */}
+          <img src="/logo.png" alt="Eulotus logo" className="mx-auto h-14 w-auto mb-2" />
+        </Link>
         <CardTitle className="text-2xl font-bold">Account Verification</CardTitle>
         {isLoading && (
           <CardDescription>Verifying your account...</CardDescription>

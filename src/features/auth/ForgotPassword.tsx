@@ -81,6 +81,11 @@ const ForgotPassword = () => {
   return (
     <div className="bg-card rounded-lg p-6 border border-muted">
       <CardHeader className="space-y-1">
+        {/* Logo dẫn về trang chủ */}
+        <Link to="/" aria-label="Go to homepage">
+          {/* Tăng kích thước logo để dễ nhìn hơn */}
+          <img src="/logo.png" alt="Eulotus logo" className="mx-auto h-14 w-auto mb-2" />
+        </Link>
         <CardTitle className="text-2xl text-center">Forgot Password</CardTitle>
         <CardDescription className="text-center">
           Enter your email to receive a password reset link.
