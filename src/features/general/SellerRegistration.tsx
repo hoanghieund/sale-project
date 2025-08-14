@@ -5,6 +5,26 @@ import { useToast } from '@/components/ui/use-toast';
 import { useUser } from '@/hooks/use-user';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Separator } from '@/components/ui/separator';
+import { 
+  Shield, 
+  Lock, 
+  DollarSign, 
+  Megaphone, 
+  Users, 
+  Sparkles, 
+  Mail, 
+  LifeBuoy, 
+  MessageSquare, 
+  CheckCircle2, 
+  TrendingUp, 
+  Clock, 
+  Award, 
+  Star, 
+  ArrowRight
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 /**
  * @component SellerRegistration
@@ -13,14 +33,68 @@ import { Link } from 'react-router-dom';
  */
 const SellerRegistration: React.FC = () => {
   const {user} = useUser();
-  const policies = [
-    'General policies for selling and using the platform.',
-    'Product standards and quality requirements for items being sold.',
-    'Payment policies, fees, and commission calculation process.',
-    'Partner support, including documentation, training, and communication channels.',
-    'Rights and obligations of sellers when joining the platform.',
-  ];
   const { toast } = useToast();
+
+  // FAQ list hiển thị theo phong cách của trang tham chiếu
+  // Giữ nội dung dễ hiểu, tập trung câu hỏi phổ biến khi đăng ký bán hàng
+  const faqs = [
+    {
+      q: 'What products can I sell on Eulotus?',
+      a: 'You can sell a wide range of products as long as they are your legal property and have proof of origin. For handmade items, clearly label the author, materials, production date, and usage/storage instructions.'
+    },
+    {
+      q: 'What do I need to do to create a shop?',
+      a: 'It’s simple: (1) Create an Eulotus account, (2) Set up vendor info (shop name, location, payment methods), (3) Submit for review. Once approved, you can start listing products.'
+    },
+    {
+      q: 'What documents are required to register as a vendor?',
+      a: 'Basic requirements include: a valid ID/Passport, proof of product origin, proof of sales capability (warehouse/physical store), and authorization from the brand owner if applicable.'
+    },
+    {
+      q: 'How do fees work on Eulotus?',
+      a: 'Eulotus charges a fixed 2.5% fee per successful order. There are no monthly hidden fees. If you enable offsite advertising, an additional 5% service fee applies.'
+    }
+  ];
+
+  // Seller success stories
+  const testimonials = [
+    {
+      quote: "Joining Eulotus was the best business decision I made. My sales increased by 230% in just 3 months!",
+      name: "Minh Nguyen",
+      role: "Handcrafted Jewelry Seller",
+      rating: 5
+    },
+    {
+      quote: "The platform's tools made it easy to reach new customers. I went from local sales to international shipping in weeks.",
+      name: "Sarah Johnson",
+      role: "Organic Skincare Vendor",
+      rating: 5
+    }
+  ];
+
+  // Registration steps
+  const registrationSteps = [
+    {
+      title: "Create Account",
+      description: "Sign up for an Eulotus account with your email",
+      icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+    },
+    {
+      title: "Submit Information",
+      description: "Provide your shop details and product categories",
+      icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+    },
+    {
+      title: "Verification",
+      description: "We'll review your application within 24-48 hours",
+      icon: <Clock className="h-5 w-5 text-blue-600" />
+    },
+    {
+      title: "Start Selling",
+      description: "Set up your shop and list your first products",
+      icon: <TrendingUp className="h-5 w-5 text-muted-foreground" />
+    }
+  ];
 
   // Function to handle the "Submit Registration Request" button click
   const handleClick = async () => {
@@ -55,45 +129,428 @@ const SellerRegistration: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto py-12 px-4">
-      <Card className="max-w-3xl mx-auto p-8 shadow-lg rounded-lg">
-        <CardHeader className="text-center mb-8">
-          {/* Seller registration page title */}
-          <CardTitle className="text-3xl font-bold text-gray-900">Seller Registration</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-700 mb-6 text-lg">
-            Welcome to the seller registration page. Please read the policies below carefully before submitting your request.
-          </p>
-
-          <ul className="list-disc list-inside space-y-4 mb-8 text-gray-800">
-            {/* Seller policy list */}
-            {policies.map((policy, index) => (
-              <li key={index} className="text-base">
-                {policy}
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex flex-col items-center space-y-4">
-            {/* Submit registration request button */}
-            <Button size="lg" className="w-full max-w-xs" onClick={handleClick}>
-              Submit Registration Request
-            </Button>
-            {/* Links to other policies */}
-            <p className="text-sm text-gray-600">
-              By submitting your request, you agree to our{' '}
-              <Link to="/terms-of-service" className="text-blue-600 hover:underline">
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link to="/privacy-policy" className="text-blue-600 hover:underline">
-                Privacy Policy
-              </Link>.
-            </p>
+    <div className="container mx-auto py-12 px-4 space-y-12">
+      {/* Hero section with more compelling elements */}
+      <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex justify-center">
+            <Badge className="bg-blue-600 hover:bg-blue-700 text-white">Limited Time Offer</Badge>
           </div>
-        </CardContent>
-      </Card>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight">Become a Seller on Eulotus</h1>
+          <p className="text-muted-foreground text-lg md:text-xl">Join <span className="font-bold text-foreground">10,000+</span> successful vendors already selling on our platform</p>
+          
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <div className="flex items-center gap-1 text-sm text-emerald-600">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>Free registration</span>
+            </div>
+            <div className="flex items-center gap-1 text-sm text-emerald-600">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>No monthly fees</span>
+            </div>
+            <div className="flex items-center gap-1 text-sm text-emerald-600">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>24/7 support</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center gap-4 pt-4 flex-wrap">
+            <Button size="lg" onClick={handleClick} className="bg-blue-600 hover:bg-blue-700 text-white shadow-md">
+              Start selling today
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Link to="/privacy-policy" className="text-sm text-primary underline">View terms & privacy</Link>
+          </div>
+          
+          <div className="pt-6 flex justify-center">
+            <div className="bg-orange-100 text-orange-800 px-4 py-2 rounded-md text-sm inline-flex items-center">
+              <Clock className="mr-2 h-4 w-4" />
+              <span>Early adopter benefits end in 7 days! Register now to lock in lower fees.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Registration progress steps */}
+      <section className="bg-background rounded-lg border border-border/50 p-8 shadow-sm">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold">Simple 4-Step Registration Process</h2>
+          <p className="text-muted-foreground">Most sellers get approved within 48 hours</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {registrationSteps.map((step, index) => (
+            <div key={index} className="relative">
+              <div className="flex flex-col items-center">
+                <div className={`h-12 w-12 rounded-full flex items-center justify-center ${index < 2 ? 'bg-emerald-100' : index === 2 ? 'bg-blue-100' : 'bg-muted'}`}>
+                  {step.icon}
+                </div>
+                <h3 className="mt-4 font-medium text-lg">{step.title}</h3>
+                <p className="text-sm text-muted-foreground text-center">{step.description}</p>
+                
+                {index < registrationSteps.length - 1 && (
+                  <div className="hidden md:block absolute top-6 left-[60%] w-[80%] h-[2px] bg-muted">
+                    {index < 2 && <div className="h-full bg-emerald-600 w-full"></div>}
+                    {index === 2 && <div className="h-full bg-blue-600 w-[50%]"></div>}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Success metrics section */}
+      <section className="grid gap-6 md:grid-cols-4">
+        <Card className="bg-gradient-to-br from-background to-blue-50/30 border-blue-100/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-4xl font-bold text-blue-600">10K+</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="font-medium">Active Sellers</p>
+            <p className="text-sm text-muted-foreground">Join our growing community</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-background to-orange-50/30 border-orange-100/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-4xl font-bold text-orange-600">$2.5K</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="font-medium">Avg. Monthly Sales</p>
+            <p className="text-sm text-muted-foreground">For established sellers</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-background to-yellow-50/30 border-yellow-100/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-4xl font-bold text-yellow-600">2.5%</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="font-medium">Transaction Fee</p>
+            <p className="text-sm text-muted-foreground">Industry-leading low rate</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-background to-emerald-50/30 border-emerald-100/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-4xl font-bold text-emerald-600">48hrs</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="font-medium">Approval Time</p>
+            <p className="text-sm text-muted-foreground">Fast review process</p>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Testimonials section */}
+      <section className="bg-muted/30 rounded-lg p-8 border border-border/50">
+        <div className="text-center mb-8">
+          <Badge className="bg-yellow-600 hover:bg-yellow-700 text-white mb-4">Success Stories</Badge>
+          <h2 className="text-2xl font-bold">What Our Sellers Say</h2>
+          <p className="text-muted-foreground">Real stories from successful Eulotus sellers</p>
+        </div>
+        
+        <div className="grid gap-6 md:grid-cols-2">
+          {testimonials.map((testimonial, index) => (
+            <Card key={index} className="bg-background border-border/50 shadow-sm">
+              <CardContent className="p-6">
+                <div className="flex mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <blockquote className="text-muted-foreground mb-4 italic">
+                  "{testimonial.quote}"
+                </blockquote>
+                <div>
+                  <p className="font-medium">{testimonial.name}</p>
+                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      
+
+      {/* Benefits section with enhanced visuals */}
+      <section>
+        <div className="text-center mb-8">
+          <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white mb-4">Why Choose Eulotus</Badge>
+          <h2 className="text-2xl font-bold">Everything You Need to Succeed</h2>
+          <p className="text-muted-foreground">Powerful tools and features designed for seller success</p>
+        </div>
+        
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card className="h-full bg-gradient-to-br from-background to-emerald-50/30 border-emerald-100/50 shadow-sm">
+            <CardHeader className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                <Sparkles className="h-6 w-6" />
+              </div>
+              <CardTitle className="text-lg">Maximize Your Profits</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">
+              <p className="mb-3">List your products for free and sell directly to customers with no middleman fees.</p>
+              <div className="flex items-center gap-2 text-emerald-600 font-medium">
+                <TrendingUp className="h-4 w-4" />
+                <span>Average 40% profit increase</span>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="h-full bg-gradient-to-br from-background to-blue-50/30 border-blue-100/50 shadow-sm">
+            <CardHeader className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                <Shield className="h-6 w-6" />
+              </div>
+              <CardTitle className="text-lg">Complete Protection</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">
+              <p className="mb-3">Comprehensive policies and dedicated support team to protect vendors and customers.</p>
+              <div className="flex items-center gap-2 text-blue-600 font-medium">
+                <CheckCircle2 className="h-4 w-4" />
+                <span>99.9% secure transactions</span>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="h-full bg-gradient-to-br from-background to-orange-50/30 border-orange-100/50 shadow-sm">
+            <CardHeader className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                <DollarSign className="h-6 w-6" />
+              </div>
+              <CardTitle className="text-lg">Flexible Payments</CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">
+              <p className="mb-3">Choose from multiple payment methods that fit your business operations perfectly.</p>
+              <div className="flex items-center gap-2 text-orange-600 font-medium">
+                <Clock className="h-4 w-4" />
+                <span>Daily payouts available</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Fees & Security section: đơn giản, minh bạch, an toàn */}
+      <section>
+        <div className="text-center space-y-2 mb-8">
+          <h2 className="text-2xl md:text-3xl font-semibold">Simple, Transparent, Secure</h2>
+          <p className="text-muted-foreground">We process transactions on a secure, SSL-256-bit encrypted platform backed by security experts and fraud detection systems.</p>
+        </div>
+        {/* Trust indicators */}
+        <div className="bg-muted/30 rounded-lg p-6 border border-border/50 mb-8">
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4 text-sm">
+            <div className="flex items-center gap-2 text-emerald-600">
+              <Lock className="h-4 w-4" /> 
+              <span className="font-medium">Bank-level security</span>
+            </div>
+            <div className="flex items-center gap-2 text-blue-600">
+              <DollarSign className="h-4 w-4" /> 
+              <span className="font-medium">Daily automatic payouts</span>
+            </div>
+            <div className="flex items-center gap-2 text-orange-600">
+              <Shield className="h-4 w-4" /> 
+              <span className="font-medium">Full seller protection</span>
+            </div>
+            <div className="flex items-center gap-2 text-yellow-600">
+              <Award className="h-4 w-4" />
+              <span className="font-medium">No hidden monthly fees</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Enhanced pricing cards */}
+        <div className="grid gap-6 md:grid-cols-3 mt-6">
+          <Card className="border-blue-100/50 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-blue-600 text-white text-xs px-3 py-1 rounded-bl-md">
+              Free
+            </div>
+            <CardHeader>
+              <CardTitle className="text-lg">Listing Fee</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold text-blue-600">$0</p>
+              <p className="text-sm text-muted-foreground mt-2">List as many products as you want with no listing fees.</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-emerald-100/50 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-xs px-3 py-1 rounded-bl-md">
+              Best Value
+            </div>
+            <CardHeader>
+              <CardTitle className="text-lg">Transaction Fee</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold text-emerald-600">2.5%</p>
+              <p className="text-sm text-muted-foreground mt-2">Industry-leading low commission fee for each completed order.</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-orange-100/50 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-orange-600 text-white text-xs px-3 py-1 rounded-bl-md">
+              Optional
+            </div>
+            <CardHeader>
+              <CardTitle className="text-lg">Offsite Ads Fee</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold text-orange-600">5%</p>
+              <p className="text-sm text-muted-foreground mt-2">Only applies when you enable Offsite Ads for additional exposure.</p>
+            </CardContent>
+          </Card>
+        </div>
+        {/* Ghi chú phí bổ sung giống trang tham chiếu */}
+        <p className="text-xs text-muted-foreground mt-4">* Offsite Ads is optional. The 5% service fee applies only when you enable Offsite Ads.</p>
+      </section>
+
+      {/* Reach customers section with enhanced visuals */}
+      <section className="grid gap-8 md:grid-cols-2 items-start">
+        <div className="space-y-5">
+          <Badge className="bg-blue-600 hover:bg-blue-700 text-white mb-2">Marketing Tools</Badge>
+          <h3 className="text-xl md:text-2xl font-bold">Reach millions of customers</h3>
+          <p className="text-muted-foreground">Build your brand with powerful tools: set up ad channels (Google, Facebook), control your marketing, and optimize performance.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="bg-muted/30 p-4 rounded-lg border border-border/50">
+              <div className="flex items-center gap-2 mb-2">
+                <Megaphone className="h-5 w-5 text-blue-600" />
+                <span className="font-medium">Expand Reach</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Reach 5x more potential customers with our marketing tools</p>
+            </div>
+            
+            <div className="bg-muted/30 p-4 rounded-lg border border-border/50">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="h-5 w-5 text-orange-600" />
+                <span className="font-medium">Boost Sales</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Sellers see an average 40% increase in sales within 3 months</p>
+            </div>
+            
+            <div className="bg-muted/30 p-4 rounded-lg border border-border/50">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-5 w-5 text-emerald-600" />
+                <span className="font-medium">Grow Community</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Build a loyal customer base with our community tools</p>
+            </div>
+            
+            <div className="bg-muted/30 p-4 rounded-lg border border-border/50">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="h-5 w-5 text-yellow-600" />
+                <span className="font-medium">Analytics</span>
+              </div>
+              <p className="text-sm text-muted-foreground">Detailed insights to optimize your product listings</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Enhanced CTA card */}
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100/30 rounded-lg p-8 text-center border border-blue-200/50 shadow-sm">
+          <div className="inline-block bg-blue-600 text-white p-3 rounded-full mb-4">
+            <TrendingUp className="h-6 w-6" />
+          </div>
+          <h4 className="text-2xl font-bold mb-2">Ready to start selling?</h4>
+          <p className="text-muted-foreground mb-6">Join 10,000+ sellers already growing their business on Eulotus</p>
+          
+          <div className="space-y-4">
+            <Button onClick={handleClick} size="lg" className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-md">
+              Open your shop today
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            
+            <div className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Early adopter benefits:</span> Lower fees, priority support, and featured placement
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Separator />
+
+      {/* FAQ section with enhanced visuals */}
+      <section>
+        <div className="text-center space-y-2 mb-6">
+          <Badge className="bg-primary mb-2">FAQ</Badge>
+          <h3 className="text-2xl font-bold">Frequently Asked Questions</h3>
+          <p className="text-muted-foreground">Common questions about selling on Eulotus</p>
+        </div>
+        
+        <Accordion type="single" collapsible className="max-w-3xl mx-auto">
+          {faqs.map((f, idx) => (
+            <AccordionItem key={idx} value={`item-${idx}`} className="border-b border-border/50">
+              <AccordionTrigger className="text-left hover:text-primary">{f.q}</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground">{f.a}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </section>
+
+      {/* Support section with enhanced visuals */}
+      <section className="grid gap-6 md:grid-cols-3">
+        <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-background to-blue-50/30 rounded-lg border border-blue-100/50 shadow-sm">
+          <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+            <Mail className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="font-medium">Need more information?</p>
+            <p className="text-sm text-muted-foreground mb-2">We're here to help with any questions</p>
+            <Link to="/contact" className="text-sm text-blue-600 hover:underline font-medium">Contact Our Team</Link>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-background to-emerald-50/30 rounded-lg border border-emerald-100/50 shadow-sm">
+          <div className="h-12 w-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <LifeBuoy className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="font-medium">Seller Support Center</p>
+            <p className="text-sm text-muted-foreground mb-2">Dedicated support for all sellers</p>
+            <Link to="/help" className="text-sm text-emerald-600 hover:underline font-medium">Visit Help Center</Link>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4 p-5 bg-gradient-to-br from-background to-orange-50/30 rounded-lg border border-orange-100/50 shadow-sm">
+          <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+            <MessageSquare className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="font-medium">Seller Community</p>
+            <p className="text-sm text-muted-foreground mb-2">Connect with other successful sellers</p>
+            <a href="mailto:support@eulotus.com" className="text-sm text-orange-600 hover:underline font-medium">Join Discussion</a>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA with enhanced visuals */}
+      <section className="bg-gradient-to-br from-blue-50 to-blue-100/30 rounded-lg p-8 text-center border border-blue-200/50 shadow-sm">
+        <Badge className="bg-blue-600 hover:bg-blue-700 text-white mb-4">Limited Time Offer</Badge>
+        <h2 className="text-2xl md:text-3xl font-bold mb-4">Start your seller journey today</h2>
+        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">Join thousands of successful sellers on Eulotus and turn your passion into profit with our powerful selling tools and supportive community.</p>
+        
+        <div className="flex flex-col items-center gap-4">
+          <Button size="lg" onClick={handleClick} className="bg-blue-600 hover:bg-blue-700 text-white shadow-md px-8">
+            Start selling now
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+          
+          <div className="text-sm text-muted-foreground mt-2">
+            By submitting your request, you agree to our{' '}
+            <Link to="/terms-of-service" className="text-primary underline">Terms of Service</Link>{' '}
+            and{' '}
+            <Link to="/privacy-policy" className="text-primary underline">Privacy Policy</Link>.
+          </div>
+          
+          <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
+            <Lock className="h-4 w-4" />
+            <span>Your information is secure and will never be shared</span>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
