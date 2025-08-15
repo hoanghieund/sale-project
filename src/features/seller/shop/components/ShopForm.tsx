@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ExternalLink } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -183,6 +184,17 @@ export const ShopForm: React.FC<ShopFormProps> = ({
   };
 
   /**
+   * @function handleViewShop
+   * @description Navigate to shop page in new tab.
+   */
+  const handleViewShop = () => {
+    if (shop?.slug) {
+      const shopUrl = `${window.location.origin}/shop/${shop.slug}`;
+      window.open(shopUrl, '_blank');
+    }
+  };
+
+  /**
    * @function handleSubmit
    * @description Handle form submit.
    * Merge form data with logo/banner URL and call onSubmit from props.
@@ -199,8 +211,24 @@ export const ShopForm: React.FC<ShopFormProps> = ({
   return (
     <Card className="bg-white">
       <CardHeader>
-        <CardTitle className="text-xl sm:text-2xl">Shop information</CardTitle>
-        <CardDescription>Update your shop's basic information</CardDescription>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <CardTitle className="text-xl sm:text-2xl">Shop information</CardTitle>
+            <CardDescription>Update your shop's basic information</CardDescription>
+          </div>
+          {/* View Shop button - only show if shop exists and has slug */}
+          {shop?.slug && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleViewShop}
+              className="w-full sm:w-auto"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Shop
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="p-4 sm:p-6">
         <Form {...form}>

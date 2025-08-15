@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { Order, OrderStatus } from "@/types";
- import { formatCurrencyUSD, formatDate } from "@/utils/formatters"; // format currency for display (USD) + date formatter
+import { formatCurrencyUSD, formatDate } from "@/utils/formatters"; // format currency for display (USD) + date formatter
 import {
   Calendar as CalendarIcon,
   ChevronDown,
@@ -139,7 +139,8 @@ const OrderTable: React.FC<OrderTableProps> = ({
       if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) {
         toast({
           title: "Invalid date range",
-          description: '"From date" must be earlier than or equal to "To date".',
+          description:
+            '"From date" must be earlier than or equal to "To date".',
           variant: "destructive",
         });
         return;
@@ -302,20 +303,20 @@ const OrderTable: React.FC<OrderTableProps> = ({
               {dateRange?.from ? (
                 dateRange.to ? (
                   <span>
-                    {formatDate(dateRange.from!)} -{" "}
-                    {formatDate(dateRange.to!)}
+                    {formatDate(dateRange.from!)} - {formatDate(dateRange.to!)}
                   </span>
                 ) : (
-                  <span>
-                    {formatDate(dateRange.from!)}
-                  </span>
+                  <span>{formatDate(dateRange.from!)}</span>
                 )
               ) : (
                 <span>Select date range</span>
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto max-w-full p-0 overflow-x-auto" align="start">
+          <PopoverContent
+            className="w-auto max-w-full p-0 overflow-x-auto"
+            align="start"
+          >
             {/* shadcn Calendar supports range */}
             <Calendar
               mode="range"
@@ -331,8 +332,14 @@ const OrderTable: React.FC<OrderTableProps> = ({
             />
           </PopoverContent>
         </Popover>
-        <Button className="w-full sm:w-auto" onClick={handleSearch}>Search</Button>
-        <Button className="w-full sm:w-auto" variant="outline" onClick={handleResetSearch}>
+        <Button className="w-full sm:w-auto" onClick={handleSearch}>
+          Search
+        </Button>
+        <Button
+          className="w-full sm:w-auto"
+          variant="outline"
+          onClick={handleResetSearch}
+        >
           <X className="mr-2 h-4 w-4" /> Clear filters
         </Button>
       </div>
@@ -345,56 +352,54 @@ const OrderTable: React.FC<OrderTableProps> = ({
       ) : (
         <div className="border rounded-md">
           {/* Responsive: bật scroll ngang cho bảng ở màn hình nhỏ, tối thiểu 700px để đủ cột chính */}
-          <div className="w-full overflow-x-auto">
-            <Table className="min-w-[700px]">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order Code</TableHead>
-                  <TableHead className="hidden sm:table-cell">Customer</TableHead>
-                  <TableHead className="hidden md:table-cell">Order Date</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order Code</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Order Date</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.map(order => (
+                <TableRow key={order.id}>
+                  <TableCell className="font-medium">{order.code}</TableCell>
+                  <TableCell>
+                    <div>
+                      <p className="font-medium">
+                        {order.orderAddressDTO?.firstName +
+                          " " +
+                          order.orderAddressDTO?.lastName}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {order.phoneNumber}
+                      </p>
+                    </div>
+                  </TableCell>
+                  <TableCell>{formatDate(order.timeOrder)}</TableCell>
+                  <TableCell>{formatCurrencyUSD(order.totalPrice)}</TableCell>
+                  <TableCell>
+                    <OrderStatusBadge status={order.status} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleViewOrderDetail(order.id)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      {renderStatusUpdateMenu(order)}
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map(order => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.code}</TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      <div>
-                        <p className="font-medium">
-                          {order.orderAddressDTO?.fullName}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {order.phoneNumber}
-                        </p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {formatDate(order.timeOrder)}
-                    </TableCell>
-                    <TableCell>{formatCurrencyUSD(order.totalPrice)}</TableCell>
-                    <TableCell>
-                      <OrderStatusBadge status={order.status} />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end items-center space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleViewOrderDetail(order.id)}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        {renderStatusUpdateMenu(order)}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+              ))}
+            </TableBody>
+          </Table>
           {/* Pagination: use CustomPagination, base-1 for UI */}
           {totalPages > 1 && (
             <div className="px-4 py-3 border-t flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

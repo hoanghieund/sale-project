@@ -54,12 +54,12 @@ export const ProductTable: React.FC<ProductTableProps> = ({
         <TableHeader>
           <TableRow>
             <TableHead>Image</TableHead>
-            <TableHead className="w-1/5">Product name</TableHead>
-            <TableHead className="">Category</TableHead>
+            <TableHead>Product name</TableHead>
+            <TableHead>Category</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead className="">Stock</TableHead>
+            <TableHead>Stock</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="">Created at</TableHead>
+            <TableHead>Created at</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -89,7 +89,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
             const createdAt = formatDate(product.timeCreate) || "-";
             return (
               <TableRow key={product.id}>
-                <TableCell className="w-16">
+                <TableCell>
                   {/* Thumbnail: prioritize the first image */}
                   <img
                     src={imageSrc}
@@ -97,19 +97,17 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                     className="w-12 h-12 object-cover rounded-md"
                   />
                 </TableCell>
-                <TableCell className="font-medium max-w-[160px] truncate md:max-w-none">
-                  {product.title}
-                </TableCell>
-                <TableCell className="">{categoryName}</TableCell>
+                <TableCell className="font-medium">{product.title}</TableCell>
+                <TableCell>{categoryName}</TableCell>
                 {/* Format price using common util for global consistency */}
                 <TableCell>{formatCurrencyUSD(price)}</TableCell>
-                <TableCell className="">{stock}</TableCell>
+                <TableCell>{stock}</TableCell>
                 <TableCell>
                   <Badge variant={isActive ? "default" : "secondary"}>
                     {isActive ? "Visible" : "Hidden"}
                   </Badge>
                 </TableCell>
-                <TableCell className="">{createdAt}</TableCell>
+                <TableCell>{createdAt}</TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
