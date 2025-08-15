@@ -113,7 +113,7 @@ const Checkout = () => {
       const response = await orderService.checkout({
         // Convert Set selectedItems to a string array
         lstIdCart: Array.from(selectedItems).map(Number),
-        feeShip: 1,
+        feeShip: cartSummary.shipping,
         orderAddressDTO: {
           id:
             data.selectedAddressId === "other"
