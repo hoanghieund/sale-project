@@ -21,7 +21,7 @@ import { getColorValue } from "@/utils/colors";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { useVariantProduct } from "@/utils/productUtils";
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * @interface ProductInfoProps
@@ -90,6 +90,34 @@ const ProductInfo = ({
   >({});
 
   const variantProduct = useVariantProduct(product);
+
+  // Tự động chọn biến thể màu đầu tiên khi component được tải
+  useEffect(() => {
+    if (variantProduct && variantProduct.length > 0) {
+      // Tìm biến thể màu
+      const colorVariant = variantProduct.find(
+        variant => variant.name.toLowerCase() === "color"
+      );
+
+      // Nếu có biến thể màu và có ít nhất một giá trị
+      if (
+        colorVariant &&
+        colorVariant.values &&
+        colorVariant.values.length > 0
+      ) {
+        const firstColorValue = colorVariant.values[0];
+
+        // Cập nhật selectedVariantValues với màu đầu tiên
+        setSelectedVariantValues(prev => ({
+          ...prev,
+          [colorVariant.keyOption]: firstColorValue.id,
+        }));
+
+        // Thông báo cho parent component về màu được chọn
+        onColorActiveChange?.(firstColorValue.id);
+      }
+    }
+  }, [variantProduct]);
 
   // Determine if the button is disabled
   const isAddToCartDisabled =
