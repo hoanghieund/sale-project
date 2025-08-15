@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Category } from "@/types";
-import { ArrowRight, Tag } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
@@ -17,16 +17,18 @@ interface CategoryCardProps {
 const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
   return (
     <Link to={linkTo || `/category/${category.id}`} className="group">
-      <Card className="relative overflow-hidden bg-white border-0 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-white to-secondary opacity-60" />
-
+      <Card className="relative overflow-hidden bg-transparent border-0 shadow-none hover:shadow-none transition-all duration-300 transform hover:-translate-y-1">
         {/* Content */}
-        <div className="relative p-6 flex flex-col items-center justify-center min-h-32 space-y-3">
+        <div className="relative p-4 pb-0 flex flex-col items-center justify-center min-h-32 space-y-3">
           {/* Icon */}
-          <div className="p-3 rounded-full bg-white shadow-sm group-hover:shadow-md transition-shadow duration-300">
-            <Tag className="h-6 w-6 text-primary" />
-          </div>
+          <div
+            className="aspect-square rounded-full w-24 "
+            style={{
+              backgroundImage: `url('/assets/hero-running.jpg')`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          ></div>
 
           {/* Category Name */}
           <h3 className="font-semibold text-lg text-center leading-tight group-hover:text-primary transition-colors duration-300">
@@ -38,9 +40,6 @@ const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
             <ArrowRight className="h-4 w-4 text-primary" />
           </div>
         </div>
-
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </Card>
     </Link>
   );

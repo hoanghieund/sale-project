@@ -2,6 +2,16 @@ import { Axios } from "@/api/Axios";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
@@ -22,38 +32,27 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
  * @component SellerRegistration
  * @description React component to display the seller registration page.
  * Includes title, policy list, submit button and policy links.
  */
+
 const SellerRegistration: React.FC = () => {
-  const { user } = useUser();
+  const { user, isAuthenticated } = useUser();
+  const isRoleShop = !!user?.roles?.find(role => {
+    return role.name === "ROLE_SHOP_MANAGER";
+  });
+  const navigate = useNavigate();
   const { toast } = useToast();
 
-  // FAQ list hiển thị theo phong cách của trang tham chiếu
-  // Giữ nội dung dễ hiểu, tập trung câu hỏi phổ biến khi đăng ký bán hàng
-  const faqs = [
-    {
-      q: "What products can I sell on Eulotus?",
-      a: "You can sell a wide range of products as long as they are your legal property and have proof of origin. For handmade items, clearly label the author, materials, production date, and usage/storage instructions.",
-    },
-    {
-      q: "What do I need to do to create a shop?",
-      a: "It’s simple: (1) Create an Eulotus account, (2) Set up vendor info (shop name, location, payment methods), (3) Submit for review. Once approved, you can start listing products.",
-    },
-    {
-      q: "What documents are required to register as a vendor?",
-      a: "Basic requirements include: a valid ID/Passport, proof of product origin, proof of sales capability (warehouse/physical store), and authorization from the brand owner if applicable.",
-    },
-    {
-      q: "How do fees work on Eulotus?",
-      a: "Eulotus charges a fixed 2.5% fee per successful order. There are no monthly hidden fees. If you enable offsite advertising, an additional 5% service fee applies.",
-    },
-  ];
+  // State cho dialog và form
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [shopName, setShopName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Seller success stories
   const testimonials = [
@@ -98,29 +97,53 @@ const SellerRegistration: React.FC = () => {
   ];
 
   // Function to handle the "Submit Registration Request" button click
-  const handleClick = async () => {
-    // Get userId from localStorage
-    const userId = user?.id;
-
+  const handleClick = () => {
     // Check if userId exists
-    if (!userId) {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (isRoleShop) {
+      navigate("/seller/shop");
+      return;
+    }
+    // Mở dialog form
+    setDialogOpen(true);
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    // Validate shop name
+    if (!shopName.trim()) {
       toast({
         title: "Error",
-        description: "User ID not found. Please log in again.",
+        description: "Shop name is required",
         variant: "destructive",
       });
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
+      // Get current domain for URLs
+      const currentDomain = window.location.origin;
+
       // Call API
-      const response = await Axios.get(
-        `/api/admin/approveOrCancelByUserId/${userId}`
-      );
+      const response = await Axios.post(`/api/public/shop/register-request`, {
+        shopName: shopName.trim(),
+        frontendManageUrlBase: `${currentDomain}/seller/shop`,
+        backendActivateUrlBase:
+          "https://api.eulotus.com/api/public/shop/activate",
+      });
+
+      setDialogOpen(false);
+      setShopName("");
+
       toast({
         title: "Success",
         description:
-          "Your registration request has been submitted successfully!",
+          "Your registration request has been submitted successfully! Please check your email to activate your shop within 24 hours.",
       });
     } catch (error) {
       console.error("Error calling API:", error);
@@ -131,11 +154,54 @@ const SellerRegistration: React.FC = () => {
           "An error occurred while submitting your request. Please try again later.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="container mx-auto py-12 px-4 space-y-12">
+      {/* Dialog form đăng ký shop */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Register Your Shop</DialogTitle>
+            <DialogDescription>
+              Please enter your shop information to continue.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="shopName" className="text-right">
+                Shop name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="shopName"
+                value={shopName}
+                onChange={e => setShopName(e.target.value)}
+                className="col-span-3"
+                placeholder="Enter your shop name"
+                autoFocus
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDialogOpen(false)}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={isSubmitting || !shopName.trim()}
+            >
+              {isSubmitting ? "Processing..." : "Register"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {/* Hero section with more compelling elements */}
       <section className="bg-gradient-to-br from-background to-muted/30 rounded-lg p-8 md:p-12 text-center border border-border/50 shadow-sm">
         <div className="max-w-3xl mx-auto space-y-6">

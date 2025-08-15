@@ -144,13 +144,17 @@ const Header = () => {
                   // Nút cho seller: vào kênh bán
                   <span className="inline-flex items-center gap-2">
                     <Store className="h-4 w-4" />
-                    <span className="hidden sm:inline">Seller Center</span>
+                    <span className="hidden sm:inline font-normal">
+                      Seller Center
+                    </span>
                   </span>
                 ) : (
                   // Nút cho user: đăng ký người bán
                   <span className="inline-flex items-center gap-2">
                     <Handshake className="h-4 w-4" />
-                    <span className="hidden sm:inline">Become a seller</span>
+                    <span className="hidden sm:inline font-normal">
+                      Become a seller
+                    </span>
                   </span>
                 )}
               </Link>
@@ -165,7 +169,9 @@ const Header = () => {
               <Link to="/help">
                 <span className="inline-flex items-center gap-2">
                   <LifeBuoy className="h-4 w-4" />
-                  <span className="hidden sm:inline">Help Center</span>
+                  <span className="hidden sm:inline font-normal">
+                    Help Center
+                  </span>
                 </span>
               </Link>
             </Button>
