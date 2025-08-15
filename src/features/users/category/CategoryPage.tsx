@@ -160,7 +160,7 @@ const CategoryPage = () => {
               <h2 className="text-2xl font-bold ">Categories</h2>
             </div>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-10 gap-4">
               {subcategories.length > 0 ? (
                 subcategories.map(subcategory => (
                   <CategoryCard

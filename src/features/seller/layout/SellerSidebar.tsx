@@ -77,7 +77,7 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({
     }
   }, [logout, navigate]);
   return (
-    <Sidebar className={cn("hidden border-r bg-muted/40 md:block", className)}>
+    <Sidebar className={cn("hidden border-r md:block", className)}>
       <SidebarHeader>
         {/* Logo khu vực đầu sidebar */}
         <NavLink to="/" className="flex justify-center">

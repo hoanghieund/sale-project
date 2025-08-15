@@ -5,6 +5,7 @@
  */
 
 import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import {
   ShopForm,
   ShopFormData,
@@ -99,6 +100,14 @@ const ShopManagementPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   if (!shop) {
     return (

@@ -22,7 +22,7 @@ const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
         <div className="relative p-4 pb-0 flex flex-col items-center justify-center min-h-32 space-y-3">
           {/* Icon */}
           <div
-            className="aspect-square rounded-full w-24 "
+            className="aspect-square rounded-full w-24"
             style={{
               backgroundImage: `url('/assets/hero-running.jpg')`,
               backgroundSize: "cover",

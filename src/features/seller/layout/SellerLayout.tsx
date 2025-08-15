@@ -87,10 +87,7 @@ const SellerLayout: React.FC = () => {
   return (
     <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <div className="flex min-h-screen w-full">
-        <SellerSidebar
-          navLinks={navLinks}
-          className="hidden border-r bg-muted/40 md:block"
-        />
+        <SellerSidebar navLinks={navLinks} className="hidden md:block" />
 
         <div className="flex flex-col flex-1">
           {/* Top Header */}

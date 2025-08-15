@@ -19,6 +19,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/use-user";
+import {
+  basicPasswordSchema,
+  passwordsMatch,
+} from "@/utils/schemas/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -33,15 +37,13 @@ const registerFormSchema = z
       .string()
       .min(2, { message: "Username must be at least 2 characters" }),
     email: z.string().email({ message: "Invalid email address" }),
-    password: z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters" }),
+    password: basicPasswordSchema, // Sử dụng schema mạnh cho đăng ký
     confirmPassword: z.string(),
     agreeToTerms: z.boolean().refine(val => val === true, {
       message: "You must agree to the terms and conditions",
     }),
   })
-  .refine(data => data.password === data.confirmPassword, {
+  .refine(passwordsMatch("confirmPassword"), {
     message: "Confirm password does not match",
     path: ["confirmPassword"],
   });
@@ -92,7 +94,11 @@ const Register = () => {
         {/* Logo dẫn về trang chủ */}
         <Link to="/" aria-label="Go to homepage">
           {/* Tăng kích thước logo để dễ nhìn hơn */}
-          <img src="/logo.png" alt="Eulotus logo" className="mx-auto h-14 w-auto mb-2" />
+          <img
+            src="/logo.png"
+            alt="Eulotus logo"
+            className="mx-auto h-14 w-auto mb-2"
+          />
         </Link>
         <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
         <CardDescription>

@@ -20,20 +20,20 @@ export const authService = {
    * @returns Promise với dữ liệu người dùng đã đăng ký
    */
   register: (userData: FormData) => {
-    return Axios.post("/api/auth/signup", userData, {
+    return Axios.post("/api/public/registerWithoutVerify", userData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
   },
 
-    /**
-     * Lấy thông tin hồ sơ người dùng
-     * @returns Promise với thông tin hồ sơ người dùng
-     */
-    getUserProfile: async () => {
-      return Axios.get(`/api/user/me`);
-    },
+  /**
+   * Lấy thông tin hồ sơ người dùng
+   * @returns Promise với thông tin hồ sơ người dùng
+   */
+  getUserProfile: async () => {
+    return Axios.get(`/api/user/me`);
+  },
 
   /**
    * Gửi yêu cầu khôi phục mật khẩu

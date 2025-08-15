@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -17,28 +17,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/use-user";
+import {
+  basicPasswordSchema,
+  newPasswordsMatch,
+} from "@/utils/schemas/passwordSchema";
 import { userService } from "../services/userService"; // Imports the user service for password change functionality
 
 // Defines the validation schema for the password change form using Zod.
-const passwordFormSchema = z.object({
-  currentPassword: z.string().min(6, {
-    message: "Current password must be at least 6 characters.",
-  }),
-  newPassword: z
-    .string()
-    .min(8, {
-      message: "New password must be at least 8 characters.",
-    })
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/, {
-      message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+const passwordFormSchema = z
+  .object({
+    currentPassword: basicPasswordSchema, // Sử dụng schema cơ bản cho mật khẩu hiện tại
+    newPassword: basicPasswordSchema, // Sử dụng schema mạnh cho mật khẩu mới
+    confirmNewPassword: z.string().min(1, {
+      message: "Vui lòng xác nhận mật khẩu mới.",
     }),
-  confirmNewPassword: z.string().min(8, {
-    message: "Confirm new password must be at least 8 characters.",
-  }),
-}).refine((data) => data.newPassword === data.confirmNewPassword, {
-  message: "New password and confirm new password do not match.",
-  path: ["confirmNewPassword"],
-});
+  })
+  .refine(newPasswordsMatch("newPassword", "confirmNewPassword"), {
+    message: "New password and confirm new password do not match.",
+    path: ["confirmNewPassword"],
+  });
 
 type PasswordFormValues = z.infer<typeof passwordFormSchema>;
 
@@ -48,46 +45,53 @@ type PasswordFormValues = z.infer<typeof passwordFormSchema>;
  * Uses react-hook-form and Zod for validation.
  */
 const ChangePasswordPage: React.FC = () => {
- const {user} = useUser();
- const [isLoading, setIsLoading] = useState(false); // State to manage loading status during API calls
- const form = useForm<PasswordFormValues>({
-   resolver: zodResolver(passwordFormSchema),
-   defaultValues: {
-     currentPassword: "",
-     newPassword: "",
-     confirmNewPassword: "",
-   },
-   mode: "onChange",
- });
+  const { user } = useUser();
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading status during API calls
+  const form = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordFormSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+    mode: "onChange",
+  });
 
- async function onSubmit(data: PasswordFormValues) {
-   setIsLoading(true);
-   try {
-     await userService.changePassword(data.currentPassword, data.newPassword , user.id);
-     toast({
-       title: "Success!",
-       description: "Your password has been successfully changed.",
-       variant: "default",
-     });
-     form.reset(); // Resets the form fields after successful submission
-   } catch (error) {
-     console.error("Error changing password:", error);
-     toast({
-       title: "Error!",
-       description: "An error occurred while changing your password. Please try again.",
-       variant: "destructive",
-     });
-   } finally {
-     setIsLoading(false);
-   }
- }
+  async function onSubmit(data: PasswordFormValues) {
+    setIsLoading(true);
+    try {
+      await userService.changePassword(
+        data.currentPassword,
+        data.newPassword,
+        user.id
+      );
+      toast({
+        title: "Success!",
+        description: "Your password has been successfully changed.",
+        variant: "default",
+      });
+      form.reset(); // Resets the form fields after successful submission
+    } catch (error) {
+      console.error("Error changing password:", error);
+      toast({
+        title: "Error!",
+        description:
+          "An error occurred while changing your password. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
- return (
-   <Card className="w-full bg-white">
-     <CardHeader>
-       <CardTitle className="text-lg">Change Password</CardTitle>
+  return (
+    <Card className="w-full bg-white">
+      <CardHeader>
+        <CardTitle className="text-lg">Change Password</CardTitle>
       </CardHeader>
-      <CardContent className="px-4"> {/* Adds padding */}
+      <CardContent className="px-4">
+        {" "}
+        {/* Adds padding */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Current Password Field */}
@@ -98,7 +102,11 @@ const ChangePasswordPage: React.FC = () => {
                 <FormItem>
                   <FormLabel>Current Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Enter your current password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter your current password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,7 +121,11 @@ const ChangePasswordPage: React.FC = () => {
                 <FormItem>
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Enter your new password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter your new password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -128,7 +140,11 @@ const ChangePasswordPage: React.FC = () => {
                 <FormItem>
                   <FormLabel>Confirm New Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Confirm your new password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Confirm your new password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@/hooks/use-user";
+import { basicPasswordSchema } from "@/utils/schemas/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
@@ -32,9 +33,7 @@ const loginFormSchema = z.object({
     .string()
     .email({ message: "Invalid email" })
     .min(1, { message: "Email is required" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
+  password: basicPasswordSchema, // Sử dụng schema cơ bản cho đăng nhập
   rememberMe: z.boolean().default(false),
 });
 
@@ -75,7 +74,11 @@ const Login = () => {
           {/* Logo dẫn về trang chủ */}
           <Link to="/" aria-label="Go to homepage">
             {/* Tăng kích thước logo để dễ nhìn hơn */}
-            <img src="/logo.png" alt="Eulotus logo" className="mx-auto h-14 w-auto mb-2" />
+            <img
+              src="/logo.png"
+              alt="Eulotus logo"
+              className="mx-auto h-14 w-auto mb-2"
+            />
           </Link>
           <CardTitle className="text-3xl font-bold mb-2">
             Welcome Back
