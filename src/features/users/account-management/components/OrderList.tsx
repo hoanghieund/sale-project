@@ -193,7 +193,7 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
                     <DollarSign className="h-3 w-3 mr-1" /> Total amount:
                   </h4>
                   <p className="text-base font-bold text-ring ml-4">
-                    {formatCurrencyUSD(order.totalPrice)}
+                    {formatCurrencyUSD(order.totalPrice + order.feeShip)}
                   </p>
                   <h4 className="font-semibold text-foreground flex items-center">
                     <Package className="h-3 w-3 mr-1" /> Total products:
