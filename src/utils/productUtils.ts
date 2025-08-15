@@ -64,7 +64,10 @@ export const useVariantProduct = (product: Product | undefined) => {
         number,
         {
           keyOption?: string;
-          values: Map<string, { id: number; name: string }>;
+          values: Map<
+            string,
+            { id: number; name: string; nameVariant: string }
+          >;
         }
       >
     >((acc, cur) => {
@@ -76,7 +79,11 @@ export const useVariantProduct = (product: Product | undefined) => {
       }
       // Ưu tiên id đầu tiên cho mỗi name duy nhất trong cùng type
       if (!acc[cur.type].values.has(cur.name)) {
-        acc[cur.type].values.set(cur.name, { id: cur.id, name: cur.name });
+        acc[cur.type].values.set(cur.name, {
+          id: cur.id,
+          name: cur.name,
+          nameVariant: cur.nameVariant,
+        });
       }
       return acc;
     }, {});
@@ -88,7 +95,7 @@ export const useVariantProduct = (product: Product | undefined) => {
       .map(type => ({
         keyOption: grouped[type].keyOption || getVariantSlug(type), // Ưu tiên keyOption từ dữ liệu, fallback về getVariantSlug
         name: getVariantName(type), // sử dụng getVariantName để lấy label nhóm
-        values: Array.from(grouped[type].values.values()), // Map -> Array<{id, value}>
+        values: Array.from(grouped[type].values.values()), // Map -> Array<{id, value, nameVariant}>
       }));
 
     return result;

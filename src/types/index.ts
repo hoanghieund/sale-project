@@ -61,6 +61,7 @@ export interface Option {
   name: string; // name varchar(255)
   type: number;
   keyOption?: string;
+  nameVariant?: string;
 }
 
 // Category Tree Type - Dựa trên cấu trúc lồng nhau của danh mục

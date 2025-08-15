@@ -235,30 +235,33 @@ const ProductInfo = ({
                         .match(
                           /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)$/i
                         ) ? (
-                        <div
-                          className={cn(
-                            "w-20 h-20 cursor-pointer overflow-hidden border",
-                            selectedVariantValues[variant.keyOption] ===
-                              value.id
-                              ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
-                              : "border-gray-300"
-                          )}
-                          onClick={() => {
-                            const newSelectedValues = {
-                              ...selectedVariantValues,
-                              [variant.keyOption]: value.id,
-                            };
-                            setSelectedVariantValues(newSelectedValues);
-                            setQuantity(1);
-                            // Khi chọn màu, thông báo parent để hiển thị ảnh theo màu active
-                            onColorActiveChange?.(value.id);
-                          }}
-                        >
-                          <img
-                            src={value.name}
-                            alt={`Color variant ${value.id}`}
-                            className="w-full h-full object-cover"
-                          />
+                        <div className="flex flex-col items-center gap-2">
+                          <div
+                            className={cn(
+                              "w-20 h-20 cursor-pointer overflow-hidden border",
+                              selectedVariantValues[variant.keyOption] ===
+                                value.id
+                                ? "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                                : "border-gray-300"
+                            )}
+                            onClick={() => {
+                              const newSelectedValues = {
+                                ...selectedVariantValues,
+                                [variant.keyOption]: value.id,
+                              };
+                              setSelectedVariantValues(newSelectedValues);
+                              setQuantity(1);
+                              // Khi chọn màu, thông báo parent để hiển thị ảnh theo màu active
+                              onColorActiveChange?.(value.id);
+                            }}
+                          >
+                            <img
+                              src={value.name}
+                              alt={`Color variant ${value.id}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <span className="text-xs">{value.nameVariant}</span>
                         </div>
                       ) : (
                         <ColorCircle
