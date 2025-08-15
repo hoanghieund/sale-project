@@ -7,6 +7,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 import { productService } from "@/services/productService";
@@ -57,6 +58,7 @@ const ProductCardSimple = ({
   const { isAuthenticated } = useUser(); // Use useUser hook
   const { toast } = useToast(); // Use useToast hook for notifications
   const [likedProduct, setLikedProduct] = useState(product.isLike || false);
+  const isMobile = useIsMobile(); // Kiểm tra nếu đang ở thiết bị di động
 
   const handleLikeProduct = async (productId: number) => {
     if (!isAuthenticated) {
@@ -101,7 +103,7 @@ const ProductCardSimple = ({
           <Link
             to={`/product/${product.slug}`}
             className="block h-full w-full"
-            target="_blank"
+            target={isMobile ? "_self" : "_blank"}
             rel="noopener noreferrer"
           >
             <img
@@ -159,7 +161,7 @@ const ProductCardSimple = ({
                   >
                     <Link
                       to={`/product/${product.slug}`}
-                      target="_blank"
+                      target={isMobile ? "_self" : "_blank"}
                       rel="noopener noreferrer"
                     >
                       <Eye className="h-4 w-4" />
@@ -194,7 +196,7 @@ const ProductCardSimple = ({
           <Link
             to={`/product/${product.slug}`}
             className="flex-1 flex flex-col"
-            target="_blank"
+            target={isMobile ? "_self" : "_blank"}
             rel="noopener noreferrer"
           >
             {/* Shop name */}
@@ -223,7 +225,7 @@ const ProductCardSimple = ({
           <Link
             to={`/product/${product.slug}`}
             className="flex-1 flex flex-col"
-            target="_blank"
+            target={isMobile ? "_self" : "_blank"}
             rel="noopener noreferrer"
           >
             {/* Rating */}
