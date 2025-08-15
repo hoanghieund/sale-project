@@ -317,8 +317,8 @@ const About = () => {
               <p className="font-semibold text-base mb-3">We are here</p>
               <p className="font-medium mb-2 text-sm">EULOTUS OFFICE</p>
               <p className="text-muted-foreground mb-2 text-sm">
-                <span className="font-medium">Address:</span> Online Marketplace
-                Platform
+                <span className="font-medium">Address:</span> 3221-3411 SE 14th
+                St, Des Moines, IA 50320
               </p>
               <p className="text-muted-foreground text-sm">
                 <span className="font-medium">Email:</span>{" "}
