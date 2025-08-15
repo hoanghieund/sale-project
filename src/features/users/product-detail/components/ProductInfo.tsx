@@ -242,7 +242,7 @@ const ProductInfo = ({
                           /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)$/i
                         ) ? (
                         <div className="flex flex-col items-center gap-2">
-                          <TooltipProvider>
+                          <TooltipProvider delayDuration={100}>
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div
