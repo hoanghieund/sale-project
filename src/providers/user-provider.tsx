@@ -16,6 +16,7 @@ type UserAction =
   | { type: "LOGIN_SUCCESS"; payload: User }
   | { type: "LOGIN_FAILURE"; payload: string }
   | { type: "REGISTER_START" }
+  | { type: "REGISTER_SUCCESS" }
   | { type: "REGISTER_FAILURE"; payload: string }
   | { type: "LOGOUT" }
   | { type: "UPDATE_PROFILE_START" }
@@ -53,6 +54,13 @@ function userReducer(state: UserState, action: UserAction): UserState {
       return {
         ...state,
         user: action.payload,
+        isLoading: false,
+        error: null,
+      };
+
+    case "REGISTER_SUCCESS":
+      return {
+        ...state,
         isLoading: false,
         error: null,
       };
@@ -205,6 +213,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       formData.append("username", userData.username);
       // Gọi API đăng ký thông qua authService
       const response = await authService.register(formData);
+      // Cập nhật state với thông tin user
+      dispatch({ type: "REGISTER_SUCCESS" });
       return response;
     } catch (error) {
       // Xử lý lỗi và cập nhật state
