@@ -87,6 +87,22 @@ const ShippingAddressSection = ({
           />
         </div>
 
+        {/* Email */}
+        <div className="md:col-span-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            {...register("email", { required: "Email is required" })}
+            className={errors.email ? "border-destructive" : ""}
+            disabled={isDisabled}
+          />
+          {errors.email && (
+            <p className="text-sm text-destructive mt-1">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+
         {/* Địa chỉ */}
         <div className="md:col-span-2">
           <Label htmlFor="addressLine1">Address Line 1</Label>
