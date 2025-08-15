@@ -100,7 +100,6 @@ const Header = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     navigate(`/search?keyword=${encodeURIComponent(searchQuery.trim())}`);
-    clearSearch();
   };
 
   const clearSearch = () => {

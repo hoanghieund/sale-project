@@ -31,7 +31,6 @@ const Cart = () => {
     onSelectItem,
     onSelectAll, // Add onSelectAll from useCart hook
   } = useCart();
-  console.log("🚀 ~ Cart ~ cartSummary:", cartSummary);
 
   // Calculate the checked state of the "Select all products" checkbox
   const isAllSelected =
