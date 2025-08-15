@@ -148,7 +148,6 @@ export interface Address {
   email: string;
   orderNotes?: string;
   isCurrent: boolean;
-  isShop?: boolean;
   shopIdDistrict?: number;
   userId?: number;
 }

@@ -86,7 +86,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
           email: initialData.email,
           orderNotes: initialData.orderNotes || "",
           isCurrent: initialData.isCurrent,
-          isShop: initialData.isShop || false,
         }
       : {
           firstName: "",
@@ -102,7 +101,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
           email: "",
           orderNotes: "",
           isCurrent: false,
-          isShop: false,
         },
   });
 
@@ -123,7 +121,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         email: initialData.email,
         orderNotes: initialData.orderNotes || "",
         isCurrent: initialData.isCurrent,
-        isShop: initialData.isShop || false,
       });
     } else {
       form.reset({
@@ -140,7 +137,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
         email: "",
         orderNotes: "",
         isCurrent: false,
-        isShop: false,
       });
     }
   }, [initialData, form]);
@@ -358,26 +354,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Set as default address</FormLabel>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        {/* Pickup Address Field */}
-        <FormField
-          control={form.control}
-          name="isShop"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Set as pickup address</FormLabel>
                 <FormMessage />
               </div>
             </FormItem>
