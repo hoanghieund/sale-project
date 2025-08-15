@@ -12,7 +12,7 @@ import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 import { productService } from "@/services/productService";
 import { Product } from "@/types";
-import { formatCurrencyUSD } from "@/utils/formatters";
+import { capitalizeFirstLetter, formatCurrencyUSD } from "@/utils/formatters";
 import { Eye, Heart, Star, Store, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -212,7 +212,7 @@ const ProductCardSimple = ({
               className="font-semibold text-base mb-1 line-clamp-1 group-hover:text-primary transition-colors"
               data-testid="product-name"
             >
-              {product.title}
+              {capitalizeFirstLetter(product.title)}
             </h3>
 
             {/* Description */}

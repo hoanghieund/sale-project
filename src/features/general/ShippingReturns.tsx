@@ -15,8 +15,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
  */
 const ShippingReturns = () => {
   // NOTE: Cập nhật ngày theo thời gian hiện tại của hệ thống/brand policy
-  const effectiveDate = "August 12, 2025"; // ngày hiệu lực chính sách
-  const lastUpdatedDate = "August 12, 2025"; // ngày cập nhật gần nhất
+  const effectiveDate = "August 12, 2023"; // ngày hiệu lực chính sách
+  const lastUpdatedDate = "August 12, 2023"; // ngày cập nhật gần nhất
 
   // POLICY: Các tham số chính sách tập trung để dễ bảo trì/điều chỉnh
   // - processingDays: thời gian xử lý đơn
@@ -74,7 +74,9 @@ const ShippingReturns = () => {
               <h3 className="font-medium text-sm">
                 2. Shipping Methods & Delivery Time
               </h3>
-              <p className="mb-2 text-sm">We offer the following shipping options:</p>
+              <p className="mb-2 text-sm">
+                We offer the following shipping options:
+              </p>
               <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   <span className="font-medium">Standard Shipping:</span>{" "}
@@ -116,7 +118,9 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium text-sm">5. Customs, Duties & Taxes</h3>
+              <h3 className="font-medium text-sm">
+                5. Customs, Duties & Taxes
+              </h3>
               <ul className="list-disc ml-4 space-y-1 text-sm">
                 <li>
                   International shipments may be subject to customs duties and
@@ -127,7 +131,9 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium text-sm">6. Incorrect Shipping Information</h3>
+              <h3 className="font-medium text-sm">
+                6. Incorrect Shipping Information
+              </h3>
               <p className="text-sm">
                 Please ensure your shipping address is correct before placing
                 the order. We are not responsible for lost packages due to
@@ -136,7 +142,9 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium text-sm">7. Lost or Damaged Packages</h3>
+              <h3 className="font-medium text-sm">
+                7. Lost or Damaged Packages
+              </h3>
               <p className="text-sm">
                 If your package is lost or arrives damaged, please contact us
                 within {POLICY.issueReportDays} days of delivery at{" "}
@@ -161,7 +169,9 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium text-sm">1. Eligibility for Returns</h3>
+              <h3 className="font-medium text-sm">
+                1. Eligibility for Returns
+              </h3>
               <p className="text-sm">
                 We accept returns within {POLICY.returnWindowDays} days of
                 delivery if:
@@ -225,7 +235,8 @@ const ShippingReturns = () => {
             <div>
               <h3 className="font-medium text-sm">5. Exchanges</h3>
               <p className="text-sm">
-                If you need an exchange for a different size, color, or item, contact us at{" "}
+                If you need an exchange for a different size, color, or item,
+                contact us at{" "}
                 <a
                   href="mailto:eulotus.com@gmail.com"
                   className="text-primary hover:underline"
@@ -237,9 +248,13 @@ const ShippingReturns = () => {
             </div>
 
             <div>
-              <h3 className="font-medium text-sm">6. Damaged or Defective Items</h3>
+              <h3 className="font-medium text-sm">
+                6. Damaged or Defective Items
+              </h3>
               <p className="text-sm">
-                If you receive a damaged or defective product, please contact us within {POLICY.issueReportDays} days of delivery with photos for a replacement or refund.
+                If you receive a damaged or defective product, please contact us
+                within {POLICY.issueReportDays} days of delivery with photos for
+                a replacement or refund.
               </p>
             </div>
           </section>

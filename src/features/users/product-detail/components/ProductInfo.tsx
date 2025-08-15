@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/providers/cart-provider";
 import { Product } from "@/types";
 import { getColorValue } from "@/utils/colors";
-import { formatCurrencyUSD } from "@/utils/formatters";
+import { capitalizeFirstLetter, formatCurrencyUSD } from "@/utils/formatters";
 import { useVariantProduct } from "@/utils/productUtils";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -161,7 +161,9 @@ const ProductInfo = ({
       {/* Product Info */}
       <div className="space-y-2">
         {/* Title: smaller size on mobile, increases on md+ */}
-        <h1 className="text-2xl md:text-3xl font-bold">{product?.title}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold">
+          {capitalizeFirstLetter(product?.title)}
+        </h1>
 
         <div className="space-y-1">
           {/* Rating/sales/badges block: allows wrapping and even spacing when wrapping */}
