@@ -11,11 +11,11 @@ const CookieConsent = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Kiểm tra xem người dùng đã chấp nhận cookie chưa
-    const hasAcceptedCookies = localStorage.getItem("cookiesAccepted");
+    // Kiểm tra xem người dùng đã tương tác với thông báo cookie chưa (accept hoặc decline)
+    const cookiePreference = localStorage.getItem("cookiePreference");
 
-    // Nếu chưa chấp nhận, hiển thị thông báo
-    if (!hasAcceptedCookies) {
+    // Nếu chưa tương tác, hiển thị thông báo
+    if (!cookiePreference) {
       // Đợi 1 giây trước khi hiển thị để tránh hiển thị ngay khi trang tải
       const timer = setTimeout(() => {
         setIsVisible(true);
@@ -27,12 +27,14 @@ const CookieConsent = () => {
 
   // Xử lý khi người dùng chấp nhận cookie
   const handleAccept = () => {
-    localStorage.setItem("cookiesAccepted", "true");
+    localStorage.setItem("cookiePreference", "accepted");
     setIsVisible(false);
   };
 
-  // Xử lý khi người dùng đóng thông báo (không chấp nhận)
+  // Xử lý khi người dùng từ chối cookie
   const handleClose = () => {
+    // Lưu trạng thái đã từ chối để không hiển thị lại
+    localStorage.setItem("cookiePreference", "declined");
     setIsVisible(false);
   };
 
