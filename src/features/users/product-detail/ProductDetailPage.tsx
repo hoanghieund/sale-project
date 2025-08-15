@@ -1,6 +1,6 @@
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import { Product, Shop } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageCarousel from "./components/ProductImageCarousel";
 import ProductInfo from "./components/ProductInfo"; // Import the new component
@@ -54,6 +54,15 @@ const ProductDetailPage = () => {
 
   // Hiển thị tất cả ảnh, chỉ điều khiển "focus" ảnh theo optionId khi hover/active màu.
   // Lưu ý: Carousel sẽ tự setSelectedImage về ảnh đầu tiên có optionId khớp focusOptionId.
+  const imagesToShow = useMemo(() => {
+    const list = product?.imagesDTOList || [];
+    const filterBy = hoveredColorId ?? activeColorId;
+    if (filterBy != null) {
+      const filtered = list.filter(img => img?.optionId === filterBy);
+      return filtered.length > 0 ? filtered : list; // fallback nếu không có ảnh theo màu
+    }
+    return list;
+  }, [product?.imagesDTOList, hoveredColorId, activeColorId]);
 
   if (!product) {
     return null; // Trả về null để tránh thay đổi thứ tự Hook giữa các lần render
@@ -86,7 +95,7 @@ const ProductDetailPage = () => {
           <ProductImageCarousel
             className="px-8 col-span-1"
             // Hiển thị tất cả ảnh, để carousel tự focus theo focusOptionId
-            images={product.imagesDTOList || []}
+            images={imagesToShow}
             // Khi hover/active màu, focus vào ảnh đầu tiên có optionId khớp
             focusOptionId={hoveredColorId ?? activeColorId ?? null}
             productTitle={product.title}
