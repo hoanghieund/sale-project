@@ -115,68 +115,63 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Bảng hiển thị danh mục - bọc overflow để cuộn ngang trên mobile */}
-      <div className="rounded-md border overflow-x-auto">
-        <Table className="min-w-[560px]">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Category name</TableHead>
-              {/* Ẩn cột Type trên mobile để tiết kiệm không gian */}
-              <TableHead className="text-right hidden sm:table-cell">
-                Type
-              </TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {categories.length > 0 ? (
-              categories.map(category => (
-                <TableRow key={category.id}>
-                  {/* Tên cắt ngắn trên mobile để tránh tràn */}
-                  <TableCell className="font-medium max-w-[220px] truncate sm:max-w-none">
-                    {category.name}
-                    {/* Badge "Mặc định" cho danh mục "All" */}
-                    {category.isAll && (
-                      <Badge variant="secondary" className="ml-2">
-                        Default
-                      </Badge>
-                    )}
-                  </TableCell>
-                  {/* Ẩn Type trên mobile */}
-                  <TableCell className="text-right hidden sm:table-cell">
-                    {/* Hiển thị loại danh mục dựa trên isDefault */}
-                    <Badge variant={category.isAll ? "default" : "secondary"}>
-                      {category.isAll ? "Default" : "Regular"}
+      <Table>
+        <TableHeader className="sticky top-0 bg-white">
+          <TableRow>
+            <TableHead>Category name</TableHead>
+            {/* Ẩn cột Type trên mobile để tiết kiệm không gian */}
+            <TableHead className="text-right">Type</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {categories.length > 0 ? (
+            categories.map(category => (
+              <TableRow key={category.id}>
+                {/* Tên cắt ngắn trên mobile để tránh tràn */}
+                <TableCell className="font-medium truncate sm:max-w-none">
+                  {category.name}
+                  {/* Badge "Mặc định" cho danh mục "All" */}
+                  {category.isAll && (
+                    <Badge variant="secondary" className="ml-2">
+                      Default
                     </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {/* Dropdown menu hành động */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="h-8 w-8 p-0"
-                          disabled={category.isAll}
-                          title={
-                            category.isAll
-                              ? "Default category cannot be edited/deleted"
-                              : "No available actions"
-                          }
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {/* Nút Chỉnh sửa: chỉ hiển thị khi KHÔNG phải mặc định */}
-                        {!category.isAll && (
-                          <DropdownMenuItem
-                            onClick={() => handleEdit(category)}
-                          >
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                        )}
-                        {/* Nút Xóa: chỉ hiển thị khi KHÔNG phải mặc định */}
-                        {/* {!category.isAll && (
+                  )}
+                </TableCell>
+                {/* Ẩn Type trên mobile */}
+                <TableCell className="text-right ">
+                  {/* Hiển thị loại danh mục dựa trên isDefault */}
+                  <Badge variant={category.isAll ? "default" : "secondary"}>
+                    {category.isAll ? "Default" : "Regular"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  {/* Dropdown menu hành động */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="h-8 w-8 p-0"
+                        disabled={category.isAll}
+                        title={
+                          category.isAll
+                            ? "Default category cannot be edited/deleted"
+                            : "No available actions"
+                        }
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {/* Nút Chỉnh sửa: chỉ hiển thị khi KHÔNG phải mặc định */}
+                      {!category.isAll && (
+                        <DropdownMenuItem onClick={() => handleEdit(category)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                      )}
+                      {/* Nút Xóa: chỉ hiển thị khi KHÔNG phải mặc định */}
+                      {/* {!category.isAll && (
                           <DropdownMenuItem
                             onClick={() => handleDelete(category)}
                             className="text-red-600"
@@ -185,23 +180,21 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                             Delete
                           </DropdownMenuItem>
                         )} */}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow className="text-center py-8 text-gray-500 w-full">
-                <TableCell colSpan={3}>No categories found</TableCell>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <TableRow className="text-center py-8 text-gray-500 w-full">
+              <TableCell colSpan={3}>No categories found</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
 
       {/* Dialog xác nhận xóa danh mục */}
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        class{" "}
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm delete category</AlertDialogTitle>

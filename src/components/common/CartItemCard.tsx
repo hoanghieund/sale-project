@@ -131,6 +131,13 @@ const CartItemCard = ({
                   v => v.keyOption === slug
                 );
                 if (!variantType) return null;
+                if (variantType.name.toLocaleLowerCase() === "color") {
+                  const value = variantType.values.find(val => val.id === id);
+                  const isUrl = value?.name
+                    .trim()
+                    .match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)$/i);
+                  return isUrl ? value.nameVariant : value.name;
+                }
                 const value = variantType.values.find(val => val.id === id);
                 return value ? value.name : null;
               };

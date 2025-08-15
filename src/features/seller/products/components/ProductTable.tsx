@@ -50,117 +50,106 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Product table */}
-      <div className="w-full overflow-x-auto rounded-md border">
-        <Table className="min-w-[900px] md:min-w-0">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Image</TableHead>
-              <TableHead className="w-1/5">Product name</TableHead>
-              <TableHead className="hidden md:table-cell">Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead className="hidden md:table-cell">Stock</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Created at</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.map(product => {
-              // Map according to Product structure from '@/types'
-              // Build category name safely: only show child if it exists
-              const parentSlug = product.collectionResponse?.categoryTree?.slug;
-              const childSlug =
-                product.collectionResponse?.categoryTree?.child?.slug;
-              const categoryName = parentSlug
-                ? childSlug
-                  ? `${parentSlug} / ${childSlug}`
-                  : parentSlug
-                : "N/A";
-              const imageSrc =
-                product.imagesDTOList && product.imagesDTOList.length > 0
-                  ? product.imagesDTOList[0]?.path || "/placeholder.svg"
-                  : "/placeholder.svg";
-              const price =
-                typeof product.price === "number" ? product.price : 0;
-              const stock =
-                typeof product.totalProduct === "number"
-                  ? product.totalProduct
-                  : 0;
-              const isActive = !!product.status; // status: boolean
-              // Format created date safely via util (fallback '-')
-              const createdAt = formatDate(product.timeCreate) || "-";
-              return (
-                <TableRow key={product.id}>
-                  <TableCell className="w-16">
-                    {/* Thumbnail: prioritize the first image */}
-                    <img
-                      src={imageSrc}
-                      alt={product.title}
-                      className="w-12 h-12 object-cover rounded-md"
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium max-w-[160px] truncate md:max-w-none">
-                    {product.title}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {categoryName}
-                  </TableCell>
-                  {/* Format price using common util for global consistency */}
-                  <TableCell>{formatCurrencyUSD(price)}</TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {stock}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={isActive ? "default" : "secondary"}>
-                      {isActive ? "Visible" : "Hidden"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {createdAt}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {/* <DropdownMenuItem onClick={() => onEdit(product)}>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Image</TableHead>
+            <TableHead className="w-1/5">Product name</TableHead>
+            <TableHead className="">Category</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead className="">Stock</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="">Created at</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {products.map(product => {
+            // Map according to Product structure from '@/types'
+            // Build category name safely: only show child if it exists
+            const parentSlug = product.collectionResponse?.categoryTree?.slug;
+            const childSlug =
+              product.collectionResponse?.categoryTree?.child?.slug;
+            const categoryName = parentSlug
+              ? childSlug
+                ? `${parentSlug} / ${childSlug}`
+                : parentSlug
+              : "N/A";
+            const imageSrc =
+              product.imagesDTOList && product.imagesDTOList.length > 0
+                ? product.imagesDTOList[0]?.path || "/placeholder.svg"
+                : "/placeholder.svg";
+            const price = typeof product.price === "number" ? product.price : 0;
+            const stock =
+              typeof product.totalProduct === "number"
+                ? product.totalProduct
+                : 0;
+            const isActive = !!product.status; // status: boolean
+            // Format created date safely via util (fallback '-')
+            const createdAt = formatDate(product.timeCreate) || "-";
+            return (
+              <TableRow key={product.id}>
+                <TableCell className="w-16">
+                  {/* Thumbnail: prioritize the first image */}
+                  <img
+                    src={imageSrc}
+                    alt={product.title}
+                    className="w-12 h-12 object-cover rounded-md"
+                  />
+                </TableCell>
+                <TableCell className="font-medium max-w-[160px] truncate md:max-w-none">
+                  {product.title}
+                </TableCell>
+                <TableCell className="">{categoryName}</TableCell>
+                {/* Format price using common util for global consistency */}
+                <TableCell>{formatCurrencyUSD(price)}</TableCell>
+                <TableCell className="">{stock}</TableCell>
+                <TableCell>
+                  <Badge variant={isActive ? "default" : "secondary"}>
+                    {isActive ? "Visible" : "Hidden"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="">{createdAt}</TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {/* <DropdownMenuItem onClick={() => onEdit(product)}>
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem> */}
-                        {typeof onToggleStatus === "function" && (
-                          <DropdownMenuItem
-                            onClick={() => onToggleStatus(product, !isActive)}
-                          >
-                            {isActive
-                              ? "Hide on storefront"
-                              : "Show on storefront"}
-                          </DropdownMenuItem>
-                        )}
-                        {/* <DropdownMenuItem
+                      {typeof onToggleStatus === "function" && (
+                        <DropdownMenuItem
+                          onClick={() => onToggleStatus(product, !isActive)}
+                        >
+                          {isActive
+                            ? "Hide on storefront"
+                            : "Show on storefront"}
+                        </DropdownMenuItem>
+                      )}
+                      {/* <DropdownMenuItem
                           onClick={() => handleDelete(product)}
                           className="text-red-600"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem> */}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
 
       {/* Empty state */}
       {products.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
-          No products found
-        </div>
+        <div className="text-center py-8 text-gray-500">No products found</div>
       )}
     </div>
   );

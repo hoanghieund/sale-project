@@ -161,7 +161,7 @@ export const SellerSidebar: React.FC<SellerSidebarProps> = ({
                       "Khách"}
                   </div>
                   {(user as any)?.email && (
-                    <div className="text-xs text-muted-foreground leading-none truncate">
+                    <div className="text-xs text-muted leading-none truncate">
                       {(user as any)?.email}
                     </div>
                   )}
