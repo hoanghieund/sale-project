@@ -131,15 +131,16 @@ const CartItemCard = ({
                   v => v.keyOption === slug
                 );
                 if (!variantType) return null;
-                if (variantType.name.toLocaleLowerCase() === "color") {
-                  const value = variantType.values.find(val => val.id === id);
-                  const isUrl = value?.name
-                    .trim()
-                    .match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)$/i);
-                  return isUrl ? value.nameVariant : value.name;
-                }
                 const value = variantType.values.find(val => val.id === id);
-                return value ? value.name : null;
+                return value
+                  ? {
+                      name: value.name,
+                      nameVariant: value.nameVariant,
+                      isUrl: value.name
+                        .trim()
+                        .match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)$/i),
+                    }
+                  : null;
               };
 
               // Xử lý các variant một cách động
@@ -154,27 +155,39 @@ const CartItemCard = ({
                     if (variantName) {
                       // Xử lý riêng cho color để hiển thị màu
                       if (key === "colorId") {
-                        const colorHex = getColorValue(variantName);
-                        variantsToDisplay.push(
-                          <Badge
-                            variant="secondary"
-                            className="flex items-center gap-1"
-                          >
-                            Color:
-                            {colorHex && (
-                              <span
-                                style={{
-                                  display: "inline-block",
-                                  width: "12px",
-                                  height: "12px",
-                                  borderRadius: "50%",
-                                  backgroundColor: colorHex,
-                                  border: "1px solid #ccc",
-                                }}
-                              ></span>
-                            )}
-                          </Badge>
-                        );
+                        if (variantName.isUrl) {
+                          variantsToDisplay.push(
+                            <Badge
+                              variant="secondary"
+                              className="flex items-center gap-1"
+                            >
+                              Color:
+                              <span>{variantName.nameVariant}</span>
+                            </Badge>
+                          );
+                        } else {
+                          const colorHex = getColorValue(variantName.name);
+                          variantsToDisplay.push(
+                            <Badge
+                              variant="secondary"
+                              className="flex items-center gap-1"
+                            >
+                              Color:
+                              {colorHex && (
+                                <span
+                                  style={{
+                                    display: "inline-block",
+                                    width: "12px",
+                                    height: "12px",
+                                    borderRadius: "50%",
+                                    backgroundColor: colorHex,
+                                    border: "1px solid #ccc",
+                                  }}
+                                ></span>
+                              )}
+                            </Badge>
+                          );
+                        }
                       } else {
                         // Xử lý cho các variant khác
                         // Chuyển key thành label (ví dụ: "fitId" -> "Fit")
@@ -187,7 +200,7 @@ const CartItemCard = ({
 
                         variantsToDisplay.push(
                           <Badge variant="secondary">
-                            {capitalizedLabel}: {variantName}
+                            {capitalizedLabel}: {variantName.name}
                           </Badge>
                         );
                       }
