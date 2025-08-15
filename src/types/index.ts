@@ -245,19 +245,6 @@ export interface TimeSeriesPoint {
   itemsSold?: number;
 }
 
-// Order Address Types - Dựa trên tbl_orders_address
-export interface OrderAddress {
-  id: number;
-  address: string;
-  shopIdDistrict: number;
-  isShop: boolean;
-  phoneNumber: string;
-  fullName: string;
-  isCurrent: boolean;
-  user: any; // Tạm thời là any
-  userId: number | null; // Có thể null
-}
-
 // Image Types - Dựa trên tbl_image
 export interface Image {
   id: number; // bigint(20) trong SQL
@@ -296,7 +283,7 @@ export interface Order {
   timeOrder: string; // "DD-MM-YYYY"
   timePay: string; // "DD-MM-YYYY"
   phoneNumber: string;
-  orderAddressDTO: OrderAddress;
+  orderAddressDTO: Address;
   code: string;
   sumTotal: number;
   userDTO: any; // Tạm thời là any, có thể định nghĩa interface UserDTO sau

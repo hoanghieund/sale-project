@@ -84,7 +84,7 @@ const CartItemCard = ({
           </div>
         )}
         {/* Product Image */}
-        <div className={"w-20 h-full flex-shrink-0"}>
+        <div className={"w-20 h-auto flex-shrink-0"}>
           <img
             src={imageProduct}
             alt={item.productDTO?.title || "Product"}

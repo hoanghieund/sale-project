@@ -14,9 +14,11 @@ import { Order, OrderStatus } from "@/types";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { AxiosError } from "axios";
 import {
+  Building2,
   Calendar,
   DollarSign,
   Loader2,
+  Mail,
   MapPin,
   Package,
   Phone,
@@ -139,17 +141,52 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
                   <h4 className="font-semibold text-foreground flex items-center">
                     <User className="h-3 w-3 mr-1" /> Recipient information:
                   </h4>
-                  <p className="text-xs text-gray-600 ml-4">
-                    {order.orderAddressDTO?.fullName || "N/A"}
+                  <p className="text-xs text-gray-600 ml-4 flex items-center">
+                    <User className="h-3 w-3 mr-1" />{" "}
+                    {order.orderAddressDTO
+                      ? `${order.orderAddressDTO.firstName || ""} ${
+                          order.orderAddressDTO.lastName || ""
+                        }`.trim()
+                      : "N/A"}{" "}
                   </p>
+                  {order.orderAddressDTO?.companyName && (
+                    <p className="text-xs text-gray-600 ml-4 flex items-center">
+                      <Building2 className="h-3 w-3 mr-1" />{" "}
+                      {order.orderAddressDTO.companyName}
+                    </p>
+                  )}
                   <p className="text-xs text-gray-600 ml-4 flex items-center">
                     <Phone className="h-3 w-3 mr-1" />{" "}
                     {order.orderAddressDTO?.phoneNumber || "N/A"}
                   </p>
                   <p className="text-xs text-gray-600 ml-4 flex items-center">
-                    <MapPin className="h-3 w-3 mr-1" />{" "}
-                    {`${order.orderAddressDTO?.address}` || "N/A"}
+                    <Mail className="h-3 w-3 mr-1" />{" "}
+                    {order.orderAddressDTO?.email || "N/A"}
                   </p>
+                  <p className="text-xs text-gray-600 ml-4 flex items-center">
+                    <MapPin className="h-3 w-3 mr-1" />{" "}
+                    {order.orderAddressDTO ? (
+                      <>
+                        {order.orderAddressDTO.addressLine1}
+                        {order.orderAddressDTO.addressLine2 && (
+                          <>, {order.orderAddressDTO.addressLine2}</>
+                        )}
+                        <br />
+                        {order.orderAddressDTO.city},{" "}
+                        {order.orderAddressDTO.state}{" "}
+                        {order.orderAddressDTO.postalCode}
+                        <br />
+                        {order.orderAddressDTO.country}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
+                  </p>
+                  {order.orderAddressDTO?.orderNotes && (
+                    <p className="text-xs text-gray-600 ml-4 mt-1 italic">
+                      Note: {order.orderAddressDTO.orderNotes}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-semibold text-foreground flex items-center">
