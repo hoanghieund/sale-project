@@ -118,6 +118,13 @@ const Footer = () => {
           {/* Bottom Bar với social icons và DMCA */}
           <div className="border-t border-gray-200 mt-8 pt-6 md:pt-2">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <Link to="/" aria-label="Home">
+                <img
+                  src="/logo.png"
+                  alt="Eulotus Logo"
+                  className="h-16 w-auto"
+                />
+              </Link>
               {/* Social Media Icons */}
               <div className="flex items-center gap-4">
                 <Link
@@ -147,14 +154,18 @@ const Footer = () => {
               </div>
 
               {/* Logo */}
-              <div className="flex items-center">
-                <Link to="/" aria-label="Home">
+              <div className="flex items-center gap-2">
+                {/* React dùng className thay cho class trong TSX */}
+                <a
+                  href="//www.dmca.com/Protection/Status.aspx?ID=6cd73652-1377-457b-9ad2-1f66fe0c9ddc"
+                  title="DMCA.com Protection Status"
+                  className="dmca-badge"
+                >
                   <img
-                    src="/logo.png"
-                    alt="Eulotus Logo"
-                    className="h-16 w-auto"
+                    src="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=6cd73652-1377-457b-9ad2-1f66fe0c9ddc"
+                    alt="DMCA.com Protection Status"
                   />
-                </Link>
+                </a>
               </div>
             </div>
           </div>
