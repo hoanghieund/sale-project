@@ -162,7 +162,7 @@ const Footer = () => {
                   className="dmca-badge"
                 >
                   <img
-                    src="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=6cd73652-1377-457b-9ad2-1f66fe0c9ddc"
+                    src="https://images.dmca.com/Badges/dmca_protected_sml_120l.png?ID=6cd73652-1377-457b-9ad2-1f66fe0c9ddc"
                     alt="DMCA.com Protection Status"
                   />
                 </a>
