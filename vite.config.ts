@@ -14,4 +14,11 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Buộc Vite pre-bundle nuqs để tránh lỗi "Outdated Optimize Dep"
+  optimizeDeps: {
+    include: [
+      "nuqs",
+      "nuqs/adapters/react-router/v6", // adapter đang sử dụng
+    ],
+  },
 }));

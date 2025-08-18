@@ -4,8 +4,9 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import ProductCardSimple from "@/components/common/ProductCardSimple";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@/types";
+import { parseAsIndex, parseAsString, useQueryState } from "nuqs"; // Đồng bộ q & page với URL
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom"; // Đọc query để nhận biết legacy params và page
 import { productService } from "./services/productServices";
 
 /**
@@ -14,20 +15,21 @@ import { productService } from "./services/productServices";
  */
 const SearchPage: React.FC = () => {
   const location = useLocation();
-
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // State for the new filter system
-  const [filters, setFilters] = useState({
-    currentPage: 0,
-    pageSize: 10,
-  });
+  // Pagination: pageIndex base-0 từ URL (?page= base-1 hiển thị)
+  const [pageIndex, setPageIndex] = useQueryState(
+    "page",
+    parseAsIndex.withDefault(0)
+  );
+  const [pageSize] = useState(10); // Có thể nâng cấp đồng bộ qua URL nếu cần
 
   // State for pagination
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const [keyword, setKeyword] = useState("");
+  // Từ khóa tìm kiếm đọc/ghi từ URL (?q=)
+  const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
 
   /**
    * @function fetchProducts
@@ -39,9 +41,9 @@ const SearchPage: React.FC = () => {
     try {
       // API call to fetch products based on filters and keyword
       const response = await productService.getProductsBySearchKeyword({
-        keyword: keyword,
-        currentPage: filters.currentPage,
-        pageSize: filters.pageSize,
+        keyword: q,
+        currentPage: pageIndex,
+        pageSize,
       });
       setProducts(response.content);
       setTotalPages(response.totalPages);
@@ -53,23 +55,32 @@ const SearchPage: React.FC = () => {
     }
   };
 
-  // Effect to update keyword from URL when component mounts or URL changes
+  // Migration: hỗ trợ link cũ ?keyword=... => map sang ?q=... 1 lần, giữ nguyên page nếu có
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const searchKeyword = queryParams.get("keyword") || "";
-    setKeyword(searchKeyword);
-
-    // Reset filters when keyword changes
-    setFilters(prev => ({
-      ...prev,
-      currentPage: 0,
-    }));
+    const sp = new URLSearchParams(location.search);
+    const hasQ = sp.has("q");
+    const hasLegacyKeyword = sp.has("keyword");
+    if (!hasQ && hasLegacyKeyword) {
+      const legacy = sp.get("keyword") || "";
+      setQ(legacy || null); // đặt q, nuqs sẽ cập nhật URL
+    }
+    // chỉ chạy khi mount hoặc URL thực sự đổi
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
+
+  // Reset về trang đầu khi q thay đổi, TRỪ khi URL đã có tham số page (giữ page theo link chia sẻ)
+  useEffect(() => {
+    const sp = new URLSearchParams(location.search);
+    const hasPage = sp.has("page");
+    if (!hasPage) {
+      setPageIndex(0);
+    }
+  }, [q, location.search]);
 
   // Effect to call API when filters change
   useEffect(() => {
     fetchProducts();
-  }, [filters, keyword]);
+  }, [pageIndex, pageSize, q]);
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -78,7 +89,7 @@ const SearchPage: React.FC = () => {
         <div className="w-full">
           <Card className="w-full bg-white">
             <CardHeader>
-              <CardTitle>Search Results for: "{keyword}"</CardTitle>
+              <CardTitle>Search Results for: "{q}"</CardTitle>
             </CardHeader>
             <CardContent>
               {/* Result Information */}
@@ -113,13 +124,12 @@ const SearchPage: React.FC = () => {
                   {totalPages > 1 && (
                     <div className="mt-8">
                       <CustomPagination
-                        currentPage={filters.currentPage + 1} // API uses 0-based, UI uses 1-based
+                        // currentPage hiển thị base-1; map từ pageIndex (base-0)
+                        currentPage={pageIndex + 1}
                         totalPages={totalPages}
                         onPageChange={page => {
-                          setFilters(prev => ({
-                            ...prev,
-                            currentPage: page - 1,
-                          })); // Convert to 0-based for API
+                          // Đồng bộ URL với page mới (base-1 -> base-0)
+                          setPageIndex(page - 1);
                         }}
                         className="justify-center"
                       />

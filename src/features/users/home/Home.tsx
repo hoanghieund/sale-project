@@ -1,5 +1,6 @@
 import { productService } from "@/features/users/home/services/productService";
 import { Product } from "@/types";
+import { parseAsIndex, useQueryState } from "nuqs"; // Đồng bộ page với URL
 import { useEffect, useState } from "react";
 import { AllProductsSection } from "./components/AllProductsSection"; // Import AllProductsSection
 import FeaturedProductsSection from "./components/FeaturedProductsSection";
@@ -12,19 +13,22 @@ import HeroSection from "./components/HeroSection";
 const Index = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]); // State cho tất cả sản phẩm
-  const [currentPage, setCurrentPage] = useState<number>(1); // State cho trang hiện tại
+  // Page đồng bộ URL: dùng base-0 trong code, base-1 hiển thị
+  const [pageIndex, setPageIndex] = useQueryState(
+    "page",
+    parseAsIndex.withDefault(0)
+  );
   const [totalPages, setTotalPages] = useState<number>(1); // State cho tổng số trang
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [
-          featuredProductsResponse,
-          allProductsResponse,
-        ] = await Promise.allSettled([
-          productService.getFeaturedProducts(),
-          productService.getAllProductsWithPagination(currentPage - 1, 25), // Lấy tất cả sản phẩm với phân trang
-        ]);
+        const [featuredProductsResponse, allProductsResponse] =
+          await Promise.allSettled([
+            productService.getFeaturedProducts(),
+            // API nhận base-0: truyền trực tiếp pageIndex
+            productService.getAllProductsWithPagination(pageIndex, 25), // Lấy tất cả sản phẩm với phân trang
+          ]);
         if (featuredProductsResponse.status === "fulfilled") {
           setFeaturedProducts(featuredProductsResponse.value);
         }
@@ -38,11 +42,12 @@ const Index = () => {
     };
 
     fetchData();
-  }, [currentPage]); // Thêm currentPage vào dependency array để gọi lại khi trang thay đổi
+  }, [pageIndex]); // Gọi lại khi pageIndex thay đổi
 
   // Hàm xử lý thay đổi trang
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // UI base-1 -> URL/base-0
+    setPageIndex(page - 1);
   };
 
   return (
@@ -53,11 +58,11 @@ const Index = () => {
 
       <AllProductsSection
         products={allProducts ?? []}
-        currentPage={currentPage}
+        // UI cần base-1
+        currentPage={pageIndex + 1}
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-
     </div>
   );
 };

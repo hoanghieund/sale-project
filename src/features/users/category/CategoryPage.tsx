@@ -26,6 +26,12 @@ import { Separator } from "@/components/ui/separator";
 import { categoryService } from "@/features/users/category/services/categoryServices";
 import { productService } from "@/features/users/category/services/productServices";
 import { Category, Product } from "@/types";
+import {
+  parseAsIndex,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryState,
+} from "nuqs"; // Đồng bộ q, sort, page với URL
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -40,13 +46,17 @@ const CategoryPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // State for new filter system
-  const [filters, setFilters] = useState({
-    currentPage: 0,
-    pageSize: 10,
-    sort: "asc", // "asc" or "desc"
-    keyword: "", // Search keyword
-  });
+  // Nuqs-backed states: page (base-0), sort, keyword
+  const [pageIndex, setPageIndex] = useQueryState(
+    "page",
+    parseAsIndex.withDefault(0)
+  );
+  const [sortQ, setSortQ] = useQueryState(
+    "sort",
+    parseAsStringLiteral(["asc", "desc"] as const).withDefault("asc")
+  );
+  const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
+  const [pageSize] = useState(10); // Có thể nâng cấp đồng bộ qua URL nếu cần
 
   // State for pagination
   const [totalPages, setTotalPages] = useState(0);
@@ -86,10 +96,10 @@ const CategoryPage = () => {
     try {
       // Standardize payload according to service interface
       const payload = {
-        currentPage: filters.currentPage,
-        pageSize: filters.pageSize,
-        sort: filters.sort as "asc" | "desc",
-        keyword: filters.keyword,
+        currentPage: pageIndex,
+        pageSize: pageSize,
+        sort: sortQ as "asc" | "desc",
+        keyword: q,
       };
 
       const response = await productService.getProductsByCategorySlug(
@@ -121,14 +131,14 @@ const CategoryPage = () => {
     }
   }, [categorySlug, fetchCategoryData]);
 
-  // Effect to fetch product data when categoryId or filters change
+  // Effect to fetch product data when category or query params change
   useEffect(() => {
     if (categorySlug && categories.length === 1) {
       fetchProductData(categorySlug);
     } else if (categories.length === 2) {
       fetchProductData(categories[1].slug);
     }
-  }, [categorySlug, categories, filters]);
+  }, [categorySlug, categories, pageIndex, pageSize, sortQ, q]);
 
   const breadcrumbItems = useMemo(() => {
     if (categories.length === 1) {
@@ -196,14 +206,15 @@ const CategoryPage = () => {
                 <InputDebounce
                   type="text"
                   placeholder="Enter keyword"
-                  value={filters.keyword}
-                  onDebounceChange={debouncedKeyword =>
-                    setFilters(prev => ({
-                      ...prev,
-                      keyword: debouncedKeyword,
-                      currentPage: 0,
-                    }))
-                  }
+                  value={q}
+                  onDebounceChange={debouncedKeyword => {
+                    // Bỏ qua nếu không thay đổi (tránh reset khi mount với giá trị sẵn có)
+                    if (debouncedKeyword === q) return;
+                    // Cập nhật q trên URL; rỗng -> remove param
+                    setQ(debouncedKeyword ? debouncedKeyword : null);
+                    // Người dùng thay đổi keyword -> luôn reset về trang đầu
+                    setPageIndex(0);
+                  }}
                 />
               </div>
 
@@ -211,13 +222,11 @@ const CategoryPage = () => {
               <div className="flex items-center gap-2">
                 <Label className="text-sm font-medium">Sort</Label>
                 <Select
-                  value={filters.sort}
+                  value={sortQ}
                   onValueChange={value => {
-                    setFilters(prev => ({
-                      ...prev,
-                      sort: value,
-                      currentPage: 0,
-                    }));
+                    // Reset trang khi đổi sort
+                    setPageIndex(0);
+                    setSortQ(value as "asc" | "desc");
                   }}
                 >
                   <SelectTrigger>
@@ -265,13 +274,12 @@ const CategoryPage = () => {
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <CustomPagination
-                      currentPage={filters.currentPage + 1} // API uses 0-based, UI uses 1-based
+                      // currentPage hiển thị base-1; map từ pageIndex (base-0)
+                      currentPage={pageIndex + 1}
                       totalPages={totalPages}
                       onPageChange={page => {
-                        setFilters(prev => ({
-                          ...prev,
-                          currentPage: page - 1,
-                        })); // Convert to 0-based for API
+                        // Đồng bộ URL với page mới (base-1 -> base-0)
+                        setPageIndex(page - 1);
                       }}
                       className="justify-center"
                     />

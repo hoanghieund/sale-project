@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectedSellerRoute from "./ProtectedSellerRoute";
 import RedirectRoute from "./RedirectRoute";
+import { NuqsAdapter } from "nuqs/adapters/react-router/v6"; // Adapter để nuqs hoạt động với React Router v6
 
 // Lazy load pages for better performance
 const Home = lazy(() => import("@/features/users/home/Home"));
@@ -106,7 +107,9 @@ const OrderDetailPage = lazy(
 
 const AppRouter = () => {
   return (
-    <BrowserRouter>
+    // Bọc toàn bộ Router bằng NuqsAdapter để đồng bộ state <-> query string
+    <NuqsAdapter>
+      <BrowserRouter>
       <ScrollToTop />
       <Suspense
         fallback={
@@ -215,7 +218,8 @@ const AppRouter = () => {
           </Route>
         </Routes>
       </Suspense>
-    </BrowserRouter>
+      </BrowserRouter>
+    </NuqsAdapter>
   );
 };
 

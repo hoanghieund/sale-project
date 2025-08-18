@@ -22,6 +22,13 @@ import { cn } from "@/lib/utils";
 import { Search, Star } from "lucide-react";
 import { shopService } from "./services/shopServices";
 // Tabs removed as no longer in use
+import {
+  useQueryState,
+  parseAsString,
+  parseAsStringLiteral,
+  parseAsIndex,
+  parseAsInteger,
+} from "nuqs"; // Đồng bộ state với URL (q, sort, page)
 
 /**
  * Mục collection trong Shop chỉ cần 3 trường tối giản cho sidebar
@@ -55,17 +62,26 @@ const ShopPage = () => {
   const [shop, setShop] = useState<shopUi>({} as shopUi);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategoryId, setActiveCategoryId] = useState<
-    number | string | null
-  >(null);
-  const [sort, setSort] = useState("asc");
-  // State tìm kiếm: tách UI input và giá trị áp dụng (keyword) để tránh gọi API mỗi ký tự
+  // Category theo URL (?cat=): number | null; null nghĩa là "All"
+  const [catId, setCatId] = useQueryState("cat", parseAsInteger);
+  // Nuqs-backed states cho sort, keyword (q) và page index (base-0)
+  const [sortQ, setSortQ] = useQueryState(
+    "sort",
+    // Chỉ chấp nhận 'asc' | 'desc', mặc định 'asc'
+    parseAsStringLiteral(["asc", "desc"] as const).withDefault("asc")
+  );
+  const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
+  const [pageIndex, setPageIndex] = useQueryState(
+    "page",
+    // parseAsIndex hiển thị page base-1 trên URL, nhưng state trong code vẫn base-0
+    parseAsIndex.withDefault(0)
+  );
+  // State UI cho ô nhập tìm kiếm, sync với q từ URL
   const [searchInput, setSearchInput] = useState("");
-  const [keyword, setKeyword] = useState<string | undefined>(undefined);
 
   // State for the new filtering system
   const [pagination, setPagination] = useState({
-    currentPage: 0,
+    currentPage: 0, // Không dùng để fetch nữa, giữ để tương thích UI; nguồn dữ liệu thực là pageIndex từ URL
     pageSize: PAGE_SIZE,
   });
 
@@ -87,7 +103,8 @@ const ShopPage = () => {
         page: page,
         size: size,
         sort: sort,
-        keywword: keyword,
+        // Đồng bộ keyword theo URL param q (backend key là 'keywword')
+        keywword: q ? q : undefined,
       };
 
       const responseProduct = await shopService.getProductsByCategoryId(
@@ -135,7 +152,7 @@ const ShopPage = () => {
         size: size,
         sort: sort,
         // Truyền từ khóa tìm kiếm theo key backend yêu cầu (`keywword`)
-        keywword: keyword,
+        keywword: q ? q : undefined,
       };
 
       const responseProduct = await shopService.getProductsByAll(
@@ -171,10 +188,10 @@ const ShopPage = () => {
   // Giải quyết lỗi: đổi trang không gọi API (phân trang không hoạt động)
   useEffect(() => {
     // Guard cho trường hợp chưa có category id hợp lệ
-    if (activeCategoryId === null || activeCategoryId === undefined) {
+    if (catId === null || catId === undefined) {
       fetchProductsByAll(
-        sort as "asc" | "desc",
-        pagination.currentPage,
+        sortQ as "asc" | "desc",
+        pageIndex,
         pagination.pageSize
       );
       return;
@@ -182,18 +199,23 @@ const ShopPage = () => {
 
     // Gọi API theo base-0 của backend (currentPage là base-0)
     fetchProductsByCategoryId(
-      activeCategoryId,
-      sort as "asc" | "desc",
-      pagination.currentPage,
+      catId,
+      sortQ as "asc" | "desc",
+      pageIndex,
       pagination.pageSize
     );
   }, [
-    activeCategoryId,
-    sort,
-    pagination.currentPage,
+    catId,
+    sortQ,
+    pageIndex,
     pagination.pageSize,
-    keyword,
+    q,
   ]);
+
+  // Sync ô nhập với giá trị từ URL (?q=)
+  useEffect(() => {
+    setSearchInput(q || "");
+  }, [q]);
 
   /**
    * Thực thi tìm kiếm khi người dùng nhấn Enter hoặc click nút Search
@@ -201,9 +223,11 @@ const ShopPage = () => {
    * - Áp dụng keyword đã được trim; nếu rỗng sẽ bỏ qua (undefined)
    */
   const handleSearch = () => {
-    setPagination(prev => ({ ...prev, currentPage: 0 }));
+    // Reset về trang 0 và cập nhật query param ?q=
+    setPageIndex(0);
     const value = searchInput.trim();
-    setKeyword(value || undefined);
+    // Nếu rỗng thì xóa param để URL sạch (null sẽ remove key)
+    setQ(value ? value : null);
   };
 
   /**
@@ -212,11 +236,13 @@ const ShopPage = () => {
    * - Clear searchInput và keyword trước khi effect fetch chạy
    */
   const handleSelectCategory = (id: number | null) => {
-    setActiveCategoryId(id);
-    setPagination(prev => ({ ...prev, currentPage: 0 }));
-    setSort("asc");
+    // Lưu category vào URL (?cat=)
+    setCatId(id ?? null);
+    // Đồng bộ URL: reset page, sort về asc, clear q
+    setPageIndex(0);
+    setSortQ("asc");
     setSearchInput("");
-    setKeyword(undefined);
+    setQ(null);
   };
 
   if (!shop) {
@@ -375,8 +401,11 @@ const ShopPage = () => {
                     }
                     className={cn(
                       "flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer lg:border-r-2",
-                      activeCategoryId ===
-                        (typeof cat.id === "string" ? null : Number(cat.id)) &&
+                      // Active khi: catId null và item "All" (id string), hoặc catId === Number(id)
+                      ((catId == null && typeof cat.id === "string") ||
+                        (catId != null &&
+                          typeof cat.id !== "string" &&
+                          catId === Number(cat.id))) &&
                         "bg-gray-50 border-black"
                     )}
                   >
@@ -409,13 +438,11 @@ const ShopPage = () => {
                     />
 
                     <Select
-                      value={sort}
+                      value={sortQ}
                       onValueChange={value => {
-                        setPagination(prev => ({
-                          ...prev,
-                          currentPage: 0,
-                        }));
-                        setSort(value as "asc" | "desc");
+                        // Reset về trang đầu mỗi khi đổi sort
+                        setPageIndex(0);
+                        setSortQ(value as "asc" | "desc");
                         // Không gọi API trực tiếp, đã có effect theo dõi deps để fetch.
                       }}
                     >
@@ -468,13 +495,12 @@ const ShopPage = () => {
                 {totalPages > 1 && (
                   <div className="mt-8">
                     <CustomPagination
-                      currentPage={pagination.currentPage + 1}
+                      // currentPage hiển thị base-1; map từ pageIndex (base-0)
+                      currentPage={pageIndex + 1}
                       totalPages={totalPages}
                       onPageChange={page => {
-                        setPagination(prev => ({
-                          ...prev,
-                          currentPage: page - 1,
-                        }));
+                        // Đồng bộ URL với page mới (base-1 -> base-0)
+                        setPageIndex(page - 1);
                       }}
                       className="justify-center"
                     />

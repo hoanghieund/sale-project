@@ -4209,13 +4209,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-cookie@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "js-cookie@npm:2.2.1"
-  checksum: 10c0/ee67fc0f8495d0800b851910b5eb5bf49d3033adff6493d55b5c097ca6da46f7fe666b10e2ecb13cfcaf5b88d71c205ce00a7e646de791689bfd053bbb36a376
-  languageName: node
-  linkType: hard
-
 "js-tokens@npm:^3.0.0 || ^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -4505,6 +4498,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mitt@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mitt@npm:3.0.1"
+  checksum: 10c0/3ab4fdecf3be8c5255536faa07064d05caa3dd332bd318ff02e04621f7b3069ca1de9106cfe8e7ced675abfc2bec2ce4c4ef321c4a1bb1fb29df8ae090741913
+  languageName: node
+  linkType: hard
+
 "mkdirp@npm:^3.0.1":
   version: 3.0.1
   resolution: "mkdirp@npm:3.0.1"
@@ -4614,6 +4614,30 @@ __metadata:
   version: 0.1.2
   resolution: "normalize-range@npm:0.1.2"
   checksum: 10c0/bf39b73a63e0a42ad1a48c2bd1bda5a07ede64a7e2567307a407674e595bcff0fa0d57e8e5f1e7fa5e91000797c7615e13613227aaaa4d6d6e87f5bd5cc95de6
+  languageName: node
+  linkType: hard
+
+"nuqs@npm:^2.4.3":
+  version: 2.4.3
+  resolution: "nuqs@npm:2.4.3"
+  dependencies:
+    mitt: "npm:^3.0.1"
+  peerDependencies:
+    "@remix-run/react": ">=2"
+    next: ">=14.2.0"
+    react: ">=18.2.0 || ^19.0.0-0"
+    react-router: ^6 || ^7
+    react-router-dom: ^6 || ^7
+  peerDependenciesMeta:
+    "@remix-run/react":
+      optional: true
+    next:
+      optional: true
+    react-router:
+      optional: true
+    react-router-dom:
+      optional: true
+  checksum: 10c0/29a911749a74a1b2933942f7de7952ddf6158ec2f19c2a0a849111f894b9d0745848b84095e5e0549ad9f2690303a122392b76296e6018c3bb540b4ea68a58c8
   languageName: node
   linkType: hard
 
@@ -4903,17 +4927,6 @@ __metadata:
   version: 1.2.3
   resolution: "queue-microtask@npm:1.2.3"
   checksum: 10c0/900a93d3cdae3acd7d16f642c29a642aea32c2026446151f0778c62ac089d4b8e6c986811076e1ae180a694cedf077d453a11b58ff0a865629a4f82ab558e102
-  languageName: node
-  linkType: hard
-
-"react-cookie-consent@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "react-cookie-consent@npm:9.0.0"
-  dependencies:
-    js-cookie: "npm:^2.2.1"
-  peerDependencies:
-    react: ">=16"
-  checksum: 10c0/8cf336c2b43c2ad6524e28076613bfe11bcf22b9f1837c47e180af0aa1710c823f5b1c878e2708fd69e8546e5eab816ba3095e44541909a4fbe2a14bf9edb4ae
   languageName: node
   linkType: hard
 
@@ -5884,9 +5897,9 @@ __metadata:
     input-otp: "npm:^1.2.4"
     lucide-react: "npm:^0.462.0"
     next-themes: "npm:^0.3.0"
+    nuqs: "npm:^2.4.3"
     postcss: "npm:^8.4.47"
     react: "npm:^18.3.1"
-    react-cookie-consent: "npm:^9.0.0"
     react-day-picker: "npm:^8.10.1"
     react-dom: "npm:^18.3.1"
     react-dropzone: "npm:^14.3.8"
