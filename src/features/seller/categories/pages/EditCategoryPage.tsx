@@ -80,7 +80,10 @@ const EditCategoryPage: React.FC = () => {
     try {
       const updatedCategory = await categoriesService.updateCollection(
         categoryId,
-        data
+        {
+          name: data.name,
+          categoryId: Number(data.categoryId),
+        }
       );
       setCurrentCategory(updatedCategory); // Cập nhật lại category hiện tại
       toast.success("Success", {

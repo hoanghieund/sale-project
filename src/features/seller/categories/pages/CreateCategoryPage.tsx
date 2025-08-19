@@ -38,7 +38,10 @@ const CreateCategoryPage: React.FC = () => {
   }) => {
     setIsLoading(true); // Bắt đầu loading
     try {
-      await categoriesService.createCollection(data);
+      await categoriesService.createCollection({
+        name: data.name,
+        categoryId: Number(data.categoryId),
+      });
       toast.success("Success", {
         description: "Category created successfully!",
       });
