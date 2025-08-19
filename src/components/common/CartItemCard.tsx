@@ -136,9 +136,11 @@ const CartItemCard = ({
                   ? {
                       name: value.name,
                       nameVariant: value.nameVariant,
-                      isUrl: value.name
-                        .trim()
-                        .match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)$/i),
+                      // Chỉ kiểm tra đuôi tệp ảnh, bỏ qua phần query/hash nếu có
+                      // Ví dụ: "color.png?v=1#hash" -> kiểm tra "color.png"
+                      isUrl: /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(
+                        value.name.trim().split(/[?#]/)[0]
+                      ),
                     }
                   : null;
               };
