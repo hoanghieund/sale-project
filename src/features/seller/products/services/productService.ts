@@ -20,6 +20,7 @@ export interface GetProductsByShopParams {
   page: number; // base-0
   size: number;
   textSearch?: string; // search by product name
+  categoryId?: number;
 }
 
 export interface PageResult<T> {
@@ -126,11 +127,12 @@ export const productService = {
   getAllProductByShop: async (
     params: GetProductsByShopParams
   ): Promise<PageResult<Product>> => {
-    const { page, size, textSearch } = params;
+    const { page, size, textSearch, categoryId } = params;
     return Axios.get("/api/product/getAllProductByShop", {
       page,
       size,
       textSearch,
+      categoryId,
     });
   },
 

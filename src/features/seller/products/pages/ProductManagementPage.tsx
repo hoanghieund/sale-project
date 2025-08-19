@@ -1,5 +1,6 @@
 import CustomPagination from "@/components/common/CustomPagination";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import PlatformCategorySelect from "@/components/common/PlatformCategorySelect";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -35,10 +37,11 @@ const ProductManagementPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Pagination + search
+  // Pagination + search + filter
   const [page, setPage] = useState(0); // base-0 per backend
   const [size, setSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const [categoryId, setCategoryId] = useState(""); // Thêm state cho categoryId
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
@@ -49,7 +52,7 @@ const ProductManagementPage: React.FC = () => {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // Fetch products by page, size, debouncedSearch
+  // Fetch products by page, size, debouncedSearch, categoryId
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -58,6 +61,7 @@ const ProductManagementPage: React.FC = () => {
           page,
           size,
           textSearch: debouncedSearch || undefined,
+          categoryId: categoryId ? Number(categoryId) : undefined,
         });
         setProducts(res.content || []);
         setTotalPages(res.totalPages ?? 0);
@@ -71,7 +75,7 @@ const ProductManagementPage: React.FC = () => {
       }
     };
     fetchProducts();
-  }, [page, size, debouncedSearch]);
+  }, [page, size, debouncedSearch, categoryId]);
   /**
    * @function handleToggleStatus
    * @description Call API to toggle visibility and update local list.
@@ -120,6 +124,31 @@ const ProductManagementPage: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Category filter */}
+          <div className="flex flex-col gap-2 mb-4">
+            <Label htmlFor="category-filter">Filter by Category</Label>
+            <div className="flex gap-2 items-center">
+              <PlatformCategorySelect
+                value={categoryId}
+                onChange={value => {
+                  setPage(0); // Reset về trang đầu khi thay đổi bộ lọc
+                  setCategoryId(value);
+                }}
+                placeholder="All categories"
+                className="w-full md:w-72"
+              />
+              {categoryId && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCategoryId("")}
+                >
+                  Clear
+                </Button>
+              )}
+            </div>
+          </div>
+
           {/* Toolbar: result summary + page size selection */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             {/* Display result summary */}

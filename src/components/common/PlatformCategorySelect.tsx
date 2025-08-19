@@ -5,7 +5,6 @@
  * Lưu ý: Khi module logger Winston sẵn sàng, thay console.error bằng logger để thống nhất ghi nhật ký.
  */
 
-import { FormControl } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -99,12 +98,10 @@ export const PlatformCategorySelect: React.FC<PlatformCategorySelectProps> = ({
       value={value}
       disabled={disabled || loading}
     >
-      {/* FormControl để đảm bảo SelectTrigger nhận ARIA/id từ FormField context nếu có */}
-      <FormControl>
-        <SelectTrigger className={className}>
-          <SelectValue placeholder={placeholder} />
-        </SelectTrigger>
-      </FormControl>
+      {/* Không sử dụng FormControl khi nằm ngoài form để tránh lỗi useFormContext */}
+      <SelectTrigger className={className}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
       <SelectContent>{renderOptions(tree)}</SelectContent>
     </Select>
   );
