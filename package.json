@@ -7,6 +7,7 @@
     "dev": "cp env.dev .env && vite",
     "build": "cp env.dev .env && vite build",
     "build:dev": "cp env.dev .env && vite build --mode development",
+    "build:prod": "cp env.prod .env && vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },
