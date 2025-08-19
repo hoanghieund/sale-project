@@ -61,7 +61,7 @@ const ShopInfoCard: React.FC<ShopInfoCardProps> = ({ shop }) => {
             )}
             {shop.timeRequest && (
               <p className="text-xs text-muted-foreground">
-                Joined: {new Date(shop.timeRequest).toLocaleDateString("en-US")}
+                Joined: {shop.timeRequest}
               </p>
             )}
           </div>
