@@ -471,7 +471,11 @@ const ProductInfo = ({
               </div>
             )}
             {product?.totalReview !== undefined && (
-              <div className="flex border-b border-border py-2">
+              <div
+                className={`flex ${
+                  specifications.length > 0 ? "border-b border-border py-2" : ""
+                }`}
+              >
                 <span className="font-medium text-foreground w-1/3">
                   Number of Reviews:
                 </span>
