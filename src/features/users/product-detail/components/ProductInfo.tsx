@@ -156,6 +156,17 @@ const ProductInfo = ({
     }
   };
 
+  // Chuyển đổi chuỗi specification thành mảng đối tượng {key, value}
+  const specifications = product.specification
+    ? product.specification
+        .split(";")
+        .filter(item => item.trim() !== "")
+        .map(item => {
+          const [key, value] = item.split(":").map(part => part.trim());
+          return { key, value };
+        })
+    : [];
+
   return (
     <div className={cn("space-y-4", className)}>
       {/* Product Info */}
@@ -460,13 +471,30 @@ const ProductInfo = ({
               </div>
             )}
             {product?.totalReview !== undefined && (
-              <div className="flex">
+              <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
                   Number of Reviews:
                 </span>
                 <span className="text-foreground">{product?.totalReview}</span>
               </div>
             )}
+            {/* Hiển thị specifications dạng key-value */}
+            {specifications.length > 0 &&
+              specifications.map((spec, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    index !== specifications.length - 1
+                      ? "border-b border-border py-2"
+                      : ""
+                  }`}
+                >
+                  <span className="font-medium text-foreground w-1/3">
+                    {spec.key}:
+                  </span>
+                  <span className="text-foreground">{spec.value}</span>
+                </div>
+              ))}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

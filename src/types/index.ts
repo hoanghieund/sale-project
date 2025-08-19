@@ -46,6 +46,8 @@ export interface Product {
 
   price?: number; // Giá sản phẩm
   priceSale?: number; // Giá sau khi giảm giá
+
+  specification?: string;
 }
 
 // Item Top-Selling trả về từ API /api/shop/stats/top-products
