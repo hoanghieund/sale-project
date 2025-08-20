@@ -15,9 +15,9 @@ export const productService = {
    */
   getDiscountedProducts: (): Promise<Product[]> => {
     // Đây là một ví dụ, bạn cần thay thế bằng API endpoint thực tế để lấy sản phẩm giảm giá
-    const today = new Date().toISOString().split('T')[0]; // Định dạng yyyy-MM-dd
-    return Axios.get(`/api/public/product/getProductIsFlashSaleHomePage` , {
-      today
+    const today = new Date().toISOString().split("T")[0]; // Định dạng yyyy-MM-dd
+    return Axios.get(`/api/public/product/getProductIsFlashSaleHomePage`, {
+      today,
     });
   },
 
@@ -27,10 +27,7 @@ export const productService = {
    * @param size - Số lượng sản phẩm trên mỗi trang.
    * @returns Promise với một đối tượng chứa danh sách Product và tổng số sản phẩm.
    */
-  getAllProductsWithPagination: (
-    page: number,
-    size: number
-  ) => {
+  getAllProductsWithPagination: (page: number, size: number) => {
     return Axios.get(`/api/public/product/getAll?page=${page}&size=${size}`);
   },
 };

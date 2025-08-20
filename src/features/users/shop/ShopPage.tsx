@@ -23,11 +23,11 @@ import { Search, Star } from "lucide-react";
 import { shopService } from "./services/shopServices";
 // Tabs removed as no longer in use
 import {
-  useQueryState,
-  parseAsString,
-  parseAsStringLiteral,
   parseAsIndex,
   parseAsInteger,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryState,
 } from "nuqs"; // Đồng bộ state với URL (q, sort, page)
 
 /**
@@ -51,7 +51,7 @@ interface shopUi {
   totalReview?: number;
 }
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 18;
 
 /**
  * ShopPage - Shop Information Display Page
@@ -204,13 +204,7 @@ const ShopPage = () => {
       pageIndex,
       pagination.pageSize
     );
-  }, [
-    catId,
-    sortQ,
-    pageIndex,
-    pagination.pageSize,
-    q,
-  ]);
+  }, [catId, sortQ, pageIndex, pagination.pageSize, q]);
 
   // Sync ô nhập với giá trị từ URL (?q=)
   useEffect(() => {
@@ -479,7 +473,7 @@ const ShopPage = () => {
               <LoadingSpinner />
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
                   {products.map(product => (
                     <ProductCardSimple
                       key={product.id}

@@ -27,7 +27,7 @@ const Index = () => {
           await Promise.allSettled([
             productService.getFeaturedProducts(),
             // API nhận base-0: truyền trực tiếp pageIndex
-            productService.getAllProductsWithPagination(pageIndex, 25), // Lấy tất cả sản phẩm với phân trang
+            productService.getAllProductsWithPagination(pageIndex, 24), // Lấy tất cả sản phẩm với phân trang
           ]);
         if (featuredProductsResponse.status === "fulfilled") {
           setFeaturedProducts(featuredProductsResponse.value);
