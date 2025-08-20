@@ -1,6 +1,4 @@
-import { Card } from "@/components/ui/card";
 import { Category } from "@/types";
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
@@ -15,32 +13,48 @@ interface CategoryCardProps {
 }
 
 const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
+  // Kiểm tra xem đây là danh mục cha hay con
+  const isParentCategory =
+    category.parentId === undefined || category.parentId === null;
+
   return (
     <Link to={linkTo || `/category/${category.id}`} className="group">
-      <Card className="relative overflow-hidden bg-transparent border-0 shadow-none hover:shadow-none transition-all duration-300 transform hover:-translate-y-1">
-        {/* Content */}
-        <div className="relative p-4 pb-0 flex flex-col items-center justify-center min-h-32 space-y-3">
-          {/* Icon */}
+      <div
+        key={category.id}
+        className={`group relative overflow-hidden rounded-lg bg-card shadow-[var(--shadow-product)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 cursor-pointer ${
+          isParentCategory ? "border-2 border-primary" : ""
+        }`}
+      >
+        <div className="aspect-[16/10] overflow-hidden">
+          <img
+            src={category.imageUrl}
+            alt={category.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
           <div
-            className="aspect-square rounded-full w-24"
-            style={{
-              backgroundImage: `url('/assets/hero-running.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
+            className={`absolute inset-0 ${
+              isParentCategory ? "bg-black/30" : "bg-black/50"
+            }`}
+          />
+        </div>
 
-          {/* Category Name */}
-          <h3 className="font-semibold text-lg text-center leading-tight group-hover:text-primary transition-colors duration-300">
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
+          <h3
+            className={`${
+              isParentCategory ? "text-3xl" : "text-2xl"
+            } font-bold text-white`}
+          >
             {category.name}
           </h3>
 
-          {/* Arrow Icon */}
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <ArrowRight className="h-4 w-4 text-primary" />
-          </div>
+          {/* Hiển thị nhãn cho danh mục con */}
+          {!isParentCategory && (
+            <span className="mt-2 px-2 py-1 bg-primary/80 text-white text-xs rounded-full">
+              Subcategory
+            </span>
+          )}
         </div>
-      </Card>
+      </div>
     </Link>
   );
 };

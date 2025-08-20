@@ -66,15 +66,24 @@ export const productService = {
    * @description Create products in bulk via Excel (admin endpoint).
    * @param file Excel file (.xlsx)
    * @param collectionId collection id (optional)
+   * @param productTypeId product type id (optional)
    * @returns {Promise<string>} Server message (e.g., "Imported 20 products successfully!")
    */
-  createProduct: async (file: File, collectionId?: number) => {
-    // Send multipart/form-data as per spec: file, shopId, categoryId, collectionId
+  createProduct: async (
+    file: File,
+    collectionId?: number,
+    productTypeId?: number
+  ) => {
+    // Send multipart/form-data as per spec: file, shopId, categoryId, collectionId, productTypeId
     const formData = new FormData();
     formData.append("file", file);
     // Only append when collectionId is valid
     if (typeof collectionId === "number" && !Number.isNaN(collectionId)) {
       formData.append("collectionId", String(collectionId));
+    }
+    // Only append when productTypeId is valid
+    if (typeof productTypeId === "number" && !Number.isNaN(productTypeId)) {
+      formData.append("typeProduct", String(productTypeId));
     }
 
     return Axios.post("/api/product/uploadExcelProduct", formData, {
@@ -144,5 +153,14 @@ export const productService = {
    */
   deleteProduct: async (id: string) => {
     return Axios.del(`/api/products/${id}`);
+  },
+
+  /**
+   * @method getOptionTypeProduct
+   * @description Get option type product.
+   * @returns {Promise<any>} Option type product.
+   */
+  getOptionTypeProduct: async () => {
+    return Axios.get("/api/options/type-products");
   },
 };

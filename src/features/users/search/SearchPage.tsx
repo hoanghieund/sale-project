@@ -23,7 +23,7 @@ const SearchPage: React.FC = () => {
     "page",
     parseAsIndex.withDefault(0)
   );
-  const [pageSize] = useState(10); // Có thể nâng cấp đồng bộ qua URL nếu cần
+  const [pageSize] = useState(12); // Có thể nâng cấp đồng bộ qua URL nếu cần
 
   // State for pagination
   const [totalPages, setTotalPages] = useState(0);
@@ -102,7 +102,7 @@ const SearchPage: React.FC = () => {
               ) : (
                 <>
                   {/* Product Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
                     {products.length > 0 ? (
                       products.map(product => (
                         <ProductCardSimple

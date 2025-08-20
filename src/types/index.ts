@@ -92,8 +92,6 @@ export interface Shop {
   status?: boolean; // status tinyint(1)
   timeRequest?: string; // time_request datetime
   description?: string;
-  contactEmail?: string;
-  contactPhone?: string;
   user?: User;
   totalProductInShop?: number;
   totalReviewInShop?: number;
@@ -128,6 +126,7 @@ export interface Category {
   id: number; // bigint(20) trong SQL
   slug?: string;
   name?: string; // name varchar(255)
+  imageUrl?: string;
   active?: boolean; // active tinyint(1)
   isShowSuggest?: boolean; // is_show_suggests tinyint(1)
   parentId?: number; // parent_id bigint(20)

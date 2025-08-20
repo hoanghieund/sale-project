@@ -56,7 +56,7 @@ const CategoryPage = () => {
     parseAsStringLiteral(["asc", "desc"] as const).withDefault("asc")
   );
   const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
-  const [pageSize] = useState(10); // Có thể nâng cấp đồng bộ qua URL nếu cần
+  const [pageSize] = useState(72); // Có thể nâng cấp đồng bộ qua URL nếu cần
 
   // State for pagination
   const [totalPages, setTotalPages] = useState(0);
@@ -170,7 +170,7 @@ const CategoryPage = () => {
               <h2 className="text-2xl font-bold ">Categories</h2>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-10 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4">
               {subcategories.length > 0 ? (
                 subcategories.map(subcategory => (
                   <CategoryCard
@@ -252,7 +252,7 @@ const CategoryPage = () => {
             ) : (
               <>
                 {/* Product Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
                   {products.length > 0 ? (
                     products.map(product => (
                       <ProductCardSimple
