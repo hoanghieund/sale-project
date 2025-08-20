@@ -15,7 +15,7 @@ export const shopService = {
       // API endpoint để lấy danh sách shop nổi bật
       const response = await Axios.get(`/api/public/shops/featured`, { limit });
 
-      return response.data;
+      return response;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách shop nổi bật:", error);
       return [];

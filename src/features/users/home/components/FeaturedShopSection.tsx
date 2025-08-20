@@ -17,6 +17,7 @@ const FeaturedShopSection = () => {
         setLoading(true);
         // Lấy 6 shop nổi bật
         const shops = await shopService.getFeaturedShops(6);
+        console.log("🚀 ~ fetchFeaturedShops ~ shops:", shops);
         setFeaturedShops(shops);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách shop nổi bật:", error);
