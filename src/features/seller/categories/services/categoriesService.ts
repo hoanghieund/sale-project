@@ -29,7 +29,7 @@ export const categoriesService = {
    * @param {string} data.categoryId - ID của danh mục cha.
    * @returns} Thông tin danh mục đã tạo.
    */
-  createCollection: async (data: { name: string; categoryId: string }) => {
+  createCollection: async (data: { name: string; categoryId: number }) => {
     return Axios.post("/api/collections", data);
   },
 
@@ -43,7 +43,7 @@ export const categoriesService = {
    */
   updateCollection: async (
     id: string,
-    data: { name: string; categoryId: string }
+    data: { name: string; categoryId: number }
   ) => {
     return Axios.put(`/api/collections/${id}`, data);
   },
