@@ -92,8 +92,6 @@ export interface Shop {
   status?: boolean; // status tinyint(1)
   timeRequest?: string; // time_request datetime
   description?: string;
-  contactEmail?: string;
-  contactPhone?: string;
   user?: User;
   totalProductInShop?: number;
   totalReviewInShop?: number;

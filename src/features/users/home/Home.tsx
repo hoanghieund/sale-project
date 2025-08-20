@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { AllProductsSection } from "./components/AllProductsSection"; // Import AllProductsSection
 import CategorySection from "./components/CategorySection";
 import FeaturedProductsSection from "./components/FeaturedProductsSection";
+import FeaturedShopSection from "./components/FeaturedShopSection";
 import HeroSection from "./components/HeroSection";
-import StatsSection from "./components/StatsSection";
 
 /**
  * Index - Trang chủ C2C Marketplace
@@ -84,6 +84,8 @@ const Index = () => {
 
       <FeaturedProductsSection products={featuredProducts ?? []} />
 
+      <FeaturedShopSection />
+
       <AllProductsSection
         products={allProducts ?? []}
         // UI cần base-1
@@ -92,7 +94,7 @@ const Index = () => {
         onPageChange={handlePageChange}
       />
 
-      <StatsSection />
+      {/* <StatsSection /> */}
     </div>
   );
 };

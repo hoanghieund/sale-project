@@ -319,9 +319,6 @@ const ShopPage = () => {
                     <div className="text-xs text-muted-foreground">Rating</div>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-0.5">
-                        {/* <span className="text-base font-medium">
-                          {shop.star || 0}
-                        </span> */}
                         {/* Hiển thị 5 sao, sao tô đầy theo điểm số; sao rỗng vẫn giữ stroke vàng để đồng bộ brand */}
                         {Array.from({ length: 5 }).map((_, idx) => (
                           <Star
