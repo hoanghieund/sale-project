@@ -180,10 +180,17 @@ const ProductInfo = ({
           {/* Rating/sales/badges block: allows wrapping and even spacing when wrapping */}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <div className="flex items-center gap-0.5">
-              <span className="text-base font-medium">
-                {product?.star || 0}
-              </span>
-              <Star className="fill-yellow-400 text-yellow-400 w-4 h-4" />
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={cn(
+                    "h-3.5 w-3.5",
+                    i < Math.floor(product.star || 0)
+                      ? "fill-star text-star"
+                      : "fill-gray-400 text-gray-400"
+                  )}
+                />
+              ))}
             </div>
             <span className="text-foreground/50 text-sm">
               ({product?.totalReview || 0} reviews)
