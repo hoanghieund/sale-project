@@ -47,18 +47,18 @@ const Index = () => {
         if (categoriesResponse.status === "fulfilled") {
           // Tạo mảng mới chứa cả danh mục cha và con
           let allCategories: Category[] = [];
-          
+
           // Xử lý dữ liệu để lấy cả danh mục cha và con
           categoriesResponse.value.forEach((category: Category) => {
             // Thêm danh mục cha vào mảng
             allCategories.push(category);
-            
+
             // Nếu có danh mục con, thêm vào mảng
             if (category.child && Array.isArray(category.child)) {
               allCategories = [...allCategories, ...category.child];
             }
           });
-          
+
           // Cập nhật state với mảng chứa cả danh mục cha và con
           setCategories(allCategories);
         }

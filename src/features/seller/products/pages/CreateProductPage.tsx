@@ -53,6 +53,12 @@ const CreateProductPage: React.FC = () => {
   >([]); // Collections list for the Select
   const [loadingCollections, setLoadingCollections] = useState(false); // Loading state for collections
 
+  // State for product types from API
+  const [productTypes, setProductTypes] = useState<
+    Array<{ id: number; label: string }>
+  >([]);
+  const [loadingProductTypes, setLoadingProductTypes] = useState(false); // Loading state for product types
+
   // Schema for Excel upload (bulk creation)
   const excelSchema = useMemo(
     () =>
@@ -80,6 +86,11 @@ const CreateProductPage: React.FC = () => {
           .number({ invalid_type_error: "Please select a collection" })
           .int()
           .min(1, "Please select a collection"),
+        // Product Type is required
+        productTypeId: z.coerce
+          .number({ invalid_type_error: "Please select a product type" })
+          .int()
+          .min(1, "Please select a product type"),
       }),
     []
   );
@@ -91,7 +102,10 @@ const CreateProductPage: React.FC = () => {
     mode: "onSubmit",
     reValidateMode: "onChange",
     // Do not hard-set collection ID; user will choose after fetch
-    defaultValues: { collectionId: undefined } as any,
+    defaultValues: {
+      collectionId: undefined,
+      productTypeId: undefined,
+    } as any,
   });
 
   useEffect(() => {
@@ -124,6 +138,26 @@ const CreateProductPage: React.FC = () => {
     fetchCollections();
   }, [excelForm]);
 
+  // Fetch product types from API
+  useEffect(() => {
+    const fetchProductTypes = async () => {
+      setLoadingProductTypes(true);
+      try {
+        // Sử dụng Axios để gọi API lấy danh sách loại sản phẩm
+        const res: any = await productService.getOptionTypeProduct();
+        // API trả về mảng các đối tượng {id, label}
+        setProductTypes(Array.isArray(res) ? res : []);
+      } catch (err: any) {
+        toast.error("Error", {
+          description: err?.message || "Failed to load product types.",
+        });
+      } finally {
+        setLoadingProductTypes(false);
+      }
+    };
+    fetchProductTypes();
+  }, []);
+
   /**
    * @function onSubmitExcel
    * @description Upload Excel file to create products in bulk.
@@ -136,7 +170,12 @@ const CreateProductPage: React.FC = () => {
         ? values.file[0]
         : (values.file as any);
 
-      await productService.createProduct(file, values.collectionId);
+      // Truyền thêm productTypeId vào hàm createProduct
+      await productService.createProduct(
+        file,
+        values.collectionId,
+        values.productTypeId // Thêm productTypeId vào tham số
+      );
       toast.success("Excel uploaded successfully");
       navigate("/seller/products"); // Navigate back to see results
     } catch (err: any) {
@@ -248,6 +287,63 @@ const CreateProductPage: React.FC = () => {
                       </FormControl>
                       <FormDescription>
                         Please select a collection to apply to the Excel data.
+                      </FormDescription>
+                      <FormMessage>{fieldState.error?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+
+                {/* Choose Product Type (required) */}
+                <FormField
+                  control={excelForm.control}
+                  name="productTypeId"
+                  render={({ field, fieldState }) => (
+                    <FormItem className="md:col-span-3 mt-4">
+                      <FormLabel>Product Type</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={
+                            field.value !== undefined && field.value !== null
+                              ? String(field.value)
+                              : undefined
+                          }
+                          onValueChange={val => {
+                            // Connect directly with RHF so FormMessage works properly
+                            field.onChange(val);
+                          }}
+                          // When closing Select without a choice, mark touched so error shows after submit
+                          onOpenChange={open => {
+                            if (!open) field.onBlur();
+                          }}
+                          disabled={loadingProductTypes}
+                        >
+                          <SelectTrigger
+                            aria-label="Select product type"
+                            className={
+                              excelForm.formState.errors.productTypeId
+                                ? "border-destructive focus-visible:ring-destructive"
+                                : undefined
+                            }
+                          >
+                            <SelectValue
+                              placeholder={
+                                loadingProductTypes
+                                  ? "Loading..."
+                                  : "Select a product type"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {productTypes.map(type => (
+                              <SelectItem key={type.id} value={String(type.id)}>
+                                {type.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription>
+                        Please select a product type for the Excel data.
                       </FormDescription>
                       <FormMessage>{fieldState.error?.message}</FormMessage>
                     </FormItem>
