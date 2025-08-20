@@ -4,7 +4,6 @@ import { Category, Product } from "@/types";
 import { parseAsIndex, useQueryState } from "nuqs"; // Đồng bộ page với URL
 import { useEffect, useState } from "react";
 import { AllProductsSection } from "./components/AllProductsSection"; // Import AllProductsSection
-import CategorySection from "./components/CategorySection";
 import FeaturedProductsSection from "./components/FeaturedProductsSection";
 import FeaturedShopSection from "./components/FeaturedShopSection";
 import HeroSection from "./components/HeroSection";
@@ -80,7 +79,7 @@ const Index = () => {
     <div>
       <HeroSection />
 
-      <CategorySection categories={categories ?? []} />
+      {/* <CategorySection categories={categories ?? []} /> */}
 
       <FeaturedProductsSection products={featuredProducts ?? []} />
 
