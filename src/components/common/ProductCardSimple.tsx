@@ -242,10 +242,6 @@ const ProductCardSimple = ({
                     )}
                   />
                 ))}
-                {/* Số lượng đánh giá */}
-                <span className="text-xs text-muted-foreground ml-1">
-                  ({product.totalReview || 0})
-                </span>
               </div>
               <span className="text-xs text-muted-foreground">•</span>
               <span className="text-xs text-muted-foreground">
