@@ -128,6 +128,7 @@ export interface Category {
   id: number; // bigint(20) trong SQL
   slug?: string;
   name?: string; // name varchar(255)
+  image?: string;
   active?: boolean; // active tinyint(1)
   isShowSuggest?: boolean; // is_show_suggests tinyint(1)
   parentId?: number; // parent_id bigint(20)

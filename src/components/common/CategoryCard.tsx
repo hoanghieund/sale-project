@@ -1,6 +1,4 @@
-import { Card } from "@/components/ui/card";
 import { Category } from "@/types";
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
@@ -17,30 +15,23 @@ interface CategoryCardProps {
 const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
   return (
     <Link to={linkTo || `/category/${category.id}`} className="group">
-      <Card className="relative overflow-hidden bg-transparent border-0 shadow-none hover:shadow-none transition-all duration-300 transform hover:-translate-y-1">
-        {/* Content */}
-        <div className="relative p-4 pb-0 flex flex-col items-center justify-center min-h-32 space-y-3">
-          {/* Icon */}
-          <div
-            className="aspect-square rounded-full w-24"
-            style={{
-              backgroundImage: `url('/assets/hero-running.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-
-          {/* Category Name */}
-          <h3 className="font-semibold text-lg text-center leading-tight group-hover:text-primary transition-colors duration-300">
-            {category.name}
-          </h3>
-
-          {/* Arrow Icon */}
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <ArrowRight className="h-4 w-4 text-primary" />
-          </div>
+      <div
+        key={category.id}
+        className="group relative overflow-hidden rounded-lg bg-card shadow-[var(--shadow-product)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 cursor-pointer"
+      >
+        <div className="aspect-[16/10] overflow-hidden">
+          <img
+            src={category.image}
+            alt={category.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
-      </Card>
+
+        <div className="absolute inset-0 flex items-center justify-center p-2">
+          <h3 className="text-3xl font-bold text-white">{category.name}</h3>
+        </div>
+      </div>
     </Link>
   );
 };
