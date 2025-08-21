@@ -202,7 +202,7 @@ const ProductCardSimple = ({
             {/* Shop name */}
             <div className="flex items-center gap-1 mb-1">
               <Store className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground hover:text-primary transition-colors">
+              <span className="text-xs text-muted-foreground hover:text-primary transition-colors line-clamp-1">
                 {product.shop?.name || "Shop"}
               </span>
             </div>
@@ -229,7 +229,7 @@ const ProductCardSimple = ({
             rel="noopener noreferrer"
           >
             {/* Rating */}
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -250,25 +250,16 @@ const ProductCardSimple = ({
             </div>
           </Link>
         </CardContent>
-        <CardFooter className="px-4 pb-2 pt-0">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-destructive">
-                {/* Hiển thị giá thấp nhất từ ProductSku */}
-                {formatCurrencyUSD(product.priceSale || 0)}
-              </span>
-              {product.discount?.discount_percent && (
-                <span className="flex items-center">
-                  <span className="text-xs ml-2 bg-destructive/10 text-destructive px-1 py-0.5 rounded">
-                    -{product.discount.discount_percent}%
-                  </span>
-                </span>
-              )}
-            </div>
-            {/* <div className="text-xs text-muted-foreground">
-              {product.amount > 0 ? "Còn hàng" : "Hết hàng"}
-            </div> */}
-          </div>
+        <CardFooter className="px-4 pb-2 pt-0 flex-wrap gap-2">
+          <span className="text-lg font-bold text-destructive">
+            {/* Hiển thị giá thấp nhất từ ProductSku */}
+            {formatCurrencyUSD(product.priceSale || 0)}
+          </span>
+          {product.discount?.discount_percent && (
+            <span className="text-xs bg-destructive/10 text-destructive px-1 py-0.5 rounded">
+              -{product.discount.discount_percent}%
+            </span>
+          )}
         </CardFooter>
       </Card>
     </div>

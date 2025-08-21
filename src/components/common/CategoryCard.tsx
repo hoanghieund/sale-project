@@ -39,7 +39,7 @@ const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
         <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
           <h3
             className={`${
-              isParentCategory ? "text-3xl" : "text-2xl"
+              isParentCategory ? "text-2xl" : "text-xl"
             } font-bold text-white`}
           >
             {category.name}

@@ -17,7 +17,6 @@ const FeaturedShopSection = () => {
         setLoading(true);
         // Lấy 6 shop nổi bật
         const shops = await shopService.getFeaturedShops(6);
-        console.log("🚀 ~ fetchFeaturedShops ~ shops:", shops);
         setFeaturedShops(shops);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách shop nổi bật:", error);
@@ -41,7 +40,7 @@ const FeaturedShopSection = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
@@ -88,7 +87,7 @@ const FeaturedShopSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
           {featuredShops.map(shop => (
             <ShopCard key={shop.id} shop={shop} />
           ))}
