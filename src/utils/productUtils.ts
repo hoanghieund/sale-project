@@ -7,7 +7,7 @@ import { useMemo } from "react";
  * @param {number} type - Loại biến thể (1: FIT, 2: Print Location, 3: Color, 4: Size).
  * @returns {string} Tên biến thể.
  */
-export const getVariantName = (type: number): string => {
+export const getVariantName = (type: number, keyOption?: string): string => {
   switch (type) {
     case 1:
       return "FIT";
@@ -20,7 +20,7 @@ export const getVariantName = (type: number): string => {
     case 5:
       return "Color";
     default:
-      return "Unknown";
+      return keyOption || "Unknown";
   }
 };
 
@@ -57,6 +57,7 @@ export const useVariantProduct = (product: Product | undefined) => {
   return useMemo(() => {
     // Phòng thủ khi thiếu dữ liệu
     const options = product?.optionDTOs ?? [];
+    console.log("🚀 ~ useVariantProduct ~ options:", options);
 
     // Gom theo type, dùng Map để loại trùng theo name trong cùng type
     const grouped = options.reduce<
@@ -94,7 +95,7 @@ export const useVariantProduct = (product: Product | undefined) => {
       .sort((a, b) => a - b)
       .map(type => ({
         keyOption: grouped[type].keyOption || getVariantSlug(type), // Ưu tiên keyOption từ dữ liệu, fallback về getVariantSlug
-        name: getVariantName(type), // sử dụng getVariantName để lấy label nhóm
+        name: getVariantName(type, grouped[type].keyOption), // sử dụng getVariantName để lấy label nhóm
         values: Array.from(grouped[type].values.values()), // Map -> Array<{id, value, nameVariant}>
       }));
 
