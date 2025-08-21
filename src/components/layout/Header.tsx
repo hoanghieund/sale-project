@@ -36,7 +36,6 @@ import {
   ShoppingBag,
   Store,
   User,
-  UserPlus,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -46,6 +45,12 @@ import { categoryService } from "../../services/categoryService"; // Import cate
 import { Category } from "../../types"; // Import Category type
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,66 +125,10 @@ const Header = () => {
         }`}
       >
         <div className="container mx-auto px-4">
-          {/* Top Row */}
-          {/*
-            Top row hiển thị 2 nút hành động:
-            - Nếu user có role seller (ROLE_SHOP_MANAGER) thì nút 1 dẫn tới Seller Center (/seller)
-              ngược lại dẫn tới trang đăng ký người bán (/seller-registration).
-            - Nút 2 luôn dẫn tới Help Center (/help).
-            Lý do: tăng khả năng truy cập nhanh cho cả seller và user, giữ UI gọn nhẹ bằng ghost buttons.
-          */}
-          <div className="flex items-center justify-end gap-2 pt-2">
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="h-8 rounded-full px-3 text-sm hover:bg-accent hover:text-accent-foreground"
-              aria-label={
-                isRoleShop ? "Go to Seller Center" : "Become a seller"
-              }
-            >
-              <Link to={isRoleShop ? "/seller" : "/seller-registration"}>
-                {isRoleShop ? (
-                  // Nút cho seller: vào kênh bán
-                  <span className="inline-flex items-center gap-2">
-                    <Store className="h-4 w-4" />
-                    <span className="hidden sm:inline font-normal">
-                      Seller Center
-                    </span>
-                  </span>
-                ) : (
-                  // Nút cho user: đăng ký người bán
-                  <span className="inline-flex items-center gap-2">
-                    <Handshake className="h-4 w-4" />
-                    <span className="hidden sm:inline font-normal">
-                      Become a seller
-                    </span>
-                  </span>
-                )}
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="h-8 rounded-full px-3 text-sm hover:bg-accent hover:text-accent-foreground"
-              aria-label="Help Center"
-            >
-              <Link to="/help">
-                <span className="inline-flex items-center gap-2">
-                  <LifeBuoy className="h-4 w-4" />
-                  <span className="hidden sm:inline font-normal">
-                    Help Center
-                  </span>
-                </span>
-              </Link>
-            </Button>
-          </div>
-
           {/* Center Row */}
-          <div className="flex items-center justify-between py-2.5 md:py-0 gap-8">
+          <div className="flex items-center justify-between pb-2.5 md:pb-0 md:pt-2 md:gap-8">
             {/* Logo */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center md:gap-2">
               {/* Sử dụng logo từ public/logo.png để thống nhất branding */}
               <Link to="/" className="flex items-center" aria-label="Home">
                 {/* Tăng kích thước logo và thêm responsive để hiển thị tốt trên màn hình lớn */}
@@ -293,24 +242,74 @@ const Header = () => {
             </div>
 
             {/* Icons */}
-            <div className="flex items-center gap-4">
-              <Link to="/cart" className="relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative rounded-full hover:bg-primary"
-                >
-                  <ShoppingBag className="h-5 w-5" />
-                  {getCartItemsCount() > 0 && (
-                    <Badge
-                      variant="destructive"
-                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+            <div className="flex items-center gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full hover:bg-accent hover:text-accent-foreground"
                     >
-                      {getCartItemsCount()}
-                    </Badge>
-                  )}
-                </Button>
-              </Link>
+                      <Link
+                        to={isRoleShop ? "/seller" : "/seller-registration"}
+                      >
+                        {isRoleShop ? (
+                          <Store className="h-4 w-4" />
+                        ) : (
+                          <Handshake className="h-4 w-4" />
+                        )}
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    {isRoleShop ? "Seller Center" : "Become a seller"}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <Link to="/help">
+                        <LifeBuoy className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Help Center</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link to="/cart" className="relative">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="relative rounded-full hover:bg-primary"
+                      >
+                        <ShoppingBag className="h-5 w-5" />
+                        {getCartItemsCount() > 0 && (
+                          <Badge
+                            variant="destructive"
+                            className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                          >
+                            {getCartItemsCount()}
+                          </Badge>
+                        )}
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Shopping Cart</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               {isAuthenticated ? (
                 <>
                   <DropdownMenu>
@@ -368,46 +367,24 @@ const Header = () => {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-
-                  {/* <Link to="/wishlist" className="relative">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="relative rounded-full hover:bg-primary"
-                    >
-                      <Heart className="h-5 w-5" />
-                      {getWishlistCount() > 0 && (
-                        <Badge
-                          variant="destructive"
-                          className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                        >
-                          {getWishlistCount()}
-                        </Badge>
-                      )}
-                    </Button>
-                  </Link> */}
                 </>
               ) : (
-                <div className="flex items-center gap-2">
-                  <Link to="/login">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full hover:bg-primary"
-                    >
-                      <LogIn className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <Link to="/register">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full hover:bg-primary"
-                    >
-                      <UserPlus className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link to="/login">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full hover:bg-primary"
+                        >
+                          <LogIn className="h-5 w-5" />
+                        </Button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">Login</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
           </div>
