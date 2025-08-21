@@ -66,26 +66,15 @@ const Header = () => {
   const [featuredCategories, setFeaturedCategories] = useState<Category[]>([]); // State to store featured category data
   const [allCategories, setAllCategories] = useState<Category[]>([]); // State to store all category data
 
-  // Fetch featured category data from API
-  useEffect(() => {
-    const fetchFeaturedCategories = async () => {
-      try {
-        const response = await categoryService.getSuggestCategory(0, 5);
-        // Map API data to Category[] format
-        setFeaturedCategories(response);
-      } catch (error) {
-        console.error("Error fetching featured categories:", error);
-      }
-    };
-    fetchFeaturedCategories();
-  }, []);
-
   // Fetch all category data from API
   useEffect(() => {
     const fetchAllCategories = async () => {
       try {
-        const response = await categoryService.getAllCategory(0, 10000);
+        const response = await categoryService.getAllCategory();
         setAllCategories(response);
+        setFeaturedCategories(
+          response.filter(category => category.isShowSuggest === true)
+        );
       } catch (error) {
         console.error("Error fetching all categories:", error);
       }
