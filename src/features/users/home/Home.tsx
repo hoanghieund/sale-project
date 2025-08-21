@@ -35,7 +35,7 @@ const Index = () => {
           productService.getFeaturedProducts(),
           // API nhận base-0: truyền trực tiếp pageIndex
           productService.getAllProductsWithPagination(pageIndex, 24), // Lấy tất cả sản phẩm với phân trang
-          categoryService.getAllCategory(0, 10000),
+          categoryService.getSuggestCategoryChild(),
         ]);
         if (featuredProductsResponse.status === "fulfilled") {
           setFeaturedProducts(featuredProductsResponse.value);
