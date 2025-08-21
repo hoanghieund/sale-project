@@ -21,9 +21,7 @@ const CategoryCard = ({ category, linkTo }: CategoryCardProps) => {
     <Link to={linkTo || `/category/${category.id}`} className="group">
       <div
         key={category.id}
-        className={`group relative overflow-hidden rounded-lg bg-card shadow-[var(--shadow-product)] hover:shadow-[var(--shadow-hover)] transition-all duration-300 cursor-pointer ${
-          isParentCategory ? "border-2 border-primary" : ""
-        }`}
+        className={`group relative overflow-hidden rounded-lg bg-card shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer`}
       >
         <div className="aspect-[16/10] overflow-hidden">
           <img
