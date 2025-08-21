@@ -55,19 +55,6 @@ const SearchPage: React.FC = () => {
     }
   };
 
-  // Migration: hỗ trợ link cũ ?keyword=... => map sang ?q=... 1 lần, giữ nguyên page nếu có
-  useEffect(() => {
-    const sp = new URLSearchParams(location.search);
-    const hasQ = sp.has("q");
-    const hasLegacyKeyword = sp.has("keyword");
-    if (!hasQ && hasLegacyKeyword) {
-      const legacy = sp.get("keyword") || "";
-      setQ(legacy || null); // đặt q, nuqs sẽ cập nhật URL
-    }
-    // chỉ chạy khi mount hoặc URL thực sự đổi
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
-
   // Reset về trang đầu khi q thay đổi, TRỪ khi URL đã có tham số page (giữ page theo link chia sẻ)
   useEffect(() => {
     const sp = new URLSearchParams(location.search);
@@ -89,7 +76,7 @@ const SearchPage: React.FC = () => {
         <div className="w-full">
           <Card className="w-full bg-white">
             <CardHeader>
-              <CardTitle>Search Results for: "{q}"</CardTitle>
+              <CardTitle>Search Results for: {q || "all"}</CardTitle>
             </CardHeader>
             <CardContent>
               {/* Result Information */}
