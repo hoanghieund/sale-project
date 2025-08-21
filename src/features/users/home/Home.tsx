@@ -79,7 +79,7 @@ const Index = () => {
     <div>
       <HeroSection />
 
-      {/* <CategorySection categories={categories ?? []} /> */}
+      <CategorySection categories={categories ?? []} />
 
       <FeaturedProductsSection products={featuredProducts ?? []} />
 
