@@ -14,7 +14,7 @@ const CategorySection = ({ categories }: { categories: Category[] }) => {
           <div key={category.id}>
             <CategoryCard
               category={category}
-              linkTo={`/category/${category.slug}`}
+              linkTo={`/category/${category.parent?.slug}/${category.slug}`}
             />
           </div>
         ))}

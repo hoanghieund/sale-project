@@ -2,20 +2,38 @@ import { Axios } from "@/api/Axios";
 
 export const categoryService = {
   /**
-   * Retrieves category information by SLUG.
-   * @param slug - The slug of the category.
-   * @returns A Promise with category information and its subcategories.
+   * Retrieves a list of products by category slug with filters.
+   * @param slugCategory - The slug of the category.
+   * @param slugSubCategory - The slug of the subcategory (optional).
+   * @param slugCollection - The slug of the collection (optional).
+   * @param page - The page number.
+   * @param size - The number of items per page.
+   * @param sort - The sorting order (asc or desc).
+   * @param keyword - The search keyword (optional).
+   * @returns A Promise with paginated product data and category information.
    */
-  getCategoryBySlug: (slug: string) => {
-    return Axios.get(`/api/public/category/getRootCategory/slug/${slug}`);
-  },
-
-  /**
-   * Retrieves subcategory information by parent SLUG.
-   * @param slug - The slug of the parent category.
-   * @returns A Promise with subcategory information and its children.
-   */
-  getCategoryByParent: (slug: string) => {
-    return Axios.get(`/api/public/category/getCategoryByParent/slug/${slug}`);
+  getDataBySlug: (
+    slugCategory: string,
+    slugSubCategory?: string,
+    slugCollection?: string,
+    page?: number,
+    size?: number,
+    sort?: "asc" | "desc",
+    keyword?: string
+  ) => {
+    const url = `/api/public/products/by-category-collection/slug/${
+      slugCollection
+        ? slugCollection
+        : slugSubCategory
+        ? slugSubCategory
+        : slugCategory
+    }`;
+    return Axios.get(url, {
+      page: page,
+      size: size,
+      sort: sort,
+      keyword: keyword,
+      typeSlug: slugCollection ? "collection" : undefined,
+    });
   },
 };

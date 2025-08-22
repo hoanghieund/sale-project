@@ -82,7 +82,7 @@ const ProductDetailPage = () => {
             ? [
                 {
                   label: product.collectionResponse.categoryTree.child.name,
-                  to: `/category/${product.collectionResponse.categoryTree.child.slug}`,
+                  to: `/category/${product.collectionResponse.categoryTree?.slug}/${product.collectionResponse.categoryTree.child.slug}`,
                 },
               ]
             : []),

@@ -27,7 +27,6 @@ import { categoriesService } from "../services/categoriesService";
  */
 const CategoryManagementPage: React.FC = () => {
   const [categories, setCategories] = useState([]); // State danh sách sau khi map từ API
-  const [loading, setLoading] = useState(true); // State cho trạng thái loading
   // Phân trang & tổng
   const [page, setPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -38,7 +37,6 @@ const CategoryManagementPage: React.FC = () => {
    * @description Gọi API lấy danh mục theo filters; hỗ trợ cả dạng trả về mảng hoặc phân trang {content,totalPages,totalElements}
    */
   const fetchCollections = async (page: number) => {
-    setLoading(true);
     try {
       // Axios wrapper trả về trực tiếp data, KHÔNG phải response.data
       const response: any = await categoriesService.getCollections({
@@ -55,8 +53,6 @@ const CategoryManagementPage: React.FC = () => {
       toast.error("Error", {
         description: err.message || "Unable to load product categories.",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -70,16 +66,16 @@ const CategoryManagementPage: React.FC = () => {
         {/* Header responsive: xếp dọc trên mobile, ngang trên md+ */}
         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between flex-wrap">
           <div className="space-y-2">
-            <CardTitle>Category Management</CardTitle>
+            <CardTitle>Collection Management</CardTitle>
             <CardDescription>
-              Create, edit and organize your product categories.
+              Create, edit and organize your product collections.
             </CardDescription>
           </div>
           <Link to="/seller/categories/create">
             {/* Nút full-width trên mobile để dễ bấm */}
             <Button className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
-              Add category
+              Add collection
             </Button>
           </Link>
         </CardHeader>

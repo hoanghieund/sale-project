@@ -400,7 +400,7 @@ const Header = () => {
                               <div key={child.id}>
                                 <NavigationMenuLink className="bg-card" asChild>
                                   <Link
-                                    to={`/category/${child.slug}`} // Navigate to child category page
+                                    to={`/category/${item.slug}/${child.slug}`} // Navigate to child category page
                                     className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
                                   >
                                     <div className="text-sm font-medium leading-none">
@@ -485,7 +485,7 @@ const MobileNavigation = ({
                     <div key={child.id}>
                       {/* Subcategory link: đồng bộ hover với NavigationMenu */}
                       <Link
-                        to={`/category/${child.slug}`} // Use id to create path
+                        to={`/category/${item.slug}/${child.slug}`} // Use id to create path
                         className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground uppercase"
                         onClick={onClose}
                       >

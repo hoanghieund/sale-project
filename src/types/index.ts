@@ -79,6 +79,7 @@ export interface CollectionResponse {
   id: number;
   slug?: string;
   name: string;
+  imageUrl?: string;
   categoryTree: CategoryTree | null; // Có thể có categoryTree hoặc null
 }
 

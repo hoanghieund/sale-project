@@ -29,18 +29,23 @@ const CreateCategoryPage: React.FC = () => {
   /**
    * @function handleSubmit
    * @description Xử lý submit form tạo danh mục mới.
-   * @param {Pick<Category, 'name' | 'description'>} data - Dữ liệu danh mục từ form (chỉ bao gồm name, description).
+   * @param {Object} data - Dữ liệu danh mục từ form (bao gồm name, categoryId, image).
+   * @param {string} data.name - Tên danh mục.
+   * @param {string} data.categoryId - ID danh mục cha.
+   * @param {File} data.image - File hình ảnh của danh mục (bắt buộc).
    */
   const handleSubmit = async (data: {
     name: string;
-    description?: string;
     categoryId: string;
+    image: File; // Đã thay đổi từ optional thành bắt buộc
   }) => {
     setIsLoading(true); // Bắt đầu loading
     try {
+      // Đảm bảo rằng image luôn được gửi đi
       await categoriesService.createCollection({
         name: data.name,
         categoryId: Number(data.categoryId),
+        image: data.image, // Image là bắt buộc
       });
       toast.success("Success", {
         description: "Category created successfully!",
@@ -61,9 +66,9 @@ const CreateCategoryPage: React.FC = () => {
       <div className="p-4 sm:p-6">
         <Card className="bg-white">
           <CardHeader>
-            <CardTitle>Create Category</CardTitle>
+            <CardTitle>Create Collection</CardTitle>
             <CardDescription>
-              Fill in the information to add a new product category to your
+              Fill in the information to add a new product collection to your
               store.
             </CardDescription>
           </CardHeader>

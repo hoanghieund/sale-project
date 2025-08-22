@@ -26,7 +26,11 @@ import { toast } from "sonner";
 const EditCategoryPage: React.FC = () => {
   const navigate = useNavigate();
   const { categoryId } = useParams<{ categoryId: string }>();
-  const [currentCategory, setCurrentCategory] = useState(null);
+  const [currentCategory, setCurrentCategory] = useState<{
+    name: string;
+    categoryId: string;
+    imageUrl?: string | null;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true); // Quản lý trạng thái loading cục bộ
   const [error, setError] = useState<string | null>(null); // State cho lỗi
 
@@ -49,7 +53,11 @@ const EditCategoryPage: React.FC = () => {
           categoryId
         ); // Gọi API lấy category theo ID
         if (categoryData) {
-          setCurrentCategory(categoryData);
+          // Đảm bảo rằng dữ liệu có trường imageUrl nếu có
+          setCurrentCategory({
+            ...categoryData,
+            imageUrl: categoryData.imageUrl || null, // Đảm bảo trường imageUrl luôn tồn tại
+          });
         } else {
           toast.error("Error", { description: "This category was not found." });
           navigate("/seller/categories");
@@ -71,18 +79,27 @@ const EditCategoryPage: React.FC = () => {
   /**
    * @function handleSubmit
    * @description Xử lý submit form chỉnh sửa danh mục.
-   * @param {Partial<Category>} data - Dữ liệu danh mục từ form.
+   * @param {Object} data - Dữ liệu danh mục từ form.
+   * @param {string} data.name - Tên danh mục.
+   * @param {string} data.categoryId - ID danh mục cha.
+   * @param {File} [data.image] - File hình ảnh của danh mục (optional khi chỉnh sửa).
    */
-  const handleSubmit = async (data: { name: string; categoryId: string }) => {
+  const handleSubmit = async (data: {
+    name: string;
+    categoryId: string;
+    image?: File; // Vẫn giữ optional vì đây là chỉnh sửa, có thể giữ nguyên ảnh cũ
+  }) => {
     if (!categoryId) return; // Đảm bảo có categoryId
 
     setIsLoading(true);
     try {
+      // Gửi dữ liệu cập nhật, image có thể có hoặc không
       const updatedCategory = await categoriesService.updateCollection(
         categoryId,
         {
           name: data.name,
           categoryId: Number(data.categoryId),
+          image: data.image,
         }
       );
       setCurrentCategory(updatedCategory); // Cập nhật lại category hiện tại
@@ -122,9 +139,9 @@ const EditCategoryPage: React.FC = () => {
       <div className="p-4 sm:p-6">
         <Card className="bg-white">
           <CardHeader>
-            <CardTitle>Edit Category</CardTitle>
+            <CardTitle>Edit Collection</CardTitle>
             <CardDescription>
-              Update information for the existing product category.
+              Update information for the existing product collection.
             </CardDescription>
           </CardHeader>
           <CardContent>

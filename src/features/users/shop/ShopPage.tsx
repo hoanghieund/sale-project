@@ -152,7 +152,7 @@ const ShopPage = () => {
         size: size,
         sort: sort,
         // Truyền từ khóa tìm kiếm theo key backend yêu cầu (`keywword`)
-        keywword: q ? q : undefined,
+        keyword: q ? q : undefined,
       };
 
       const responseProduct = await shopService.getProductsByAll(
@@ -470,7 +470,7 @@ const ShopPage = () => {
               <LoadingSpinner />
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2 sm:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
                   {products.map(product => (
                     <ProductCardSimple
                       key={product.id}
