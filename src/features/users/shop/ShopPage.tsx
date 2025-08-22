@@ -152,7 +152,7 @@ const ShopPage = () => {
         size: size,
         sort: sort,
         // Truyền từ khóa tìm kiếm theo key backend yêu cầu (`keywword`)
-        keywword: q ? q : undefined,
+        keyword: q ? q : undefined,
       };
 
       const responseProduct = await shopService.getProductsByAll(
