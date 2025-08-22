@@ -27,10 +27,21 @@ export const categoriesService = {
    * @param {Object} data - Dữ liệu danh mục cần tạo.
    * @param {string} data.name - Tên danh mục.
    * @param {string} data.categoryId - ID của danh mục cha.
+   * @param {File} data.image - File hình ảnh của danh mục (bắt buộc).
    * @returns} Thông tin danh mục đã tạo.
    */
-  createCollection: async (data: { name: string; categoryId: number }) => {
-    return Axios.post("/api/collections", data);
+  createCollection: async (data: { name: string; categoryId: number; image: File }) => {
+    // Sử dụng FormData để gửi multipart/form-data với file image
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('categoryId', data.categoryId.toString());
+    formData.append('image', data.image);
+    
+    return Axios.post("/api/collections", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
 
   /**
@@ -39,12 +50,28 @@ export const categoriesService = {
    * @param {Object} data - Dữ liệu danh mục cần tạo.
    * @param {string} data.name - Tên danh mục.
    * @param {string} data.categoryId - ID của danh mục cha.
+   * @param {File} [data.image] - File hình ảnh của danh mục (optional).
    * @returns} Thông tin danh mục đã được cập nhật.
    */
   updateCollection: async (
     id: string,
-    data: { name: string; categoryId: number }
+    data: { name: string; categoryId: number; image?: File }
   ) => {
+    // Nếu có file image, sử dụng FormData để gửi multipart/form-data
+    if (data.image) {
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('categoryId', data.categoryId.toString());
+      formData.append('image', data.image);
+      
+      return Axios.put(`/api/collections/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
+    
+    // Nếu không có file image, gửi dữ liệu JSON như bình thường
     return Axios.put(`/api/collections/${id}`, data);
   },
 

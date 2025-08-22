@@ -45,7 +45,7 @@ const navLinks: NavLink[] = [
     variant: "ghost",
   },
   {
-    title: "Category Management",
+    title: "Collection Management",
     href: "/seller/categories",
     icon: Package,
     variant: "ghost",

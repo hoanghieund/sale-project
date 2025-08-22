@@ -37,18 +37,14 @@ import { useNavigate } from "react-router-dom"; // Điều hướng tới trang 
 import { toast } from "sonner"; // Thông báo người dùng
 import { categoriesService } from "../services/categoriesService"; // Gọi API xóa danh mục
 
-interface Category extends CollectionResponse {
-  isAll: boolean;
-}
-
 /**
  * @interface CategoryTableProps
  * @description Props cho component CategoryTable.
- * @property {Category[]} categories - Danh sách các danh mục cần hiển thị.
+ * @property {CollectionResponse[]} categories - Danh sách các danh mục cần hiển thị.
  * @property {() => void} [onDeleted] - Callback để parent re-fetch sau khi xóa thành công.
  */
 interface CategoryTableProps {
-  categories: Category[];
+  categories: CollectionResponse[];
   onDeleted?: () => void;
 }
 
@@ -66,18 +62,19 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
   const navigate = useNavigate();
   // State quản lý dialog xác nhận xóa
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<CollectionResponse | null>(
+    null
+  );
 
   /**
    * @function handleDelete
    * @description Xử lý logic khi người dùng muốn xóa một danh mục.
    * Kiểm tra nếu là danh mục mặc định "All" thì không cho xóa.
    * Yêu cầu xác nhận trước khi xóa.
-   * @param {Category} category - Danh mục cần xóa.
+   * @param {CollectionResponse} category - Danh mục cần xóa.
    */
-  const handleDelete = (category: Category) => {
+  const handleDelete = (category: CollectionResponse) => {
     // Không cho xóa danh mục mặc định
-    if (category.isAll) return;
     setDeleteTarget(category);
     setIsConfirmOpen(true);
   };
@@ -90,7 +87,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
     if (!deleteTarget) return;
     try {
       await categoriesService.deleteCollection(String(deleteTarget.id));
-      toast.success("Category deleted successfully");
+      toast.success("Collection deleted successfully");
       // Đóng dialog và reset target
       setIsConfirmOpen(false);
       setDeleteTarget(null);
@@ -107,8 +104,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
    * @function handleEdit
    * @description Điều hướng đến trang chỉnh sửa danh mục.
    */
-  const handleEdit = (category: Category) => {
-    if (category.isAll) return; // An toàn: không cho sửa danh mục mặc định
+  const handleEdit = (category: CollectionResponse) => {
     navigate(`/seller/categories/edit/${category.id}`);
   };
 
@@ -118,7 +114,8 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
       <Table>
         <TableHeader className="sticky top-0 bg-white">
           <TableRow>
-            <TableHead>Category name</TableHead>
+            <TableHead>Image</TableHead>
+            <TableHead>Collection name</TableHead>
             {/* Ẩn cột Type trên mobile để tiết kiệm không gian */}
             <TableHead className="text-right">Type</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -128,22 +125,34 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
           {categories.length > 0 ? (
             categories.map(category => (
               <TableRow key={category.id}>
+                {/* Hiển thị ảnh danh mục */}
+                <TableCell>
+                  {category.imageUrl ? (
+                    <div className="relative h-12 w-12 overflow-hidden rounded-md border border-border">
+                      <img 
+                        src={category.imageUrl} 
+                        alt={category.name} 
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          // Xử lý lỗi khi ảnh không tải được
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-md border border-border bg-muted/30">
+                      <span className="text-xs text-muted-foreground">No image</span>
+                    </div>
+                  )}
+                </TableCell>
                 {/* Tên cắt ngắn trên mobile để tránh tràn */}
                 <TableCell className="font-medium truncate sm:max-w-none">
                   {category.name}
-                  {/* Badge "Mặc định" cho danh mục "All" */}
-                  {category.isAll && (
-                    <Badge variant="secondary" className="ml-2">
-                      Default
-                    </Badge>
-                  )}
                 </TableCell>
                 {/* Ẩn Type trên mobile */}
                 <TableCell className="text-right ">
                   {/* Hiển thị loại danh mục dựa trên isDefault */}
-                  <Badge variant={category.isAll ? "default" : "secondary"}>
-                    {category.isAll ? "Default" : "Regular"}
-                  </Badge>
+                  <Badge variant="secondary">Regular</Badge>
                 </TableCell>
                 <TableCell className="text-right">
                   {/* Dropdown menu hành động */}
@@ -152,34 +161,25 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
                       <Button
                         variant="ghost"
                         className="h-8 w-8 p-0"
-                        disabled={category.isAll}
-                        title={
-                          category.isAll
-                            ? "Default category cannot be edited/deleted"
-                            : "No available actions"
-                        }
+                        title="No available actions"
                       >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       {/* Nút Chỉnh sửa: chỉ hiển thị khi KHÔNG phải mặc định */}
-                      {!category.isAll && (
-                        <DropdownMenuItem onClick={() => handleEdit(category)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                      )}
+                      <DropdownMenuItem onClick={() => handleEdit(category)}>
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
                       {/* Nút Xóa: chỉ hiển thị khi KHÔNG phải mặc định */}
-                      {/* {!category.isAll && (
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(category)}
-                            className="text-red-600"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        )} */}
+                      {/* <DropdownMenuItem
+                        onClick={() => handleDelete(category)}
+                        className="text-red-600"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem> */}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -187,7 +187,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
             ))
           ) : (
             <TableRow className="text-center py-8 text-gray-500 w-full">
-              <TableCell colSpan={3}>No categories found</TableCell>
+              <TableCell colSpan={4}>No categories found</TableCell>
             </TableRow>
           )}
         </TableBody>
@@ -197,9 +197,9 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm delete category</AlertDialogTitle>
+            <AlertDialogTitle>Confirm delete collection</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete category{" "}
+              Are you sure you want to delete collection{" "}
               <span className="font-semibold">{deleteTarget?.name}</span>? This
               action cannot be undone.
             </AlertDialogDescription>
