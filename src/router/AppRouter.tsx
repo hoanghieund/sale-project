@@ -1,11 +1,11 @@
 import ScrollToTop from "@/components/ScrollToTop";
 import { AuthLayout, MainLayout } from "@/layouts";
+import { NuqsAdapter } from "nuqs/adapters/react-router/v6"; // Adapter để nuqs hoạt động với React Router v6
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectedSellerRoute from "./ProtectedSellerRoute";
 import RedirectRoute from "./RedirectRoute";
-import { NuqsAdapter } from "nuqs/adapters/react-router/v6"; // Adapter để nuqs hoạt động với React Router v6
 
 // Lazy load pages for better performance
 const Home = lazy(() => import("@/features/users/home/Home"));
@@ -110,114 +110,120 @@ const AppRouter = () => {
     // Bọc toàn bộ Router bằng NuqsAdapter để đồng bộ state <-> query string
     <NuqsAdapter>
       <BrowserRouter>
-      <ScrollToTop />
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center min-h-screen">
-            Loading...
-          </div>
-        }
-      >
-        <Routes>
-          {/* Main Layout - Các trang có header và footer */}
-          <Route element={<MainLayout />}>
-            {/* <Route element={<ActiveAccountRoute />}> */}
-            {/* Các trang công khai - không cần đăng nhập */}
-            <Route path="/" element={<Home />} />
-            <Route path="/product/:slug" element={<ProductDetailPage />} />
-            <Route path="/category/:categorySlug" element={<CategoryPage />} />
-            <Route path="/shop/:shopSlug" element={<ShopPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/shipping-returns" element={<ShippingReturns />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route
-              path="/seller-registration"
-              element={<SellerRegistration />}
-            />
-            {/* Footer pages - Các trang từ menu footer */}
-            <Route path="/vendors" element={<Vendors />} />
-            <Route path="/buyer-protection" element={<BuyerProtection />} />
-            <Route path="/authenticate" element={<Authenticate />} />
-            <Route path="/vendor-protection" element={<VendorProtection />} />
-            <Route path="/prohibited-items" element={<ProhibitedItems />} />
-            <Route
-              path="/marketplace-guidelines"
-              element={<MarketplaceGuidelines />}
-            />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="*" element={<NotFound />} />
-            {/* Các trang yêu cầu đăng nhập */}
-            <Route element={<ProtectedRoute />}>
-              {/* Các trang yêu cầu tài khoản đã kích hoạt */}
-              <Route path="/checkout" element={<Checkout />} />
-              {/* User account */}
-              {/* <Route path="/wishlist" element={<Wishlist />} /> */}
+        <ScrollToTop />
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-screen">
+              Loading...
+            </div>
+          }
+        >
+          <Routes>
+            {/* Main Layout - Các trang có header và footer */}
+            <Route element={<MainLayout />}>
+              {/* <Route element={<ActiveAccountRoute />}> */}
+              {/* Các trang công khai - không cần đăng nhập */}
+              <Route path="/" element={<Home />} />
+              <Route path="/product/:slug" element={<ProductDetailPage />} />
+              <Route
+                path="/category/:categorySlug/:subCategorySlug?/:collectionSlug?"
+                element={<CategoryPage />}
+              />
+              <Route path="/shop/:shopSlug" element={<ShopPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/shipping-returns" element={<ShippingReturns />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route
+                path="/seller-registration"
+                element={<SellerRegistration />}
+              />
+              {/* Footer pages - Các trang từ menu footer */}
+              <Route path="/vendors" element={<Vendors />} />
+              <Route path="/buyer-protection" element={<BuyerProtection />} />
+              <Route path="/authenticate" element={<Authenticate />} />
+              <Route path="/vendor-protection" element={<VendorProtection />} />
+              <Route path="/prohibited-items" element={<ProhibitedItems />} />
+              <Route
+                path="/marketplace-guidelines"
+                element={<MarketplaceGuidelines />}
+              />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="*" element={<NotFound />} />
+              {/* Các trang yêu cầu đăng nhập */}
+              <Route element={<ProtectedRoute />}>
+                {/* Các trang yêu cầu tài khoản đã kích hoạt */}
+                <Route path="/checkout" element={<Checkout />} />
+                {/* User account */}
+                {/* <Route path="/wishlist" element={<Wishlist />} /> */}
 
-              {/* Account Management Layout - Các trang quản lý tài khoản */}
-              <Route path="/account" element={<AccountLayout />}>
-                <Route path="profile" element={<ProfilePage />} />
-                <Route path="address" element={<AddressPage />} />
+                {/* Account Management Layout - Các trang quản lý tài khoản */}
+                <Route path="/account" element={<AccountLayout />}>
+                  <Route path="profile" element={<ProfilePage />} />
+                  <Route path="address" element={<AddressPage />} />
+                  <Route
+                    path="change-password"
+                    element={<ChangePasswordPage />}
+                  />
+                  <Route path="orders" element={<OrderHistoryPage />} />
+                  <Route path="*" element={<NotFound />} />{" "}
+                  {/* Handle unknown sub-routes */}
+                </Route>
+              </Route>
+              {/* Đóng ActiveAccountRoute */}
+            </Route>
+
+            {/* Seller Routes */}
+            <Route path="/seller" element={<SellerLayout />}>
+              <Route element={<ProtectedSellerRoute />}>
+                <Route index element={<DashboardPage />} /> {/* /seller */}
+                {/* /seller/dashboard */}
+                <Route path="shop" element={<ShopManagementPage />} />
+                {/* /seller/shop */}
                 <Route
-                  path="change-password"
-                  element={<ChangePasswordPage />}
-                />
-                <Route path="orders" element={<OrderHistoryPage />} />
-                <Route path="*" element={<NotFound />} />{" "}
-                {/* Handle unknown sub-routes */}
+                  path="categories"
+                  element={<CategoryManagementPage />}
+                />{" "}
+                {/* /seller/categories */}
+                <Route
+                  path="categories/create"
+                  element={<CreateCategoryPage />}
+                />{" "}
+                {/* /seller/categories/create */}
+                <Route
+                  path="categories/edit/:categoryId"
+                  element={<EditCategoryPage />}
+                />{" "}
+                {/* /seller/categories/edit/:categoryId */}
+                <Route
+                  path="products"
+                  element={<ProductManagementPage />}
+                />{" "}
+                {/* /seller/products */}
+                <Route path="products/create" element={<CreateProductPage />} />
+                <Route path="orders" element={<OrderManagementPage />} />
+                <Route path="orders/:orderId" element={<OrderDetailPage />} />
               </Route>
             </Route>
-            {/* Đóng ActiveAccountRoute */}
-          </Route>
 
-          {/* Seller Routes */}
-          <Route path="/seller" element={<SellerLayout />}>
-            <Route element={<ProtectedSellerRoute />}>
-              <Route index element={<DashboardPage />} /> {/* /seller */}
-              {/* /seller/dashboard */}
-              <Route path="shop" element={<ShopManagementPage />} />
-              {/* /seller/shop */}
-              <Route
-                path="categories"
-                element={<CategoryManagementPage />}
-              />{" "}
-              {/* /seller/categories */}
-              <Route
-                path="categories/create"
-                element={<CreateCategoryPage />}
-              />{" "}
-              {/* /seller/categories/create */}
-              <Route
-                path="categories/edit/:categoryId"
-                element={<EditCategoryPage />}
-              />{" "}
-              {/* /seller/categories/edit/:categoryId */}
-              <Route path="products" element={<ProductManagementPage />} />{" "}
-              {/* /seller/products */}
-              <Route path="products/create" element={<CreateProductPage />} />
-              <Route path="orders" element={<OrderManagementPage />} />
-              <Route path="orders/:orderId" element={<OrderDetailPage />} />
+            {/* Auth Layout - Các trang không có header và footer */}
+            <Route element={<AuthLayout />}>
+              {/* Chuyển hướng người dùng đã đăng nhập khỏi các trang đăng nhập/đăng ký */}
+              <Route element={<RedirectRoute />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/verify-account" element={<VerifyAccount />} />
+              </Route>
             </Route>
-          </Route>
-
-          {/* Auth Layout - Các trang không có header và footer */}
-          <Route element={<AuthLayout />}>
-            {/* Chuyển hướng người dùng đã đăng nhập khỏi các trang đăng nhập/đăng ký */}
-            <Route element={<RedirectRoute />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route path="/verify-account" element={<VerifyAccount />} />
-            </Route>
-          </Route>
-        </Routes>
-      </Suspense>
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </NuqsAdapter>
   );
