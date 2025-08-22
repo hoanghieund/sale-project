@@ -112,7 +112,6 @@ const CategoryPage = () => {
 
   // Effect to fetch category data when categoryId changes
   useEffect(() => {
-    window.scrollTo(0, 0);
     if (categorySlug || subCategorySlug || collectionSlug) {
       fetchCategoryData(
         categorySlug,
@@ -135,10 +134,6 @@ const CategoryPage = () => {
   ]);
 
   const breadcrumbItems = useMemo(() => {
-    console.log("🚀 ~ CategoryPage ~ categorySlug:", categorySlug);
-    console.log("🚀 ~ CategoryPage ~ subCategorySlug:", subCategorySlug);
-    console.log("🚀 ~ CategoryPage ~ collectionSlug:", collectionSlug);
-
     if (categorySlug && !subCategorySlug && !collectionSlug) {
       return [
         { label: "Home", to: "/" },
