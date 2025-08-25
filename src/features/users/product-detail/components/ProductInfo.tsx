@@ -435,22 +435,6 @@ const ProductInfo = ({
                 <span className="text-foreground">{product?.style}</span>
               </div>
             )}
-            {(product?.height || product?.width || product?.length) && (
-              <div className="flex border-b border-border py-2">
-                <span className="font-medium text-foreground w-1/3">
-                  Dimensions:
-                </span>
-                <span className="text-foreground">
-                  {[
-                    product?.height && `Height ${product?.height}cm`,
-                    product?.width && `Width ${product?.width}cm`,
-                    product?.length && `Length ${product?.length}cm`,
-                  ]
-                    .filter(Boolean)
-                    .join(", ")}
-                </span>
-              </div>
-            )}
             {product?.isNew !== undefined && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
