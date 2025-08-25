@@ -451,14 +451,6 @@ const ProductInfo = ({
                 </span>
               </div>
             )}
-            {product?.weight && (
-              <div className="flex border-b border-border py-2">
-                <span className="font-medium text-foreground w-1/3">
-                  Weight:
-                </span>
-                <span className="text-foreground">{product?.weight}g</span>
-              </div>
-            )}
             {product?.isNew !== undefined && (
               <div className="flex border-b border-border py-2">
                 <span className="font-medium text-foreground w-1/3">
@@ -467,14 +459,6 @@ const ProductInfo = ({
                 <span className="text-foreground">
                   {product?.isNew ? "Yes" : "No"}
                 </span>
-              </div>
-            )}
-            {product?.timeCreate && (
-              <div className="flex border-b border-border py-2">
-                <span className="font-medium text-foreground w-1/3">
-                  Date Posted:
-                </span>
-                <span className="text-foreground">{product?.timeCreate}</span>
               </div>
             )}
             {product?.totalReview !== undefined && (
