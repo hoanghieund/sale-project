@@ -1,7 +1,6 @@
 import { BreadcrumbNav } from "@/components/common/BreadcrumbNav";
 import CategoryCard from "@/components/common/CategoryCard";
 import CustomPagination from "@/components/common/CustomPagination";
-import EmptyStateDisplay from "@/components/common/EmptyStateDisplay";
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
 import InputDebounce from "@/components/common/InputDebounce";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
@@ -297,7 +296,10 @@ const CategoryPage = () => {
                     ))
                   ) : (
                     <div className="col-span-full">
-                      <EmptyStateDisplay />
+                      <EmptyStateMessage
+                        icon="🛍️"
+                        message="No products found"
+                      />
                     </div>
                   )}
                 </div>
