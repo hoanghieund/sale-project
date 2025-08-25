@@ -5,9 +5,9 @@ name: Vue.js CI
 
 on:
   push:
-    branches: ["master"]
+    branches: ["dev"]
   pull_request:
-    branches: ["master"]
+    branches: ["dev"]
 
 jobs:
   build:
@@ -15,7 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - run: export NVM_DIR=/home/dev/.nvm && source /home/dev/.nvm/nvm.sh && cd /home/dev/actions-runner2/_work/b2c-FE/b2c-FE && npm install && npm run build:prod
-      - run: sudo rm -rf /var/www/html/dist
-      - run: sudo cp -R /home/dev/actions-runner2/_work/b2c-FE/b2c-FE/dist /var/www/html/
+      - run: export NVM_DIR=/home/dev/.nvm && source /home/dev/.nvm/nvm.sh && cd /home/dev/actions-runner2/_work/b2c-FE/b2c-FE && npm install && npm run build:dev
+      - run: sudo rm -rf /var/www/html/dist2
+      - run: sudo mkdir /var/www/html/dist2
+      - run: sudo cp -R /home/dev/actions-runner2/_work/b2c-FE/b2c-FE/dist/* /var/www/html/dist2
       - run: sudo systemctl restart nginx
