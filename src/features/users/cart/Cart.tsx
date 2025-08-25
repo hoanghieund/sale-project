@@ -120,7 +120,7 @@ const Cart = () => {
         {/* Order Summary */}
         <CartSummaryCard
           cartSummary={cartSummary}
-          disabledCheckout={isLoading}
+          disabledCheckout={isLoading || selectedItems.size === 0}
           handleCheckout={handleCheckout}
         />
       </div>

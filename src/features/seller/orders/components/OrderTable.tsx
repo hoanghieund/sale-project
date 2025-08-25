@@ -379,7 +379,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                       </p>
                     </div>
                   </TableCell>
-                  <TableCell>{formatDate(order.timeOrder)}</TableCell>
+                  <TableCell>{order.timeOrder}</TableCell>
                   <TableCell>{formatCurrencyUSD(order.totalPrice)}</TableCell>
                   <TableCell>
                     <OrderStatusBadge status={order.status} />
