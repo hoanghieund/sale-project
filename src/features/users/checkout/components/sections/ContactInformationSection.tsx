@@ -53,9 +53,13 @@ const ContactInformationSection = () => {
     setValue("firstName", address.firstName || "", { shouldValidate: true });
     setValue("lastName", address.lastName || "", { shouldValidate: true });
     setValue("companyName", address.companyName || "");
-    setValue("phoneNumber", address.phoneNumber || "", { shouldValidate: true });
+    setValue("phoneNumber", address.phoneNumber || "", {
+      shouldValidate: true,
+    });
     setValue("email", address.email || "", { shouldValidate: true });
-    setValue("addressLine1", address.addressLine1 || "", { shouldValidate: true });
+    setValue("addressLine1", address.addressLine1 || "", {
+      shouldValidate: true,
+    });
     setValue("addressLine2", address.addressLine2 || "");
     setValue("city", address.city || "", { shouldValidate: true });
     setValue("state", address.state || "", { shouldValidate: true });
@@ -121,6 +125,9 @@ const ContactInformationSection = () => {
         setValue("selectedAddressId", "other", { shouldValidate: true });
         trigger();
       }
+    } else {
+      setValue("selectedAddressId", "other", { shouldValidate: true });
+      trigger();
     }
   }, [addresses]);
 
@@ -181,7 +188,9 @@ const ContactInformationSection = () => {
                     <span className="font-semibold text-sm">Address:</span>
                     <span className="text-sm text-muted-foreground">
                       {address.addressLine1}
-                      {address.addressLine2 && `, ${address.addressLine2}`}, {address.city}, {address.state}, {address.postalCode}
+                      {address.addressLine2 &&
+                        `, ${address.addressLine2}`}, {address.city},{" "}
+                      {address.state}, {address.postalCode}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
