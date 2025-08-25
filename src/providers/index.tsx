@@ -28,7 +28,10 @@ const Providers: React.FC<ProvidersProps> = ({ children }) => {
         <ModeProvider>
           {/* Cấu hình PayPalScriptProvider với client ID và currency */}
           <PayPalScriptProvider
-            options={{ clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID }}
+            options={{
+              clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
+              environment: import.meta.env.VITE_PAYPAL_ENVIRONMENT,
+            }}
           >
             <UserProvider>
               <CartProvider>{children}</CartProvider>
