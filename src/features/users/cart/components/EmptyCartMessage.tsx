@@ -9,7 +9,7 @@ const EmptyCartMessage = () => {
   return (
     <div className="text-center text-muted-foreground py-12">
       <p className="text-xl">Your shopping cart is empty.</p>
-      <Link to="/products">
+      <Link to="/">
         <Button variant="link" className="mt-4 text-lg">
           Start Shopping
         </Button>
