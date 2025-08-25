@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { productService } from "@/services/productService";
 import { Product } from "@/types";
 import { capitalizeFirstLetter, formatCurrencyUSD } from "@/utils/formatters";
-import { Eye, Heart, Star, Store, Trash2 } from "lucide-react";
+import { Heart, Star, Store, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -35,11 +35,7 @@ interface ProductCardSimpleProps {
    * @default false
    */
   showRemoveFromWishlist?: boolean;
-  /**
-   * Hiển thị nút xem nhanh
-   * @default true
-   */
-  showQuickView?: boolean;
+
   /**
    * Hiển thị theo kiểu đơn giản (không có các nút tương tác)
    * @default true
@@ -52,8 +48,7 @@ const ProductCardSimple = ({
   className = "",
   showWishlist = true,
   showRemoveFromWishlist = false,
-  showQuickView = true,
-  simple = true,
+  simple = false,
 }: ProductCardSimpleProps) => {
   const { isAuthenticated } = useUser(); // Use useUser hook
   const { toast } = useToast(); // Use useToast hook for notifications
@@ -70,7 +65,6 @@ const ProductCardSimple = ({
       return;
     }
     try {
-      setLikedProduct(prev => !prev);
       if (likedProduct) {
         await productService.unlikeProduct(productId);
         toast({
@@ -84,8 +78,8 @@ const ProductCardSimple = ({
           description: "Added product to wishlist.",
         });
       }
-    } catch (error) {
       setLikedProduct(prev => !prev);
+    } catch (error) {
       toast({
         title: "Error",
         description:
@@ -123,7 +117,7 @@ const ProductCardSimple = ({
           </div>
 
           {/* Action Buttons - Chỉ hiển thị khi không ở chế độ đơn giản */}
-          {!simple && (
+          {simple && (
             <>
               {/* Wishlist, Remove from Wishlist, and Quick View buttons */}
               <div className="absolute top-3 right-3 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -131,13 +125,16 @@ const ProductCardSimple = ({
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-red-500 transition-colors"
+                    className={cn(
+                      "h-8 w-8 rounded-full bg-white hover:bg-white hover:text-red-500 transition-colors",
+                      likedProduct ? "text-red-500" : ""
+                    )}
                     onClick={() => handleLikeProduct(product.id)}
                   >
                     <Heart
                       className={cn(
                         "h-4 w-4",
-                        product.isLike ? "fill-red-500 text-red-500" : ""
+                        likedProduct ? "fill-red-500 text-red-500" : ""
                       )}
                     />
                   </Button>
@@ -150,22 +147,6 @@ const ProductCardSimple = ({
                     onClick={() => handleLikeProduct(product.id)}
                   >
                     <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
-                {showQuickView && (
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full bg-white hover:bg-white hover:text-primary transition-colors"
-                    asChild
-                  >
-                    <Link
-                      to={`/product/${product.slug}`}
-                      target={isMobile ? "_self" : "_blank"}
-                      rel="noopener noreferrer"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Link>
                   </Button>
                 )}
               </div>

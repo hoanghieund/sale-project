@@ -476,7 +476,6 @@ const ShopPage = () => {
                       key={product.id}
                       product={product}
                       showWishlist={true}
-                      showQuickView={false}
                       simple={true}
                     />
                   ))}

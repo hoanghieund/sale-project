@@ -96,7 +96,6 @@ const SearchPage: React.FC = () => {
                           key={product.id}
                           product={product}
                           showWishlist={true}
-                          showQuickView={false}
                           simple={true}
                         />
                       ))
