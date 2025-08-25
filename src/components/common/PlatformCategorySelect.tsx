@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { categoriesService } from "@/features/seller/categories/services/categoriesService";
+import { categoryService } from "@/services/categoryService";
 import { Category } from "@/types";
 import React, { useEffect, useState } from "react";
 
@@ -54,10 +54,7 @@ export const PlatformCategorySelect: React.FC<PlatformCategorySelectProps> = ({
     const fetchTree = async () => {
       setLoading(true);
       try {
-        const res: Category[] = await categoriesService.getTreeCategory(
-          0,
-          1000
-        );
+        const res: Category[] = await categoryService.getAllCategory();
         if (mounted) setTree(res);
       } catch (err) {
         // TODO: thay thế bằng Winston logger khi module sẵn sàng

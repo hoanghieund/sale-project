@@ -1,5 +1,4 @@
 import { Axios } from "@/api/Axios";
-import { Category } from "@/types";
 
 export const categoriesService = {
   /**
@@ -80,16 +79,5 @@ export const categoriesService = {
    */
   deleteCollection: async (id: string) => {
     return Axios.del(`/api/collections/${id}`);
-  },
-
-  /**
-   * @method getTreeCategory
-   * @description Lấy danh sách tất cả các danh mục của gian hàng với các tùy chọn lọc và phân trang.
-   * @param {number} page - Số trang hiện tại.
-   * @param {number} size - Số lượng danh mục trên mỗi trang.
-   * @returns {Promise<any>} Danh sách các danh mục và thông tin phân trang.
-   */
-  getTreeCategory: async (page: number, size: number): Promise<Category[]> => {
-    return Axios.get(`/api/public/category/get_tree_category/${page}/${size}`);
   },
 };
