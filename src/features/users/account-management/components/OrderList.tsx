@@ -23,6 +23,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
+import { useCart } from "@/providers/cart-provider";
 import { Order, OrderStatus } from "@/types";
 import { formatCurrencyUSD } from "@/utils/formatters";
 import { AxiosError } from "axios";
@@ -35,6 +36,7 @@ import {
   MapPin,
   Package,
   Phone,
+  RotateCcw,
   User,
   X,
 } from "lucide-react";
@@ -58,10 +60,14 @@ interface OrderListProps {
 const OrderList: React.FC<OrderListProps> = ({ status }) => {
   const { user } = useUser();
   const { toast } = useToast();
+  const { addMultipleToCart } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [cancellingOrderId, setCancellingOrderId] = useState<number | null>(
+    null
+  );
+  const [reorderingOrderId, setReorderingOrderId] = useState<number | null>(
     null
   );
 
@@ -140,6 +146,46 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
     }
   };
 
+  /**
+   * @function handleReorder
+   * @description Handles reordering a cancelled order by adding all items to cart.
+   * @param {Order} order - The order to reorder.
+   */
+  const handleReorder = async (order: Order) => {
+    setReorderingOrderId(order.id);
+    try {
+      // Convert order items to cart format for addMultipleToCart
+      const cartItems = order.cartEntities.map(item => ({
+        id: item.id,
+        quantity: item.quantity,
+        isReview: false,
+        variantValues: item.variantValues,
+        shop: item.shop,
+        productDTO: item.productDTO,
+      }));
+
+      // Add all items to cart
+      await addMultipleToCart(cartItems);
+
+      // Show success toast
+      toast({
+        title: "Items Added to Cart",
+        description: `${cartItems.length} items from order #${order.code} have been added to your cart.`,
+        variant: "default",
+      });
+    } catch (err) {
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to add items to cart. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Error reordering:", err);
+    } finally {
+      setReorderingOrderId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
@@ -192,6 +238,30 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
               <div className="text-right flex items-center gap-2">
                 {/* Sử dụng OrderStatusBadge để thống nhất UI trạng thái đơn hàng */}
                 <OrderStatusBadge status={order.status} />
+
+                {/* Nút mua lại - chỉ hiển thị cho order có status = 4 (CANCELLED) */}
+                {order.status === 4 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleReorder(order)}
+                    disabled={reorderingOrderId === order.id}
+                    className="h-6 px-1 text-xs border-emerald-200 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700 transition-colors gap-1"
+                  >
+                    {reorderingOrderId === order.id ? (
+                      <>
+                        <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                        Adding...
+                      </>
+                    ) : (
+                      <>
+                        <RotateCcw className="h-3 w-3 mr-1" />
+                        Reorder
+                      </>
+                    )}
+                  </Button>
+                )}
+
                 {/* Nút hủy đơn hàng - chỉ hiển thị cho order có status khác 4 */}
                 {order.status !== 4 && (
                   <AlertDialog>

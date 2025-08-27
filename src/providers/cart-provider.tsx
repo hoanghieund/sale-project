@@ -30,6 +30,7 @@ interface CartContextType {
     variantValues: Record<string, number>,
     quantity: number
   ) => Promise<void>;
+  addMultipleToCart: (localItems: Cart[]) => Promise<void>;
   removeFromCart: (itemId: number) => Promise<void>;
   updateQuantity: (itemId: number, newQuantity: number) => Promise<void>;
   prepareCheckout: () => { selectedShops: CartByShop[]; selectedItems: Cart[] };
@@ -123,6 +124,45 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
   /**
+   * @function addMultipleToCart
+   * @description Thêm nhiều sản phẩm vào giỏ hàng server.
+   * @param {Cart[]} localItems - Mảng các cart items cần thêm
+   */
+  const addMultipleToCart = async (localItems: Cart[]) => {
+    if (localItems.length === 0) return;
+
+    try {
+      // Chuyển đổi local items thành format phù hợp cho API
+      const cartItems = localItems.map(item => ({
+        productDTO: { id: item.productDTO?.id },
+        variantValues: item.variantValues,
+        quantity: item.quantity,
+      }));
+
+      // Gọi API để thêm multiple items
+      await cartService.addMultipleToCart(cartItems);
+
+      // Gọi API service để lấy dữ liệu giỏ hàng từ server
+      const response = await cartService.getCart();
+      setCartByShop(response);
+
+      // Hiển thị thông báo thành công
+      toast({
+        title: "Success",
+        description: "Cart synced successfully.",
+      });
+    } catch (error) {
+      console.error("Error syncing cart:", error);
+      toast({
+        title: "Error",
+        description: "Failed to sync cart. Please try again.",
+        variant: "destructive",
+      });
+      throw error; // Re-throw để caller biết có lỗi
+    }
+  };
+
+  /**
    * @function fetchCartData
    * @description Lấy dữ liệu giỏ hàng.
    * - Nếu user đã đăng nhập: Gọi API để lấy dữ liệu từ server
@@ -135,20 +175,17 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
     try {
       if (isAuthenticated) {
-        // User đã đăng nhập:
+        // User đã đăng nhập: Sync local cart với server nếu có
         if (localItems.length > 0) {
-          const cartItems = localItems.map(item => ({
-            productDTO: { id: item.productDTO?.id },
-            variantValues: item.variantValues,
-            quantity: item.quantity,
-          }));
-          await cartService.addMultipleToCart(cartItems);
+          await addMultipleToCart(localItems);
+          // Xóa local cart sau khi sync thành công
           localStorage.removeItem(LOCAL_CART_KEY);
           localStorage.removeItem(LOCAL_SELECTED_KEY);
+        } else {
+          // Gọi API service để lấy dữ liệu giỏ hàng từ server
+          const response = await cartService.getCart();
+          setCartByShop(response); // Cập nhật state với dữ liệu từ API
         }
-        // Gọi API service để lấy dữ liệu giỏ hàng từ server
-        const response = await cartService.getCart();
-        setCartByShop(response); // Cập nhật state với dữ liệu từ API
       } else {
         // User chưa đăng nhập: Lấy dữ liệu từ localStorage
         const formattedCart = convertLocalCartToShopFormat(localItems);
@@ -501,6 +538,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     // Methods
     fetchCartData,
     addToCart,
+    addMultipleToCart,
     removeFromCart,
     updateQuantity,
     prepareCheckout,
