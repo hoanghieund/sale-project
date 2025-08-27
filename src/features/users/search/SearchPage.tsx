@@ -92,12 +92,7 @@ const SearchPage: React.FC = () => {
                   <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2">
                     {products.length > 0 ? (
                       products.map(product => (
-                        <ProductCardSimple
-                          key={product.id}
-                          product={product}
-                          showWishlist={true}
-                          simple={true}
-                        />
+                        <ProductCardSimple key={product.id} product={product} />
                       ))
                     ) : (
                       <div className="col-span-full">

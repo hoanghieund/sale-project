@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import ProductImageCarousel from "./components/ProductImageCarousel";
 import ProductInfo from "./components/ProductInfo"; // Import the new component
 import ProductReviews from "./components/ProductReviews";
+import RelatedProducts from "./components/RelatedProducts"; // Import RelatedProducts component
 import ShopInfoCard from "./components/ShopInfoCard"; // Import the new ShopInfoCard component
 import { productDetailService } from "./services/productDetailService";
 
@@ -112,6 +113,11 @@ const ProductDetailPage = () => {
 
         {/* Shop Info */}
         <ShopInfoCard shop={shop} />
+
+        {/* Related Products */}
+        {product.relatedProducts && product.relatedProducts.length > 0 && (
+          <RelatedProducts products={product.relatedProducts} />
+        )}
 
         {/* Product Reviews */}
         <div className="bg-white rounded-xl shadow-sm border p-4 mb-8">

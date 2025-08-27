@@ -57,7 +57,6 @@ export const useVariantProduct = (product: Product | undefined) => {
   return useMemo(() => {
     // Phòng thủ khi thiếu dữ liệu
     const options = product?.optionDTOs ?? [];
-    console.log("🚀 ~ useVariantProduct ~ options:", options);
 
     // Gom theo type, dùng Map để loại trùng theo name trong cùng type
     const grouped = options.reduce<
