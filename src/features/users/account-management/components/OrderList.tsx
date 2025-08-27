@@ -2,6 +2,18 @@
 import CartItemCard from "@/components/common/CartItemCard";
 import { OrderStatusBadge } from "@/components/common/OrderStatusBadge";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -9,6 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { Order, OrderStatus } from "@/types";
 import { formatCurrencyUSD } from "@/utils/formatters";
@@ -23,6 +36,7 @@ import {
   Package,
   Phone,
   User,
+  X,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { orderService } from "../services/orderService";
@@ -43,43 +57,88 @@ interface OrderListProps {
  */
 const OrderList: React.FC<OrderListProps> = ({ status }) => {
   const { user } = useUser();
+  const { toast } = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [cancellingOrderId, setCancellingOrderId] = useState<number | null>(
+    null
+  );
+
+  const fetchOrders = async () => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      const fetchOrdersFunc =
+        status === "all"
+          ? orderService.getOrdersByUser
+          : orderService.getOrdersByUserAndStatus;
+      const fetchedOrders = await fetchOrdersFunc(user.id, Number(status));
+      setOrders(fetchedOrders.content);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        setError(
+          err.response?.data?.message ||
+            "Could not load orders. Please try again later."
+        );
+      } else {
+        setError("An unknown error occurred.");
+      }
+      console.error("Error loading orders:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (!user?.id) {
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      setError(null);
-      try {
-        const fetchOrdersFunc =
-          status === "all"
-            ? orderService.getOrdersByUser
-            : orderService.getOrdersByUserAndStatus;
-        const fetchedOrders = await fetchOrdersFunc(user.id, Number(status));
-        setOrders(fetchedOrders.content);
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          setError(
-            err.response?.data?.message ||
-              "Could not load orders. Please try again later."
-          );
-        } else {
-          setError("An unknown error occurred.");
-        }
-        console.error("Error loading orders:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchOrders();
   }, [user?.id, status]);
+
+  /**
+   * @function handleCancelOrder
+   * @description Handles the cancellation of an order.
+   * @param {number} orderId - The ID of the order to cancel.
+   */
+  const handleCancelOrder = async (orderId: number) => {
+    setCancellingOrderId(orderId);
+    try {
+      await orderService.cancelOrder(orderId);
+      // Refresh orders list after successful cancellation
+      await fetchOrders();
+
+      // Show success toast
+      toast({
+        title: "Order Cancelled",
+        description: "Your order has been successfully cancelled.",
+        variant: "default",
+      });
+    } catch (err) {
+      // Show error toast
+      if (err instanceof AxiosError) {
+        toast({
+          title: "Error",
+          description:
+            err.response?.data?.message ||
+            "Could not cancel order. Please try again later.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "An unknown error occurred while canceling the order.",
+          variant: "destructive",
+        });
+      }
+      console.error("Error canceling order:", err);
+    } finally {
+      setCancellingOrderId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -130,9 +189,63 @@ const OrderList: React.FC<OrderListProps> = ({ status }) => {
                   {order.timeOrder}
                 </CardDescription>
               </div>
-              <div className="text-right">
+              <div className="text-right flex items-center gap-2">
                 {/* Sử dụng OrderStatusBadge để thống nhất UI trạng thái đơn hàng */}
                 <OrderStatusBadge status={order.status} />
+                {/* Nút hủy đơn hàng - chỉ hiển thị cho order có status khác 4 */}
+                {order.status !== 4 && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={cancellingOrderId === order.id}
+                        className="h-6 px-1 text-xs border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-colors gap-1"
+                      >
+                        {cancellingOrderId === order.id ? (
+                          <>
+                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                            Cancelling...
+                          </>
+                        ) : (
+                          <>
+                            <X className="h-3 w-3" />
+                            Cancel
+                          </>
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="sm:max-w-md">
+                      <AlertDialogHeader className="text-center">
+                        <AlertDialogTitle className="text-xl font-semibold text-gray-900">
+                          Cancel Order
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-gray-600 mt-2">
+                          Are you sure you want to cancel order{" "}
+                          <span className="font-medium text-gray-900">
+                            #{order.code}
+                          </span>
+                          ?
+                          <br />
+                          <span className="text-red-600 font-medium">
+                            This action cannot be undone.
+                          </span>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-0">
+                        <AlertDialogCancel className="mt-2 sm:mt-0">
+                          Keep Order
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleCancelOrder(order.id)}
+                          className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-500"
+                        >
+                          Cancel Order
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </div>
             </CardHeader>
             <CardContent className="p-3 space-y-3">

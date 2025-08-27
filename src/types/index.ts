@@ -301,4 +301,5 @@ export enum OrderStatus {
   AWAITING_PICKUP = 1,
   IN_DELIVERY = 2,
   COMPLETED = 3,
+  CANCELLED = 4,
 }

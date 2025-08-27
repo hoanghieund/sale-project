@@ -1,4 +1,4 @@
-import { Axios } from '@/api/Axios';
+import { Axios } from "@/api/Axios";
 
 export const orderService = {
   /**
@@ -17,6 +17,17 @@ export const orderService = {
    * @returns Promise with the list of orders.
    */
   getOrdersByUserAndStatus: async (userId: number, status: number) => {
-    return await Axios.get(`/api/order/getAllOrderByUserIdAndStatus?status=${status}&id=${userId}`);
+    return await Axios.get(
+      `/api/order/getAllOrderByUserIdAndStatus?status=${status}&id=${userId}`
+    );
+  },
+
+  /**
+   * Cancels an order by order ID.
+   * @param orderId - Order ID to cancel.
+   * @returns Promise with the cancellation result.
+   */
+  cancelOrder: async (orderId: number) => {
+    return await Axios.patch(`/api/user/cancel_order/${orderId}`);
   },
 };

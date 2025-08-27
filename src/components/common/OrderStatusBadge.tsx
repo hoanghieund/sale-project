@@ -7,7 +7,9 @@ import React from "react";
  * @description Hiển thị badge trạng thái đơn hàng thống nhất toàn hệ thống.
  * Luôn map theo enum OrderStatus (ALL | 0..3). Không xử lý logic khác ngoài trình bày UI.
  */
-export const OrderStatusBadge: React.FC<{ status: OrderStatus }> = ({ status }) => {
+export const OrderStatusBadge: React.FC<{ status: OrderStatus }> = ({
+  status,
+}) => {
   // Map màu + nhãn theo trạng thái số (0-3). ALL sẽ rơi vào default.
   switch (status) {
     case OrderStatus.PENDING_CONFIRMATION:
@@ -38,8 +40,15 @@ export const OrderStatusBadge: React.FC<{ status: OrderStatus }> = ({ status }) 
           Completed
         </Badge>
       );
+    case OrderStatus.CANCELLED:
+      return (
+        <Badge variant="outline" className="bg-red-100 text-red-600">
+          {/* Cancelled: đã hủy */}
+          Cancelled
+        </Badge>
+      );
     default:
-      return <Badge variant="outline">Không xác định</Badge>;
+      return <Badge variant="outline">Undefined</Badge>;
   }
 };
 

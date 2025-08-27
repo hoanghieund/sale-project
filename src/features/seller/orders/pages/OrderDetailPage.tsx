@@ -207,7 +207,9 @@ const OrderDetailPage = () => {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold break-words">Order details #{order?.code}</h1>
+          <h1 className="text-2xl font-bold break-words">
+            Order details #{order?.code}
+          </h1>
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
           {renderStatusUpdateMenu()}
@@ -258,18 +260,22 @@ const OrderDetailPage = () => {
                   </p>
                 </div>
               )}
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Payment method
-                </p>
-                <p className="font-medium">{order?.paymentMethod}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Shipping method
-                </p>
-                <p className="font-medium">{order?.ship}</p>
-              </div>
+              {order?.paymentMethod && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Payment method
+                  </p>
+                  <p className="font-medium">{order?.paymentMethod}</p>
+                </div>
+              )}
+              {order?.ship && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Shipping method
+                  </p>
+                  <p className="font-medium">{order?.ship}</p>
+                </div>
+              )}
             </div>
 
             <Separator />
@@ -323,7 +329,11 @@ const OrderDetailPage = () => {
               <p className="text-sm font-medium text-muted-foreground">
                 Customer name
               </p>
-              <p className="font-medium">{order?.orderAddressDTO?.fullName}</p>
+              <p className="font-medium">
+                {order?.orderAddressDTO?.firstName +
+                  " " +
+                  order?.orderAddressDTO?.lastName}
+              </p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">
@@ -342,7 +352,10 @@ const OrderDetailPage = () => {
                 <MapPin className="h-4 w-4 text-primary" />
                 Shipping address
               </h3>
-              <p>{order?.orderAddressDTO?.address}</p>
+              <p>{order?.orderAddressDTO?.addressLine1}</p>
+              {order?.orderAddressDTO?.addressLine2 && (
+                <p>{order?.orderAddressDTO?.addressLine2}</p>
+              )}
             </div>
           </CardContent>
         </Card>

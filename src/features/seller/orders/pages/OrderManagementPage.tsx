@@ -31,7 +31,7 @@ const OrderManagementPage = () => {
       <CardContent>
         {/* Seller tabs synced with the user's OrderTabs: 5 statuses */}
         <Tabs defaultValue="all">
-          <TabsList className="grid w-full grid-cols-2 gap-2 p-1 !h-auto sm:grid-cols-3 md:grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 gap-2 p-1 !h-auto sm:grid-cols-3 lg:grid-cols-6">
             <TabsTrigger
               value="all"
               className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
@@ -70,6 +70,14 @@ const OrderManagementPage = () => {
               <span className="sm:hidden">Done</span>
               <span className="hidden sm:inline">Completed</span>
             </TabsTrigger>
+            <TabsTrigger
+              value="cancelled"
+              className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
+              aria-label="Cancelled"
+            >
+              <span className="sm:hidden">Cancel</span>
+              <span className="hidden sm:inline">Cancelled</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="all">
@@ -90,6 +98,10 @@ const OrderManagementPage = () => {
           <TabsContent value="completed">
             {/* Map to enum COMPLETED (finalized) */}
             <OrderTable status={OrderStatus.COMPLETED} />
+          </TabsContent>
+          <TabsContent value="cancelled">
+            {/* Map to enum CANCELLED */}
+            <OrderTable status={OrderStatus.CANCELLED} />
           </TabsContent>
         </Tabs>
       </CardContent>

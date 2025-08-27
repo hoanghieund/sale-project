@@ -18,7 +18,7 @@ const OrderTabs: React.FC = () => {
        * - sm: grid 3 cột
        * - md+: grid 5 cột như desktop
        */}
-      <TabsList className="grid w-full grid-cols-2 gap-2 p-1 !h-auto sm:grid-cols-3 md:grid-cols-5">
+      <TabsList className="grid w-full grid-cols-2 gap-2 p-1 !h-auto sm:grid-cols-3 lg:grid-cols-6">
         <TabsTrigger
           value="all"
           className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
@@ -58,6 +58,14 @@ const OrderTabs: React.FC = () => {
           <span className="sm:hidden">Done</span>
           <span className="hidden sm:inline">Completed</span>
         </TabsTrigger>
+        <TabsTrigger
+          value="cancelled"
+          className="w-full justify-center !whitespace-normal break-words !h-auto min-h-[40px] px-2 text-sm leading-snug"
+          aria-label="Cancelled"
+        >
+          <span className="sm:hidden">Cancel</span>
+          <span className="hidden sm:inline">Cancelled</span>
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="all">
         <OrderList status={OrderStatus.ALL} />
@@ -73,6 +81,9 @@ const OrderTabs: React.FC = () => {
       </TabsContent>
       <TabsContent value="completed">
         <OrderList status={OrderStatus.COMPLETED} />
+      </TabsContent>
+      <TabsContent value="cancelled">
+        <OrderList status={OrderStatus.CANCELLED} />
       </TabsContent>
     </Tabs>
   );
