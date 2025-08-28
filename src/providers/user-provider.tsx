@@ -1,6 +1,6 @@
 import { UserContext, UserContextType } from "@/context/user-context";
 import React, { useEffect, useReducer } from "react";
-// Sử dụng hook useToast từ hooks/use-toast
+// Use useToast hook from hooks/use-toast
 import { useToast } from "@/hooks/use-toast";
 import { authService } from "../services/authService";
 import { User } from "../types";
@@ -24,7 +24,7 @@ type UserAction =
   | { type: "UPDATE_PROFILE_FAILURE"; payload: string }
   | { type: "CLEAR_ERROR" }
   | { type: "LOAD_USER"; payload: User }
-  | { type: "FINISH_LOADING" }; // Thêm action mới để kết thúc trạng thái tải
+  | { type: "FINISH_LOADING" }; // Add new action to finish loading state
 
 export interface UserState {
   user: User | null;
@@ -94,7 +94,7 @@ function userReducer(state: UserState, action: UserAction): UserState {
         user: action.payload,
       };
 
-    case "FINISH_LOADING": // Xử lý action FINISH_LOADING
+    case "FINISH_LOADING": // Handle FINISH_LOADING action
       return {
         ...state,
         isLoading: false,
@@ -107,35 +107,35 @@ function userReducer(state: UserState, action: UserAction): UserState {
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(userReducer, initialState);
-  // Sử dụng hook useToast để hiển thị thông báo
+  // Use useToast hook to display notifications
   const { toast } = useToast();
 
-  // Load user từ token và API khi component mount
+  // Load user from token and API when component mounts
   useEffect(() => {
     const loadUser = async () => {
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
       const token = userData ? userData.token : null;
-      // Nếu có token, thử lấy thông tin user từ API
+      // If there's a token, try to get user info from API
       if (token) {
         try {
           dispatch({ type: "LOGIN_START" });
-          // Gửi action LOGIN_SUCCESS nếu tải thành công
+          // Send LOGIN_SUCCESS action if loading successful
           const response = await authService.getUserProfile();
           dispatch({ type: "LOGIN_SUCCESS", payload: response });
         } catch (error) {
-          // Ghi lỗi vào console nếu có lỗi trong quá trình tải
-          console.error("Lỗi khi tải thông tin người dùng:", error);
-          // Gửi action LOGIN_FAILURE nếu tải thất bại
+          // Log error to console if there's an error during loading
+          console.error("Error loading user information:", error);
+          // Send LOGIN_FAILURE action if loading fails
           dispatch({
             type: "LOGIN_FAILURE",
-            payload: "Tải thông tin người dùng thất bại",
+            payload: "Failed to load user information",
           });
         } finally {
-          // Luôn gửi action FINISH_LOADING để đảm bảo isLoading được đặt lại thành false
+          // Always send FINISH_LOADING action to ensure isLoading is set back to false
           dispatch({ type: "FINISH_LOADING" });
         }
       } else {
-        // Nếu không có token, kết thúc trạng thái tải
+        // If no token, finish loading state
         dispatch({ type: "FINISH_LOADING" });
       }
     };
@@ -143,55 +143,54 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     loadUser();
   }, []);
 
-  // Không cần lưu user vào localStorage vì chúng ta sẽ sử dụng token để lấy thông tin user từ API
+  // No need to save user to localStorage since we'll use token to get user info from API
 
   /**
-   * Đăng nhập người dùng với email/username và mật khẩu
-   * @param email - Email hoặc username
-   * @param password - Mật khẩu
+   * Login user with email/username and password
+   * @param email - Email or username
+   * @param password - Password
    */
   const login = async (email: string, password: string) => {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      // Gọi API đăng nhập thông qua authService
+      // Call login API through authService
       const response = await authService.login(email, password);
 
       if (response.isActive === 0) {
         toast({
-          title: "Tài khoản chưa được kích hoạt",
-          description: "Vui lòng kiểm tra email của bạn để kích hoạt tài khoản",
+          title: "Account not activated",
+          description: "Please check your email to activate your account",
           variant: "destructive",
         });
-        throw new Error("Tài khoản của bạn chưa được kích hoạt");
+        throw new Error("Your account is not activated");
       } else {
-        // Cập nhật state với thông tin user
+        // Update state with user information
         dispatch({ type: "LOGIN_SUCCESS", payload: response });
 
-        // Hiển thị thông báo thành công với useToast
+        // Display success notification with useToast
         toast({
-          title: "Đăng nhập thành công",
-          description: "Bạn đã đăng nhập vào hệ thống",
+          title: "Login successful",
+          description: "You have logged into the system",
           variant: "default",
         });
 
-        // Lưu token vào localStorage
+        // Save token to localStorage
         localStorage.setItem("userData", JSON.stringify(response));
 
         return response;
       }
     } catch (error) {
-      // Xử lý lỗi và cập nhật state
-      const errorMessage =
-        error.response?.data?.message || "Đăng nhập thất bại";
+      // Handle error and update state
+      const errorMessage = error.response?.data?.message || "Login failed";
       dispatch({
         type: "LOGIN_FAILURE",
         payload: errorMessage,
       });
 
-      // Hiển thị thông báo lỗi với useToast
+      // Display error notification with useToast
       toast({
-        title: "Đăng nhập thất bại",
+        title: "Login failed",
         description: errorMessage,
         variant: "destructive",
       });
@@ -200,8 +199,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   /**
-   * Đăng ký người dùng mới
-   * @param userData - Thông tin đăng ký
+   * Register new user
+   * @param userData - Registration information
    */
   const register = async (userData: RegisterData) => {
     dispatch({ type: "REGISTER_START" });
@@ -211,22 +210,23 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       formData.append("email", userData.email);
       formData.append("password", userData.password);
       formData.append("username", userData.username);
-      // Gọi API đăng ký thông qua authService
+      // Call register API through authService
       const response = await authService.register(formData);
-      // Cập nhật state với thông tin user
+      // Update state with user information
       dispatch({ type: "REGISTER_SUCCESS" });
       return response;
     } catch (error) {
-      // Xử lý lỗi và cập nhật state
-      const errorMessage = error.response?.data?.message || "Đăng ký thất bại";
+      // Handle error and update state
+      const errorMessage =
+        error.response?.data?.message || "Registration failed";
       dispatch({
         type: "REGISTER_FAILURE",
         payload: errorMessage,
       });
 
-      // Hiển thị thông báo lỗi với useToast
+      // Display error notification with useToast
       toast({
-        title: "Đăng ký thất bại",
+        title: "Registration failed",
         description: errorMessage,
         variant: "destructive",
       });
@@ -235,17 +235,31 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   /**
-   * Đăng xuất người dùng
+   * Logout user
    */
   const logout = async () => {
-    localStorage.removeItem("userData");
-    // Cập nhật state
-    dispatch({ type: "LOGOUT" });
+    try {
+      await authService.logout();
+      localStorage.removeItem("userData");
+      dispatch({ type: "LOGOUT" });
+      toast({
+        title: "Logout successful",
+        description: "You have logged out of the system",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast({
+        title: "Logout failed",
+        description: "Error during logout",
+        variant: "destructive",
+      });
+    }
   };
 
   /**
-   * Cập nhật thông tin người dùng
-   * @param userData - Thông tin cần cập nhật
+   * Update user information
+   * @param userData - Information to update
    */
   const updateProfile = async (userData: FormData) => {
     if (!state.user) return;
@@ -253,35 +267,35 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: "UPDATE_PROFILE_START" });
 
     try {
-      // Gọi API cập nhật thông tin người dùng
+      // Call API to update user information
       const response = await authService.updateProfile(userData);
 
-      // Lấy thông tin user đã cập nhật từ response
+      // Get updated user info from response
       const updatedUser = response;
 
-      // Cập nhật state với thông tin user mới
+      // Update state with new user information
       dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: updatedUser });
 
-      // Hiển thị thông báo thành công với useToast
+      // Display success notification with useToast
       toast({
-        title: "Cập nhật thành công",
-        description: "Thông tin của bạn đã được cập nhật",
+        title: "Update successful",
+        description: "Your information has been updated",
         variant: "default",
       });
 
       return updatedUser;
     } catch (error) {
-      // Xử lý lỗi và cập nhật state
+      // Handle error and update state
       const errorMessage =
-        error.response?.data?.message || "Cập nhật thông tin thất bại";
+        error.response?.data?.message || "Failed to update information";
       dispatch({
         type: "UPDATE_PROFILE_FAILURE",
         payload: errorMessage,
       });
 
-      // Hiển thị thông báo lỗi với useToast
+      // Display error notification with useToast
       toast({
-        title: "Cập nhật thất bại",
+        title: "Update failed",
         description: errorMessage,
         variant: "destructive",
       });
@@ -290,14 +304,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   /**
-   * Xóa thông báo lỗi
+   * Clear error message
    */
   const clearError = () => {
     dispatch({ type: "CLEAR_ERROR" });
   };
 
   /**
-   * Giá trị context được cung cấp cho các component con
+   * Context value provided to child components
    */
   const value: UserContextType = {
     user: state.user,

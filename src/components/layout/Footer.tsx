@@ -89,7 +89,7 @@ const Footer = () => {
               </div>
 
               {/* DMCA */}
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <a
                   href="//www.dmca.com/Protection/Status.aspx?ID=6cd73652-1377-457b-9ad2-1f66fe0c9ddc"
                   title="DMCA.com Protection Status"
@@ -100,7 +100,7 @@ const Footer = () => {
                     alt="DMCA.com Protection Status"
                   />
                 </a>
-              </div>
+              </div> */}
             </div>
 
             {/* Get to Know Us */}

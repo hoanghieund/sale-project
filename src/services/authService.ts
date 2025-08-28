@@ -91,4 +91,12 @@ export const authService = {
       },
     });
   },
+
+  /**
+   * Đăng xuất người dùng
+   * @returns Promise xác nhận đăng xuất thành công
+   */
+  logout: () => {
+    return Axios.get("/api/auth/signout");
+  },
 };
