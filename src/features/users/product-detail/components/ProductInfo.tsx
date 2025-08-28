@@ -20,7 +20,6 @@ import { Product } from "@/types";
 import { getColorValue } from "@/utils/colors";
 import { capitalizeFirstLetter, formatCurrencyUSD } from "@/utils/formatters";
 import { useVariantProduct } from "@/utils/productUtils";
-import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
 /**
@@ -179,7 +178,7 @@ const ProductInfo = ({
         <div className="space-y-1">
           {/* Rating/sales/badges block: allows wrapping and even spacing when wrapping */}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <div className="flex items-center gap-0.5">
+            {/* <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
@@ -191,7 +190,7 @@ const ProductInfo = ({
                   )}
                 />
               ))}
-            </div>
+            </div> */}
             <span className="text-foreground/50 text-sm">
               ({product?.totalReview || 0} reviews)
             </span>

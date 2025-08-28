@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { productService } from "@/services/productService";
 import { Product } from "@/types";
 import { capitalizeFirstLetter, formatCurrencyUSD } from "@/utils/formatters";
-import { Heart, Star, Store, Trash2 } from "lucide-react";
+import { Heart, Store, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -211,7 +211,7 @@ const ProductCardSimple = ({
           >
             {/* Rating */}
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
@@ -225,7 +225,7 @@ const ProductCardSimple = ({
                 ))}
               </div>
               <span className="text-xs text-muted-foreground">•</span>
-              {/* <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 Sold {product.totalProductSold || 0}
               </span> */}
             </div>
