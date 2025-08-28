@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -19,9 +18,7 @@ const Vendors = () => {
               Vendors
             </Badge>
           </div>
-          <h1 className="text-2xl md:text-4xl font-bold">
-            Our Vendors
-          </h1>
+          <h1 className="text-2xl md:text-4xl font-bold">Our Vendors</h1>
           <p className="text-muted-foreground text-base md:text-lg">
             Discover trusted vendors on the Eulotus marketplace.
           </p>
@@ -55,11 +52,15 @@ const Vendors = () => {
                 </li>
                 <li className="flex items-start">
                   <span className="w-2 h-2 bg-primary rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
-                  <span className="text-sm">Reliable shipping and handling times</span>
+                  <span className="text-sm">
+                    Reliable shipping and handling times
+                  </span>
                 </li>
                 <li className="flex items-start">
                   <span className="w-2 h-2 bg-primary rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
-                  <span className="text-sm">Consistently positive buyer ratings</span>
+                  <span className="text-sm">
+                    Consistently positive buyer ratings
+                  </span>
                 </li>
               </ul>
             </div>
@@ -84,10 +85,10 @@ const Vendors = () => {
                 If you have questions about any vendor or need assistance,
                 please contact us at{" "}
                 <a
-                  href="mailto:eulotus.com@gmail.com"
+                  href="mailto:contact.eulotus@gmail.com"
                   className="text-primary hover:underline"
                 >
-                  eulotus.com@gmail.com
+                  contact.eulotus@gmail.com
                 </a>
               </p>
             </div>

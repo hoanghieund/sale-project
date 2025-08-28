@@ -60,10 +60,10 @@ const Footer = () => {
                 <p className="text-gray-600 text-sm">
                   <span className="font-medium">Email : </span>
                   <a
-                    href="mailto:eulotus.com@gmail.com"
+                    href="mailto:contact.eulotus@gmail.com"
                     className="hover:text-gray-900 transition-colors"
                   >
-                    eulotus.com@gmail.com
+                    contact.eulotus@gmail.com
                   </a>
                 </p>
               </div>

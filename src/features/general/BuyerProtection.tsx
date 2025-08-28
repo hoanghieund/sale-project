@@ -141,10 +141,10 @@ const BuyerProtection = () => {
                     If you suspect that you may be a victim of fraud, please
                     email us at{" "}
                     <a
-                      href="mailto:eulotus.com@gmail.com"
+                      href="mailto:contact.eulotus@gmail.com"
                       className=" hover:underline font-medium"
                     >
-                      eulotus.com@gmail.com
+                      contact.eulotus@gmail.com
                     </a>{" "}
                     or report your suspicions to law enforcement. For tips on
                     preventing money transfer fraud, visit the Federal Trade

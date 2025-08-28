@@ -3,7 +3,7 @@
  *
  * - Sử dụng shadcn UI Card để đồng bộ với hệ thống thiết kế
  * - Nội dung chuẩn hóa, có ngày hiệu lực/cập nhật
- * - Liên hệ theo brand email đã dùng trong footer (eulotus.com@gmail.com) và địa chỉ returns chuyên biệt khi cần
+ * - Liên hệ theo brand email đã dùng trong footer (contact.eulotus@gmail.com) và địa chỉ returns chuyên biệt khi cần
  */
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -149,10 +149,10 @@ const ShippingReturns = () => {
                 If your package is lost or arrives damaged, please contact us
                 within {POLICY.issueReportDays} days of delivery at{" "}
                 <a
-                  href="mailto:eulotus.com@gmail.com"
+                  href="mailto:contact.eulotus@gmail.com"
                   className="text-primary hover:underline"
                 >
-                  eulotus.com@gmail.com
+                  contact.eulotus@gmail.com
                 </a>{" "}
                 with your order number and photos of the damage.
               </p>
@@ -202,10 +202,10 @@ const ShippingReturns = () => {
                 <li>
                   Contact us at{" "}
                   <a
-                    href="mailto:eulotus.com@gmail.com"
+                    href="mailto:contact.eulotus@gmail.com"
                     className="text-primary hover:underline"
                   >
-                    eulotus.com@gmail.com
+                    contact.eulotus@gmail.com
                   </a>{" "}
                   with your order number and reason for return.
                 </li>
@@ -238,10 +238,10 @@ const ShippingReturns = () => {
                 If you need an exchange for a different size, color, or item,
                 contact us at{" "}
                 <a
-                  href="mailto:eulotus.com@gmail.com"
+                  href="mailto:contact.eulotus@gmail.com"
                   className="text-primary hover:underline"
                 >
-                  eulotus.com@gmail.com
+                  contact.eulotus@gmail.com
                 </a>
                 . Exchanges are processed once we receive the original item.
               </p>

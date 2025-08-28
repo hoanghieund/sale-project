@@ -23,7 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 
 // Brand support email (kept in sync with Footer/config)
-const SUPPORT_EMAIL = "eulotus.com@gmail.com"; // do not hardcode secrets; public contact only
+const SUPPORT_EMAIL = "contact.eulotus@gmail.com"; // do not hardcode secrets; public contact only
 
 export default function Help() {
   return (

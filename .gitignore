@@ -30,3 +30,6 @@ dist-ssr
 
 # Ignore GitHub folder
 .github/
+
+.gemini/
+gha-creds-*.json

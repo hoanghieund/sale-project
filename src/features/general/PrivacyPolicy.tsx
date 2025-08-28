@@ -62,7 +62,9 @@ const PrivacyPolicy = () => {
 
           {/* 4. Sharing Your Information */}
           <h3 className="text-lg font-semibold">4. Sharing Your Information</h3>
-          <p className="text-sm">We do not sell your personal information. We may share it with:</p>
+          <p className="text-sm">
+            We do not sell your personal information. We may share it with:
+          </p>
           <ul className="list-disc ml-4 space-y-1 text-sm">
             <li>
               Service providers (e.g., payment processors, shipping companies).
@@ -81,7 +83,9 @@ const PrivacyPolicy = () => {
 
           {/* 6. Your Rights */}
           <h3 className="text-lg font-semibold">6. Your Rights</h3>
-          <p className="text-sm">Depending on your location, you may have rights to:</p>
+          <p className="text-sm">
+            Depending on your location, you may have rights to:
+          </p>
           <ul className="list-disc ml-4 space-y-1 text-sm">
             <li>Access and request a copy of your data.</li>
             <li>Correct or delete your personal information.</li>
@@ -120,7 +124,15 @@ const PrivacyPolicy = () => {
 
           {/* 11. Contact Us */}
           <h3 className="text-lg font-semibold">11. Contact Us</h3>
-          <p className="text-sm">📧 Email: <a href="mailto:eulotus.com@gmail.com" className="text-primary hover:underline">eulotus.com@gmail.com</a></p>
+          <p className="text-sm">
+            📧 Email:{" "}
+            <a
+              href="mailto:contact.eulotus@gmail.com"
+              className="text-primary hover:underline"
+            >
+              contact.eulotus@gmail.com
+            </a>
+          </p>
         </CardContent>
       </Card>
     </div>

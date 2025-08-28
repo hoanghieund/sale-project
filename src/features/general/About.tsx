@@ -323,10 +323,10 @@ const About = () => {
               <p className="text-muted-foreground text-sm">
                 <span className="font-medium">Email:</span>{" "}
                 <a
-                  href="mailto:eulotus.com@gmail.com"
+                  href="mailto:contact.eulotus@gmail.com"
                   className="text-primary hover:underline"
                 >
-                  eulotus.com@gmail.com
+                  contact.eulotus@gmail.com
                 </a>
               </p>
             </div>

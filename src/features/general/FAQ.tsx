@@ -88,7 +88,7 @@ const faqData: FAQItem[] = [
     id: "11",
     question: "How do I contact customer support?",
     answer:
-      "You can reach our customer support team via email at eulotus.com@gmail.com. We typically respond to emails within 24 hours.",
+      "You can reach our customer support team via email at contact.eulotus@gmail.com. We typically respond to emails within 24 hours.",
     category: "Support",
   },
   {

@@ -23,9 +23,7 @@ const TermsOfService: React.FC = () => {
               </span>
             </span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold">
-            Terms of Service
-          </h1>
+          <h1 className="text-2xl md:text-3xl font-bold">Terms of Service</h1>
           <p className="text-sm md:text-base">
             Please read these terms carefully before using our website.
           </p>
@@ -166,10 +164,10 @@ const TermsOfService: React.FC = () => {
           <p className="text-sm">
             📧 Email:{" "}
             <a
-              href="mailto:eulotus.com@gmail.com"
+              href="mailto:contact.eulotus@gmail.com"
               className="text-primary hover:underline"
             >
-              eulotus.com@gmail.com
+              contact.eulotus@gmail.com
             </a>
           </p>
         </section>

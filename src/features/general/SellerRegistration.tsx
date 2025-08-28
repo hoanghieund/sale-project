@@ -702,7 +702,7 @@ const SellerRegistration: React.FC = () => {
               Connect with other successful sellers
             </p>
             <a
-              href="mailto:eulotus.com@gmail.com"
+              href="mailto:contact.eulotus@gmail.com"
               className="text-sm text-orange-600 hover:underline font-medium"
             >
               Join Discussion

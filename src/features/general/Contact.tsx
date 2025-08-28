@@ -313,7 +313,7 @@ const Contact = () => {
                           We'll respond within 24 hours
                         </p>
                         <p className="font-medium text-sm">
-                          eulotus.com@gmail.com
+                          contact.eulotus@gmail.com
                         </p>
                       </div>
                     </div>
