@@ -71,20 +71,20 @@ const HeroSection = () => {
           {/* Right content - Discount badge and image */}
           <div className="relative flex justify-center items-center">
             {/* Discount badge */}
-            <div className="absolute top-4 right-4 md:top-10 md:right-10 z-20 bg-trending rounded-md w-24 h-24 md:w-32 md:h-32 flex flex-col items-center justify-center shadow-lg animate-pulse">
+            {/* <div className="absolute top-4 right-4 md:top-10 md:right-10 z-20 bg-trending rounded-md w-24 h-24 md:w-32 md:h-32 flex flex-col items-center justify-center shadow-lg animate-pulse">
               <span className="text-2xl md:text-4xl font-bold text-white">
                 50%
               </span>
               <span className="text-xs md:text-sm font-medium text-white">
                 OFF
               </span>
-            </div>
+            </div> */}
 
             {/* Image frame with enhanced styling */}
             <div className="relative w-full max-w-md border-4 border-white/30 shadow-xl rounded-md overflow-hidden">
               <img
                 src="/assets/hero-running.jpg"
-                alt="Stunning fashion at amazing prices - Flash sale 50% off fashion online shopping"
+                alt="Stunning fashion at amazing prices - Flash sale"
                 className="w-full h-auto object-cover transition-transform hover:scale-105 duration-700"
               />
             </div>
