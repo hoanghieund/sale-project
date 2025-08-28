@@ -1,5 +1,5 @@
-import { Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SocialIcon } from "react-social-icons";
 
 /**
  * Footer links configuration - theo cấu trúc bazatify.com
@@ -21,7 +21,7 @@ export const FOOTER_LINKS = {
   ordersReturns: [
     { label: "Returns & Refunds", href: "/shipping-returns" },
     { label: "Shipping Policy", href: "/shipping-returns" },
-    // { label: "Track Order", href: "/account/orders" },
+    { label: "Track Order", href: "/track-order" },
     { label: "Contact Us", href: "/contact" },
   ],
   quickLinks: [
@@ -69,23 +69,24 @@ const Footer = () => {
               </div>
 
               {/* Social Media Icons */}
-              <div className="flex items-center gap-4">
-                {/* <Link
-                  to="https://www.instagram.com/eulotus68/"
+              <div className="flex items-center">
+                {/* Instagram Icon */}
+                <SocialIcon
+                  url="https://www.instagram.com/eulotus68/"
                   target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </Link> */}
-                <Link
-                  to="https://www.facebook.com/profile.php?id=61580037864569"
+                  style={{ height: 40, width: 40 }}
+                  bgColor="#ffffff"
+                  fgColor="#666666"
+                />
+
+                {/* Facebook Icon */}
+                <SocialIcon
+                  url="https://www.facebook.com/profile.php?id=61580037864569"
                   target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </Link>
+                  style={{ height: 40, width: 40 }}
+                  bgColor="#ffffff"
+                  fgColor="#666666"
+                />
               </div>
 
               {/* DMCA */}

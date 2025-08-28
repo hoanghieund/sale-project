@@ -65,6 +65,9 @@ const ProhibitedItems = lazy(
 const MarketplaceGuidelines = lazy(
   () => import("@/features/general/MarketplaceGuidelines")
 );
+const TrackOrderPage = lazy(
+  () => import("@/features/users/track-order/TrackOrderPage")
+);
 
 // C2C Marketplace pages
 const CategoryPage = lazy(
@@ -152,6 +155,7 @@ const AppRouter = () => {
                 path="/marketplace-guidelines"
                 element={<MarketplaceGuidelines />}
               />
+              <Route path="/track-order" element={<TrackOrderPage />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="*" element={<NotFound />} />
               {/* Các trang yêu cầu đăng nhập */}
