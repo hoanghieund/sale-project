@@ -1,4 +1,4 @@
-import { Facebook, Instagram } from "lucide-react";
+import { Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
@@ -70,14 +70,14 @@ const Footer = () => {
 
               {/* Social Media Icons */}
               <div className="flex items-center gap-4">
-                <Link
+                {/* <Link
                   to="https://www.instagram.com/eulotus68/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   <Instagram className="h-5 w-5" />
-                </Link>
+                </Link> */}
                 <Link
                   to="https://www.facebook.com/profile.php?id=61580037864569"
                   target="_blank"
