@@ -225,9 +225,9 @@ const ProductCardSimple = ({
                 ))}
               </div>
               <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs text-muted-foreground">
+              {/* <span className="text-xs text-muted-foreground">
                 Sold {product.totalProductSold || 0}
-              </span>
+              </span> */}
             </div>
           </Link>
         </CardContent>

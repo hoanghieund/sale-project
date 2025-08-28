@@ -195,9 +195,9 @@ const ProductInfo = ({
             <span className="text-foreground/50 text-sm">
               ({product?.totalReview || 0} reviews)
             </span>
-            <span className="text-foreground text-sm">
+            {/* <span className="text-foreground text-sm">
               Sold {product?.totalProductSold || 0}
-            </span>
+            </span> */}
             {product?.isNew && (
               <>
                 <span className="bg-new/10 text-new px-2 py-1 rounded-md text-sm font-medium">

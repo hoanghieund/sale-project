@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 
 /**
@@ -71,7 +71,7 @@ const Footer = () => {
               {/* Social Media Icons */}
               <div className="flex items-center gap-4">
                 <Link
-                  to="https://www.instagram.com/eulotus"
+                  to="https://www.instagram.com/eulotus68/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
@@ -79,20 +79,12 @@ const Footer = () => {
                   <Instagram className="h-5 w-5" />
                 </Link>
                 <Link
-                  to="https://www.facebook.com/eulotus"
+                  to="https://www.facebook.com/profile.php?id=61580037864569"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   <Facebook className="h-5 w-5" />
-                </Link>
-                <Link
-                  to="https://www.twitter.com/eulotus"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <Twitter className="h-5 w-5" />
                 </Link>
               </div>
 
@@ -112,7 +104,7 @@ const Footer = () => {
             </div>
 
             {/* Get to Know Us */}
-            <div className="">
+            <div>
               <h3 className="font-semibold mb-4 text-gray-900">
                 Get to Know Us
               </h3>
@@ -131,7 +123,7 @@ const Footer = () => {
             </div>
 
             {/* Customer Service */}
-            <div className="">
+            <div>
               <h3 className="font-semibold mb-4 text-gray-900">
                 Customer Service
               </h3>
@@ -150,7 +142,7 @@ const Footer = () => {
             </div>
 
             {/* Orders & Returns */}
-            <div className="">
+            <div>
               <h3 className="font-semibold mb-4 text-gray-900">
                 Orders & Returns
               </h3>
@@ -169,7 +161,7 @@ const Footer = () => {
             </div>
 
             {/* Quick Links */}
-            <div className="">
+            <div>
               <h3 className="font-semibold mb-4 text-gray-900">Quick Links</h3>
               <ul className="space-y-2">
                 {FOOTER_LINKS.quickLinks.map((link, index) => (
